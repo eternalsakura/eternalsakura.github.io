@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="ret2csu," />
+  <meta name="keywords" content="ret2csu,seccomp," />
 
 
 
@@ -82,7 +82,7 @@
 
 
 <meta name="description" content="题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz 分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点">
-<meta name="keywords" content="ret2csu">
+<meta name="keywords" content="ret2csu,seccomp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0ctf2018 blackhole writeup">
 <meta property="og:url" content="http://eternalsakura13.com/2018/04/03/blackhole/index.html">
@@ -90,7 +90,7 @@
 <meta property="og:description" content="题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz 分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-02-205935.jpg">
-<meta property="og:updated_time" content="2018-04-02T21:06:40.000Z">
+<meta property="og:updated_time" content="2018-04-02T21:13:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0ctf2018 blackhole writeup">
 <meta name="twitter:description" content="题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz 分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点">
@@ -475,6 +475,8 @@
           
             <a href="/tags/ret2csu/" rel="tag"># ret2csu</a>
           
+            <a href="/tags/seccomp/" rel="tag"># seccomp</a>
+          
         </div>
       
 
@@ -611,7 +613,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
