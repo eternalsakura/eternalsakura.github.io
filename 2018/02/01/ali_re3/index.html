@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="脱壳," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="前置知识http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/http://blog.csdn.net/jiangwei0910410003/article/details/48104581 赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk可能是">
+<meta name="keywords" content="脱壳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="脱壳基础 dvmDexFileOpenPartial">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/01/ali_re3/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="前置知识http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/http://blog.csdn.net/jiangwei0910410003/article/details/48104581 赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk可能是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bvqfxcnj31je0ngacl.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bzdzyitj31d00oewg7.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fo0c9qazoaj30x409ltck.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cmoer7bj30zl073gp5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cpgd28kj30zu0n4wjs.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fo0d78f8gsj31im0xy41l.jpg">
+<meta property="og:updated_time" content="2018-03-30T19:34:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="脱壳基础 dvmDexFileOpenPartial">
+<meta name="twitter:description" content="前置知识http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/http://blog.csdn.net/jiangwei0910410003/article/details/48104581 赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk可能是">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bvqfxcnj31je0ngacl.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/01/ali_re3/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>脱壳基础 dvmDexFileOpenPartial | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/01/ali_re3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">脱壳基础 dvmDexFileOpenPartial</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-01T02:53:51+08:00">
+                2018-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/01/ali_re3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/01/ali_re3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><a href="http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/" target="_blank" rel="noopener">http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/</a><br><a href="http://blog.csdn.net/jiangwei0910410003/article/details/48104581" target="_blank" rel="noopener">http://blog.csdn.net/jiangwei0910410003/article/details/48104581</a></p>
+<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk</a><br>可能是因为赛题是14年的，有点老了，所以在5.0.1上运行失败，用android 4.4.4就可以运行了。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="加固方式"><a href="#加固方式" class="headerlink" title="加固方式"></a>加固方式</h3><p>现在市场中加固apk的方式一般就是两种：一种是对源apk整体做一个加固，放到指定位置，运行的时候在解密动态加载，还有一种是对so进行加固，在so加载内存的时候进行解密释放。我们今天主要看第一种加固方式，就是对apk整体进行加固。<br>当我们发现apk中主要的类都没有了，肯定是apk被加固了，加固的源程序肯定是在本地，一般会有这么几个地方需要注意的：<br>1、应用程序的asset目录，我们知道这个目录是不参与apk的资源编译过程的，所以很多加固的应用喜欢把加密之后的源apk放到这里<br>2、把源apk加密放到壳的dex文件的尾部，这个肯定不是我们这里的案例，但是也有这样的加固方式，<strong>这种加固方式会发现使用dex2jar工具解析dex是失败的</strong>，我们这时候就知道了，肯定对dex做了手脚<br>3、把源apk加密放到so文件中，这个就比较难了，一般都是把源apk进行拆分，存到so文件中，分析难度会加大的。</p>
+<h3 id="破解思路"><a href="#破解思路" class="headerlink" title="破解思路"></a>破解思路</h3><p>不管上层怎么加固，最终加载到内存的dex肯定不是加固的，所以这个dex就是我们想要的.</p>
+<h3 id="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex"><a href="#为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex" class="headerlink" title="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?"></a>为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?</h3><p>dalvik虚拟机会把dex文件优化为odex文件,而优化的源代码为<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Main entry point.  Decide where to go.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* <span class="keyword">const</span> argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--zip"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromZip(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--dex"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromDex(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--preopt"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> preopt(argc, argv);</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中fromzip和preopt都会调用processZipFile先将dex文件提取出来,fromDex则直接调用dvmContinueOptimization优化.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Common functionality for normal device-side processing as well as</span></span><br><span class="line"><span class="comment"> * preoptimization.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">processZipFile</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd, <span class="keyword">const</span> <span class="keyword">char</span>* zipName,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> <span class="keyword">char</span> *dexoptFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	...</span><br><span class="line">    <span class="keyword">int</span> result = extractAndProcessZip(zipFd, cacheFd, zipName, isBootstrap,</span><br><span class="line">            bcp, dexoptFlags);</span><br><span class="line">    <span class="built_in">free</span>(bcpCopy);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在extractAndProcessZip中处理zip文件并将dex提取出来,随后调用优化函数<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Extract "classes.dex" from zipFd into "cacheFd", leaving a little space</span></span><br><span class="line"><span class="comment"> * up front for the DEX optimization header.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">extractAndProcessZip</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* debugFileName, <span class="keyword">bool</span> isBootstrap, <span class="keyword">const</span> <span class="keyword">char</span>* bootClassPath,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* dexoptFlagStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Open the zip archive, find the DEX entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipPrepArchive(zipFd, debugFileName, &amp;zippy) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: unable to open zip archive '%s'"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    zipEntry = dexZipFindEntry(&amp;zippy, kClassesDex);</span><br><span class="line">    <span class="keyword">if</span> (zipEntry == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive '%s' does not include %s"</span>,</span><br><span class="line">            debugFileName, kClassesDex);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract some info about the zip entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipGetEntryInfo(&amp;zippy, zipEntry, <span class="literal">NULL</span>, &amp;uncompLen, <span class="literal">NULL</span>, <span class="literal">NULL</span>,</span><br><span class="line">            &amp;modWhen, &amp;crc32) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive GetEntryInfo failed on %s"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    uncompLen = uncompLen;</span><br><span class="line">    modWhen = modWhen;</span><br><span class="line">    crc32 = crc32;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract the DEX data into the cache file at the current offset.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipExtractEntryToFile(&amp;zippy, zipEntry, cacheFd) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: extraction of %s from %s failed"</span>,</span><br><span class="line">            kClassesDex, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">   	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Prep the VM and perform the optimization.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dvmPrepForDexOpt(bootClassPath, dexOptMode, verifyMode,</span><br><span class="line">            dexoptFlags) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"DexOptZ: VM init failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//vmStarted = 1;</span></span><br><span class="line">    <span class="comment">/* do the optimization */</span></span><br><span class="line">    <span class="keyword">if</span> (!dvmContinueOptimization(cacheFd, dexOffset, uncompLen, debugFileName,</span><br><span class="line">            modWhen, crc32, isBootstrap))</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"Optimization failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dvmContinueOptimization函数位于/dalvik/vm/analysis/DexPrepare.cpp文件,其中调用了dvmDexFileOpenPartial.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Do the actual optimization. This is executed in the dexopt process.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For best use of disk/memory, we want to extract once and perform</span></span><br><span class="line"><span class="comment"> * optimizations in place. If the file has to expand or contract</span></span><br><span class="line"><span class="comment"> * to match local structure padding/alignment expectations, we want</span></span><br><span class="line"><span class="comment"> * to do the rewrite as part of the extract, rather than extracting</span></span><br><span class="line"><span class="comment"> * into a temp file and slurping it back out. (The structure alignment</span></span><br><span class="line"><span class="comment"> * is currently correct for all platforms, and this isn't expected to</span></span><br><span class="line"><span class="comment"> * change, so we should be okay with having it already extracted.)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns "true" on success.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dvmContinueOptimization</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> dexOffset, <span class="keyword">long</span> dexLength,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* fileName, u4 modWhen, u4 crc, <span class="keyword">bool</span> isBootstrap)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ...</span><br><span class="line">        success = rewriteDex(((u1*) mapAddr) + dexOffset, dexLength,</span><br><span class="line">                    doVerify, doOpt, &amp;pClassLookup, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (success) &#123;</span><br><span class="line">            DvmDex* pDvmDex = <span class="literal">NULL</span>;</span><br><span class="line">            u1* dexAddr = ((u1*) mapAddr) + dexOffset;</span><br><span class="line">            <span class="keyword">if</span> (dvmDexFileOpenPartial(dexAddr, dexLength, &amp;pDvmDex) != <span class="number">0</span>) &#123;</span><br><span class="line">                ALOGE(<span class="string">"Unable to create DexFile"</span>);</span><br><span class="line">                success = <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dvmDexFileOpenPartial调用了dexFileParse,用来解析内存中优化过或未优化过的dex文件,返回dexFile结构.<br>所以此时dex文件已经被加载进内存,就可以dump出来了.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Create a DexFile structure for a "partial" DEX. This is one that is in</span></span><br><span class="line"><span class="comment"> * the process of being optimized. The optimization header isn't finished</span></span><br><span class="line"><span class="comment"> * and we won't have any of the auxillary data tables, so we have to do</span></span><br><span class="line"><span class="comment"> * the initialization slightly differently.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns nonzero on error.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dvmDexFileOpenPartial</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* addr, <span class="keyword">int</span> len, DvmDex** ppDvmDex)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DvmDex* pDvmDex;</span><br><span class="line">    DexFile* pDexFile;</span><br><span class="line">    <span class="keyword">int</span> parseFlags = kDexParseDefault;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">/* -- file is incomplete, new checksum has not yet been calculated</span></span><br><span class="line"><span class="comment">    if (gDvm.verifyDexChecksum)</span></span><br><span class="line"><span class="comment">        parseFlags |= kDexParseVerifyChecksum;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    pDexFile = dexFileParse((u1*)addr, len, parseFlags);</span><br><span class="line">    <span class="keyword">if</span> (pDexFile == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"DEX parse failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h2><h3 id="jeb打开apk，查看Manifest"><a href="#jeb打开apk，查看Manifest" class="headerlink" title="jeb打开apk，查看Manifest"></a>jeb打开apk，查看Manifest</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bvqfxcnj31je0ngacl.jpg" alt=""></p>
+<h3 id="反编译查看源代码"><a href="#反编译查看源代码" class="headerlink" title="反编译查看源代码"></a>反编译查看源代码</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bzdzyitj31d00oewg7.jpg" alt=""></p>
+<h3 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h3><p>asset目录中的jar文件被处理了，打不开，也不知道处理逻辑<br>libs目录中的三个so文件，唯一加载了libmobisec.so文件了<br>所以说被加固的源程序可能存在于so文件，也可能存在于asset文件里。</p>
+<h2 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h2><h3 id="得到libdvm-so文件"><a href="#得到libdvm-so文件" class="headerlink" title="得到libdvm.so文件"></a>得到libdvm.so文件</h3><p><code>adb pull /system/lib/libdvm.so</code></p>
+<h3 id="在dvmDexFileOpenPartial下断点"><a href="#在dvmDexFileOpenPartial下断点" class="headerlink" title="在dvmDexFileOpenPartial下断点"></a>在dvmDexFileOpenPartial下断点</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0c9qazoaj30x409ltck.jpg" alt=""></p>
+<h3 id="IDA-attach并断下"><a href="#IDA-attach并断下" class="headerlink" title="IDA attach并断下"></a>IDA attach并断下</h3><p>adb shell am start -D -n com.ali.tg.testapp/.MainActivity<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cmoer7bj30zl073gp5.jpg" alt=""><br>dvmDexFileOpenPartial函数的第一个参数就是dex内存起始地址，第二个参数就是dex大小。<br>R0:0x753EF008<br>R1:0x000941FC</p>
+<h3 id="dump脚本"><a href="#dump脚本" class="headerlink" title="dump脚本"></a>dump脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> idaapi</span><br><span class="line">start_addr=<span class="number">0x753EF008</span></span><br><span class="line">fike_len=<span class="number">0x000941FC</span></span><br><span class="line">data=idaapi.dbg_read_memory(start_addr,fike_len)</span><br><span class="line">f=open(<span class="string">r'dump.dex'</span>,<span class="string">'wb'</span>)</span><br><span class="line">f.write(data)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cpgd28kj30zu0n4wjs.jpg" alt=""></p>
+<h3 id="反编译dex为smali，进行分析"><a href="#反编译dex为smali，进行分析" class="headerlink" title="反编译dex为smali，进行分析"></a>反编译dex为smali，进行分析</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0d78f8gsj31im0xy41l.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/脱壳/" rel="tag"># 脱壳</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/01/ALICTF_evalapk_3/" rel="next" title="阿里EVIL_APK_3 部分writeup（脱壳）">
+                <i class="fa fa-chevron-left"></i> 阿里EVIL_APK_3 部分writeup（脱壳）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/01/ptrace/" rel="prev" title="ptrace反调试之抢占ptrace">
+                ptrace反调试之抢占ptrace <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赛题链接"><span class="nav-number">2.</span> <span class="nav-text">赛题链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加固方式"><span class="nav-number">3.1.</span> <span class="nav-text">加固方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#破解思路"><span class="nav-number">3.2.</span> <span class="nav-text">破解思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex"><span class="nav-number">3.3.</span> <span class="nav-text">为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赛题分析"><span class="nav-number">4.</span> <span class="nav-text">赛题分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jeb打开apk，查看Manifest"><span class="nav-number">4.1.</span> <span class="nav-text">jeb打开apk，查看Manifest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反编译查看源代码"><span class="nav-number">4.2.</span> <span class="nav-text">反编译查看源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存在的问题"><span class="nav-number">4.3.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#脱壳"><span class="nav-number">5.</span> <span class="nav-text">脱壳</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#得到libdvm-so文件"><span class="nav-number">5.1.</span> <span class="nav-text">得到libdvm.so文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在dvmDexFileOpenPartial下断点"><span class="nav-number">5.2.</span> <span class="nav-text">在dvmDexFileOpenPartial下断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDA-attach并断下"><span class="nav-number">5.3.</span> <span class="nav-text">IDA attach并断下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dump脚本"><span class="nav-number">5.4.</span> <span class="nav-text">dump脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反编译dex为smali，进行分析"><span class="nav-number">5.5.</span> <span class="nav-text">反编译dex为smali，进行分析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/01/ali_re3/';
+          this.page.identifier = '2018/02/01/ali_re3/';
+          this.page.title = '脱壳基础 dvmDexFileOpenPartial';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

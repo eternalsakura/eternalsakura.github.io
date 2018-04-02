@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一些碎碎念……本来因为想在mac上编译的，还专门买了一个外置的移动硬盘，然后自己按照官网和搜到的无数篇博客精心研究了很久很久，耗时三天，还是GG，但是基本上…xcode是个大坑，算了算了……反正最后始终没弄好，然后，虚拟机走起吧…… 准备工作首先，虚拟机用的是mac上的parallels desktop，然后镜像是Ubuntu 12.04.5 Desktop (64-bit) 然后android源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mac上编译android4.4.4源码">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/24/bianyi/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="一些碎碎念……本来因为想在mac上编译的，还专门买了一个外置的移动硬盘，然后自己按照官网和搜到的无数篇博客精心研究了很久很久，耗时三天，还是GG，但是基本上…xcode是个大坑，算了算了……反正最后始终没弄好，然后，虚拟机走起吧…… 准备工作首先，虚拟机用的是mac上的parallels desktop，然后镜像是Ubuntu 12.04.5 Desktop (64-bit) 然后android源">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-25-164515.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-25-171005.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-25-171708.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-25-181351.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-133125.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-133411.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-133436.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-134145.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-140455.png">
+<meta property="og:updated_time" content="2018-02-26T14:27:18.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mac上编译android4.4.4源码">
+<meta name="twitter:description" content="一些碎碎念……本来因为想在mac上编译的，还专门买了一个外置的移动硬盘，然后自己按照官网和搜到的无数篇博客精心研究了很久很久，耗时三天，还是GG，但是基本上…xcode是个大坑，算了算了……反正最后始终没弄好，然后，虚拟机走起吧…… 准备工作首先，虚拟机用的是mac上的parallels desktop，然后镜像是Ubuntu 12.04.5 Desktop (64-bit) 然后android源">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-25-164515.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/24/bianyi/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>mac上编译android4.4.4源码 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/24/bianyi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mac上编译android4.4.4源码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-24T10:05:56+08:00">
+                2018-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android漏洞分析基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Android漏洞分析基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/24/bianyi/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/24/bianyi/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一些碎碎念……本来因为想在mac上编译的，还专门买了一个外置的移动硬盘，然后自己按照官网和搜到的无数篇博客精心研究了很久很久，耗时三天，还是GG，但是基本上…xcode是个大坑，算了算了……反正最后始终没弄好，然后，虚拟机走起吧……</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>首先，虚拟机用的是mac上的parallels desktop，然后镜像是<a href="http://releases.ubuntu.com/12.04/ubuntu-12.04.5-desktop-amd64.iso.torrent?_ga=2.244298688.451892976.1519576871-1559322823.1519576871" target="_blank" rel="noopener">Ubuntu 12.04.5 Desktop (64-bit)</a></p>
+<p>然后android源码在<a href="https://pan.baidu.com/s/1ngsZs#list/path=%2FAndroid%E6%BA%90%E7%A0%81" target="_blank" rel="noopener">这里</a>下载，我没有用repo，直接从百度云取的，用的是android4.4.4_r1<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-25-164515.png" alt=""><br>这样一共只需要下载2G多点……而不是70G（死目</p>
+<p>mac上虚拟机快速配置就可以快速安装好系统，不过<strong>记得安装好后，修改一下硬件，空间给128G，内存改4096M，核数改2-4随便</strong>。</p>
+<h2 id="安装Java-JDK-1-6"><a href="#安装Java-JDK-1-6" class="headerlink" title="安装Java JDK 1.6"></a>安装Java JDK 1.6</h2><p>jdk版本：jdk-6u45-linux-x64.bin<br>下载地址：<a href="http://app.nidc.kr/java/jdk-6u45-linux-x64.bin" target="_blank" rel="noopener">http://app.nidc.kr/java/jdk-6u45-linux-x64.bin</a></p>
+<p>我们先在 /usr/local/目录下创建java文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local</span><br><span class="line">sudo mkdir java</span><br><span class="line">sudo cp [jdk-6u45-linux-x64.bin路径]  /usr/local/java</span><br><span class="line">sudo chmod 777 jdk-6u45-linux-x64.bin</span><br><span class="line">sudo ./jdk-6u45-linux-x64.bin</span><br></pre></td></tr></table></figure></p>
+<p>安装成功后,java文件夹下多了一个文件夹：jdk1.6.0_45/<br>然后配置环境变量，用vim打开/ect/profile 文件,嗯，我不会用gedit，日常vim，这个其实随意。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/profile</span><br></pre></td></tr></table></figure></p>
+<p>添加下面的环境变量，要根据安装目录修改，并保存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Java Environment</span><br><span class="line">export JAVA_HOME=/usr/local/java/jdk1.6.0_45  </span><br><span class="line"></span><br><span class="line">export JRE_HOME=/usr/local/java/jdk1.6.0_45/jre  </span><br><span class="line"></span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH  </span><br><span class="line"></span><br><span class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$JAVA_HOME:$PATH</span><br></pre></td></tr></table></figure></p>
+<p>重启后使其生效并进行验证<br>也可使用下面的命令不重启使其生效，不过只针对当前域有效。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure></p>
+<p>其实我是没重启的，直接source就行了，只要不另在终端里开标签或者重启终端就可以。<br>输入java -version 进行验证安装,成功后返回如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java version &quot;1.6.0_45&quot;</span><br><span class="line">Java(TM) SE Runtime Environment (build 1.6.0_45-b06)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 20.45-b01, mixed mode)</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git gnupg flex bison gperf build-essential \</span><br><span class="line">  zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \</span><br><span class="line">  libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \</span><br><span class="line">  libgl1-mesa-dev g++-multilib mingw32 tofrodos \</span><br><span class="line">  python-markdown libxml2-utils xsltproc zlib1g-dev:i386</span><br><span class="line"></span><br><span class="line">sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so</span><br></pre></td></tr></table></figure>
+<p>必须提到的是！我之前一直遇到很坑的问题，那就是虚拟机重启后打不开，始终没有解决，直到我不死心的尝试第n次，然后搜到了这个。<br><a href="http://www.cnblogs.com/wangzehuaw/p/4057604.html" target="_blank" rel="noopener">http://www.cnblogs.com/wangzehuaw/p/4057604.html</a><br><strong>划重点</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install git gnupg flex bison gperf build-essential \</span><br><span class="line">&gt;   zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev \</span><br><span class="line">&gt;   libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-glx:i386 \</span><br><span class="line">&gt;   libgl1-mesa-dev g++-multilib mingw32 tofrodos \</span><br><span class="line">&gt;   python-markdown libxml2-utils xsltproc zlib1g-dev:i386</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree       </span><br><span class="line">Reading state information... Done</span><br><span class="line">zip is already the newest version.</span><br><span class="line">zip set to manually installed.</span><br><span class="line">gnupg is already the newest version.</span><br><span class="line">Some packages could not be installed. This may mean that you have</span><br><span class="line">requested an impossible situation or if you are using the unstable</span><br><span class="line">distribution that some required packages have not yet been created</span><br><span class="line">or been moved out of Incoming.</span><br><span class="line">The following information may help to resolve the situation:</span><br><span class="line"></span><br><span class="line">The following packages have unmet dependencies:</span><br><span class="line"> libgl1-mesa-glx:i386 : Depends: libglapi-mesa:i386 (= 8.0.4-0ubuntu0.6)</span><br><span class="line">                        Recommends: libgl1-mesa-dri:i386 (&gt;= 7.2)</span><br><span class="line">E: Unable to correct problems, you have held broken packages.</span><br></pre></td></tr></table></figure></p>
+<p><strong>提示信息说缺少依赖库无法安装libgl1-mesa-glx:i386，那么就不要安装这个库了，从上面的install列表中减去这个库。<br>libgl1-mesa-glx:i386。如果强制安装了这个库会导致重启或关机后无法进入ubuntu问题，很严重。<br>如果也遇到了无法进入ubuntu系统的问题，请重装系统时不要安装这个库。</strong><br>我真的第一次见到会break desktop的库……服了服了。</p>
+<p><strong>就因为这个坑了我三天！！！</strong></p>
+<p>所以像我一样直接去掉吧。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git gnupg flex bison gperf build-essential zip curl libc6-dev libncurses5-dev:i386 x11proto-core-dev libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-dev g++-multilib mingw32 tofrodos python-markdown libxml2-utils xsltproc zlib1g-dev:i386</span><br><span class="line">sudo ln -s /usr/lib/i386-linux-gnu/mesa/libGL.so.1 /usr/lib/i386-linux-gnu/libGL.so</span><br></pre></td></tr></table></figure></p>
+<h2 id="解压源码"><a href="#解压源码" class="headerlink" title="解压源码"></a>解压源码</h2><p>把之前下载的源码的7z包解压，比如我是建了个目录aosp，然后解压后，就有个android-4.4.4_r1的文件夹。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-25-171005.png" alt=""></p>
+<p>7z文件需要下一个东西来解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install p7zip-full</span><br><span class="line">7z x android-4.4.4_r1.7z</span><br></pre></td></tr></table></figure></p>
+<p>解压好之后，进入源码路径，如果你的目录结构和我一样，就是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/aosp/android-4.4.4_r1</span><br></pre></td></tr></table></figure></p>
+<h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><h3 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h3><p>命令删除所有以前编译操作的已有输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make clobber</span><br></pre></td></tr></table></figure></p>
+<h3 id="设置环境"><a href="#设置环境" class="headerlink" title="设置环境"></a>设置环境</h3><p>使用build目录中的envsetup.sh脚本初始化环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br></pre></td></tr></table></figure></p>
+<h3 id="选择目标"><a href="#选择目标" class="headerlink" title="选择目标"></a>选择目标</h3><p>因为我不下载到实体机里，就直接输入lunch，然后回车即可。<br>默认选择第一个，即lunch aosp_arm-eng，该命令表示针对模拟器进行完整编译，并且所有调试功能均处于启用状态。</p>
+<h3 id="进行编译"><a href="#进行编译" class="headerlink" title="进行编译"></a>进行编译</h3><p>编译前先看看你配置了几个核，然后make -j(核数✖️2)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo | grep processor</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-25-171708.png" alt=""><br>可看到自己创建的虚拟机CPU核心共有2个，所以make -j4<br>编译后输出的文件都放在了源码根目录下的out文件中。</p>
+<h2 id="启动模拟器"><a href="#启动模拟器" class="headerlink" title="启动模拟器"></a>启动模拟器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emulator -partition-size 300</span><br></pre></td></tr></table></figure>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-25-181351.png" alt=""></p>
+<h2 id="导入android源码进android-studio"><a href="#导入android源码进android-studio" class="headerlink" title="导入android源码进android studio"></a>导入android源码进android studio</h2><p>网上的做法比较乱，我只写一下我是怎么做的。<br>1.在整个Android源码全编成功之后，然后编译idegen模块，用以生成Android studio的工程配置文件,编译成功之后就生成了idegen.jar（out/host/darwin-x86/framework/idegen.jar），运行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source build/ensetup.sh</span><br><span class="line">mmm development/tools/idegen/</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-133125.png" alt=""><br>2.在源码根目录生成对应的android.ipr、android.iml IEDA工程配置文件。以便于AndroidStudio可以打开项目<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">development/tools/idegen/idegen.sh</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-133411.png" alt=""><br>3.下载android studio并启动<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-133436.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/android-studio/bin</span><br><span class="line">./studio.sh</span><br></pre></td></tr></table></figure></p>
+<p>第一次启动要安装sdk，所以记得翻墙。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-134145.png" alt=""><br>4.导入<br>打开 Android studio，选择刚刚生成的 android.ipr 打开，等待加载好了就可以了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-140455.png" alt=""></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://source.android.com/source/initializing#installing-required-packages-ubuntu-1204" target="_blank" rel="noopener">https://source.android.com/source/initializing#installing-required-packages-ubuntu-1204</a><br><a href="https://source.android.com/source/requirements#older-versions" target="_blank" rel="noopener">https://source.android.com/source/requirements#older-versions</a><br><a href="https://bbs.pediy.com/thread-218366.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-218366.htm</a><br><a href="https://bbs.pediy.com/thread-218513.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-218513.htm</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/23/android1/" rel="next" title="Android漏洞分析">
+                <i class="fa fa-chevron-left"></i> Android漏洞分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/26/stage/" rel="prev" title="CVE-2015-3864的思路">
+                CVE-2015-3864的思路 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Java-JDK-1-6"><span class="nav-number">2.</span> <span class="nav-text">安装Java JDK 1.6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">3.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解压源码"><span class="nav-number">4.</span> <span class="nav-text">解压源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译源码"><span class="nav-number">5.</span> <span class="nav-text">编译源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#清理"><span class="nav-number">5.1.</span> <span class="nav-text">清理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置环境"><span class="nav-number">5.2.</span> <span class="nav-text">设置环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择目标"><span class="nav-number">5.3.</span> <span class="nav-text">选择目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进行编译"><span class="nav-number">5.4.</span> <span class="nav-text">进行编译</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动模拟器"><span class="nav-number">6.</span> <span class="nav-text">启动模拟器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入android源码进android-studio"><span class="nav-number">7.</span> <span class="nav-text">导入android源码进android studio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/24/bianyi/';
+          this.page.identifier = '2018/02/24/bianyi/';
+          this.page.title = 'mac上编译android4.4.4源码';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

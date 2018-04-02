@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="hook,android native hook," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="参考资料https://github.com/zhengmin1989/TheSevenWeapons/tree/master/LiBieGouhttp://man7.org/linux/man-pages/man2/ptrace.2.html在阅读之前，最好先看一下我的另一篇文章，关于怎么编译ARM程序以及关于ptrace的基础知识 Playing with Ptrace Android示例代码">
+<meta name="keywords" content="hook,android native hook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hook native层学习">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/04/hook1/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="参考资料https://github.com/zhengmin1989/TheSevenWeapons/tree/master/LiBieGouhttp://man7.org/linux/man-pages/man2/ptrace.2.html在阅读之前，最好先看一下我的另一篇文章，关于怎么编译ARM程序以及关于ptrace的基础知识 Playing with Ptrace Android示例代码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo3a2257haj30gv0eb421.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo39vwc2p1j30f8029jsb.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fo39xt0twkj30ck07maaa.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fo39xigwuuj30ei08kt9r.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcly1fo3ak60ksyj30n30b00um.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo3ajnjluij30l903ojs7.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fo3anfenaqj30db06g3zb.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcly1fo3an95z3vj306g07sgm2.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fo3bly0dahj318u0ooh6r.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fo3bo4h798j30vm0g67e0.jpg">
+<meta property="og:updated_time" content="2018-03-30T19:28:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hook native层学习">
+<meta name="twitter:description" content="参考资料https://github.com/zhengmin1989/TheSevenWeapons/tree/master/LiBieGouhttp://man7.org/linux/man-pages/man2/ptrace.2.html在阅读之前，最好先看一下我的另一篇文章，关于怎么编译ARM程序以及关于ptrace的基础知识 Playing with Ptrace Android示例代码">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo3a2257haj30gv0eb421.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/04/hook1/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>hook native层学习 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/04/hook1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hook native层学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-04T00:50:14+08:00">
+                2018-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/04/hook1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/04/hook1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/zhengmin1989/TheSevenWeapons/tree/master/LiBieGou" target="_blank" rel="noopener">https://github.com/zhengmin1989/TheSevenWeapons/tree/master/LiBieGou</a><br><a href="http://man7.org/linux/man-pages/man2/ptrace.2.html" target="_blank" rel="noopener">http://man7.org/linux/man-pages/man2/ptrace.2.html</a><br>在阅读之前，最好先看一下我的另一篇文章，关于<a href="http://eternalsakura13.com/2018/02/02/hello-arm/">怎么编译ARM程序</a><br>以及关于<a href="http://eternalsakura13.com/2018/02/01/ptrace/">ptrace的基础知识</a></p>
+<h1 id="Playing-with-Ptrace-Android"><a href="#Playing-with-Ptrace-Android" class="headerlink" title="Playing with Ptrace Android"></a>Playing with Ptrace Android</h1><h2 id="示例代码target-c"><a href="#示例代码target-c" class="headerlink" title="示例代码target.c"></a>示例代码target.c</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sevenWeapons</span><span class="params">(<span class="keyword">int</span> number)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* str = <span class="string">"Hello,LiBieGou!"</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s %d\n"</span>,str,number);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sevenWeapons(count);</span><br><span class="line">        count++;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="hook程序hook1-c"><a href="#hook程序hook1-c" class="headerlink" title="hook程序hook1.c"></a>hook程序hook1.c</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">getSysCallNo</span><span class="params">(<span class="keyword">int</span> pid, struct pt_regs *regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> scno = <span class="number">0</span>;</span><br><span class="line">    scno = ptrace(PTRACE_PEEKTEXT, pid, (<span class="keyword">void</span> *)(regs-&gt;ARM_pc - <span class="number">4</span>), <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(scno == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (scno == <span class="number">0xef000000</span>) &#123;</span><br><span class="line">        scno = regs-&gt;ARM_r7;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ((scno &amp; <span class="number">0x0ff00000</span>) != <span class="number">0x0f900000</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        scno &amp;= <span class="number">0x000fffff</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> scno;    </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hookSysCallBefore</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sysCallNo = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);    </span><br><span class="line">    sysCallNo = getSysCallNo(pid, &amp;regs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before SysCallNo = %d\n"</span>,sysCallNo);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(sysCallNo == __NR_write)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"__NR_write: %ld %p %ld\n"</span>,regs.ARM_r0,(<span class="keyword">void</span>*)regs.ARM_r1,regs.ARM_r2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hookSysCallAfter</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sysCallNo = <span class="number">0</span>;</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);  </span><br><span class="line">    sysCallNo = getSysCallNo(pid, &amp;regs);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After SysCallNo = %d\n"</span>,sysCallNo);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(sysCallNo == __NR_write)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"__NR_write return: %ld\n"</span>,regs.ARM_r0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> status;</span><br><span class="line">    pid = atoi(argv[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="number">0</span> != ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Trace process failed:%d.\n"</span>, errno);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        wait(&amp;status); <span class="comment">//wait函数会延迟父进程的执行，直到被调试的进程切换为停止状态或者终止为止.</span></span><br><span class="line">        hookSysCallBefore(pid);</span><br><span class="line">        ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">        wait(&amp;status);</span><br><span class="line">        hookSysCallAfter(pid);</span><br><span class="line">        ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_DETACH, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>PTRACE_SYSCALL<br>使被调试进程继续运行,但是在下一个系统调用的<strong>入口处或出口处</strong>停下,或者是执行完一条指令后停下.<br>例如,调试进程可以监视被调试进程系统调用入口处的参数,接着再使用SYSCALL,监视系统调用的返回值.</li>
+</ul>
+<p>每当目标程序调用system call前的时候，就会暂停下载。然后我们就可以读取寄存器的值来获取system call的各项信息。然后我们再一次使用ptrace(PTRACE_SYSCALL, pid, NULL, NULL)这个函数就可以让system call在调用完后再一次暂停下来，并获取system call的返回值。</p>
+<h2 id="获取system-call编号"><a href="#获取system-call编号" class="headerlink" title="获取system call编号"></a>获取system call编号</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">getSysCallNo</span><span class="params">(<span class="keyword">int</span> pid, struct pt_regs *regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> scno = <span class="number">0</span>;</span><br><span class="line">    scno = ptrace(PTRACE_PEEKTEXT, pid, (<span class="keyword">void</span> *)(regs-&gt;ARM_pc - <span class="number">4</span>), <span class="literal">NULL</span>); <span class="comment">//读出指令</span></span><br><span class="line">    <span class="keyword">if</span>(scno == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (scno == <span class="number">0xef000000</span>) &#123; <span class="comment">//如果指令是EABI</span></span><br><span class="line">        scno = regs-&gt;ARM_r7; <span class="comment">//直接从r7从取出调用号</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    <span class="comment">//如果指令是OABI</span></span><br><span class="line">        <span class="keyword">if</span> ((scno &amp; <span class="number">0x0ff00000</span>) != <span class="number">0x0f900000</span>) &#123; </span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        scno &amp;= <span class="number">0x000fffff</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> scno;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ARM架构上，所有的系统调用都是通过SWI来实现的。并且在ARM 架构中有两个SWI指令，分别针对EABI和OABI：<br>[EABI] 机器码：<br>1110 1111 0000 0000 – SWI 0<br>具体的调用号存放在寄存器r7中.<br>[OABI] 机器码：<br>1101 1111 vvvv vvvv – SWI immed_8<br>调用号进行转换以后得到指令中的立即数。立即数=调用号 | 0x900000<br>既然需要兼容两种方式的调用，我们在代码上就要分开处理。首先要获取SWI指令判断是EABI还是OABI，如果是EABI，可从r7中获取调用号。如果是OABI，则从SWI指令中获取立即数，反向计算出调用号。</p>
+<p><strong>OABI和EABI的区别</strong><br>两种ABI在如下方面有区别：<br>A。调用规则（包括参数如何传递及如何获得返回值）<br>B。系统调用的数目以及应用程序应该如何去做系统调用<br>C。目标文件的二进制格式，程序库等<br>D。结构体中的填充（padding/packing）和对齐。</p>
+<p>PTRACE_PEEKTEXT, PTRACE_PEEKDATA<br>形式：ptrace(PTRACE_PEEKTEXT, pid, addr, data)<br>         ptrace(PTRACE_PEEKDATA, pid, addr, data)<br>描述：从内存地址中读取一个字节，pid表示被跟踪的子进程，内存地址由addr给出，data为用户变量地址用于返回读到的数据。在Linux（i386）中用户代码段与用户数据段重合所以读取代码段和数据段数据处理是一样的。</p>
+<h2 id="hook程序运行逻辑"><a href="#hook程序运行逻辑" class="headerlink" title="hook程序运行逻辑"></a>hook程序运行逻辑</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="number">0</span> != ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Trace process failed:%d.\n"</span>, errno);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    wait(&amp;status); <span class="comment">//wait函数会延迟父进程的执行，直到被调试的进程切换为停止状态或者终止为止.</span></span><br><span class="line">    hookSysCallBefore(pid);</span><br><span class="line">    ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(&amp;status);</span><br><span class="line">    hookSysCallAfter(pid);</span><br><span class="line">    ptrace(PTRACE_SYSCALL, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>被调试进程：被debugger attach  ——<em>被PTRACE_SYSCALL</em>——-&gt;在syscall的入口处停止—<em>被PTRACE_SYSCALL</em>—&gt;在syscall的出口处停止</p>
+<p>进行调试的进程：attach要调试的进程——<em>PTRACE_SYSCALL/wait</em>——–&gt;等待被调试进程停止—-&gt;读取调用入口处的参数—<em>PTRACE_SYSCALL/wait</em>—&gt;监视系统调用的返回值</p>
+<h2 id="hook-system-call前的函数，和hook-system-call后的函数"><a href="#hook-system-call前的函数，和hook-system-call后的函数" class="headerlink" title="hook system call前的函数，和hook system call后的函数"></a>hook system call前的函数，和hook system call后的函数</h2><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo3a2257haj30gv0eb421.jpg" alt=""><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hookSysCallBefore</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sysCallNo = <span class="number">0</span>;</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);    </span><br><span class="line">    sysCallNo = getSysCallNo(pid, &amp;regs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before SysCallNo = %d\n"</span>,sysCallNo);</span><br><span class="line">    <span class="keyword">if</span>(sysCallNo == __NR_write)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"__NR_write: %ld %p %ld\n"</span>,regs.ARM_r0,(<span class="keyword">void</span>*)regs.ARM_r1,regs.ARM_r2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hookSysCallAfter</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sysCallNo = <span class="number">0</span>;</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);  </span><br><span class="line">    sysCallNo = getSysCallNo(pid, &amp;regs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After SysCallNo = %d\n"</span>,sysCallNo);</span><br><span class="line">    <span class="keyword">if</span>(sysCallNo == __NR_write)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"__NR_write return: %ld\n"</span>,regs.ARM_r0);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PTRACE_GETREGS<br>形式：ptrace(PTRACE_GETREGS, pid, 0, data)<br>描述：读取寄存器值，pid表示被跟踪的子进程，data为用户变量地址用于返回读到的数据。此功能将读取所有17个基本寄存器的值。</p>
+<p>在获取了system call的number以后，我们可以进一步获取个个参数的值.比如说write这个system call。<br>在arm上，如果形参个数少于或等于4，则形参由R0,R1,R2,R3四个寄存器进行传递。<br>若形参个数大于4，大于4的部分必须通过堆栈进行传递。<br>而执行完函数后，函数的返回值会保存在R0这个寄存器里。</p>
+<p>我们可以看到第一个SysCallNo是162，也就是sleep函数。第二个SysCallNo是4，也就是write函数，因为printf本质就是调用write这个系统调用来完成的。关于system call number对应的具体system call可以参考我在github上的reference文件夹中的systemcalllist.txt文件，里面有对应的列表。我们的hook1程序还对write的参数做了解析，比如1表示stdout，0xadf020表示字符串的地址，19代表字符串的长度。而返回值19表示write成功写入的长度，也就是字符串的长度。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>ps | grep target<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo39vwc2p1j30f8029jsb.jpg" alt=""><br>得到pid为10797<br>target<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo39xt0twkj30ck07maaa.jpg" alt=""><br>hook<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo39xigwuuj30ei08kt9r.jpg" alt=""><br>我们可以看到第一个SysCallNo是162，也就是sleep函数。<br>第二个SysCallNo是4，也就是write函数，因为printf本质就是调用write这个系统调用来完成的。<br>关于system call number对应的具体system call<br>可以参考我在github上的reference文件夹中的<a href="https://github.com/zhengmin1989/TheSevenWeapons/blob/master/LiBieGou/reference/systemcalllist.txt" target="_blank" rel="noopener">systemcalllist.txt</a>文件，里面有对应的列表。<br>我们的hook1程序还对write的参数做了解析，比如1表示stdout，0x1459020表示字符串的地址，19代表字符串的长度。而返回值19表示write成功写入的长度，也就是字符串的长度。</p>
+<h1 id="利用Ptrace动态修改内存"><a href="#利用Ptrace动态修改内存" class="headerlink" title="利用Ptrace动态修改内存"></a>利用Ptrace动态修改内存</h1><p>仅仅是用ptrace来获取system call的参数和返回值还不能体现出ptrace的强大，下面我们就来演示用ptrace读写内存。我们在hook1.c的基础上继续进行修改，在write被调用之前对要输出string进行翻转操作。<br>我们在hookSysCallBefore()函数中加入modifyString(pid, regs.ARM_r1, regs.ARM_r2)这个函数：</p>
+<h2 id="修改内存，转置字符串"><a href="#修改内存，转置字符串" class="headerlink" title="修改内存，转置字符串"></a>修改内存，转置字符串</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hookSysCallBefore</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sysCallNo = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);    </span><br><span class="line">    sysCallNo = getSysCallNo(pid, &amp;regs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before SysCallNo = %d\n"</span>,sysCallNo);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(sysCallNo == __NR_write)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"__NR_write: %ld %p %ld\n"</span>,regs.ARM_r0,(<span class="keyword">void</span>*)regs.ARM_r1,regs.ARM_r2);</span><br><span class="line">        modifyString(pid, regs.ARM_r1, regs.ARM_r2); <span class="comment">//r1是要打印的字符串的地址，r2是要打印的字符串的长度</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modifyString</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">long</span> addr, <span class="keyword">long</span> <span class="built_in">strlen</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* str;</span><br><span class="line">    str = (<span class="keyword">char</span> *)<span class="built_in">calloc</span>((<span class="built_in">strlen</span>+<span class="number">1</span>) * <span class="keyword">sizeof</span>(<span class="keyword">char</span>), <span class="number">1</span>);<span class="comment">//申请一块空间str，存放要被修改的字符串</span></span><br><span class="line">    getdata(pid, addr, str, <span class="built_in">strlen</span>);<span class="comment">//从要打印的字符串的地址读出字符串，将其存入申请的空间str</span></span><br><span class="line">    reverse(str); <span class="comment">//转置字符串</span></span><br><span class="line">    putdata(pid, addr, str, <span class="built_in">strlen</span>);<span class="comment">//将转置后的字符串放入要打印的字符串的地址，实现修改</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="getdata和putdata"><a href="#getdata和putdata" class="headerlink" title="getdata和putdata"></a>getdata和putdata</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        data.val = ptrace(PTRACE_PEEKDATA,</span><br><span class="line">                          child, addr + i * <span class="number">4</span>,</span><br><span class="line">                          <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">memcpy</span>(laddr, data.chars, long_size);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        data.val = ptrace(PTRACE_PEEKDATA,</span><br><span class="line">                          child, addr + i * <span class="number">4</span>,</span><br><span class="line">                          <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">memcpy</span>(laddr, data.chars, j);</span><br><span class="line">    &#125;</span><br><span class="line">    str[len] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, long_size);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, j);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>getdata()和putdata()分别使用PTRACE_PEEKDATA和PTRACE_POKEDATA对内存进行读写操作。<br>因为ptrace的内存操作一次只能控制4个字节，所以如果修改比较长的内容需要进行多次操作。</p>
+<ul>
+<li><p>PTRACE_PEEKTEXT, PTRACE_PEEKDATA<br>从内存地址中读取四个字节，内存地址由addr给出。</p>
+</li>
+<li><p>PTRACE_POKETEXT, PTRACE_POKEDATA<br>往内存地址中写入四个字节。内存地址由addr给出。</p>
+</li>
+</ul>
+<p><strong>tip:</strong>arm里的word是指四个字节<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo3ak60ksyj30n30b00um.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo3ajnjluij30l903ojs7.jpg" alt=""></p>
+<h2 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h2><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo3anfenaqj30db06g3zb.jpg" alt=""><br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo3an95z3vj306g07sgm2.jpg" alt=""></p>
+<h1 id="利用Ptrace动态执行sleep-函数——调用系统so库中的函数"><a href="#利用Ptrace动态执行sleep-函数——调用系统so库中的函数" class="headerlink" title="利用Ptrace动态执行sleep()函数——调用系统so库中的函数"></a>利用Ptrace动态执行sleep()函数——调用系统so库中的函数</h1><p>目标函数是libc.so中的sleep函数.<br>正常情况是每输出一次暂停一秒,现在我们让它暂停10秒</p>
+<h2 id="总体思路"><a href="#总体思路" class="headerlink" title="总体思路"></a>总体思路</h2><p>获取目标进程sleep函数地址<br>在目标进程内执行sleep函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">old_regs</span>,<span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> sleep_addr;</span><br><span class="line">    <span class="comment">//save old regs</span></span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">    <span class="built_in">memcpy</span>(&amp;regs, &amp;old_regs, <span class="keyword">sizeof</span>(regs));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getting remote sleep_addr:\n"</span>);</span><br><span class="line">    sleep_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span> *)sleep); <span class="comment">//获取目标进程sleep函数地址</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> parameters[<span class="number">1</span>];</span><br><span class="line">    parameters[<span class="number">0</span>] = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, sleep_addr, parameters, <span class="number">1</span>, &amp;regs);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//restore old regs</span></span><br><span class="line">    ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="如何获取函数地址"><a href="#如何获取函数地址" class="headerlink" title="如何获取函数地址"></a>如何获取函数地址</h2><ul>
+<li>已知条件: 本进程的基址、目标进程的基址、本进程中sleep函数的地址(当然,这些已知条件也是需要获得的。<br>/proc/pid/maps文件中存储的是进程内存映射详情,我们可以在这个文件中查询进程中so的基址;<br>sleep函数在本进程中的地址直接可以获得(void*)</li>
+<li>求解: 目标进程中sleep函数地址</li>
+<li>计算: 本进程sleep地址 - 本进程基址 + 目标进程基址</li>
+</ul>
+<h3 id="获取so库的加载基址"><a href="#获取so库的加载基址" class="headerlink" title="获取so库的加载基址"></a>获取so库的加载基址</h3><p>因为libc.so在内存中的地址是随机的，所以我们需要先获取目标进程的libc.so的加载地址，再获取自己进程的libc.so的加载地址和sleep()在内存中的地址。然后我们就能计算出sleep()函数在目标进程中的地址了。要注意的是获取目标进程和自己进程的libc.so的加载地址是通过解析/proc/[pid]/maps得到的。</p>
+<p>打开/proc/pid/maps文件找到基址.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">get_module_base</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *f;        <span class="comment">//文件指针</span></span><br><span class="line">    <span class="keyword">long</span> addr = <span class="number">0</span>;    <span class="comment">//模块地址</span></span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">32</span>];    <span class="comment">//maps路径</span></span><br><span class="line">    <span class="keyword">char</span> *pch;</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">1024</span>];    <span class="comment">//每行</span></span><br><span class="line">    <span class="keyword">if</span>(pid == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/self/maps"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/%d/maps"</span>, pid);</span><br><span class="line">    &#125;</span><br><span class="line">    f = fopen(filename, <span class="string">"r"</span>);</span><br><span class="line">    <span class="keyword">if</span>(f != <span class="literal">NULL</span>)&#123;</span><br><span class="line">        <span class="keyword">while</span>(fgets(line,<span class="keyword">sizeof</span>(line),f))&#123;</span><br><span class="line">           <span class="keyword">if</span>(<span class="built_in">strstr</span>(line, module_name)) &#123; <span class="comment">//找到该行是否含有module_name</span></span><br><span class="line">               pch = strtok(line,<span class="string">"-"</span>); <span class="comment">//分割出基址字符串</span></span><br><span class="line">               addr = strtoul(pch,<span class="literal">NULL</span>,<span class="number">0x10</span>); <span class="comment">//转换为16进制数</span></span><br><span class="line">               <span class="keyword">if</span>(addr == <span class="number">0x8000</span>) <span class="comment">//32位linux程序中默认的text加载地址为0x08408000,64位的改为0x00400000,此时计算base地址就没什么用了</span></span><br><span class="line">                   addr = <span class="number">0</span>;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        fclose(f);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span>*)addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="计算目标进程中sleep函数地址"><a href="#计算目标进程中sleep函数地址" class="headerlink" title="计算目标进程中sleep函数地址"></a>计算目标进程中sleep函数地址</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">get_remote_addr</span><span class="params">(<span class="keyword">int</span> target_pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name, <span class="keyword">void</span>* local_addr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">void</span>* local_handle = get_module_base(<span class="number">0</span>,module_name); <span class="comment">//本进程的基址</span></span><br><span class="line">    <span class="keyword">void</span>* remote_handle = get_module_base(target_pid,module_name); <span class="comment">//目标进程的基址</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"local_handle:%p remote_handle:%p\n"</span>, local_handle, remote_handle);</span><br><span class="line">    <span class="comment">//计算公式</span></span><br><span class="line">    <span class="keyword">long</span> remote_addr = (<span class="keyword">long</span>)((<span class="keyword">uint32_t</span>)local_addr - (<span class="keyword">uint32_t</span>)local_handle + (<span class="keyword">uint32_t</span>)remote_handle);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"remote_addr:%p\n"</span>, remote_addr);</span><br><span class="line">    <span class="keyword">return</span> remote_addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="如何执行sleep函数"><a href="#如何执行sleep函数" class="headerlink" title="如何执行sleep函数"></a>如何执行sleep函数</h2><ul>
+<li>设置函数参数,如果参数个数小于等于4,参数按顺序放入R0~R4寄存器中;如果参数个数大于4,多余的部分需要入栈.</li>
+<li>设置pc寄存器的值,设置当前指令集标志位.</li>
+<li>应用以上寄存器的修改使之生效.</li>
+<li>等待函数执行.</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//目标进程id,目标函数地址,参数地址,参数个数,寄存器地址</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">int</span> pid, <span class="keyword">long</span> addr, <span class="keyword">long</span> *params, <span class="keyword">uint32_t</span> params_num, struct pt_regs* regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; params_num &amp;&amp; i &lt; <span class="number">4</span>; i++) &#123; <span class="comment">//设置少于4个的参数</span></span><br><span class="line">        regs-&gt;uregs[i] = params[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//设置多于4个的参数</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; params_num) &#123;</span><br><span class="line">        regs-&gt;ARM_sp -= (params_num - i) * long_size; <span class="comment">//抬高栈顶指针(分配空间)</span></span><br><span class="line">        writeData(pid, (<span class="keyword">long</span>)regs-&gt;ARM_sp, (<span class="keyword">char</span>*)&amp;params[i], (params_num - i) * long_size); <span class="comment">//写入</span></span><br><span class="line">    &#125;</span><br><span class="line">    regs-&gt;ARM_pc = addr; <span class="comment">//设置pc</span></span><br><span class="line">    <span class="keyword">if</span> (regs-&gt;ARM_pc &amp; <span class="number">1</span>) &#123; <span class="comment">//判断是否是Thumb指令</span></span><br><span class="line">        regs-&gt;ARM_pc &amp;= (~<span class="number">1u</span>); <span class="comment">//Thumb的pc最后一位总是0</span></span><br><span class="line">        regs-&gt;ARM_cpsr |= CPSR_T_MASK; <span class="comment">//T标志位为1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">//arm</span></span><br><span class="line">        regs-&gt;ARM_cpsr &amp;= ~CPSR_T_MASK; <span class="comment">//T标志位为0</span></span><br><span class="line">    &#125;</span><br><span class="line">    regs-&gt;ARM_lr = <span class="number">0</span>; <span class="comment">//为了使sleep函数执行完毕后产生“内存访问错误”,这样我们就知道什么时候执行完了</span></span><br><span class="line">    <span class="keyword">if</span>(ptrace_setregs(pid,regs)==<span class="number">-1</span> || ptrace_continue(pid)==<span class="number">-1</span>)&#123; <span class="comment">//目标进程继续执行</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>; <span class="comment">//WUNTRACED表示如果pid进程进入暂停状态，那么waitpid函数立即返回</span></span><br><span class="line">    waitpid(pid,&amp;stat,WUNTRACED); <span class="comment">//等待sleep函数执行,等待过程中本进程暂停执行</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, stat);</span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123; <span class="comment">//0xb7f表示目标进程进入暂停状态</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, stat);</span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        waitpid(pid,&amp;stat,WUNTRACED);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="完整hook代码"><a href="#完整hook代码" class="headerlink" title="完整hook代码"></a>完整hook代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/user.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;elf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;android/log.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CPSR_T_MASK ( 1u &lt;&lt; 5 )</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *libc_path = <span class="string">"/system/lib/libc.so"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> long_size = <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_setregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs * regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"ptrace_setregs: Can not set register values"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_continue</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_CONT, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"ptrace_cont"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, long_size);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, j);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">get_module_base</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fp;</span><br><span class="line">    <span class="keyword">long</span> addr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *pch;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">32</span>];</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">1024</span>];</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/self/maps"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/%d/maps"</span>, pid);</span><br><span class="line">    &#125;</span><br><span class="line">    fp = fopen(filename, <span class="string">"r"</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (fgets(line, <span class="keyword">sizeof</span>(line), fp)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strstr</span>(line, module_name)) &#123;</span><br><span class="line">                pch = strtok( line, <span class="string">"-"</span> );</span><br><span class="line">                addr = strtoul( pch, <span class="literal">NULL</span>, <span class="number">16</span> );</span><br><span class="line">                <span class="keyword">if</span> (addr == <span class="number">0x8000</span>)</span><br><span class="line">                    addr = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        fclose(fp) ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)addr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">get_remote_addr</span><span class="params">(<span class="keyword">pid_t</span> target_pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name, <span class="keyword">void</span>* local_addr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">void</span>* local_handle, *remote_handle;</span><br><span class="line">    local_handle = get_module_base(<span class="number">0</span>, module_name);</span><br><span class="line">    remote_handle = get_module_base(target_pid, module_name);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"module_base: local[%p], remote[%p]\n"</span>, local_handle, remote_handle);</span><br><span class="line">    <span class="keyword">long</span> ret_addr = (<span class="keyword">long</span>)((<span class="keyword">uint32_t</span>)local_addr + (<span class="keyword">uint32_t</span>)remote_handle - (<span class="keyword">uint32_t</span>)local_handle);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"remote_addr: [%p]\n"</span>, (<span class="keyword">void</span>*) ret_addr); </span><br><span class="line">    <span class="keyword">return</span> ret_addr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">long</span> addr, <span class="keyword">long</span> *params, <span class="keyword">uint32_t</span> num_params, struct pt_regs* regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_params &amp;&amp; i &lt; <span class="number">4</span>; i ++) &#123;</span><br><span class="line">        regs-&gt;uregs[i] = params[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// push remained params onto stack</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; num_params) &#123;</span><br><span class="line">        regs-&gt;ARM_sp -= (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) ;</span><br><span class="line">        putdata(pid, (<span class="keyword">long</span>)regs-&gt;ARM_sp, (<span class="keyword">char</span>*)&amp;params[i], (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    regs-&gt;ARM_pc = addr;</span><br><span class="line">    <span class="keyword">if</span> (regs-&gt;ARM_pc &amp; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">/* thumb */</span></span><br><span class="line">        regs-&gt;ARM_pc &amp;= (~<span class="number">1u</span>);</span><br><span class="line">        regs-&gt;ARM_cpsr |= CPSR_T_MASK;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* arm */</span></span><br><span class="line">        regs-&gt;ARM_cpsr &amp;= ~CPSR_T_MASK;</span><br><span class="line">    &#125;</span><br><span class="line">    regs-&gt;ARM_lr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (ptrace_setregs(pid, regs) == <span class="number">-1</span></span><br><span class="line">            || ptrace_continue(pid) == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>;</span><br><span class="line">    waitpid(pid, &amp;stat, WUNTRACED);</span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"error\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        waitpid(pid, &amp;stat, WUNTRACED);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">old_regs</span>,<span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> sleep_addr;</span><br><span class="line">    <span class="comment">//save old regs</span></span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">    <span class="built_in">memcpy</span>(&amp;regs, &amp;old_regs, <span class="keyword">sizeof</span>(regs));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getting remote sleep_addr:\n"</span>);</span><br><span class="line">    sleep_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span> *)sleep);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> parameters[<span class="number">1</span>];</span><br><span class="line">    parameters[<span class="number">0</span>] = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, sleep_addr, parameters, <span class="number">1</span>, &amp;regs);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//restore old regs</span></span><br><span class="line">    ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> status;</span><br><span class="line">    pid = atoi(argv[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="number">0</span> != ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Trace process failed:%d.\n"</span>, errno);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    inject(pid);</span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_DETACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="关于waitpid"><a href="#关于waitpid" class="headerlink" title="关于waitpid"></a>关于waitpid</h2><p>详细介绍可看<a href="https://support.sas.com/documentation/onlinedoc/sasc/doc/lr2/wait.htm" target="_blank" rel="noopener">官方文档</a>.</p>
+<h3 id="参数status"><a href="#参数status" class="headerlink" title="参数status"></a>参数status</h3><p>wait函数调用过后,status指针指向可以被宏解析的值,这些宏在ndk目录下platforms/android-21/arch-arm/usr/include/sys/wait.h文件中定义.<br>高2字节用于表示导致子进程的退出或暂停状态信号值(WTERMSIG)，低2字节表示子进程是退出(0x0)还是暂停(0x7f)状态(WEXITSTATUS)。<br>如:0xb7f就表示子进程为暂停状态，导致它暂停的信号量为11即sigsegv错误。<br>关于错误代码的文档可看<a href="https://support.sas.com/documentation/onlinedoc/sasc/doc/lr1/lrv1ch5.htm" target="_blank" rel="noopener">这里</a>,<br>定义在ndk目录下platforms/android-21/arch-arm/usr/include/asm/signal.h中.</p>
+<blockquote>
+<p>其中两个宏:<br>WEXITSTATUS(<em>statusPtr):<br>if the child process terminates normally, this macro evaluates to the lower 8 bits of the value passed to the exit or _exit function or returned from main.<br>WTERMSIG(</em>statusPtr)<br>if the child process ends by a signal that was not caught, this macro evaluates to the number of that signal.</p>
+</blockquote>
+<h3 id="参数options"><a href="#参数options" class="headerlink" title="参数options"></a>参数options</h3><p>指定了waitpid的额外行动.选项有:</p>
+<ul>
+<li>WNOHANG:<br>告诉waitpid不等程序中止立即返回status信息.<br>正常情况是当主进程对子进程使用了waitpid,主进程就会阻塞直到waitpid返回status信息;如果指定了WNOHANG选项,主进程就不会阻塞了.<br>如果还没有可用的status信息,waitpid返回0.</li>
+<li>WUNTRACED:<br>告诉waitpid，如果子进程进入暂停状态或者已经终止，那么就立即返回status信息,正常情况是子进程终止的时候才返回.<br>如果是被ptrace的子进程，那么即使不提供WUNTRACED参数，也会在子进程进入暂停状态的时候立即返回。<br>对于使用ptrace_cont运行的子进程，它会在3种情况下进入暂停状态：①下一次系统调用；②子进程退出；③子进程的执行发生错误。<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3>程序中的0xb7f就表示子进程进入了暂停状态，且发送的错误信号为11(SIGSEGV)，它表示试图访问未分配给自己的内存, 或试图往没有写权限的内存地址写数据。<br>当子进程执行完注入的函数后，由于我们在前面设置了regs-&gt;ARM_lr = 0，它就会返回到0地址处继续执行，这样就会产生SIGSEGV了.</li>
+</ul>
+<h2 id="测试-2"><a href="#测试-2" class="headerlink" title="测试"></a>测试</h2><p>正常的情况是target程序每秒输出一句话，但是用hook3程序hook后，就会暂停10秒钟的时间，因为我们利用ptrace运行了sleep(10)在目标程序中。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo3bly0dahj318u0ooh6r.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo3bo4h798j30vm0g67e0.jpg" alt=""></p>
+<h1 id="利用Ptrace动态加载so并执行自定义函数"><a href="#利用Ptrace动态加载so并执行自定义函数" class="headerlink" title="利用Ptrace动态加载so并执行自定义函数"></a>利用Ptrace动态加载so并执行自定义函数</h1><h2 id="总体思路-1"><a href="#总体思路-1" class="headerlink" title="总体思路"></a>总体思路</h2><ul>
+<li>保存当前寄存器的状态</li>
+<li>获取目标程序的mmap, dlopen, dlsym, dlclose函数地址</li>
+<li>调用mmap分配空间保存参数信息</li>
+<li>调用dlopen加载so库</li>
+<li>调用dlsym找到目标函数地址</li>
+<li>执行目标函数</li>
+<li>调用dlclose卸载so库</li>
+<li>恢复寄存器的状态</li>
+</ul>
+<h2 id="保存当前寄存器的状态"><a href="#保存当前寄存器的状态" class="headerlink" title="保存当前寄存器的状态"></a>保存当前寄存器的状态</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">old_regs</span>,<span class="title">regs</span>;</span></span><br><span class="line">ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line"><span class="built_in">memcpy</span>(&amp;regs,&amp;old_regs,<span class="keyword">sizeof</span>(regs));</span><br></pre></td></tr></table></figure>
+<h2 id="获取目标程序的mmap-dlopen-dlsym-dlclose函数地址"><a href="#获取目标程序的mmap-dlopen-dlsym-dlclose函数地址" class="headerlink" title="获取目标程序的mmap, dlopen, dlsym, dlclose函数地址"></a>获取目标程序的mmap, dlopen, dlsym, dlclose函数地址</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> mmap_addr,dlopen_addr,dlsym_addr,dlclose_addr;</span><br><span class="line">mmap_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span>*)mmap);</span><br><span class="line">dlopen_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span>*)dlopen);</span><br><span class="line">dlsym_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span>*)dlsym);</span><br><span class="line">dlclose_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span>*)dlclose);</span><br></pre></td></tr></table></figure>
+<h2 id="调用mmap分配空间保存参数信息"><a href="#调用mmap分配空间保存参数信息" class="headerlink" title="调用mmap分配空间保存参数信息"></a>调用mmap分配空间保存参数信息</h2><p>mmap的原型如下:<br><code>void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code><br>参数    描述</p>
+<ul>
+<li>addr    映射的起始地址,为0表示由系统决定映射的起始地址</li>
+<li>length    映射的长度</li>
+<li>prot    映射的内存保存属性,不能与文件的打开模式冲突</li>
+<li>flags    指定映射对象的类型,映射选项和映射页是否可以共享</li>
+<li>fd    有效的文件描述符,一般是由open()函数返回;其值也可以设置为-1,此时需要指定flags参数中的MAP_ANON,表明进行的是匿名映射</li>
+<li>offset    被映射对象内容的起点</li>
+</ul>
+<p>这里我们需要的调用语句是<br><code>mmap(0,0x4000,PROT_READ|PROT_WRITE|PROT_EXEC,MAP_ANONYMOUS|MAP_PRIVATE,0,0)</code></p>
+<ul>
+<li>PROT_EXEC表示可执行.</li>
+<li>PROT_READ表示可读.</li>
+<li>PROT_WRITE表示可写.</li>
+<li>MAP_PRIVATE表示建立一个写入时拷贝的私有映射.内存区域的写入不会影响到原文件.这个标志和以上标志是互斥的,只能使用其中一个.</li>
+<li>MAP_ANONYMOUS表示匿名映射,映射区不与任何文件关联.</li>
+</ul>
+<p>mmap()可以用来将一个文件或者其它对象映射进内存，如果我们把flag设置为MAP_ANONYMOUS并且把参数fd设置为0的话就相当于直接映射一段内容为空的内存。<br>则:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> parameters[<span class="number">10</span>];    </span><br><span class="line">parameters[<span class="number">0</span>] = <span class="number">0</span>; <span class="comment">//构造参数</span></span><br><span class="line">parameters[<span class="number">1</span>] = <span class="number">0x4000</span>;</span><br><span class="line">parameters[<span class="number">2</span>] = PROT_READ | PROT_WRITE | PROT_EXEC;</span><br><span class="line">parameters[<span class="number">3</span>] = MAP_ANONYMOUS | MAP_PRIVATE;</span><br><span class="line">parameters[<span class="number">4</span>] = <span class="number">0</span>;</span><br><span class="line">parameters[<span class="number">5</span>] = <span class="number">0</span>;</span><br><span class="line">ptrace_call(pid,mmap_addr,parameters,<span class="number">6</span>,&amp;regs);</span><br><span class="line"><span class="comment">//调用结束后获得r0中保存的返回值</span></span><br><span class="line">ptrace(PTRACE_GETREGS,pid,<span class="literal">NULL</span>,&amp;regs);</span><br><span class="line"><span class="keyword">long</span> mapping_base = regs.ARM_r0;</span><br></pre></td></tr></table></figure></p>
+<p>在我们使用ptrace_call(pid, mmap_addr, parameters, 6, &amp;regs)调用完mmap()函数之后，要记得使用ptrace(PTRACE_GETREGS, pid, NULL, &amp;regs); 用来获取保存返回值的regs.ARM_r0，这个返回值也就是映射的内存的起始地址。<br>mmap()映射的内存主要用来保存我们传给其他函数的参数。比如接下来我们需要用dlopen()去加载”/data/local/tmp/libinject.so”这个文件，所以我们需要先用putdata()将”/data/local/tmp/libinject.so”这个字符串放置在mmap()所映射的内存中，然后就可以将这个映射的地址作为参数传递给dlopen()了。接下来的dlsym()，so中的目标函数，dlclose()都是相同调用的方式，这里就不一一赘述了。</p>
+<h2 id="调用dlsym找到目标函数地址"><a href="#调用dlsym找到目标函数地址" class="headerlink" title="调用dlsym找到目标函数地址"></a>调用dlsym找到目标函数地址</h2><p>原型:<br>void <em>dlsym(void </em>handle, const char *symbol);<br>参数    描述<br>handle    so库的基址<br>symbol    函数名地址<br>这里我们需要的调用语句是dlsym(handle, function_name),则:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">writeData(pid, mapping_base, function_name, <span class="built_in">strlen</span>(function_name)+<span class="number">1</span>);</span><br><span class="line">parameters[<span class="number">0</span>] = handle;</span><br><span class="line">parameters[<span class="number">1</span>] = mapping_base;</span><br><span class="line">ptrace_call(pid, dlsym_addr, parameters, <span class="number">2</span>, &amp;regs);</span><br><span class="line">ptrace(PTRACE_GETREGS,pid,<span class="literal">NULL</span>,&amp;regs); <span class="comment">//调用结束后获得r0中保存的返回值</span></span><br><span class="line"><span class="keyword">long</span> function_addr = regs.ARM_r0;</span><br></pre></td></tr></table></figure></p>
+<h2 id="执行目标函数"><a href="#执行目标函数" class="headerlink" title="执行目标函数"></a>执行目标函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">writeData(pid, mapping_base, function_parameters, <span class="built_in">strlen</span>(function_parameters)+<span class="number">1</span>);</span><br><span class="line">parameters[<span class="number">0</span>] = mapping_base;</span><br><span class="line">ptrace_call(pid, function_addr, parameters, <span class="number">1</span>, &amp;regs);</span><br></pre></td></tr></table></figure>
+<h2 id="调用dlclose卸载so库"><a href="#调用dlclose卸载so库" class="headerlink" title="调用dlclose卸载so库"></a>调用dlclose卸载so库</h2><p>原型:<code>int dlclose(void *handle);</code><br>则:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">parameters[<span class="number">0</span>] = handle;</span><br><span class="line">ptrace_call(pid,dlclose_addr,parameters,<span class="number">1</span>,&amp;regs);</span><br></pre></td></tr></table></figure></p>
+<h2 id="恢复寄存器的状态"><a href="#恢复寄存器的状态" class="headerlink" title="恢复寄存器的状态"></a>恢复寄存器的状态</h2><p><code>ptrace(PTRACE_SETREGS,pid,NULL,&amp;old_regs);</code></p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/user.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;elf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;android/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CPSR_T_MASK     ( 1u &lt;&lt; 5 )</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *libc_path = <span class="string">"/system/lib/libc.so"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> long_size = <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_setregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs * regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"ptrace_setregs: Can not set register values"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_continue</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_CONT, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">"ptrace_cont"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, long_size);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, j);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">get_module_base</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fp;</span><br><span class="line">    <span class="keyword">long</span> addr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *pch;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">32</span>];</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/self/maps"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">snprintf</span>(filename, <span class="keyword">sizeof</span>(filename), <span class="string">"/proc/%d/maps"</span>, pid);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fp = fopen(filename, <span class="string">"r"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (fgets(line, <span class="keyword">sizeof</span>(line), fp)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strstr</span>(line, module_name)) &#123;</span><br><span class="line">                pch = strtok( line, <span class="string">"-"</span> );</span><br><span class="line">                addr = strtoul( pch, <span class="literal">NULL</span>, <span class="number">16</span> );</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (addr == <span class="number">0x8000</span>)</span><br><span class="line">                    addr = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        fclose(fp) ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)addr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">get_remote_addr</span><span class="params">(<span class="keyword">pid_t</span> target_pid, <span class="keyword">const</span> <span class="keyword">char</span>* module_name, <span class="keyword">void</span>* local_addr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">void</span>* local_handle, *remote_handle;</span><br><span class="line"></span><br><span class="line">    local_handle = get_module_base(<span class="number">0</span>, module_name);</span><br><span class="line">    remote_handle = get_module_base(target_pid, module_name);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> ret_addr = (<span class="keyword">long</span>)((<span class="keyword">uint32_t</span>)local_addr + (<span class="keyword">uint32_t</span>)remote_handle - (<span class="keyword">uint32_t</span>)local_handle);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret_addr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint32_t</span> addr, <span class="keyword">long</span> *params, <span class="keyword">uint32_t</span> num_params, struct pt_regs* regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_params &amp;&amp; i &lt; <span class="number">4</span>; i ++) &#123;</span><br><span class="line">        regs-&gt;uregs[i] = params[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// push remained params onto stack</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; num_params) &#123;</span><br><span class="line">        regs-&gt;ARM_sp -= (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) ;</span><br><span class="line">        putdata(pid, regs-&gt;ARM_sp, (<span class="keyword">char</span>*)&amp;params[i], (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    regs-&gt;ARM_pc = addr;</span><br><span class="line">    <span class="keyword">if</span> (regs-&gt;ARM_pc &amp; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">/* thumb */</span></span><br><span class="line">        regs-&gt;ARM_pc &amp;= (~<span class="number">1u</span>);</span><br><span class="line">        regs-&gt;ARM_cpsr |= CPSR_T_MASK;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* arm */</span></span><br><span class="line">        regs-&gt;ARM_cpsr &amp;= ~CPSR_T_MASK;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    regs-&gt;ARM_lr = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (ptrace_setregs(pid, regs) == <span class="number">-1</span></span><br><span class="line">            || ptrace_continue(pid) == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>;</span><br><span class="line">    waitpid(pid, &amp;stat, WUNTRACED);</span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"error\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        waitpid(pid, &amp;stat, WUNTRACED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">injectSo</span><span class="params">(<span class="keyword">pid_t</span> pid,<span class="keyword">char</span>* so_path, <span class="keyword">char</span>* function_name,<span class="keyword">char</span>* parameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">old_regs</span>,<span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> mmap_addr, dlopen_addr, dlsym_addr, dlclose_addr;</span><br><span class="line"></span><br><span class="line"><span class="comment">//save old regs</span></span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">    <span class="built_in">memcpy</span>(&amp;regs, &amp;old_regs, <span class="keyword">sizeof</span>(regs));</span><br><span class="line"></span><br><span class="line"><span class="comment">//get remote addres</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"getting remote addres:\n"</span>);</span><br><span class="line">    mmap_addr = get_remote_addr(pid, libc_path, (<span class="keyword">void</span> *)mmap);</span><br><span class="line">    dlopen_addr = get_remote_addr( pid, libc_path, (<span class="keyword">void</span> *)dlopen );</span><br><span class="line">    dlsym_addr = get_remote_addr( pid, libc_path, (<span class="keyword">void</span> *)dlsym );</span><br><span class="line">    dlclose_addr = get_remote_addr( pid, libc_path, (<span class="keyword">void</span> *)dlclose );</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"mmap_addr=%p dlopen_addr=%p dlsym_addr=%p dlclose_addr=%p\n"</span>,</span><br><span class="line">    (<span class="keyword">void</span>*)mmap_addr,(<span class="keyword">void</span>*)dlopen_addr,(<span class="keyword">void</span>*)dlsym_addr,(<span class="keyword">void</span>*)dlclose_addr);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">long</span> parameters[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//mmap</span></span><br><span class="line"></span><br><span class="line">    parameters[<span class="number">0</span>] = <span class="number">0</span>; <span class="comment">//address</span></span><br><span class="line">    parameters[<span class="number">1</span>] = <span class="number">0x4000</span>; <span class="comment">//size</span></span><br><span class="line">    parameters[<span class="number">2</span>] = PROT_READ | PROT_WRITE | PROT_EXEC; <span class="comment">//WRX</span></span><br><span class="line">    parameters[<span class="number">3</span>] = MAP_ANONYMOUS | MAP_PRIVATE; <span class="comment">//flag</span></span><br><span class="line">    parameters[<span class="number">4</span>] = <span class="number">0</span>; <span class="comment">//fd</span></span><br><span class="line">    parameters[<span class="number">5</span>] = <span class="number">0</span>; <span class="comment">//offset</span></span><br><span class="line">    </span><br><span class="line">    ptrace_call(pid, mmap_addr, parameters, <span class="number">6</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> map_base = regs.ARM_r0;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"map_base = %p\n"</span>, (<span class="keyword">void</span>*)map_base);</span><br><span class="line"></span><br><span class="line"><span class="comment">//dlopen</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"save so_path = %s to map_base = %p\n"</span>, so_path, (<span class="keyword">void</span>*)map_base);</span><br><span class="line">    putdata(pid, map_base, so_path, <span class="built_in">strlen</span>(so_path) + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    parameters[<span class="number">0</span>] = map_base;</span><br><span class="line">    parameters[<span class="number">1</span>] = RTLD_NOW| RTLD_GLOBAL;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, dlopen_addr, parameters, <span class="number">2</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">long</span> handle = regs.ARM_r0;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"handle = %p\n"</span>,(<span class="keyword">void</span>*) handle);</span><br><span class="line"></span><br><span class="line"><span class="comment">//dlsym</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"save function_name = %s to map_base = %p\n"</span>, function_name, (<span class="keyword">void</span>*)map_base);</span><br><span class="line">    putdata(pid, map_base, function_name, <span class="built_in">strlen</span>(function_name) + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    parameters[<span class="number">0</span>] = handle;</span><br><span class="line">    parameters[<span class="number">1</span>] = map_base;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, dlsym_addr, parameters, <span class="number">2</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">long</span> function_ptr = regs.ARM_r0;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"function_ptr = %p\n"</span>, (<span class="keyword">void</span>*)function_ptr);</span><br><span class="line"></span><br><span class="line"><span class="comment">//function_call</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"save parameter = %s to map_base = %p\n"</span>, parameter, (<span class="keyword">void</span>*)map_base);</span><br><span class="line">    putdata(pid, map_base, parameter, <span class="built_in">strlen</span>(parameter) + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    parameters[<span class="number">0</span>] = map_base;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, function_ptr, parameters, <span class="number">1</span>, &amp;regs);</span><br><span class="line"></span><br><span class="line"><span class="comment">//dlcose</span></span><br><span class="line"></span><br><span class="line">    parameters[<span class="number">0</span>] = handle;</span><br><span class="line"></span><br><span class="line">    ptrace_call(pid, dlclose_addr, parameters, <span class="number">1</span>, &amp;regs);</span><br><span class="line">    </span><br><span class="line"><span class="comment">//restore old regs</span></span><br><span class="line"></span><br><span class="line">    ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, &amp;old_regs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">                                                                                                     </span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> status;</span><br><span class="line">    pid = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(<span class="number">0</span> != ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Trace process failed:%d.\n"</span>, errno);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span>* so_path = <span class="string">"/data/local/tmp/libinject.so"</span>;</span><br><span class="line">    <span class="keyword">char</span>* function_name = <span class="string">"mzhengHook"</span>;</span><br><span class="line">    <span class="keyword">char</span>* parameter = <span class="string">"sevenWeapons"</span>;</span><br><span class="line">    injectSo(pid, so_path, function_name, parameter);</span><br><span class="line">    </span><br><span class="line">    ptrace(PTRACE_DETACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hook/" rel="tag"># hook</a>
+          
+            <a href="/tags/android-native-hook/" rel="tag"># android native hook</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/02/hello-arm/" rel="next" title="在android手机上运行C程序 - hello arm!">
+                <i class="fa fa-chevron-left"></i> 在android手机上运行C程序 - hello arm!
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/04/hook2/" rel="prev" title="Xposed项目搭建">
+                Xposed项目搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Playing-with-Ptrace-Android"><span class="nav-number">2.</span> <span class="nav-text">Playing with Ptrace Android</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#示例代码target-c"><span class="nav-number">2.1.</span> <span class="nav-text">示例代码target.c</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hook程序hook1-c"><span class="nav-number">2.2.</span> <span class="nav-text">hook程序hook1.c</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取system-call编号"><span class="nav-number">2.3.</span> <span class="nav-text">获取system call编号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hook程序运行逻辑"><span class="nav-number">2.4.</span> <span class="nav-text">hook程序运行逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hook-system-call前的函数，和hook-system-call后的函数"><span class="nav-number">2.5.</span> <span class="nav-text">hook system call前的函数，和hook system call后的函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">2.6.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用Ptrace动态修改内存"><span class="nav-number">3.</span> <span class="nav-text">利用Ptrace动态修改内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改内存，转置字符串"><span class="nav-number">3.1.</span> <span class="nav-text">修改内存，转置字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getdata和putdata"><span class="nav-number">3.2.</span> <span class="nav-text">getdata和putdata</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-1"><span class="nav-number">3.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用Ptrace动态执行sleep-函数——调用系统so库中的函数"><span class="nav-number">4.</span> <span class="nav-text">利用Ptrace动态执行sleep()函数——调用系统so库中的函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#总体思路"><span class="nav-number">4.1.</span> <span class="nav-text">总体思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何获取函数地址"><span class="nav-number">4.2.</span> <span class="nav-text">如何获取函数地址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取so库的加载基址"><span class="nav-number">4.2.1.</span> <span class="nav-text">获取so库的加载基址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算目标进程中sleep函数地址"><span class="nav-number">4.2.2.</span> <span class="nav-text">计算目标进程中sleep函数地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何执行sleep函数"><span class="nav-number">4.3.</span> <span class="nav-text">如何执行sleep函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整hook代码"><span class="nav-number">4.4.</span> <span class="nav-text">完整hook代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于waitpid"><span class="nav-number">4.5.</span> <span class="nav-text">关于waitpid</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数status"><span class="nav-number">4.5.1.</span> <span class="nav-text">参数status</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数options"><span class="nav-number">4.5.2.</span> <span class="nav-text">参数options</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.5.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-2"><span class="nav-number">4.6.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用Ptrace动态加载so并执行自定义函数"><span class="nav-number">5.</span> <span class="nav-text">利用Ptrace动态加载so并执行自定义函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#总体思路-1"><span class="nav-number">5.1.</span> <span class="nav-text">总体思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保存当前寄存器的状态"><span class="nav-number">5.2.</span> <span class="nav-text">保存当前寄存器的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取目标程序的mmap-dlopen-dlsym-dlclose函数地址"><span class="nav-number">5.3.</span> <span class="nav-text">获取目标程序的mmap, dlopen, dlsym, dlclose函数地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用mmap分配空间保存参数信息"><span class="nav-number">5.4.</span> <span class="nav-text">调用mmap分配空间保存参数信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用dlsym找到目标函数地址"><span class="nav-number">5.5.</span> <span class="nav-text">调用dlsym找到目标函数地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行目标函数"><span class="nav-number">5.6.</span> <span class="nav-text">执行目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用dlclose卸载so库"><span class="nav-number">5.7.</span> <span class="nav-text">调用dlclose卸载so库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#恢复寄存器的状态"><span class="nav-number">5.8.</span> <span class="nav-text">恢复寄存器的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完整代码"><span class="nav-number">5.9.</span> <span class="nav-text">完整代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/04/hook1/';
+          this.page.identifier = '2018/02/04/hook1/';
+          this.page.title = 'hook native层学习';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

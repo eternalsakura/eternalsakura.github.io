@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="考察知识点JNI_Onload 中通过 RegisterNatives 动态注册 jni 函数.init_array 前置知识http://eternalsakura13.com/2018/02/08/jni2/http://eternalsakura13.com/2018/02/08/jnienv/ 赛题链接https://github.com/eternalsakura/ctf_pwn/blo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="福建海峡两岸CTF 2015:一个APK，逆向试试吧">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/07/mobicrackNDK/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="考察知识点JNI_Onload 中通过 RegisterNatives 动态注册 jni 函数.init_array 前置知识http://eternalsakura13.com/2018/02/08/jni2/http://eternalsakura13.com/2018/02/08/jnienv/ 赛题链接https://github.com/eternalsakura/ctf_pwn/blo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa3sg083lj30ui0pqafd.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa3opf5wyj31kw0mrjxj.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa3tr1sg0j316e184dop.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa3yorrawj30x80a2goo.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa3zvvj7wj30kw1e8go4.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1foa4r4w73ej31kw0w3n8a.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa50ueretj31bo06gmym.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa576k6dxj31go0e878u.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa5e7e2nkj31kw0ttgu5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa5glaz6yj31c60b4gps.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa6avmsj0j31e21ayto9.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1foa6bc72wjj318o0bon08.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa6cnh3zij30dw01qweh.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foa6i25zw1j31fq0ncqas.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1foa7pcpgbpj316i0kmjzb.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1foa7zei3nuj30yk09g0vj.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa7zztvb9j30oi0k8tca.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa8f823vbj31kw0whtch.jpg">
+<meta property="og:updated_time" content="2018-02-09T07:38:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="福建海峡两岸CTF 2015:一个APK，逆向试试吧">
+<meta name="twitter:description" content="考察知识点JNI_Onload 中通过 RegisterNatives 动态注册 jni 函数.init_array 前置知识http://eternalsakura13.com/2018/02/08/jni2/http://eternalsakura13.com/2018/02/08/jnienv/ 赛题链接https://github.com/eternalsakura/ctf_pwn/blo">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foa3sg083lj30ui0pqafd.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/07/mobicrackNDK/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>福建海峡两岸CTF 2015:一个APK，逆向试试吧 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/07/mobicrackNDK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">福建海峡两岸CTF 2015:一个APK，逆向试试吧</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T16:59:18+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/android-reverse/" itemprop="url" rel="index">
+                    <span itemprop="name">android reverse</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/07/mobicrackNDK/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/07/mobicrackNDK/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><p>JNI_Onload 中通过 RegisterNatives 动态注册 jni 函数<br>.init_array</p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><a href="http://eternalsakura13.com/2018/02/08/jni2/">http://eternalsakura13.com/2018/02/08/jni2/</a><br><a href="http://eternalsakura13.com/2018/02/08/jnienv/">http://eternalsakura13.com/2018/02/08/jnienv/</a></p>
+<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/mobicrackNDK.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/mobicrackNDK.apk</a></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>看一下apk是什么样的。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa3sg083lj30ui0pqafd.jpg" alt=""><br>用jadx反编译，然后导出android工程，用as打开<br>查看AndroidManifest.xml<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa3opf5wyj31kw0mrjxj.jpg" alt=""><br>在java代码中定位<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa3tr1sg0j316e184dop.jpg" alt=""><br>可以看出，调用了一个native方法testFlag，将输入的flag字符串传入testFlag进行验证，验证成功则弹出输入的字符串，否则就wrong answer。<br>用IDA打开so文件查看。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa3yorrawj30x80a2goo.jpg" alt=""><br>发现没有testFlag对应的c函数，怀疑是动态注册<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa3zvvj7wj30kw1e8go4.jpg" alt=""><br>找到JNI_Onload()<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1foa4r4w73ej31kw0w3n8a.jpg" alt=""><br>用y把参数都改改<br>首先,JNI_Onload()的参数是JavaVM *vm<br>再看GetEnv，它的第一个参数是JavaVM,然后第二个参数就是用来存得到的env指针<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line"> jint (*GetEnv)(JavaVM*, <span class="keyword">void</span>**, jint);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">JavaVM</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span>* <span class="title">functions</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__cplusplus)</span></span><br><span class="line">    ...</span><br><span class="line"> <span class="function">jint <span class="title">GetEnv</span><span class="params">(<span class="keyword">void</span>** env, jint version)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;GetEnv(<span class="keyword">this</span>, env, version); &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/*__cplusplus*/</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa50ueretj31bo06gmym.jpg" alt=""><br>所以我们把v7修改为env。<br>v2=env,所以v2也是<code>JNIEnv *</code>类型。<br>再看v4，v4是FindClass的返回值,类型是jclass<br><code>jclass (*FindClass)(JNIEnv*, const char*);</code><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa576k6dxj31go0e878u.jpg" alt=""><br>这样修改后我们的反编译代码就好看多了，这种技巧非常有用，除非你已经很熟练了，否则这样多改改最好。(改类型按y，改名字按n)<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa5e7e2nkj31kw0ttgu5.jpg" alt=""><br>这样我们就找到了函数映射表。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa5glaz6yj31c60b4gps.jpg" alt=""><br>很显然abcdefghijklmn就是testFlag的native实现，双击切过去重命名为Java_com_testFlag。<br>具体的验证算法就在这里。</p>
+<h2 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h2><p>像刚刚那样修正一下参数类型。<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa6avmsj0j31e21ayto9.jpg" alt=""></p>
+<h3 id="前8位校验"><a href="#前8位校验" class="headerlink" title="前8位校验"></a>前8位校验</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1foa6bc72wjj318o0bon08.jpg" alt=""><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">	s2[i] = input[i] - i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将s2和seed比较，seed的内容是<img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa6cnh3zij30dw01qweh.jpg" alt=""></p>
+<h3 id="后8位校验"><a href="#后8位校验" class="headerlink" title="后8位校验"></a>后8位校验</h3><p>首先调用了java层的calcKey方法，计算得到一个key<br>Calc.java<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.mobicrackndk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calc</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String key;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">calcKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        key = <span class="keyword">new</span> StringBuffer(<span class="string">"c7^WVHZ,"</span>).reverse().toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后将后八位处理一下，存入字符串<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">8</span>; i &lt; <span class="number">16</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">	s3[i - <span class="number">8</span>] = input[i] - i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foa6i25zw1j31fq0ncqas.jpg" alt=""></p>
+<p>于是写出脚本计算flag<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seed=<span class="string">'QflMn`fH'</span></span><br><span class="line">key=<span class="string">'c7^WVHZ,'</span>[::<span class="number">-1</span>]</span><br><span class="line">cyphertext=seed+key</span><br><span class="line">plaintext=[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">16</span>):</span><br><span class="line">    plaintext.append(chr(ord(cyphertext[i])+i))</span><br><span class="line"><span class="keyword">print</span> <span class="string">""</span>.join(c <span class="keyword">for</span> c <span class="keyword">in</span> plaintext)</span><br></pre></td></tr></table></figure></p>
+<p>算出QgnPrelO4cRackEr，然而wrong answer.</p>
+<h2 id="继续分析"><a href="#继续分析" class="headerlink" title="继续分析"></a>继续分析</h2><p>在JNI_Onload之前执行的只能是<code>.init_array</code>段了。</p>
+<h3 id="init-array"><a href="#init-array" class="headerlink" title=".init_array"></a>.init_array</h3><p>根据 linker 源码, section 的执行顺序为 .preinit_array -&gt; .init -&gt; .init_array 。但 so 是不会执行 .preinit_array 的, 可以忽略。</p>
+<p>.init_array 是一个函数指针数组。编写代码时在函数声明时加上 <code>__attribute__((constructor))</code> 使之成为共享构造函数，即可使该函数出现在 .init_array section 中。</p>
+<p>IDA 动态调试时 ‘ctrl+s’ 查看 section 信息即可定位这两个 setction，特别的，对于 .init_array，可通过搜索 <code>Calling %s @ %p for &#39;%s&#39;</code> 定位。</p>
+<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1foa7pcpgbpj316i0kmjzb.jpg" alt=""><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1foa7zei3nuj30yk09g0vj.jpg" alt=""><br>进入<code>__init_my</code>看看<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa7zztvb9j30oi0k8tca.jpg" alt=""><br>确实在这里对seed字符串进行了修改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">	t[i] = seed[i] - <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line">seed = t</span><br></pre></td></tr></table></figure></p>
+<p>所以最终我们的reverse脚本是<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">seed = <span class="string">'QflMn`fH'</span></span><br><span class="line">seed = <span class="string">""</span>.join(chr(ord(c) - <span class="number">3</span>) <span class="keyword">for</span> c <span class="keyword">in</span> seed)</span><br><span class="line">key = <span class="string">'c7^WVHZ,'</span>[::<span class="number">-1</span>]</span><br><span class="line">cyphertext = seed + key</span><br><span class="line">plaintext = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">16</span>):</span><br><span class="line">    plaintext.append(chr(ord(cyphertext[i]) + i))</span><br><span class="line"><span class="keyword">print</span> <span class="string">""</span>.join(c <span class="keyword">for</span> c <span class="keyword">in</span> plaintext)</span><br></pre></td></tr></table></figure></p>
+<p>flag是NdkMobiL4cRackEr<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foa8f823vbj31kw0whtch.jpg" alt=""></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.zybuluo.com/cxm-2016/note/566623" target="_blank" rel="noopener">https://www.zybuluo.com/cxm-2016/note/566623</a><br><a href="https://github.com/toToCW/CTF-Mobile/blob/master/2015海峡两岸CTF/一个APK，逆向试试吧ndk/WriteUp/2015海峡两岸CTF-一个APK，逆向试试吧.md" target="_blank" rel="noopener">https://github.com/toToCW/CTF-Mobile/blob/master/2015海峡两岸CTF/一个APK，逆向试试吧ndk/WriteUp/2015海峡两岸CTF-一个APK，逆向试试吧.md</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/06/ss/" rel="next" title="shadowsocks配置和优化">
+                <i class="fa fa-chevron-left"></i> shadowsocks配置和优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/07/jni/" rel="prev" title="Android JNI入门">
+                Android JNI入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#考察知识点"><span class="nav-number">1.</span> <span class="nav-text">考察知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">2.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赛题链接"><span class="nav-number">3.</span> <span class="nav-text">赛题链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">4.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法分析"><span class="nav-number">5.</span> <span class="nav-text">算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前8位校验"><span class="nav-number">5.1.</span> <span class="nav-text">前8位校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后8位校验"><span class="nav-number">5.2.</span> <span class="nav-text">后8位校验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#继续分析"><span class="nav-number">6.</span> <span class="nav-text">继续分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init-array"><span class="nav-number">6.1.</span> <span class="nav-text">.init_array</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码分析"><span class="nav-number">6.2.</span> <span class="nav-text">代码分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/07/mobicrackNDK/';
+          this.page.identifier = '2018/02/07/mobicrackNDK/';
+          this.page.title = '福建海峡两岸CTF 2015:一个APK，逆向试试吧';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

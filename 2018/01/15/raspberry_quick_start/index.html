@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1. 下载烧录镜像镜像下载地址 http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/ 写入sd卡（需要一个读卡器 下载etcher  2. 镜像烧好后在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。 参考这个用一根网线连接电脑去操作（windows） http://shumeipai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派快速配置指南">
+<meta property="og:url" content="http://eternalsakura13.com/2018/01/15/raspberry_quick_start/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="1. 下载烧录镜像镜像下载地址 http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/ 写入sd卡（需要一个读卡器 下载etcher  2. 镜像烧好后在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。 参考这个用一根网线连接电脑去操作（windows） http://shumeipai">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/jhlaJBmHh2.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/jI44KDfLbD.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/7GK1f062B3.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/fmG7j880l6.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/g5GE31H6j6.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/2l93FIKKIB.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/9dC1C8d8Eg.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/eBh80HfKlB.png?imageslim">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/0bbcHg69fD.png?imageslim">
+<meta property="og:updated_time" content="2018-03-08T15:41:50.069Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树莓派快速配置指南">
+<meta name="twitter:description" content="1. 下载烧录镜像镜像下载地址 http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/ 写入sd卡（需要一个读卡器 下载etcher  2. 镜像烧好后在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。 参考这个用一根网线连接电脑去操作（windows） http://shumeipai">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/blog/180115/jhlaJBmHh2.png?imageslim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/01/15/raspberry_quick_start/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>树莓派快速配置指南 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/01/15/raspberry_quick_start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">树莓派快速配置指南</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T22:05:42+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index">
+                    <span itemprop="name">IoT</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/15/raspberry_quick_start/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/15/raspberry_quick_start/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-下载烧录镜像"><a href="#1-下载烧录镜像" class="headerlink" title="1. 下载烧录镜像"></a>1. 下载烧录镜像</h2><p><a href="http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/" target="_blank" rel="noopener">镜像下载地址</a></p>
+<p><a href="http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/" target="_blank" rel="noopener">http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/</a></p>
+<p>写入sd卡（需要一个读卡器</p>
+<p><a href="https://etcher.io/" target="_blank" rel="noopener">下载etcher</a></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/jhlaJBmHh2.png?imageslim" alt="mark"></p>
+<h2 id="2-镜像烧好后"><a href="#2-镜像烧好后" class="headerlink" title="2. 镜像烧好后"></a>2. 镜像烧好后</h2><p><strong>在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。</strong></p>
+<p>参考这个用一根网线连接电脑去操作（windows）<br> <a href="http://shumeipai.nxez.com/2013/10/15/raspberry-pi-and-a-network-cable-directly-connected-laptop.html" target="_blank" rel="noopener">http://shumeipai.nxez.com/2013/10/15/raspberry-pi-and-a-network-cable-directly-connected-laptop.html</a></p>
+<p> 或者和我一样用一根网线直接插在路由器后面</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/jI44KDfLbD.png?imageslim" alt="mark"></p>
+<p>也可以不用网线，直接配置无线上网，不赘述。<a href="http://shumeipai.nxez.com/2017/09/13/raspberry-pi-network-configuration-before-boot.html" target="_blank" rel="noopener">http://shumeipai.nxez.com/2017/09/13/raspberry-pi-network-configuration-before-boot.html</a></p>
+<h2 id="3-远程连接"><a href="#3-远程连接" class="headerlink" title="3.远程连接"></a>3.远程连接</h2><p>找到ip后用ssh远程连接，默认账号密码为</p>
+<p>user:pi</p>
+<p>password:raspberry</p>
+<h2 id="4-换源"><a href="#4-换源" class="headerlink" title="4.换源"></a>4.换源</h2><p>修改/etc/apt/sources.list为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi</span><br><span class="line"># Uncomment line below then &apos;apt-get update&apos; to enable &apos;apt-get source&apos;</span><br><span class="line"># deb-src http://archive.raspbian.org/raspbian/ jessie main contrib non-free rpi</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ jessie main ui</span><br></pre></td></tr></table></figure>
+<p>sudo apt-get update</p>
+<h2 id="5-安装vim"><a href="#5-安装vim" class="headerlink" title="5.安装vim"></a>5.安装vim</h2><p>sudo apt-get install vim</p>
+<h2 id="6-释放限制空间（封印解除"><a href="#6-释放限制空间（封印解除" class="headerlink" title="6.释放限制空间（封印解除"></a>6.释放限制空间（封印解除</h2><p>sudo raspi-config</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/7GK1f062B3.png?imageslim" alt="mark"></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/fmG7j880l6.png?imageslim" alt="mark"></p>
+<h2 id="打开vnc"><a href="#打开vnc" class="headerlink" title="打开vnc"></a>打开vnc</h2><p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/g5GE31H6j6.png?imageslim" alt="mark"></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/2l93FIKKIB.png?imageslim" alt="mark"></p>
+<h4 id="vnc开机自启动设置"><a href="#vnc开机自启动设置" class="headerlink" title="vnc开机自启动设置"></a>vnc开机自启动设置</h4><p>vim  /etc/init.d/vncserver</p>
+<p>然后 复制下面的内容 右键粘贴进去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">### BEGIN INIT INFO</span><br><span class="line"># Provides:          vncserver</span><br><span class="line"># Required-Start:    $local_fs</span><br><span class="line"># Required-Stop:     $local_fs</span><br><span class="line"># Default-Start:     2 3 4 5</span><br><span class="line"># Default-Stop:      0 1 6</span><br><span class="line"># Short-Description: Start/stop vncserver</span><br><span class="line">### END INIT INFO</span><br><span class="line"> </span><br><span class="line"># More details see:</span><br><span class="line"># http://www.penguintutor.com/linux/vnc</span><br><span class="line"> </span><br><span class="line">### Customize this entry</span><br><span class="line"># Set the USER variable to the name of the user to start vncserver under</span><br><span class="line">export USER=&apos;pi&apos;</span><br><span class="line">### End customization required</span><br><span class="line"> </span><br><span class="line">eval cd ~$USER</span><br><span class="line"> </span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">  start)</span><br><span class="line">    # 启动命令行。此处自定义分辨率、控制台号码或其它参数。</span><br><span class="line">    su $USER -c &apos;/usr/bin/vncserver -depth 16 -geometry 1024x768 :1&apos;</span><br><span class="line">    echo &quot;Starting VNC server for $USER &quot;</span><br><span class="line">    ;;</span><br><span class="line">  stop)</span><br><span class="line">    # 终止命令行。此处控制台号码与启动一致。</span><br><span class="line">    su $USER -c &apos;/usr/bin/vncserver -kill :1&apos;</span><br><span class="line">    echo &quot;vncserver stopped&quot;</span><br><span class="line">    ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;Usage: /etc/init.d/vncserver &#123;start|stop&#125;&quot;</span><br><span class="line">    exit 1</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure></p>
+<h5 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h5><p>sudo chmod 755 /etc/init.d/vncserver</p>
+<h5 id="添加开机启动项"><a href="#添加开机启动项" class="headerlink" title="添加开机启动项"></a>添加开机启动项</h5><p>sudo update-rc.d vncserver defaults</p>
+<h5 id="最后-重启树莓派"><a href="#最后-重启树莓派" class="headerlink" title="最后 重启树莓派"></a>最后 重启树莓派</h5><p>sudo reboot</p>
+<h5 id="安装VNC-Viewer"><a href="#安装VNC-Viewer" class="headerlink" title="安装VNC Viewer"></a>安装VNC Viewer</h5><p>链接：<a href="https://pan.baidu.com/s/1jJAy7bg" target="_blank" rel="noopener">https://pan.baidu.com/s/1jJAy7bg</a> 密码：gnyy</p>
+<p>输入ip:1</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/9dC1C8d8Eg.png?imageslim" alt="mark"></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/eBh80HfKlB.png?imageslim" alt="mark"></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/blog/180115/0bbcHg69fD.png?imageslim" alt="mark"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/18/crawler/" rel="next" title="Python爬虫的入门与进阶">
+                <i class="fa fa-chevron-left"></i> Python爬虫的入门与进阶
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/18/arm1/" rel="prev" title="arm汇编学习（一）">
+                arm汇编学习（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-下载烧录镜像"><span class="nav-number">1.</span> <span class="nav-text">1. 下载烧录镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-镜像烧好后"><span class="nav-number">2.</span> <span class="nav-text">2. 镜像烧好后</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-远程连接"><span class="nav-number">3.</span> <span class="nav-text">3.远程连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-换源"><span class="nav-number">4.</span> <span class="nav-text">4.换源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-安装vim"><span class="nav-number">5.</span> <span class="nav-text">5.安装vim</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-释放限制空间（封印解除"><span class="nav-number">6.</span> <span class="nav-text">6.释放限制空间（封印解除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打开vnc"><span class="nav-number">7.</span> <span class="nav-text">打开vnc</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vnc开机自启动设置"><span class="nav-number">7.0.1.</span> <span class="nav-text">vnc开机自启动设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#修改权限"><span class="nav-number">7.0.1.1.</span> <span class="nav-text">修改权限</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#添加开机启动项"><span class="nav-number">7.0.1.2.</span> <span class="nav-text">添加开机启动项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#最后-重启树莓派"><span class="nav-number">7.0.1.3.</span> <span class="nav-text">最后 重启树莓派</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装VNC-Viewer"><span class="nav-number">7.0.1.4.</span> <span class="nav-text">安装VNC Viewer</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/01/15/raspberry_quick_start/';
+          this.page.identifier = '2018/01/15/raspberry_quick_start/';
+          this.page.title = '树莓派快速配置指南';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

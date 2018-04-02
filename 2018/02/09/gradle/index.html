@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="gradle," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Groovy介绍 Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字) 12def a = 5;def b = &quot;groovy&quot;  函数的定义，我们也无需进行参数类型的声明. 123String testFunction(arg1,arg2)&amp;#123;//无需指定参数类型  .">
+<meta name="keywords" content="gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle学习（一）">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/09/gradle/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="Groovy介绍 Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字) 12def a = 5;def b = &quot;groovy&quot;  函数的定义，我们也无需进行参数类型的声明. 123String testFunction(arg1,arg2)&amp;#123;//无需指定参数类型  .">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foamyow3zkj309k03aglh.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foalfwtituj30800ay0t4.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1foalgl23j6j30q7065js9.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1foanvlylrhj312m0fk415.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1foanyhm51xj308z0ieq44.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1foaouah7rdj311q09cgnu.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1foaow75wlsj30tw0gi40d.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1foaoxckd1bj31800piq6r.jpg">
+<meta property="og:updated_time" content="2018-03-30T19:35:33.982Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle学习（一）">
+<meta name="twitter:description" content="Groovy介绍 Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字) 12def a = 5;def b = &quot;groovy&quot;  函数的定义，我们也无需进行参数类型的声明. 123String testFunction(arg1,arg2)&amp;#123;//无需指定参数类型  .">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foamyow3zkj309k03aglh.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/09/gradle/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Gradle学习（一） | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/09/gradle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Gradle学习（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-09T23:04:43+08:00">
+                2018-02-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/09/gradle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/09/gradle/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Groovy介绍"><a href="#Groovy介绍" class="headerlink" title="Groovy介绍"></a>Groovy介绍</h2><ul>
+<li><p>Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def a = <span class="number">5</span>;</span><br><span class="line">def b = <span class="string">"groovy"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数的定义，我们也无需进行参数类型的声明.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">String <span class="title">testFunction</span><span class="params">(arg1,arg2)</span></span>&#123;<span class="comment">//无需指定参数类型</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>除了变量定义可以不指定类型外，Groovy中函数的返回值也可以是无类型的。比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无类型的函数定义，必须使用def关键字</span></span><br><span class="line"><span class="function">def  <span class="title">nonReturnTypeFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">     last_line   <span class="comment">//最后一行代码的执行结果就是本函数的返回值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果指定了函数返回类型，则可不必加def关键字来定义函数</span></span><br><span class="line"><span class="function">String  <span class="title">getString</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="string">"I am a string"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数返回值：Groovy的函数里，可以不使用return xxx来设置xxx为函数返回值。如果不使用return语句的话，则函数里最后一句代码的执行结果被设置成返回值。比如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">getSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="string">"getSomething return value"</span> <span class="comment">//如果这是最后一行代码，则返回类型为String</span></span><br><span class="line"></span><br><span class="line">      <span class="number">1000</span> <span class="comment">//如果这是最后一行代码，则返回类型为Integer</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注意，如果函数定义时候指明了返回值类型的话，函数中则必须返回正确的数据类型，否则运行时报错。如果使用了动态类型的话，你就可以返回任何类型了。</p>
+<ul>
+<li>除了每行代码不用加分号外，Groovy中函数调用的时候还可以不加括号。比如：<br><code>println(&quot;test&quot;) 等价于 println &quot;test&quot;</code></li>
+<li>函数调用支持 参数名：参数值方式调用<br><code>apply plugin: &#39;com.android.library&#39;</code><br>plugin:参数名，’com.android.library’：参数值</li>
+<li><p>强大字符串支持功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单引号''中的内容严格对应Java中的String，不对$符号进行转义</span></span><br><span class="line">def singleQuote=<span class="string">'I am $ dolloar'</span>  <span class="comment">//输出就是I am $ dolloar</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//双引号,则它会$表达式先求值。</span></span><br><span class="line">def doubleQuoteWithoutDollar = <span class="string">"I am one dollar"</span> <span class="comment">//输出 I am one dollar</span></span><br><span class="line">def x = <span class="number">1</span></span><br><span class="line">def doubleQuoteWithDollar = <span class="string">"I am $x dolloar"</span> <span class="comment">//输出I am 1 dolloar</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//通过换行实现每一行的间距</span></span><br><span class="line">str3 = <span class="string">''</span><span class="string">'begin</span></span><br><span class="line"><span class="string">    line1</span></span><br><span class="line"><span class="string">    line2</span></span><br><span class="line"><span class="string">end'</span><span class="string">''</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>闭包<br>（英语：Closure），又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。所以，有另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。对于闭包的实现，从函数式编程的角度来看就为了解决一个输入对应一个输出的问题。例如当我们想实现一个加法，我们必须通过传递两个参数来实现，但是借助于函数式编程，我们可以做到只传递一个参数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">plusAny</span><span class="params">(first)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> function(second) &#123;</span><br><span class="line">        <span class="keyword">return</span> first + second;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var longLiveSeniorFunc = plusAny(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">longLiveSeniorFunc(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>闭包，是一种数据类型，它代表了一段可执行的代码</strong>。其外形如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def aClosure = &#123;<span class="comment">//闭包是一段代码，所以需要用花括号括起来..  </span></span><br><span class="line">    String param1, <span class="keyword">int</span> param2 -&gt;  <span class="comment">//这个箭头很关键。箭头前面是参数定义，箭头后面是代码  </span></span><br><span class="line">    println <span class="string">"this is code"</span> <span class="comment">//这是代码，最后一句是返回值，  </span></span><br><span class="line">   <span class="comment">//也可以使用return，和Groovy中普通函数一样  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>简而言之，Closure的定义格式是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def xxx = &#123;paramters -&gt; code&#125;  <span class="comment">//或者  </span></span><br><span class="line">def xxx = &#123;无参数，纯code&#125;  这种<span class="keyword">case</span>不需要-&gt;符号</span><br></pre></td></tr></table></figure></p>
+<p>说实话，从C/C++语言的角度看，闭包和函数指针很像。闭包定义好后，要调用它的方法就是：<br>闭包对象.call(参数)  或者更像函数指针调用的方法：<br>闭包对象(参数)<br>比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aClosure.call(<span class="string">"this is string"</span>,<span class="number">100</span>)  或者  </span><br><span class="line">aClosure(<span class="string">"this is string"</span>, <span class="number">100</span>)</span><br></pre></td></tr></table></figure></p>
+<p>如果闭包没定义参数的话，则隐含有一个参数，这个参数名字叫it，和this的作用类似。it代表闭包的参数。<br>比如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def greeting = &#123; <span class="string">"Hello, $it!"</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">assert</span> <span class="title">greeting</span><span class="params">(<span class="string">'Patrick'</span>)</span> </span>== <span class="string">'Hello, Patrick!'</span></span><br></pre></td></tr></table></figure></p>
+<p>等同于：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def greeting = &#123; it -&gt; <span class="string">"Hello, $it!"</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">assert</span> <span class="title">greeting</span><span class="params">(<span class="string">'Patrick'</span>)</span> </span>== <span class="string">'Hello, Patrick!'</span></span><br></pre></td></tr></table></figure></p>
+<p>但是，如果在闭包定义时，采用下面这种写法，则表示闭包没有参数.<br><code>def noParamClosure = { -&gt; true }</code><br>这个时候，我们就不能给noParamClosure传参数了。</p>
+<ul>
+<li>Groovy中，当函数的最后一个参数是闭包的话，可以省略圆括号。比如<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def  <span class="title">testClosure</span><span class="params">(<span class="keyword">int</span> a1,String b1, Closure closure)</span></span>&#123;</span><br><span class="line">      <span class="comment">//do something</span></span><br><span class="line">      closure() <span class="comment">//调用闭包</span></span><br><span class="line">&#125;</span><br><span class="line">那么调用的时候，就可以免括号！</span><br><span class="line">testClosure (<span class="number">4</span>, <span class="string">"test"</span>, &#123;</span><br><span class="line">   println <span class="string">"i am in closure"</span></span><br><span class="line">&#125; )  <span class="comment">//外面的括号可以不写..</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注意，这个特点非常关键，因为以后在Gradle中经常会出现这样的代码。<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foamyow3zkj309k03aglh.jpg" alt=""><br>省略圆括号虽然使得代码简洁，看起来更像脚本语言，但是它这经常会让我confuse，以doLast为例，完整的代码应该按下面这种写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doLast(&#123;</span><br><span class="line">   println <span class="string">'Hello world!'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>有了圆括号，你会知道 doLast只是把一个Closure对象传了进去。很明显，它不代表这段脚本解析到doLast的时候就会调用println ‘Hello world!’ 。<br>但是把圆括号去掉后，就感觉好像println ‘Hello world!’立即就会被调用一样.</p>
+<h2 id="Gradle工作流程"><a href="#Gradle工作流程" class="headerlink" title="Gradle工作流程"></a>Gradle工作流程</h2><p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foalfwtituj30800ay0t4.jpg" alt=""><br>如上图所示，在一个Project中，除了我们项目自身的代码和资源之外，会有多个与项目构建相关的.gradle文件。<br>Gradle中，每一个待编译的工程都叫一个Project。每一个Project在构建的时候都包含一系列的Task。比如一个Android APK的编译可能包含：Java源码编译Task、资源编译Task、JNI编译Task、lint检查Task、打包生成APK的Task、签名Task等。</p>
+<p>Gradle的工作流程如下图所示，在每一个工作流程的前后，我们都可以进行一些hook操作，来满足自己的需求。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1foalgl23j6j30q7065js9.jpg" alt=""><br>Gradle工作包含三个阶段：</p>
+<ul>
+<li>首先是初始化阶段。对我们前面的multi-project build而言，就是执行settings.gradle</li>
+<li>Initiliazation phase的下一个阶段是Configration阶段。</li>
+<li>Configration阶段的目标是解析每个project中的build.gradle。比如multi-project build例子中，解析每个子目录中的build.gradle。在这两个阶段之间，我们可以加一些定制化的Hook。这当然是通过API来添加的。</li>
+<li>Configuration阶段完了后，整个build的project以及内部的Task关系就确定了。一个Project包含很多Task，每个Task之间有依赖关系。Configuration会建立一个有向图来描述Task之间的依赖关系。所以，我们可以添加一个HOOK，即当Task关系图建立好后，执行一些操作。</li>
+<li>最后一个阶段就是执行任务了。当然，任务执行完后，我们还可以加Hook。</li>
+</ul>
+<p>简言之，Gradle有一个初始化流程，这个时候settings.gradle会执行。<br>在配置阶段，每个Project都会被解析，其内部的任务也会被添加到一个有向图里，用于解决执行过程中的依赖关系。然后才是执行阶段。你在gradle xxx中指定什么任务，gradle就会将这个xxx任务链上的所有任务全部按依赖顺序执行一遍。</p>
+<h2 id="Gradle-Wrapper"><a href="#Gradle-Wrapper" class="headerlink" title="Gradle Wrapper"></a>Gradle Wrapper</h2><p>Gradle Wrapper ，意为 Gradle 的包装，什么意思呢？<br>假设我们本地有多个项目，一个是比较老的项目，还用着 Gradle 1.0 的版本，一个是比较新的项目用了 Gradle 2.0 的版本，但是你两个项目肯定都想要同时运行的，如果你只装了 Gradle 1.0 的话那肯定不行，所以为了解决这个问题，Google 推出了 Gradle Wrapper 的概念。<br>就是他在你每个项目都配置了一个指定版本的 Gradle ，你可以理解为每个 Android 项目本地都有一个小型的 Gradle ，通过这个每个项目你可以支持用不同的 Gradle 版本来构建项目。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foanvlylrhj312m0fk415.jpg" alt=""></p>
+<h2 id="Android-项目包含的-Gradle-配置文件"><a href="#Android-项目包含的-Gradle-配置文件" class="headerlink" title="Android 项目包含的 Gradle 配置文件"></a>Android 项目包含的 Gradle 配置文件</h2><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foanyhm51xj308z0ieq44.jpg" alt=""></p>
+<ul>
+<li>9GAG/app/build.gradle<br>这个文件是 app 文件夹下这个 Module 的 gradle 配置文件，也可以算是整个项目最主要的 gradle 配置文件。</li>
+<li>9GAG/extras/ShimmerAndroid/build.gradle<br>每一个 Module 都需要有一个 gradle 配置文件，语法都是一样，唯一不同的是开头声明的是<code>apply plugin: &#39;com.android.library&#39;</code></li>
+<li>9GAG/gradle<br>这个目录下有个 wrapper 文件夹，里面可以看到有两个文件，我们主要看下 gradle-wrapper.properties 这个文件的内容：<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foaouah7rdj311q09cgnu.jpg" alt=""><br>可以看到里面声明了 gradle 的目录与下载路径以及当前项目使用的 gradle 版本，这些默认的路径我们一般不会更改的，这个文件里指明的 gradle 版本不对也是很多导包不成功的原因之一。</li>
+<li>9GAG/build.gradle<br>这个文件是整个项目的 gradle 基础配置文件，默认的内容就是声明了 android gradle plugin 的版本。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1foaow75wlsj30tw0gi40d.jpg" alt=""></li>
+<li>9GAG/settings.gradle<br>这个文件是全局的项目配置文件，里面主要声明一些需要加入 gradle 的 module，我们来看看 9GAG 该文件的内容：<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foaoxckd1bj31800piq6r.jpg" alt=""></li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.infoq.com/cn/articles/android-in-depth-gradle" target="_blank" rel="noopener">http://www.infoq.com/cn/articles/android-in-depth-gradle</a><br><a href="http://android.walfud.com/android-gradle-看这一篇就够了/" target="_blank" rel="noopener">http://android.walfud.com/android-gradle-看这一篇就够了/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gradle/" rel="tag"># gradle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/09/build/" rel="next" title="Android项目构建过程分析">
+                <i class="fa fa-chevron-left"></i> Android项目构建过程分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/10/dex/" rel="prev" title="Dex文件格式学习">
+                Dex文件格式学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Groovy介绍"><span class="nav-number">1.</span> <span class="nav-text">Groovy介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gradle工作流程"><span class="nav-number">2.</span> <span class="nav-text">Gradle工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gradle-Wrapper"><span class="nav-number">3.</span> <span class="nav-text">Gradle Wrapper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-项目包含的-Gradle-配置文件"><span class="nav-number">4.</span> <span class="nav-text">Android 项目包含的 Gradle 配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/09/gradle/';
+          this.page.identifier = '2018/02/09/gradle/';
+          this.page.title = 'Gradle学习（一）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

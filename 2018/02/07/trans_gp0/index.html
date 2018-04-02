@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="已经有很多人（包括我谷歌的同事, Parisa 和 Michal 已经就这个话题写过自己的感受, 我建议你仔细阅读.我知道我写的这些可能已经有人说过了, 但是每隔一段时间, 我总是会再次遇到这个问题, 于是我决定写下自己的经验. 请注意, 我是一个应用安全研究员, 我是从漏洞研究/安全审查/ bug 寻找/黑客攻击等角度来写这篇文章的.在安全领域还有很多其他的道路, 比如安全研发, 恶意软件分析等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Project Zero 成员教你如何入门搞安全（翻译）">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/07/trans_gp0/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="已经有很多人（包括我谷歌的同事, Parisa 和 Michal 已经就这个话题写过自己的感受, 我建议你仔细阅读.我知道我写的这些可能已经有人说过了, 但是每隔一段时间, 我总是会再次遇到这个问题, 于是我决定写下自己的经验. 请注意, 我是一个应用安全研究员, 我是从漏洞研究/安全审查/ bug 寻找/黑客攻击等角度来写这篇文章的.在安全领域还有很多其他的道路, 比如安全研发, 恶意软件分析等">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-08T15:44:11.232Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Google Project Zero 成员教你如何入门搞安全（翻译）">
+<meta name="twitter:description" content="已经有很多人（包括我谷歌的同事, Parisa 和 Michal 已经就这个话题写过自己的感受, 我建议你仔细阅读.我知道我写的这些可能已经有人说过了, 但是每隔一段时间, 我总是会再次遇到这个问题, 于是我决定写下自己的经验. 请注意, 我是一个应用安全研究员, 我是从漏洞研究/安全审查/ bug 寻找/黑客攻击等角度来写这篇文章的.在安全领域还有很多其他的道路, 比如安全研发, 恶意软件分析等">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/07/trans_gp0/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>Google Project Zero 成员教你如何入门搞安全（翻译） | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/07/trans_gp0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Google Project Zero 成员教你如何入门搞安全（翻译）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T21:01:04+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/杂项/" itemprop="url" rel="index">
+                    <span itemprop="name">杂项</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/07/trans_gp0/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/07/trans_gp0/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>已经有很多人（包括我谷歌的同事, Parisa 和 Michal 已经就这个话题写过自己的感受, 我建议你仔细阅读.我知道我写的这些可能已经有人说过了, 但是每隔一段时间, 我总是会再次遇到这个问题, 于是我决定写下自己的经验.</p>
+<p>请注意, 我是一个应用安全研究员, 我是从漏洞研究/安全审查/ bug 寻找/黑客攻击等角度来写这篇文章的.在安全领域还有很多其他的道路, 比如安全研发, 恶意软件分析等等, 这些我并不熟悉.</p>
+<p>那么, 我是谁？为什么你要在这个话题上信任我呢？嗯, 首先我不是说你应该完全信任我, 因为每个人的经验和每个人的道路都是有所不同的.但如果您对我感到好奇, 我可以告诉您, 我现在是 Google Project Zero 的成员, 我曾经是谷歌安全团队的成员, 是多个安全工具的作者, 如果你在这个博客上滚动足够长的时间, 你会发现我已经从事安全工作十多年了.</p>
+<p>我认识的安全研究员来自很多不同的背景, 但是我的背景有所不同, 我有相当强的学术背景, 这在我的同行中是非常不典型的, 当然这并不是进入安全领域的要求.然而, 我所知道的安全研究员中的大多数人都有一些共同点, 这里我们来看第一条：</p>
+<h2 id="自己做点东西"><a href="#自己做点东西" class="headerlink" title="自己做点东西"></a>自己做点东西</h2><p>对于我所知道的业内大多数人来说, 在从事相关工作之前, 安全只是一项业余爱好.当然, 如果你只是考虑如何学习安全, 在告诉你如何开始之前, 告诉你自己做点东西并不会有什么帮助.继续阅读, 我会在下面提到如何开始. 但是首先, 还有一件事你应该注意 (不要让它阻碍你, 我们将在后面看到如何解决它)</p>
+<p>现在开始学习安全, 比十年前困难的多</p>
+<p>我怀疑不是每个人都会承认, 但是安全在过去这些年, 确实有了很大提高.是的, 如果你足够深入的话, 你将会发现用十多年前的技术仍然可以运行的软件或者硬件, 例如 Web 浏览器.当我正在研究我的第一个 Windows 漏洞利用（堆溢出）时, 我感到十分沮丧, 因为微软最近引入了新的safe unlink 机制, 所以我读到的一些众所周知的堆漏洞利用技术已经不再有效. 10 年后, 刚开始学习安全的人们不仅需要处理 safe unlink 和 stack cookie , 还需要知道 SafeSEH / SEHOP, DEP, ASLR, CFG, ACG 还有浏览器的 sandbox 等等.并不限于 Web 浏览器, 如果你对比一下十年前和现在的 Web 应用框架, 你会发现在安全技术上已经了显著的不同.</p>
+<p>不要害怕上面这一段文字, 那么你应该如何对付日益陡峭的学习曲线呢?</p>
+<h2 id="利用好学习资源"><a href="#利用好学习资源" class="headerlink" title="利用好学习资源"></a>利用好学习资源</h2><p>一般而言, 刚开始入门的难度比较高, 实际上, 现在的学习资源也比以前要丰富.</p>
+<p>但是另一个警告是: 你需要能够走出去并且自主学习, 没有人会牵着你的手, 或者成为你的导师 (可能总是有厉害的师父来帮助学徒, 但是黑客很少这样做) . 如果你喜欢按照预先设定的课程进行 (就像我承认的我的大部分教育所做的那样) , 那么你可能就不会在安全方面走得太远.</p>
+<p>在获得正确的学习资源之前, 您需要正确地提问. 谷歌搜索 “如何成为黑客” 和类似的问题, 在现在仍然会得到与以前一样的胡说八道. 相反, 请尝试更加细致的问题, 例如:</p>
+<p>我感兴趣的这个软件/硬件是如何工作的？ 它基于什么技术？ 有我可以阅读的源代码？教程? 图书吗？<br>有人已经设法成功破解了我想要破解的这一软件/硬件吗？ 他们发布了 WriteUp 吗？Exp 呢？ 会议介绍呢？ 我真的明白他们是怎么做的了么？<br>由此可见, 你自己必须在技术上相当不错, 以了解由别人制作的真实软件或硬件是如何工作的. 虽然编写代码和阅读代码的技能并不完全相同, 但仍存在相当大的重叠, 所以如果您不习惯写代码, 在进一步深入研究安全之前, 您可能需要改进这一点.</p>
+<p>不要忘记第二点. 虽然之前我对技术性的东西还算是比较好的, 但是直到我开始阅读其他人发布的漏洞研究和 Exp 后, 我才真正理解安全.</p>
+<p>还有另一个警告: 当你遇到你不了解的东西时, 不要放弃. 特别是在刚开始阅读各种资源时, 你遇到的很多问题. 跳过这些部分是简单的方法, 但也是错误的方法. 相反, 想想遇到的每一比特信息都是你不了解的, 把它们作为线索, 想想你还需要学习什么.</p>
+<p>虽然我写到没有人会牵着你的手, 但这并不意味着你不应该提问. 事实上, 你应该自在一点. 人们不会为你而放下自己所做的工作, 但如果你卡住了, 他们可能会给你一个正确的方向.</p>
+<h2 id="使用推特"><a href="#使用推特" class="headerlink" title="使用推特"></a>使用推特</h2><p>拥护一个特定的社交网络看起来很奇怪, 但一个重要事实是很多安全团队都使用 Twitter 来分享新闻, 而且更重要的是那些最近的研究、漏洞、 PoC 、会议演讲和其他类似的链接. 我真的不知道这些是怎么发生的, 也许是短消息的形式让人们更方便地分享资源链接, 而不用受到漫长而不必要的讨论的困扰. 所以, 在 Twitter 上找那些研究或发表你感兴趣东西的人, 然后翻阅他们的推特吧.</p>
+<p>除了 Twitter 以外, 你可以找到有趣资源的其他地方是 r / netsec 和 Hacker News (尽管它除了安全性外还有其他的东西) . 你还可以看看安全会议的演讲和录音 (它们有很多, 但并不都是好的. 重点集中于技术性较强的那些会议) .</p>
+<h2 id="打-CTF-是一种很好的学习方式"><a href="#打-CTF-是一种很好的学习方式" class="headerlink" title="打 CTF 是一种很好的学习方式"></a>打 CTF 是一种很好的学习方式</h2><p>另一个我给你们的奇怪建议是我自己几乎从不玩 CTF , 但是还记得我写的有关难度曲线的内容吗 ? CTF 可以让你的学习经历更加循序渐进, 因为 CTF 的赛题有多种难度级别 (你通常可以通过每个赛题的分数来分辨) , 所以你可以从更简单的开始, 然后从那里开始一点点学习. 举个例子, 在关闭缓解措施之后练习漏洞利用. 知道这儿有一个 bug 或方式来解决它，也是一些安慰.</p>
+<p>几乎每个星期在一个地方都有一个 CTF , 其中大部分都是可以在线解题, 你可以在这里找到时间安排. 如果你不能解决赛题, 不要忘了他人解题的 WriteUp .</p>
+<p>CTF 可以成为一种很有趣的经历, 但当你学会一些东西之后, 别忘了继续研究真实世界的目标, 你可能会感到十分惊喜!</p>
+<h2 id="但是不要害怕失败-哪怕一次又一次"><a href="#但是不要害怕失败-哪怕一次又一次" class="headerlink" title="但是不要害怕失败, 哪怕一次又一次."></a>但是不要害怕失败, 哪怕一次又一次.</h2><p>现在漏洞研究的工作常常是让人十分沮丧的, 大部分你尝试的东西都不会成功, 但你必须接受这一点. 但不要因此而泄气. 这不仅仅是发生在你身上, 对于每一个富有经验的研究员来说也是如此. 我们往往只能看到别人的成功, 却不知道背后的代价. 当你失败的时候, 在继续前进之前一定要弄明白失败的原因.</p>
+<h2 id="你比你想象的更加聪明-反之亦然-其他人并不像你想的那样聪明"><a href="#你比你想象的更加聪明-反之亦然-其他人并不像你想的那样聪明" class="headerlink" title="你比你想象的更加聪明(反之亦然: 其他人并不像你想的那样聪明)."></a>你比你想象的更加聪明(反之亦然: 其他人并不像你想的那样聪明).</h2><p>这可能是一个有争议的观点, 因为其他人提出了 “你不比开发者更聪明” 的建议. 虽然这是真实的, 对于业内很多人来说, 这是一个很好的建议, 但对许多刚刚入门或正在考虑入门的人来说, 这可能是错误的, 事实是, 在看到别的聪明人做什么之后, 如果自己没有在这个领域做任何事情, 就很容易怀疑自己的能力. 让我举个例子: 现在你可能听起来很奇怪, 但是当我开始把安全作为一种爱好时, 我认为我从来没有足够的能力去发现 Windows 中的漏洞。我从来没有尝试过，但是我偶然发现了我的第一个 Windows 漏洞：我 fuzz 了一些蹩脚的图像库，过了一段时间，我有一些崩溃样本. 而当我意外地点击 Windows 中的其中一个崩溃样本时，Windows 资源管理器崩溃了 - 这是 CVE-2008-3013。</p>
+<p>另外一个例子: 在对一个软件进行审查的时候, 你可能会有一个想法, 然后想 “不，这太愚蠢了，开发人员肯定会想到这个”. 事实是, 他们经常没有. 公平地说, 那不是因为他们愚蠢, 那是因为他们当时想到了其他问题, 但是, 如果“我比他们聪明”的思维方式有助于突破你为自己设定的人为限制.</p>
+<p>当你和别人, 特别是开发者交谈的时候, 请记住，他们是代码方面的专家，但是你是安全方面的专家.</p>
+<h2 id="我如何证明自己的能力"><a href="#我如何证明自己的能力" class="headerlink" title="我如何证明自己的能力?"></a>我如何证明自己的能力?</h2><p>可以从赚钱开始: 很多公司都有 bug bounty program: Google, FB, MS, etc</p>
+<p>即使你挖到的漏洞拿不到奖金, 但能帮助到他人, 仍然能够帮助证明你的实力.</p>
+<p>挖漏洞并不是唯一的途径, 开发安全工具, 做防御性的研究, 同样是很有价值的.</p>
+<h2 id="还有什么是我需要知道的"><a href="#还有什么是我需要知道的" class="headerlink" title="还有什么是我需要知道的?"></a>还有什么是我需要知道的?</h2><p>安全研究员的人生可能并不像你想象的那么光鲜亮丽, 为了成为一个大牛, 你需要在电脑面前坐到<strong>天荒地老</strong>. 这是一份有挑战性的工作, 并且需要花费相当大的精力.</p>
+<p>原文地址:<a href="http://ifsec.blogspot.jp/2018/02/so-you-want-to-work-in-security-and-for.html" target="_blank" rel="noopener">http://ifsec.blogspot.jp/2018/02/so-you-want-to-work-in-security-and-for.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/07/jni/" rel="next" title="Android JNI入门">
+                <i class="fa fa-chevron-left"></i> Android JNI入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/08/jni2/" rel="prev" title="native 方法的动态注册">
+                native 方法的动态注册 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#自己做点东西"><span class="nav-number">1.</span> <span class="nav-text">自己做点东西</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用好学习资源"><span class="nav-number">2.</span> <span class="nav-text">利用好学习资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用推特"><span class="nav-number">3.</span> <span class="nav-text">使用推特</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打-CTF-是一种很好的学习方式"><span class="nav-number">4.</span> <span class="nav-text">打 CTF 是一种很好的学习方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#但是不要害怕失败-哪怕一次又一次"><span class="nav-number">5.</span> <span class="nav-text">但是不要害怕失败, 哪怕一次又一次.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你比你想象的更加聪明-反之亦然-其他人并不像你想的那样聪明"><span class="nav-number">6.</span> <span class="nav-text">你比你想象的更加聪明(反之亦然: 其他人并不像你想的那样聪明).</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我如何证明自己的能力"><span class="nav-number">7.</span> <span class="nav-text">我如何证明自己的能力?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#还有什么是我需要知道的"><span class="nav-number">8.</span> <span class="nav-text">还有什么是我需要知道的?</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/07/trans_gp0/';
+          this.page.identifier = '2018/02/07/trans_gp0/';
+          this.page.title = 'Google Project Zero 成员教你如何入门搞安全（翻译）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
