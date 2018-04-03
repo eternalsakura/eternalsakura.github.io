@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="反调试," />
 
 
 
@@ -81,12 +81,13 @@
 
 
 
-<meta name="description" content="title: BDOpener hook debugger=”true”categories:   Android逆向w—前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDO">
+<meta name="description" content="前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDOpener下载链接 使用方法在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”">
+<meta name="keywords" content="反调试">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sakuraのblog">
+<meta property="og:title" content="BDOpener hook debugger=&quot;true&quot;">
 <meta property="og:url" content="http://eternalsakura13.com/2018/01/30/android_trick1/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="title: BDOpener hook debugger=”true”categories:   Android逆向w—前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDO">
+<meta property="og:description" content="前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDOpener下载链接 使用方法在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fnygwv23j9j316c0b20yl.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhc72031j30c20kumzw.jpg">
@@ -97,10 +98,10 @@
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh319tohj30g8057dgz.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fnyh5au2w1j30ce03wwf1.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg">
-<meta property="og:updated_time" content="2018-03-30T19:43:53.419Z">
+<meta property="og:updated_time" content="2018-04-03T11:48:47.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sakuraのblog">
-<meta name="twitter:description" content="title: BDOpener hook debugger=”true”categories:   Android逆向w—前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDO">
+<meta name="twitter:title" content="BDOpener hook debugger=&quot;true&quot;">
+<meta name="twitter:description" content="前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDOpener下载链接 使用方法在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”">
 <meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1fnygwv23j9j316c0b20yl.jpg">
 
 
@@ -147,7 +148,7 @@
         }
     })();
 </script>
-  <title> | Sakuraのblog</title>
+  <title>BDOpener hook debugger="true" | Sakuraのblog</title>
   
 
 
@@ -348,7 +349,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">BDOpener hook debugger="true"</h1>
         
 
         <div class="post-meta">
@@ -370,6 +371,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android逆向/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -414,11 +437,14 @@
       
 
       
-        <hr>
-<p>title: BDOpener hook debugger=”true”<br>categories: </p>
-<ul>
-<li>Android逆向<br>w—<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2>现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。<br>所以这里使用Xposed来Hook配置信息修改debugger值。<br>使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpener<br><a href="https://security.tencent.com/index.php/opensource/detail/17" target="_blank" rel="noopener">BDOpener下载链接</a><h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2>在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”选项，之后打开调试程序。<br>待调试器加载它。<br>使用日志：<img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnygwv23j9j316c0b20yl.jpg" alt=""><h2 id="trick"><a href="#trick" class="headerlink" title="trick"></a>trick</h2>关于动态调试可以参考我的这篇文章：<br><a href="http://eternalsakura13.com/2018/01/30/ali_re2/">http://eternalsakura13.com/2018/01/30/ali_re2/</a><br>有变动的地方就是不需要修改debugger值后重打包apk，也不再需要用<code>adb shell am start -D -n com.yaotong.crackme/.MainActivity</code>来启动要调试的apk<br>只需要按照上面描述的方法在手机上手动按一次就好了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhc72031j30c20kumzw.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""><h2 id="一些操作"><a href="#一些操作" class="headerlink" title="一些操作"></a>一些操作</h2><h3 id="手动打开apk"><a href="#手动打开apk" class="headerlink" title="手动打开apk"></a>手动打开apk</h3>日志<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh5t87s7j314k07mq7g.jpg" alt=""><h3 id="下断点"><a href="#下断点" class="headerlink" title="下断点"></a>下断点</h3><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh1piu9tj30pe09b768.jpg" alt=""><h3 id="设置好IDA-process-option并attach上去，断在libc里"><a href="#设置好IDA-process-option并attach上去，断在libc里" class="headerlink" title="设置好IDA process option并attach上去，断在libc里"></a>设置好IDA process option并attach上去，断在libc里</h3><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh2jf5wmj30fi040dgf.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh319tohj30g8057dgz.jpg" alt=""><h3 id="在控制台使用jdb恢复进程运行"><a href="#在控制台使用jdb恢复进程运行" class="headerlink" title="在控制台使用jdb恢复进程运行"></a>在控制台使用jdb恢复进程运行</h3><code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code><br>按下F9，顺利断下。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyh5au2w1j30ce03wwf1.jpg" alt=""><h3 id="再次调试"><a href="#再次调试" class="headerlink" title="再次调试"></a>再次调试</h3>IDA调试结束后，apk回到waiting for debugger状态，等待下一次被attach<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""></li>
-</ul>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。<br>所以这里使用Xposed来Hook配置信息修改debugger值。<br>使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpener<br><a href="https://security.tencent.com/index.php/opensource/detail/17" target="_blank" rel="noopener">BDOpener下载链接</a></p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”选项，之后打开调试程序。<br>待调试器加载它。<br>使用日志：<img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnygwv23j9j316c0b20yl.jpg" alt=""></p>
+<h2 id="trick"><a href="#trick" class="headerlink" title="trick"></a>trick</h2><p>关于动态调试可以参考我的这篇文章：<br><a href="http://eternalsakura13.com/2018/01/30/ali_re2/">http://eternalsakura13.com/2018/01/30/ali_re2/</a><br>有变动的地方就是不需要修改debugger值后重打包apk，也不再需要用<code>adb shell am start -D -n com.yaotong.crackme/.MainActivity</code>来启动要调试的apk<br>只需要按照上面描述的方法在手机上手动按一次就好了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhc72031j30c20kumzw.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""></p>
+<h2 id="一些操作"><a href="#一些操作" class="headerlink" title="一些操作"></a>一些操作</h2><h3 id="手动打开apk"><a href="#手动打开apk" class="headerlink" title="手动打开apk"></a>手动打开apk</h3><p>日志<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh5t87s7j314k07mq7g.jpg" alt=""></p>
+<h3 id="下断点"><a href="#下断点" class="headerlink" title="下断点"></a>下断点</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh1piu9tj30pe09b768.jpg" alt=""></p>
+<h3 id="设置好IDA-process-option并attach上去，断在libc里"><a href="#设置好IDA-process-option并attach上去，断在libc里" class="headerlink" title="设置好IDA process option并attach上去，断在libc里"></a>设置好IDA process option并attach上去，断在libc里</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh2jf5wmj30fi040dgf.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh319tohj30g8057dgz.jpg" alt=""></p>
+<h3 id="在控制台使用jdb恢复进程运行"><a href="#在控制台使用jdb恢复进程运行" class="headerlink" title="在控制台使用jdb恢复进程运行"></a>在控制台使用jdb恢复进程运行</h3><p><code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code><br>按下F9，顺利断下。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyh5au2w1j30ce03wwf1.jpg" alt=""></p>
+<h3 id="再次调试"><a href="#再次调试" class="headerlink" title="再次调试"></a>再次调试</h3><p>IDA调试结束后，apk回到waiting for debugger状态，等待下一次被attach<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""></p>
 
       
     </div>
@@ -433,6 +459,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/反调试/" rel="tag"># 反调试</a>
+          
+        </div>
       
 
       
@@ -568,7 +600,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -865,7 +897,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/01/30/android_trick1/';
           this.page.identifier = '2018/01/30/android_trick1/';
-          this.page.title = '';
+          this.page.title = 'BDOpener hook debugger=\"true\"';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';

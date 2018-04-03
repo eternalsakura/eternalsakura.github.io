@@ -99,7 +99,7 @@
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1foaezs5xmlj312019ytp9.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foafpkdhndj30pi16kgr2.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1foafs9dnnij30ao093t9g.jpg">
-<meta property="og:updated_time" content="2018-03-30T19:36:10.290Z">
+<meta property="og:updated_time" content="2018-04-03T11:46:12.702Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android项目构建过程分析">
 <meta name="twitter:description" content="构建过程项目的构建：当我们打开一个项目，我们可以看到的是我们写的Java Code文件or Other JVM Code，资源文件，Build配置文件，但是通过run the project，我们就可以得到一个在我们的Andoid设备上可以运行的Apk，上线应用市场，还需要我们对其进行签名处理，来确保我们App的唯一性和安全性。整个过程就是所谓的项目构建。如下图所示。如何实现整个构建的过程，对于每">
@@ -453,7 +453,7 @@
 <p>下图是一个Android项目构建过程的详细步骤图。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foadmdugoxj30rl0u3q87.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foadql0c6bj30qe0to779.jpg" alt=""></p>
 <h2 id="aapt打包资源文件，生成R-java和编译后的资源（二进制文件）"><a href="#aapt打包资源文件，生成R-java和编译后的资源（二进制文件）" class="headerlink" title="aapt打包资源文件，生成R.java和编译后的资源（二进制文件）"></a>aapt打包资源文件，生成R.java和编译后的资源（二进制文件）</h2><p>第1步：aapt打包资源文件，生成R.java和编译后的资源（二进制文件）<br>讲到资源文件的处理，我们先来看一下Android中的资源文件有那些呢?Android应用程序资源可以分为两大类，分别是assets和res：</p>
 <ol>
-<li><p>assets类资源放在android根目录的assets子目录下，它里面保存的是一些原始的文件，可以以任何方式来进行组织。这些文件最终会被原装不动地打包在apk文件中。如果我们要在程序中访问这些文件，那么就需要指定文件名来访问。例如，假设在assets目录下有一个名称为filename的文件，那么就可以使用以下代码来访问它：</p>
+<li><p>assets类资源放在android根目录的assets子目录下，它里面保存的是一些原始的文件，可以以任何方式来进行组织。这些文件最终会被原装不动地打包在apk文件中。如果我们要在程序中访问这些文件，那么就需要指定文件名来访问。例如，假设在assets目录下有一个名称为filename的文件，那么就可以使用以下代码来访问它：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AssetManager am= getAssets();    </span><br><span class="line">InputStream is = assset.open(<span class="string">"filename"</span>);</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>res类资源放在android根目录的res子目录下，它里面保存的文件大多数都会被编译，并且都会被赋予资源ID。这样我们就可以在程序中通过ID来访问res类的资源。res类资源按照不同的用途可以进一步划分为以下10种子类型：<br>layout(布局文件)，drawable，xml，value，menu，raw，color，anim，animator，mipmap。<br>为了使得一个应用程序能够在运行时同时支持不同的大小和密度的屏幕，以及支持国际化，即支持不同的国家地区和语言，Android应用程序资源的组织方式有18个维度，每一个维度都代表一个配置信息，从而可以使得应用程序能够根据设备的当前配置信息来找到最匹配的资源来展现在UI上，从而提高用户体验。由于Android应用程序资源的组织方式可以达到18个维度，因此就要求Android资源管理框架能够快速定位最匹配设备当前配置信息的资源来展现在UI上，否则的话，就会影响用户体验。为了支持Android资源管理框架快速定位最匹配资源，Android资源打包工具aapt在编译和打包资源的过程中，会执行以下两个额外的操作：</p>
@@ -659,7 +659,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

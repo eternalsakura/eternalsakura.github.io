@@ -1016,14 +1016,14 @@ Linux进程地址空间32位这种布局是 Linux 内核 2.6.7 以前的默认�
       
         
           
-          考察知识点
+          考察知识点
 64位rop
 
 原理寄存器传参64位和32位程序的不同点之一就是，它的前6个参数是通过寄存器传递的，有更多的参数才用栈，所以构造rop链的方式和32位不同。
 利用利用思路构造rop,leak出libc地址，调用system(“/bin/sh”)
-环境准备本机测试，所以我先找到自己本机用到的libc.so
+环境准备本机测试，所以我先找到自己本机用到的libc.so
 gadaget准备ROPgadget –binary xxx –only “pop|ret”
-leak system地址和/bin/sh12system_addr = libc.symbols[&apos;system&apos;] - libc.symbols[&apos;p
+leak system地址和/bin/sh12system_addr = libc.symbols[&apos;system&apos;] - libc.symbols[&apos;put
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -2138,7 +2138,7 @@ todo
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

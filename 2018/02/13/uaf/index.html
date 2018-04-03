@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="UAF," />
 
 
 
@@ -82,6 +82,7 @@
 
 
 <meta name="description" content="考察点 虚函数的内存地址空间 UAF  前置知识1：虚函数的内存地址空间在C++中，如果类中有虚函数，那么它就会有一个虚函数表的指针__vfptr，在类对象最开始的内存数据中。之后是类中的成员变量的内存数据。对于子类，最开始的内存数据记录着父类对象的拷贝（包括父类虚函数表指针和成员变量）。 之后是子类自己的成员变量数据。 源码123456789101112131415161718192021222">
+<meta name="keywords" content="UAF">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pwnable.kr UAF writeup">
 <meta property="og:url" content="http://eternalsakura13.com/2018/02/13/uaf/index.html">
@@ -104,7 +105,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-13-082915.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-13-075633.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-13-082012.png">
-<meta property="og:updated_time" content="2018-03-28T18:19:25.598Z">
+<meta property="og:updated_time" content="2018-04-03T12:02:29.946Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="pwnable.kr UAF writeup">
 <meta name="twitter:description" content="考察点 虚函数的内存地址空间 UAF  前置知识1：虚函数的内存地址空间在C++中，如果类中有虚函数，那么它就会有一个虚函数表的指针__vfptr，在类对象最开始的内存数据中。之后是类中的成员变量的内存数据。对于子类，最开始的内存数据记录着父类对象的拷贝（包括父类虚函数表指针和成员变量）。 之后是子类自己的成员变量数据。 源码123456789101112131415161718192021222">
@@ -483,7 +484,7 @@
 <h3 id="UAF原理"><a href="#UAF原理" class="headerlink" title="UAF原理"></a>UAF原理</h3><p>对Dangling pointer所指向内存进行use，如指针解引用等。</p>
 <h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>将Dangling pointer所指向的内存重新分配回来，且尽可能使该内存中的内容可控（如重新分配为字符串）</p>
 <h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">int</span> (*func)() <span class="comment">//函数指针，可以理解为类里面的方法</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>假设有上述这样的一个结构体指针p。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-060816.jpg" alt="">在释放掉p之后，没有将p置NULL，所以p变成Dangling pointer，再通过重新分配，再次拿到p之前指向的这段地址空间。<br>之后，通过strcpy(p2,”addr”)，或者其他方式，向这段地址空间写入新数据。<br>然后当我们通过其他函数，再次使用p指针，就会造成无法预料的后果，因为<strong>此时p指针指向的内存包含的已经是完全不同的数据</strong></p>
+<p>假设有上述这样的一个结构体指针p。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-060816.jpg" alt="">在释放掉p之后，没有将p置NULL，所以p变成Dangling pointer，再通过重新分配，再次拿到p之前指向的这段地址空间。<br>之后，通过strcpy(p2,”addr”)，或者其他方式，向这段地址空间写入新数据。<br>然后当我们通过其他函数，再次使用p指针，就会造成无法预料的后果，因为<strong>此时p指针指向的内存包含的已经是完全不同的数据</strong></p>
 <ul>
 <li>任意地址读：puts(p-&gt;name)—————&gt;puts(char*(addr2))</li>
 <li>任意地址写：strcpy(p-&gt;name,data);——&gt;strcpy((char *)(addr2),data)</li>
@@ -497,14 +498,14 @@
 <p>可以看出程序给了我们3个选项</p>
 <ul>
 <li>use 使用指针指向的函数</li>
-<li>after 分配一段地址空间，我们可以用其将已经被free的内存，重新allocate</li>
+<li>after 分配一段地址空间，我们可以用其将已经被free的内存，重新allocate</li>
 <li>free 将指针指向的内存释放</li>
 </ul>
 <p>组合起来就是UAF。</p>
 <h2 id="利用思路-1"><a href="#利用思路-1" class="headerlink" title="利用思路"></a>利用思路</h2><ul>
 <li>调试找到虚表中give_shell函数地址。</li>
 <li>free后再allocate，得到一个可控的地址空间.</li>
-<li>为了在use，即m-&gt;introduce()时，将本来执行的introduce函数变成执行give_shell函数，<strong>在allocate的同时，改写虚表指针</strong>。</li>
+<li>为了在use，即m-&gt;introduce()时，将本来执行的introduce函数变成执行give_shell函数，<strong>在allocate的同时，改写虚表指针</strong>。</li>
 <li>劫持控制流，执行give_shell</li>
 </ul>
 <h2 id="漏洞调试和利用"><a href="#漏洞调试和利用" class="headerlink" title="漏洞调试和利用"></a>漏洞调试和利用</h2><h3 id="找到Man的构造函数，从而找到虚函数表"><a href="#找到Man的构造函数，从而找到虚函数表" class="headerlink" title="找到Man的构造函数，从而找到虚函数表"></a>找到Man的构造函数，从而找到虚函数表</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-073918.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-073812.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-013807.jpg" alt=""></p>
@@ -512,7 +513,7 @@
 <ul>
 <li><strong>give_shell</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-074336.png" alt=""></li>
 <li><strong>Man::introduce</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-074402.png" alt=""></li>
-<li><strong>call introduce</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-082915.png" alt=""><br>可以看出在执行m-&gt;introduce()的时候，调用call [vptr+8]。<br>为了执行give_shell，我们覆盖虚表指针，让它前移8个字节，这样call [vptr+8]的时候就调用give_shell了。</li>
+<li><strong>call introduce</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-082915.png" alt=""><br>可以看出在执行m-&gt;introduce()的时候，调用call [vptr+8]。<br>为了执行give_shell，我们覆盖虚表指针，让它前移8个字节，这样call [vptr+8]的时候就调用give_shell了。</li>
 <li><strong>allocate</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-13-075633.png" alt=""><br>从上图可以看出，原本Man对象分配的堆空间是0x18，即24字节，所以我们在再次分配的时候，也要分配24字节，保证自己拿到的是原先被free掉的地址空间。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Human* m = new Man(&quot;Jack&quot;, 25);</span><br><span class="line">Human* w = new Woman(&quot;Jill&quot;, 21);</span><br><span class="line">...</span><br><span class="line">delete m;</span><br><span class="line">delete w;</span><br></pre></td></tr></table></figure>
@@ -539,6 +540,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/UAF/" rel="tag"># UAF</a>
+          
+        </div>
       
 
       
@@ -674,7 +681,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

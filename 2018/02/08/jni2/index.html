@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="动态注册," />
 
 
 
@@ -82,13 +82,14 @@
 
 
 <meta name="description" content="动态注册的原理JNI 允许我们提供一个函数映射表，注册给 JVM，这样 JVM 就可以用函数映射表来调用相应的函数，而不必通过函数名来查找相关函数123456789101112131415161718// java 代码中的函数是 dynamicRegFromJni，调用的 native 方法是 nativeDynamicRegFromJni，该方法没有参数， 返回值是一个字符串。static j">
+<meta name="keywords" content="动态注册">
 <meta property="og:type" content="article">
 <meta property="og:title" content="native 方法的动态注册">
 <meta property="og:url" content="http://eternalsakura13.com/2018/02/08/jni2/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="动态注册的原理JNI 允许我们提供一个函数映射表，注册给 JVM，这样 JVM 就可以用函数映射表来调用相应的函数，而不必通过函数名来查找相关函数123456789101112131415161718// java 代码中的函数是 dynamicRegFromJni，调用的 native 方法是 nativeDynamicRegFromJni，该方法没有参数， 返回值是一个字符串。static j">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-30T19:36:47.956Z">
+<meta property="og:updated_time" content="2018-04-03T11:55:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="native 方法的动态注册">
 <meta name="twitter:description" content="动态注册的原理JNI 允许我们提供一个函数映射表，注册给 JVM，这样 JVM 就可以用函数映射表来调用相应的函数，而不必通过函数名来查找相关函数123456789101112131415161718// java 代码中的函数是 dynamicRegFromJni，调用的 native 方法是 nativeDynamicRegFromJni，该方法没有参数， 返回值是一个字符串。static j">
@@ -447,7 +448,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">JNIEnv</span> &#123;</span></span><br><span class="line">    <span class="comment">/* do not rename this; it does not seem to be entirely opaque */</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNINativeInterface</span>* <span class="title">functions</span>;</span></span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">jint <span class="title">RegisterNatives</span><span class="params">(jclass clazz, <span class="keyword">const</span> JNINativeMethod* methods,</span></span></span><br><span class="line"><span class="function"><span class="params">        jint nMethods)</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> functions-&gt;RegisterNatives(<span class="keyword">this</span>, clazz, methods, nMethods); &#125;</span><br></pre></td></tr></table></figure>
 <p>在c++中，实际上调用的是<code>functions-&gt;RegisterNatives(this, clazz, methods, nMethods)</code><br>而functions是<code>JNINativeInterface*</code>类型的指针。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">JNINativeInterface</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">    jint (*RegisterNatives)(JNIEnv*, jclass, <span class="keyword">const</span> JNINativeMethod*,jint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>c中,<code>JNIEnv *env</code>,实际上是<code>JNINativeInterface **</code>，这样的NINativeInterface的二级指针。<br>所以<br><code>(*env) -&gt; RegisterNatives(env, clz, nativeMethod, sizeof(nativeMethod) / sizeof(nativeMethod[0]))</code><br>就是先通过解引用得到<code>JNINativeInterface *</code>结构体指针，再通过它调用<br><code>jint (*RegisterNatives)(JNIEnv*, jclass, const JNINativeMethod*,jint);</code><br>这个函数指针来使用函数。</p>
+<p>c中,<code>JNIEnv *env</code>,实际上是<code>JNINativeInterface **</code>，这样的NINativeInterface的二级指针。<br>所以<br><code>(*env) -&gt; RegisterNatives(env, clz, nativeMethod, sizeof(nativeMethod) / sizeof(nativeMethod[0]))</code><br>就是先通过解引用得到<code>JNINativeInterface *</code>结构体指针，再通过它调用<br><code>jint (*RegisterNatives)(JNIEnv*, jclass, const JNINativeMethod*,jint);</code><br>这个函数指针来使用函数。</p>
 <p><strong>tip:之所以是函数指针，是因为c中结构体成员中不能有函数</strong></p>
 
       
@@ -463,6 +464,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/动态注册/" rel="tag"># 动态注册</a>
+          
+        </div>
       
 
       
@@ -598,7 +605,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

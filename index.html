@@ -607,9 +607,9 @@ arm-linux-androideabi-gdb，也就是gdb-arm版没有提供，要自己找，我
           
           small bin大小
 fastbin的索引
-计算bin的index
+计算bin的index
 
-请求的大小转换为实际的大小
+请求的大小转换为实际的大小
 
           
           <!--noindex-->
@@ -792,8 +792,8 @@ fastbin的索引
         
           
           题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz
-分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点的把flag给“注入”出来。
-思路是先弄出一个syscall gadget,调一下mprotect，读进来shellcode就可以随便操作了。sc逻辑的话，就把flag读进来，然后一个bit一个bit
+分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点的把flag给“注入”出来。
+思路是先弄出一个syscall gadget,调一下mprotect，读进来shellcode就可以随便操作了。sc逻辑的话，就把flag读进来，然后一个bit一个bit去爆
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -976,9 +976,10 @@ fastbin的索引
           
           赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/babyheap.tar.gz
 前置知识
+fastbin attack
 off-by-one
 overlap
-熟悉malloc_state即main_arena,即知道main_arena是存储在libc.so的一个数据段。1234567891011121314151617181920212223242526272829303132333435363738struct malloc_state &#123;    /* Serialize access.  */    __libc_lock
+熟悉malloc_state即main_arena,即知道main_arena是存储在libc.so的一个数据段。1234567891011121314151617181920212223242526272829303132333435363738struct malloc_state &#123;    /* Serialize access.  */ 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1160,7 +1161,7 @@ overlap
         
           
           赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/0ctf2018/babystack
-前置技能ret2dl in x86没有能用来leak的漏洞。如下面的代码,除了明显的栈溢出，没有可以用来leak内存布局，bypass aslr的函数。12345678910111213141516#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;unistd.h&gt;void vulfunc()&#123;    char sbuf[10];    read
+前置技能ret2dl in x86没有能用来leak的漏洞。如下面的代码,除了明显的栈溢出，没有可以用来leak内存布局，bypass aslr的函数。12345678910111213141516#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;unistd.h&gt;void vulfunc()&#123;    char sbuf[10];    read(0, s
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1524,9 +1525,9 @@ ASLR简述
       
         
           
-          环境准备题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/%E5%BC%BA%E7%BD%91%E6%9D%AF2018/core_give.tar
+          环境准备题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/%E5%BC%BA%E7%BD%91%E6%9D%AF2018/core_give.tar
 调试环境ubuntu14.0412sakura@ubuntu:~$ uname -aLinux ubuntu 3.13.0-32-generic #57-Ubuntu SMP Tue Jul 15 03:51:08 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
-gdb 7.7.112sakura@ubuntu:~$ gdb -vGNU gdb (U
+gdb 7.7.112sakura@ubuntu:~$ gdb -vGNU gdb (Ub
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -2188,7 +2189,7 @@ gdb 7.7.112sakura@ubuntu:~$ gdb -vGNU gdb (U
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

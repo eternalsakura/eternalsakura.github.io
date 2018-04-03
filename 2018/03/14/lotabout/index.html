@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="compiler," />
 
 
 
@@ -81,18 +81,19 @@
 
 
 
-<meta name="description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命">
+<meta name="description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命令被翻">
+<meta name="keywords" content="compiler">
 <meta property="og:type" content="article">
 <meta property="og:title" content="手把手教你构建 C 语言编译器（解释器）学习笔记">
 <meta property="og:url" content="http://eternalsakura13.com/2018/03/14/lotabout/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命">
+<meta property="og:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命令被翻">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png">
-<meta property="og:updated_time" content="2018-03-16T11:11:27.179Z">
+<meta property="og:updated_time" content="2018-04-03T11:59:17.021Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手把手教你构建 C 语言编译器（解释器）学习笔记">
-<meta name="twitter:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命">
+<meta name="twitter:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命令被翻">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png">
 
 
@@ -428,7 +429,7 @@
       
 
       
-        <h1 id="手把手教你构建-C-语言编译器（解释器）学习笔记"><a href="#手把手教你构建-C-语言编译器（解释器）学习笔记" class="headerlink" title="手把手教你构建 C 语言编译器（解释器）学习笔记"></a>手把手教你构建 C 语言编译器（解释器）学习笔记</h1><h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。<br>通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。<br>减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。<br>在第一个阶段，高级语言被解析出来，其命令被翻译成一种中间处理结果——既不是高级，也不是低级的结果。<br>在第二个阶段，这些中间结果被进一步翻译成目标硬件的机器语言。<br>从软件工程的角度来分解是十分吸引人的，第一阶段仅依赖于高级语言的细节，第二阶段仅依赖于目标机器语言的细节。<br>当然，两个编译阶段之间的接口十分重要，甚至应该单独抽象成一种语言。<br>实际上我们可以明确的描述这种虚拟机，其指令就是由高级语言分解成的中间处理步骤。<br>这种模型的范例有java(java-&gt;byte code(run in JVM))、c#(.NET-&gt;IL(run in CLR))<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png" alt=""></p>
+        <h1 id="手把手教你构建-C-语言编译器（解释器）学习笔记"><a href="#手把手教你构建-C-语言编译器（解释器）学习笔记" class="headerlink" title="手把手教你构建 C 语言编译器（解释器）学习笔记"></a>手把手教你构建 C 语言编译器（解释器）学习笔记</h1><h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。<br>通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。<br>减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。<br>在第一个阶段，高级语言被解析出来，其命令被翻译成一种中间处理结果——既不是高级，也不是低级的结果。<br>在第二个阶段，这些中间结果被进一步翻译成目标硬件的机器语言。<br>从软件工程的角度来分解是十分吸引人的，第一阶段仅依赖于高级语言的细节，第二阶段仅依赖于目标机器语言的细节。<br>当然，两个编译阶段之间的接口十分重要，甚至应该单独抽象成一种语言。<br>实际上我们可以明确的描述这种虚拟机，其指令就是由高级语言分解成的中间处理步骤。<br>这种模型的范例有java(java-&gt;byte code(run in JVM))、c#(.NET-&gt;IL(run in CLR))<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png" alt=""></p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ol>
 <li>我们只设置代码段、数据段（只存放字符串）和栈</li>
 <li>理论上当用户需要分配内存的时候，理论上我们的虚拟机需要维护一个堆用于内存分配，但实际实现上较为复杂且与编译无关，故我们引入一个指令MSET，使我们能直接使用编译器（解释器）中的内存。</li>
@@ -443,7 +444,7 @@
 <h3 id="标识符与符号表"><a href="#标识符与符号表" class="headerlink" title="标识符与符号表"></a>标识符与符号表</h3><p>标识符（identifier）可以理解为变量名。对于语法分析而言，我们并不关心一个变量具体叫什么名字，而只关心这个变量名代表的唯一标识。例如 int a; 定义了变量 a，而之后的语句 a = 10，我们需要知道这两个 a 指向的是同一个变量。</p>
 <p>基于这个理由，词法分析器会把扫描到的标识符全都保存到一张表中，遇到新的标识符就去查这张表，如果标识符已经存在，就返回它的唯一标识。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Symbol table:</span><br><span class="line">----+-----+----+----+----+-----+-----+-----+------+------+----</span><br><span class="line"> .. |token|hash|name|type|class|value|btype|bclass|bvalue| ..</span><br><span class="line">----+-----+----+----+----+-----+-----+-----+------+------+----</span><br><span class="line">    |&lt;---       one single identifier                ---&gt;|</span><br></pre></td></tr></table></figure>
-<p>后面的内容虽然是懂的。。但是写笔记太长了，暂时END吧。<br>TODO</p>
+<p>后面的内容虽然是懂的。。但是写笔记太长了，暂时END吧。<br>TODO</p>
 
       
     </div>
@@ -458,6 +459,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/compiler/" rel="tag"># compiler</a>
+          
+        </div>
       
 
       
@@ -593,7 +600,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -691,7 +698,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手把手教你构建-C-语言编译器（解释器）学习笔记"><span class="nav-number">1.</span> <span class="nav-text">手把手教你构建 C 语言编译器（解释器）学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.1.2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">1.1.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#词法分析器"><span class="nav-number">1.2.</span> <span class="nav-text">词法分析器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标识符与符号表"><span class="nav-number">1.2.1.</span> <span class="nav-text">标识符与符号表</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手把手教你构建-C-语言编译器（解释器）学习笔记"><span class="nav-number">1.</span> <span class="nav-text">手把手教你构建 C 语言编译器（解释器）学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.1.2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">1.1.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#词法分析器"><span class="nav-number">1.2.</span> <span class="nav-text">词法分析器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标识符与符号表"><span class="nav-number">1.2.1.</span> <span class="nav-text">标识符与符号表</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
