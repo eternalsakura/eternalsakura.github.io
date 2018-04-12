@@ -84,7 +84,7 @@
 <meta name="description" content="Mac终端代理vim ~/.bash_profile然后在里面输入12alias setproxy=&amp;quot;export ALL_PROXY=socks5://127.0.0.1:1086&amp;quot; alias unsetproxy=&amp;quot;unset ALL_PROXY&amp;quot; export ALL_PROXY=socks5://127.0.0.1:1086,这里的1086根据自己">
 <meta name="keywords" content="proxy">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mac上本机和虚拟机终端代理设置">
+<meta property="og:title" content="本机和虚拟机终端代理设置">
 <meta property="og:url" content="http://eternalsakura13.com/2018/02/02/proxy/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="Mac终端代理vim ~/.bash_profile然后在里面输入12alias setproxy=&amp;quot;export ALL_PROXY=socks5://127.0.0.1:1086&amp;quot; alias unsetproxy=&amp;quot;unset ALL_PROXY&amp;quot; export ALL_PROXY=socks5://127.0.0.1:1086,这里的1086根据自己">
@@ -95,9 +95,9 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-27-195715.png">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-27-195650.png">
-<meta property="og:updated_time" content="2018-04-03T12:00:20.522Z">
+<meta property="og:updated_time" content="2018-04-12T16:53:28.577Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mac上本机和虚拟机终端代理设置">
+<meta name="twitter:title" content="本机和虚拟机终端代理设置">
 <meta name="twitter:description" content="Mac终端代理vim ~/.bash_profile然后在里面输入12alias setproxy=&amp;quot;export ALL_PROXY=socks5://127.0.0.1:1086&amp;quot; alias unsetproxy=&amp;quot;unset ALL_PROXY&amp;quot; export ALL_PROXY=socks5://127.0.0.1:1086,这里的1086根据自己">
 <meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo25z0wtk0j30io0m2td6.jpg">
 
@@ -145,7 +145,7 @@
         }
     })();
 </script>
-  <title>Mac上本机和虚拟机终端代理设置 | Sakuraのblog</title>
+  <title>本机和虚拟机终端代理设置 | Sakuraのblog</title>
   
 
 
@@ -342,7 +342,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Mac上本机和虚拟机终端代理设置</h1>
+          <h1 class="post-title" itemprop="name headline">本机和虚拟机终端代理设置</h1>
         
 
         <div class="post-meta">
@@ -435,6 +435,7 @@
 <p>可以直接把上述代码拷贝到上述对应文件的末尾，修改完成之后执行如下命令使修改生效<br><code>source ~/.bash_profile</code><br>然后只要输入setproxy就可以设置代理，输入unsetproxy就取消代理<br>设置完毕后，输入<code>curl -i http://ip.cn</code>确认修改成功。</p>
 <h1 id="虚拟机走终端代理"><a href="#虚拟机走终端代理" class="headerlink" title="虚拟机走终端代理"></a>虚拟机走终端代理</h1><h2 id="修改ss配置"><a href="#修改ss配置" class="headerlink" title="修改ss配置"></a>修改ss配置</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo262zvsgjj30qo0humza.jpg" alt=""></p>
 <h2 id="设置虚拟机"><a href="#设置虚拟机" class="headerlink" title="设置虚拟机"></a>设置虚拟机</h2><p>先看一下自己电脑的ip是多少<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-27-195715.png" alt=""><br>我这里使用的是共享网络，不知道换其他行不行。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg" alt=""><br>然后在setting-&gt;network<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-27-195650.png" alt="">修改成功后在终端输入<br><code>export ALL_PROXY=http://192.168.10.201:1087</code><br>然后输入<br><code>curl -i http://ip.cn</code>确认。</p>
+<h2 id="windodws"><a href="#windodws" class="headerlink" title="windodws"></a>windodws</h2><p>算是一个补充<br>勾选上允许来自局域网的链接选项。<br>然后设置虚拟机的网络模式为桥接模式（注意不要勾选复制主机的网络）<br>这样主机和虚拟机在一个局域网里。<br>然后在setting-&gt;network里向上面那么设置，1087改成1080.<br>在终端里export ALL_PROXY=<a href="http://xxxx:1080" target="_blank" rel="noopener">http://xxxx:1080</a><br>这个1080其实就是那个本地端口，一般我们都是设置1080的。</p>
 
       
     </div>
@@ -688,7 +689,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mac终端代理"><span class="nav-number">1.</span> <span class="nav-text">Mac终端代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机走终端代理"><span class="nav-number">2.</span> <span class="nav-text">虚拟机走终端代理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改ss配置"><span class="nav-number">2.1.</span> <span class="nav-text">修改ss配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置虚拟机"><span class="nav-number">2.2.</span> <span class="nav-text">设置虚拟机</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mac终端代理"><span class="nav-number">1.</span> <span class="nav-text">Mac终端代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机走终端代理"><span class="nav-number">2.</span> <span class="nav-text">虚拟机走终端代理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改ss配置"><span class="nav-number">2.1.</span> <span class="nav-text">修改ss配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置虚拟机"><span class="nav-number">2.2.</span> <span class="nav-text">设置虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windodws"><span class="nav-number">2.3.</span> <span class="nav-text">windodws</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -887,7 +888,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/02/02/proxy/';
           this.page.identifier = '2018/02/02/proxy/';
-          this.page.title = 'Mac上本机和虚拟机终端代理设置';
+          this.page.title = '本机和虚拟机终端代理设置';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';

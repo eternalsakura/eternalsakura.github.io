@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-12-162731.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-12-162722.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-12-162712.png">
-<meta property="og:updated_time" content="2018-04-12T16:48:09.000Z">
+<meta property="og:updated_time" content="2018-04-12T16:50:32.433Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内核双机调试环境搭建">
 <meta name="twitter:description" content="选择kernel的版本搜索含有dbgsym的内核版本apt-cache search linux-image | grep dbgsym | grep 4.11搜索特定source code的内核版本apt-cache search linux-source然后选择一个 安装内核搜索要下载的linux内核版本apt-cache search linux-image | grep linux-ima">
@@ -474,6 +474,7 @@
 <p>符号加载完成，bt查看当前栈帧，c运行内核。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-12-162731.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-12-162722.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-12-162712.png" alt=""></p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://advdbg.org/blogs/advdbg_system/search.aspx?q=%E5%86%85%E6%A0%B8%E8%B0%83%E8%AF%95&amp;p=1" target="_blank" rel="noopener">ubuntu内核调试要点</a></p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>内核调试的坑实在太深，一开始参考了muhe师傅的文章用gdb+qemu调，然后编译了kernel 4.x之后，编译不报错，但是调试过程简直了，gdb花式挂不上去，看网上说某些版本要改gdb源码重新编译gdb……放弃了放弃了。<br>感谢教我搭建双机调试的师傅……</p>
+<p>另外如果下载符号文件太慢，可以参考我的这篇文章，在虚拟机里用ss代理。</p>
 
       
     </div>
