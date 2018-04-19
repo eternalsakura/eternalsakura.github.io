@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="webkit," />
 
 
 
@@ -81,13 +81,23 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Sakuraのblog">
-<meta property="og:url" content="http://eternalsakura13.com/categories/CTF/pwn/堆利用/index.html">
+<meta name="description" content="调试crash的准备工作下载 Webkit 源代码并编译:12345-&amp;gt; git clone git://git.webkit.org/WebKit.git WebKitfor macOS:-&amp;gt; Tools/Scripts/set-webkit-configuration --asan --debug -&amp;gt; Tools/Scripts/build-webkit 切换到漏洞影响的分">
+<meta name="keywords" content="webkit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webkit调试方法记录">
+<meta property="og:url" content="http://eternalsakura13.com/2018/04/19/js_crash_debug/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="调试crash的准备工作下载 Webkit 源代码并编译:12345-&amp;gt; git clone git://git.webkit.org/WebKit.git WebKitfor macOS:-&amp;gt; Tools/Scripts/set-webkit-configuration --asan --debug -&amp;gt; Tools/Scripts/build-webkit 切换到漏洞影响的分">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-19-162739.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-19-162814.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-19-163348.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-19-162506.png">
+<meta property="og:updated_time" content="2018-04-19T17:34:02.385Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sakuraのblog">
+<meta name="twitter:title" content="webkit调试方法记录">
+<meta name="twitter:description" content="调试crash的准备工作下载 Webkit 源代码并编译:12345-&amp;gt; git clone git://git.webkit.org/WebKit.git WebKitfor macOS:-&amp;gt; Tools/Scripts/set-webkit-configuration --asan --debug -&amp;gt; Tools/Scripts/build-webkit 切换到漏洞影响的分">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-19-162739.png">
 
 
 
@@ -117,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://eternalsakura13.com/categories/CTF/pwn/堆利用/"/>
+  <link rel="canonical" href="http://eternalsakura13.com/2018/04/19/js_crash_debug/"/>
 
 
 
@@ -133,7 +143,7 @@
         }
     })();
 </script>
-  <title>分类: 堆利用 | Sakuraのblog</title>
+  <title>webkit调试方法记录 | Sakuraのblog</title>
   
 
 
@@ -161,7 +171,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -299,307 +309,196 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>堆利用<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/04/19/js_crash_debug/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/04/03/heapstorm2/" itemprop="url">
-              
-                <span itemprop="name">0ctf2018 heapstorm2 writeup</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">webkit调试方法记录</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-03T20:31:16+08:00"
-              content="2018-04-03" >
-          04-03
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-19T21:31:27+08:00">
+                2018-04-19
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/19/js_crash_debug/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/19/js_crash_debug/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/03/heap2/" itemprop="url">
-              
-                <span itemprop="name">堆题里用到的一些杂乱的东西</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-03T10:07:31+08:00"
-              content="2018-04-03" >
-          04-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/04/03/babyheap/" itemprop="url">
-              
-                <span itemprop="name">0ctf2018 babyheap writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-03T02:03:34+08:00"
-              content="2018-04-03" >
-          04-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/27/opm/" itemprop="url">
-              
-                <span itemprop="name">强网杯2018 opm writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-27T16:11:18+08:00"
-              content="2018-03-27" >
-          03-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/26/silen2/" itemprop="url">
-              
-                <span itemprop="name">强网杯2018 silent2 writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-26T19:20:54+08:00"
-              content="2018-03-26" >
-          03-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/21/lctf2/" itemprop="url">
-              
-                <span itemprop="name">large bins attack及lctf2017 2ez4u writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-21T07:42:43+08:00"
-              content="2018-03-21" >
-          03-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/02/fastbin/" itemprop="url">
-              
-                <span itemprop="name">Fastbin Double Free</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-02T10:11:08+08:00"
-              content="2018-03-02" >
-          03-02
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/01/unlink1/" itemprop="url">
-              
-                <span itemprop="name">CTF pwn中的unlink</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-01T00:59:01+08:00"
-              content="2018-03-01" >
-          03-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/02/28/heap_exp1/" itemprop="url">
-              
-                <span itemprop="name">堆漏洞</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-28T10:15:13+08:00"
-              content="2018-02-28" >
-          02-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/02/27/heap1/" itemprop="url">
-              
-                <span itemprop="name">ptmalloc</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-27T16:34:49+08:00"
-              content="2018-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h2 id="调试crash的准备工作"><a href="#调试crash的准备工作" class="headerlink" title="调试crash的准备工作"></a>调试crash的准备工作</h2><h3 id="下载-Webkit-源代码并编译"><a href="#下载-Webkit-源代码并编译" class="headerlink" title="下载 Webkit 源代码并编译:"></a>下载 Webkit 源代码并编译:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-&gt; git clone git://git.webkit.org/WebKit.git WebKit</span><br><span class="line"></span><br><span class="line">for macOS:</span><br><span class="line">-&gt; Tools/Scripts/set-webkit-configuration --asan --debug </span><br><span class="line">-&gt; Tools/Scripts/build-webkit</span><br></pre></td></tr></table></figure>
+<p>切换到漏洞影响的分支<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b localname commithash</span><br></pre></td></tr></table></figure></p>
+<p>调试<br>使用的调试器是 lldb. 通过以下命令运行 Safari:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-&gt; Tools/Scripts/run-safari</span><br></pre></td></tr></table></figure></p>
+<p>或者获取源码后直接在xcode里打开webkit，<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-19-162739.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-19-162814.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-19-163348.png" alt=""></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>测试，找一个poc运行，可以看到asna打印uaf。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-19-162506.png" alt=""></p>
+<h2 id="run-jsc"><a href="#run-jsc" class="headerlink" title="run-jsc"></a>run-jsc</h2><p>通过run-jsc这个script我们能打印出JIT的log<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">sakura@sakuradeMBP:~/WebKit/Tools/Scripts$ pwd</span><br><span class="line">/Users/sakura/WebKit/Tools/Scripts</span><br><span class="line">sakura@sakuradeMBP:~/WebKit/Tools/Scripts$ ls | grep run-js</span><br><span class="line">run-jsc</span><br><span class="line">sakura@sakuradeMBP:~/WebKit/Tools/Scripts$ ./run-jsc --help</span><br><span class="line">Running 1 time(s): DYLD_FRAMEWORK_PATH=/Users/sakura/WebKit/WebKitBuild/Debug /Users/sakura/WebKit/WebKitBuild/Debug/jsc --help</span><br><span class="line">Usage: jsc [options] [files] [-- arguments]</span><br><span class="line">  -d         Dumps bytecode (debug builds only)</span><br><span class="line">  -e         Evaluate argument as script code</span><br><span class="line">  -f         Specifies a source file (deprecated)</span><br><span class="line">  -h|--help  Prints this help message</span><br><span class="line">  -i         Enables interactive mode (default if no files are specified)</span><br><span class="line">  -m         Execute as a module</span><br><span class="line">  -s         Installs signal handlers that exit on a crash (Unix platforms only)</span><br><span class="line">  -p &lt;file&gt;  Outputs profiling data to a file</span><br><span class="line">  -x         Output exit code before terminating</span><br><span class="line"></span><br><span class="line">  --sample                   Collects and outputs sampling profiler data</span><br><span class="line">  --test262-async            Check that some script calls the print function with the string &apos;Test262:AsyncTestComplete&apos;</span><br><span class="line">  --strict-file=&lt;file&gt;       Parse the given file as if it were in strict mode (this option may be passed more than once)</span><br><span class="line">  --module-file=&lt;file&gt;       Parse and evaluate the given file as module (this option may be passed more than once)</span><br><span class="line">  --exception=&lt;name&gt;         Check the last script exits with an uncaught exception with the specified name</span><br><span class="line">  --watchdog-exception-ok    Uncaught watchdog exceptions exit with success</span><br><span class="line">  --dumpException            Dump uncaught exception text</span><br><span class="line">  --options                  Dumps all JSC VM options and exits</span><br><span class="line">  --dumpOptions              Dumps all non-default JSC VM options before continuing</span><br><span class="line">  --&lt;jsc VM option&gt;=&lt;value&gt;  Sets the specified JSC VM option</span><br><span class="line"></span><br><span class="line">选项	描述</span><br><span class="line">JSC_dumpDisassembly = true	转储所有JIT编译函数的反汇编。</span><br><span class="line">JSC_dumpDFGDisassembly = true	转储DFG和FTL编译函数的反汇编。</span><br><span class="line">JSC_dumpFTLDisassembly = true	转储FTL编译函数的反汇编。</span><br><span class="line">JSC_dumpSourceAtDFGTime = true	转储DFG/FTL编译函数的来源。</span><br><span class="line">JSC_dumpBytecodeAtDFGTime = true	转储DFG/FTL编译函数的字节码。</span><br><span class="line">JSC_dumpGraphAfterParsing = true	在DFG/FTL编译时解析函数字节码后转储DFG图。</span><br><span class="line">JSC_dumpGraphAtEachPhase = true	在DFG/FTL编译的每个阶段之后转储DFG图。</span><br><span class="line"></span><br><span class="line">例如</span><br><span class="line">./run-jsc --dumpGraphAtEachPhase=true /Users/sakura/Desktop/for-in-side-effects.js &amp;&gt; ~/log.txt</span><br><span class="line"></span><br><span class="line">./run-jsc --dumpDisassembly=true /Users/sakura/Desktop/for-in-side-effects.js &amp;&gt; ~/log.txt</span><br></pre></td></tr></table></figure></p>
+<p>for-in-side-effects.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Regression test for bug 179212</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = &#123; <span class="string">"a"</span>: &#123;&#125; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> flag = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"><span class="keyword">var</span> copy = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> z = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">    getPrototypeOf: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (flag == <span class="number">2</span>) &#123;</span><br><span class="line">            data[<span class="number">0</span>] = &#123; <span class="string">"x"</span>: <span class="string">"I changed"</span> &#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (flag == <span class="number">1</span>) &#123;</span><br><span class="line">            flag = <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">"a"</span>: <span class="number">1</span>, <span class="string">"b"</span>: <span class="number">2</span>&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">p.__proto__ = z;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reset</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    flag = <span class="number">0</span>;</span><br><span class="line">    data = [<span class="number">1.1</span>, <span class="number">2.2</span>, <span class="number">3.3</span>];</span><br><span class="line">    copy = [];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">runTest</span>(<span class="params">func</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    reset();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">0x10000</span>; i++)</span><br><span class="line">        func();</span><br><span class="line"></span><br><span class="line">    flag = <span class="number">1</span>;</span><br><span class="line">    func();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (copy[<span class="number">0</span>].x != <span class="string">"I changed"</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">"Expected updated value for copy[0]"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testWithFTL</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        data[<span class="number">0</span>] = <span class="number">2.2</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> d <span class="keyword">in</span> p) &#123;</span><br><span class="line">            copy[<span class="number">0</span>] = data[<span class="number">0</span>];</span><br><span class="line">            copy[<span class="number">1</span>] = data[<span class="number">1</span>];</span><br><span class="line">            copy[<span class="number">2</span>] = data[<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    runTest(f);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">testWithFTL();</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><a href="https://webkit.org/blog/6411/javascriptcore-csi-a-crash-site-investigation-story/" target="_blank" rel="noopener">https://webkit.org/blog/6411/javascriptcore-csi-a-crash-site-investigation-story/</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webkit/" rel="tag"># webkit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/15/kernel_debug/" rel="next" title="内核双机调试环境搭建">
+                <i class="fa fa-chevron-left"></i> 内核双机调试环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -607,6 +506,20 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -627,8 +540,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -757,6 +679,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#调试crash的准备工作"><span class="nav-number">1.</span> <span class="nav-text">调试crash的准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载-Webkit-源代码并编译"><span class="nav-number">1.1.</span> <span class="nav-text">下载 Webkit 源代码并编译:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">1.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#run-jsc"><span class="nav-number">2.</span> <span class="nav-text">run-jsc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">3.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -924,6 +862,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -941,6 +883,18 @@
       <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/04/19/js_crash_debug/';
+          this.page.identifier = '2018/04/19/js_crash_debug/';
+          this.page.title = 'webkit调试方法记录';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
