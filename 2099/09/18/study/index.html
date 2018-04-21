@@ -73,6 +73,8 @@
 
 
 
+  
+
 
   <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
 
@@ -91,7 +93,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-26-LKM3_2048.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-26-030340.jpg">
-<meta property="og:updated_time" content="2018-04-21T13:31:32.115Z">
+<meta property="og:updated_time" content="2018-04-21T17:29:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのdiary">
 <meta name="twitter:description" content="2018-1-281.看玄武实验室的每日安全推送（主要是看了android挖矿，p2p蠕虫）2.配置shadow尝试用gdb和gdbserver来调试https://github.com/CENSUS/shadowhttps://developer.android.com/ndk/downloads/index.html?hl=zh-cnhttp://kiya.studio/2017/06/21/">
@@ -663,7 +665,8 @@
 <li>今天看了长亭的kernel的洞，感觉分析成因还是很好分析的…但是exp调起来麻烦，也懒得写博客记录了，今天把webkit的调试记录了一下，明明好久之前就搞了，结果到现在还是这样没什么进展（茶</li>
 </ol>
 <h2 id="2018-4-20-21"><a href="#2018-4-20-21" class="headerlink" title="2018-4-20-21"></a>2018-4-20-21</h2><ol>
-<li>编了一天v8，墙真讨厌。</li>
+<li>编了一天v8，搞不出来，墙真讨厌。</li>
+<li>调（看）了一个webkit的UAF漏洞，还行，感觉最难懂的还是对象之间的引用关系太复杂，还有就是回调函数跟着跟着容易找不到自己在哪。<br>“我是谁，谁在打我。”（逃）</li>
 </ol>
 
       
@@ -695,8 +698,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/19/js_crash_debug/" rel="next" title="webkit调试方法记录">
-                <i class="fa fa-chevron-left"></i> webkit调试方法记录
+              <a href="/2018/04/21/cve-2017-13791/" rel="next" title="webkit UAF:CVE-2017-13791学习">
+                <i class="fa fa-chevron-left"></i> webkit UAF:CVE-2017-13791学习
               </a>
             
           </div>
@@ -794,7 +797,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">73</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
