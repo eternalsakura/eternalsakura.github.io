@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="v8," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
+<meta name="keywords" content="v8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="v8 exploit">
+<meta property="og:url" content="http://eternalsakura13.com/2018/05/06/v8/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-142104.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-144220.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-154107.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-161022.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-162728.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-025035.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-025306.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-030317.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-030943.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-031037.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-032813.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041132.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041214.png">
+<meta property="og:updated_time" content="2018-05-07T04:31:30.175Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="v8 exploit">
+<meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-142104.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/05/06/v8/"/>
+
+
+
+
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+  <title>v8 exploit | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/05/06/v8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">v8 exploit</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-06T22:10:30+08:00">
+                2018-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/06/v8/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/06/v8/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="v8的知识结构"><a href="#v8的知识结构" class="headerlink" title="v8的知识结构"></a>v8的知识结构</h2><h2 id="plaid-ctf-2016-js-sandbox"><a href="#plaid-ctf-2016-js-sandbox" class="headerlink" title="plaid ctf 2016 - js_sandbox"></a>plaid ctf 2016 - js_sandbox</h2><h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><ol>
+<li><p>各种依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>gdb-peda</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/scwuaptx/peda.git ~/peda</span><br><span class="line">git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb</span><br><span class="line">cp ~/Pwngdb/.gdbinit ~/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>环境设置<br>ubuntu16.04 x64<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-142104.png" alt=""></p>
+</li>
+</ol>
+<ul>
+<li>使用make的方式去编译v8（2016年当时）</li>
+</ul>
+<p>depot_tools准备<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</span><br><span class="line">$ echo &apos;export PATH=$PATH:&quot;/path/to/depot_tools&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure></p>
+<p>v8编译<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ fetch v8 &amp;&amp; cd v8$ git reset --hard 6ff5881b1def45b35384572f61327e42563a89c3</span><br><span class="line">$ gclient sync</span><br><span class="line">$ make x64.debug -j 8 # 如果这一步出现问题，就按照下面的方式重新编译</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">$ mv ./third_party/binutils/Linux_x64/Release/bin/ld.gold&#123;,.old&#125;</span><br><span class="line">$ ln -s &#123;/usr,./third_party/binutils/Linux_x64/Release&#125;/bin/ld.gold</span><br><span class="line">$ make x64.debug -j 8</span><br><span class="line"></span><br><span class="line"># instead of using symbloic link, you can use the following line (thank ishita for helping</span><br><span class="line">$ GYP_DEFINES=&quot;werror= linux_use_bundled_binutils=0 linux_use_bundled_gold=0&quot; make x64.debug -j8</span><br></pre></td></tr></table></figure></p>
+<p><strong>/path/to/根据你自己的环境替换。</strong></p>
+<p>启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./out/x64.debug/d8</span><br><span class="line">$ ./out/x64.debug/shell</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>使用ninja的方式去编译v8（2018现在）</li>
+</ul>
+<p>depot_tools准备<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</span><br><span class="line">$ echo &apos;export PATH=$PATH:&quot;/path/to/depot_tools&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure></p>
+<p><strong>/path/to/根据你自己的环境替换。</strong></p>
+<p>ninja准备<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/ninja-build/ninja.git</span><br><span class="line">$ cd ninja &amp;&amp; ./configure.py --bootstrap &amp;&amp; cd ..</span><br><span class="line">$ echo &apos;export PATH=$PATH:&quot;/path/to/ninja&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure></p>
+<p>v8编译<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ fetch v8 &amp;&amp; cd v8&amp;&amp; gclient sync</span><br><span class="line">$ tools/dev/v8gen.py x64.debug</span><br><span class="line">$ ninja -C out.gn/x64.debug</span><br></pre></td></tr></table></figure></p>
+<p>启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./out/x64.debug/d8</span><br><span class="line">$ ./out/x64.debug/shell</span><br></pre></td></tr></table></figure></p>
+<h2 id="关于js的问题"><a href="#关于js的问题" class="headerlink" title="关于js的问题"></a>关于js的问题</h2><h3 id="js引擎"><a href="#js引擎" class="headerlink" title="js引擎"></a>js引擎</h3><p>世界上有各类的js引擎，比较有名的有下面这几种。</p>
+<p>浏览器 渲染引擎 js引擎</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-144220.png" alt=""><br>其他的js引擎介绍可以在这里找到：<br><a href="https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e" target="_blank" rel="noopener">https://blog.sessionstack.com/how-javascript-works-inside-the-v8-engine-5-tips-on-how-to-write-optimized-code-ac089e62b12e</a></p>
+<h3 id="js的pattern分为两类"><a href="#js的pattern分为两类" class="headerlink" title="js的pattern分为两类"></a>js的pattern分为两类</h3><ol>
+<li>由patch引入的更多pattern<br>了解如何利用由patch所引发的新漏洞，用js来编写exp</li>
+<li>过去的CVE<br>编译有漏洞的源码<br>在上一次和下一次commit之间找到正确的patch<br>有些情况下，PoC(attack code)会随着commit一起发布。<br>从修补程序中找出漏洞，并参考公开可用的PoC进行编写exp</li>
+</ol>
+<p>今天我们将解决pattern 1，但是它和解决pattern 2要做的是相似的。</p>
+<h3 id="攻略方法"><a href="#攻略方法" class="headerlink" title="攻略方法"></a>攻略方法</h3><p>无论是pattern 1还是pattern 2，攻略如下：</p>
+<ol>
+<li>创建一个用于调试的js环境版本<br>找到patch，打patch</li>
+<li>分析patch，确定补丁用于v8的哪个部分：<br>Full-Codegen，Crankshaft，TurboFan，Ignition，AST，IC，…<br><strong>Full-Codegen，Crankshaft在2018的v8里已经弃用</strong></li>
+<li>编写一个能够绕过patch触发漏洞的poc</li>
+<li>实现任意地址读写等……<br><strong>大部分时候用到ArrayBuffer和TypedArray</strong></li>
+<li>getshell<br>对于pwn类别的问题，通常在JIT区域构建shellcode代码，用于getshell</li>
+</ol>
+<p>今天的主题1是如何阅读v8和给出一些编写js exp的建议。<br>今天的主题2是我将介绍getshell的通用技术。</p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-154107.png" alt=""><br>问题出现在当时的v8，已经和现在大不相同。</p>
+<ul>
+<li>当时: Full-Codegen(JIT生成) + Crankshaft(优化1) + TurboFan(优化2)</li>
+<li>现在: Ignition(JIT生成) + TurboFan(优化）</li>
+</ul>
+<p>然而对这个bug的学习依然有用。</p>
+<p>要完成这个目标，我们需要掌握以下知识：</p>
+<ol>
+<li>编译器优化<br>触发optimize的条件</li>
+<li>GC（垃圾回收）<br>GC的实现和触发条件</li>
+<li>了解V8的内存结构和类型表示<br>Integer value, double value, pointer, character string, special value, array, ArrayBuffer, etc.</li>
+</ol>
+<p>供参考的exp:<br><a href="https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea" target="_blank" rel="noopener">https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea</a><br><a href="https://rzhou.org/~ricky/pctf2016/js_sandbox.js" target="_blank" rel="noopener">https://rzhou.org/~ricky/pctf2016/js_sandbox.js</a></p>
+<h2 id="什么是v8？"><a href="#什么是v8？" class="headerlink" title="什么是v8？"></a>什么是v8？</h2><p>解释和执行js的引擎<br>由c++实现，parse js代码，构造AST<br>基于AST，JIT将其编译成汇编执行。</p>
+<p>AST：a+b<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-161022.png" alt=""></p>
+<p>在做v8 exp之前，首先我们需要知道v8的结构（你不需要知道所有的结构，因为它更新很快……）<br>但是你必须了解基本的概念。</p>
+<p>在了解了这些之后，你就可以从Exploit的观点去深入</p>
+<ul>
+<li>如何实现任意地址读写？</li>
+<li>如何稳定的利用？</li>
+</ul>
+<p>注意，我们主要讲解2016年4月的v8的结构，如果你想了解现在的v8，下面这些资料是十分有用的。<br><a href="https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for" target="_blank" rel="noopener">https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a></p>
+<h2 id="v8的编译器和优化"><a href="#v8的编译器和优化" class="headerlink" title="v8的编译器和优化"></a>v8的编译器和优化</h2><h3 id="编译器的种类"><a href="#编译器的种类" class="headerlink" title="编译器的种类"></a>编译器的种类</h3><p>要理解v8，其中最重要的组件就是编译器。<br>内部大概分成四个编译器<br>旧的baseline编译器：Full-Codegen<br>旧的优化编译器：Crankshaft<br>新的优化编译器：TurboFan<br>新的baseline编译器：Ignition<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-162728.png" alt=""></p>
+<p>下面这些资料可以用于参考：<br><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">An overview of the TurboFan compiler</a><br><a href="https://docs.google.com/presentation/d/1_eLlVzcj94_G4r9j9d_Lj5HRKFnq6jgpuPJtnmIBs88" target="_blank" rel="noopener">TurboFan: A new code generation architecture for V8</a></p>
+<h3 id="编译器的历史"><a href="#编译器的历史" class="headerlink" title="编译器的历史"></a>编译器的历史</h3><p>最初，Full-Codegen直接生成和执行汇编语言<br>从AST直接生成汇编语言代码（JIT）相对较快，但是生成的汇编语言代码有很多冗杂部分，还有优化空间。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025035.png" alt=""><br>2010年，用于优化hot-code的Crankshaft被引入。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025306.png" alt=""><br>Full-codegen-&gt;Suboptimization code<br>Full-codegen—&gt;optimize-&gt;Crankshaft-&gt;optimisation code—&gt;Deoptimize(If the optimized code is not appropriate, restore it)-&gt;Suboptimization code</p>
+<p>2015年，又引入了TurboFan，为了更好的适应新的javascript规范。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030317.png" alt=""></p>
+<p>2017年，引入了生成中间语言(bytecode)的Ignition<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030943.png" alt=""></p>
+<p>2018年至今，Full-Codegen和Crankshaft已经被从v8中移除。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-031037.png" alt=""></p>
+<h3 id="今天的问题"><a href="#今天的问题" class="headerlink" title="今天的问题~"></a>今天的问题~</h3><p>2016年当时的latest<br>Hidden Class和Inline Caching也用作优化。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-032813.png" alt=""></p>
+<h3 id="编译器和优化"><a href="#编译器和优化" class="headerlink" title="编译器和优化"></a>编译器和优化</h3><ul>
+<li>baseline编译器<br>1.Full-Codegen 重要度低—&gt;对于理解这个exp的重要性</li>
+<li>优化机制<br>2.Hidden Class 重要度中—&gt;更准确的说，Hidden Class是一种有助于自身加速的机制，而Inline Caching是一种基于Hidden Class信息进行优化的机制。<br>3.Inline Caching 重要度中</li>
+<li>优化编译器<br>4.Crankshaft 重要度低<br>5.TurboFan 重要度高</li>
+</ul>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-041132.png" alt=""><br>（顺便说一下）你应该知道的其他部分<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-041214.png" alt=""><br>api.cc、api.h：如果你想集成v8到你自己的程序，可以使用这里的API。<br>compiler/、compiler.cc、compiler.hh：编译起点是src/compiler.cc（从src/api.cc调用）<br>globals.h:常量和其他的定义<br>heap：GC<br>ic：Inline Caching<br>objects-ini.h、objects.cc、objects.h、type.cc、type.h: V8中使用的对象和类型的定义</p>
+<h2 id="Full-Codegen"><a href="#Full-Codegen" class="headerlink" title="Full-Codegen"></a>Full-Codegen</h2><p>Full-Codegen中存在的机制：</p>
+<ul>
+<li>将AST转换为汇编语言<ul>
+<li>它是一个JIT编译器<ul>
+<li>JIT编译器：一种在软件执行时进行编译并提高执行速度的机制</li>
+<li>通过它，v8把要执行的JavaScript代码转换为机器语言</li>
+</ul>
+</li>
+<li>机器语言输出位于JIT区域（= RWX区域）<ul>
+<li>将EIP寄存器移到这个JIT区域并按原样继续执行</li>
+</ul>
+</li>
+<li>它尚未优化</li>
+</ul>
+</li>
+</ul>
+<p>它是一种与当前问题没有太大关系，并且不存在于最新代码中的机制，因此省略了细节</p>
+<h2 id="优化机制"><a href="#优化机制" class="headerlink" title="优化机制"></a>优化机制</h2><ul>
+<li>Full-Codegen生成的机器语言特性（半优化代码）<ul>
+<li>生成速度快，但执行速度慢（造成浪费）</li>
+</ul>
+</li>
+<li><p>因此，使用了根据需要来进行优化的机制</p>
+<ul>
+<li><p>优化1：缓存使用情况</p>
+<ul>
+<li>使用Hidden Class和Inline Caching<ul>
+<li>缓存要调用的地址和要引用的偏移量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>优化2：重新编译为更高效的JIT代码</p>
+<ul>
+<li>优化目标是在运行时确定的<ul>
+<li>在主线程中，正常执行机器语言</li>
+<li>在另一个线程中，Runtime-Profiler测量使用状态<ul>
+<li>Runtime-Profiler：在程序执行时测量和统计执行状态的机制</li>
+<li>根据测量结果判断是否优化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用Crankshaft进行优化编译<ul>
+<li>再次将源编译为机器语言，并将正在运行的机器语言替换掉</li>
+</ul>
+</li>
+<li>使用TurboFan优化编译<ul>
+<li>再次将源编译为机器语言，并将正在运行的机器语言替换掉</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/27/star_primepwn/" rel="next" title="CTF中利用syscall写shellcode及*ctf primepwn writeup">
+                <i class="fa fa-chevron-left"></i> CTF中利用syscall写shellcode及*ctf primepwn writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.uaf.li" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ares-x.com" title="AresX" target="_blank">AresX</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.hexlt.org" title="hexman" target="_blank">hexman</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://kabeor.github.io" title="kabeor" target="_blank">kabeor</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化机制"><span class="nav-number">8.</span> <span class="nav-text">优化机制</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/05/06/v8/';
+          this.page.identifier = '2018/05/06/v8/';
+          this.page.title = 'v8 exploit';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
