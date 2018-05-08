@@ -102,7 +102,18 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-032813.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041132.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041214.png">
-<meta property="og:updated_time" content="2018-05-07T04:31:30.175Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-060921.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-061031.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-123753.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-124009.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-124545.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-125133.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-130350.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-130848.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-131159.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-131813.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-135721.png">
+<meta property="og:updated_time" content="2018-05-08T13:59:39.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -531,7 +542,7 @@
 </li>
 </ul>
 <p>它是一种与当前问题没有太大关系，并且不存在于最新代码中的机制，因此省略了细节</p>
-<h2 id="优化机制"><a href="#优化机制" class="headerlink" title="优化机制"></a>优化机制</h2><ul>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><ul>
 <li>Full-Codegen生成的机器语言特性（半优化代码）<ul>
 <li>生成速度快，但执行速度慢（造成浪费）</li>
 </ul>
@@ -570,6 +581,90 @@
 </ul>
 </li>
 </ul>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-060921.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-061031.png" alt=""></p>
+<h2 id="Hiddern-Class"><a href="#Hiddern-Class" class="headerlink" title="Hiddern Class"></a>Hiddern Class</h2><ol>
+<li>每个property的值都以数组的形式进行管理。</li>
+<li>通过偏移值访问数组里的property值</li>
+</ol>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-123753.png" alt=""></p>
+<p>偏移值被分开管理<br>将属性名称和偏移量的依赖关系保留给另一个类(Map类)<br>这个Map类被称作Hidden Class</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-124009.png" alt=""></p>
+<h3 id="Map生成"><a href="#Map生成" class="headerlink" title="Map生成"></a>Map生成</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-124545.png" alt=""><br>①创建object的时刻（还没有property时），obj1内部指向C0<br>②创建一个没有property的map，type+offset管理，通常被称作C0<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-125133.png" alt=""><br>①当你添加obj1.x的时候，改变obj1内部指向C1<br>②通过向C0添加x的offset信息来创建新的map C1（map也有类型信息）<br>③在C0中添加转换条件<br>Map:C0<br>条件：当x加入时转移到C1</p>
+<p>当访问obj1.x的值时，跟踪obj1所持有的指针，并引用C1以获取“x的偏移量为0”的信息。之后，通过访问obj 1的偏移量0处的值，可以高速的获得x的值。在C1内部，有必要寻找“x”，尽管我个人觉得它与哈希表似乎没有多大区别，但是这会让它更快。</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-130350.png" alt=""><br>①当你添加obj1.y的时候，obj1在内部更改为指向C2<br>②通过向C1添加y的offset信息来创建新的map C2<br>③在C1中添加转换条件<br>条件：添加y时，转换到C2</p>
+<p>此时C0和C1不再使用，但它们不会被移除，因为它们可能在将来被重新使用。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-130848.png" alt=""><br>对于具有完全相同属性的对象，如果你创建类似的对象，自然存在“x”和“y”，你可以使用创建的Map。<br>创建obj 2的时刻指向C0，但通过以与obj 1相同的方式按x和y的顺序添加属性，它遵循转换条件以完成C0-&gt;C1-&gt;C2<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-131159.png" alt=""><br><strong>注意：如果属性添加顺序不同，即使具有相同名称的属性的对象也将具有不同的转换条件。 因此，最终创建的map也会变成不同的map，并且无法获得加速的好处。<br>有关详细信息，请参阅<br><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html" target="_blank" rel="noopener">http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html</a><br>另外，如果property添加/删除次数增加太多，Hidden Class的管理会减慢。<br>因此，此时它不使用Hidden Class，而使用字典类型来管理<br><a href="https://v8project.blogspot.jp/2017/08/fast-properties.html" target="_blank" rel="noopener">https://v8project.blogspot.jp/2017/08/fast-properties.html</a></strong></p>
+<h3 id="property的管理方法"><a href="#property的管理方法" class="headerlink" title="property的管理方法"></a>property的管理方法</h3><ol>
+<li>默认情况下,object的内部管理是通过array实现的</li>
+</ol>
+<ul>
+<li>In-Object property（这次的解说就是用这种方法）</li>
+</ul>
+<ol>
+<li>当property增加到11个以上，使用外部的array来管理。</li>
+</ol>
+<ul>
+<li>Fast property</li>
+</ul>
+<ol>
+<li>如果再进一步增加property，那么就用object外的dictory来管理</li>
+</ol>
+<ul>
+<li>Slow / dict properties<ul>
+<li>它也被称为self-contained，因为没有使用map且使用外部的dictory保存所有的信息</li>
+<li>尽管实体是一个FixedArray的数组，但它被用作如下所示的字典<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-08-131813.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p>参考资料：<a href="https://v8project.blogspot.jp/2017/08/fast-properties.html" target="_blank" rel="noopener">https://v8project.blogspot.jp/2017/08/fast-properties.html</a></p>
+<h3 id="我想在这里说的"><a href="#我想在这里说的" class="headerlink" title="我想在这里说的"></a>我想在这里说的</h3><ol>
+<li>一个object(javascript中)有一个指向Map的指针<ul>
+<li>正如我们稍后会看到的，object的前8个字节是一个指向Map的指针</li>
+</ul>
+</li>
+<li>(JavaScript)object指向的map将根据状况改变<ul>
+<li>在漏洞利用中，这不是一个可靠的指针</li>
+</ul>
+</li>
+<li>相同的类型=Map的地址是相同的<ul>
+<li>比较map的地址即可确定类型是否一致</li>
+</ul>
+</li>
+</ol>
+<h2 id="Inline-Caching"><a href="#Inline-Caching" class="headerlink" title="Inline Caching"></a>Inline Caching</h2><p>参考资料：<br><a href="https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183" target="_blank" rel="noopener">https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a><br><a href="https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for" target="_blank" rel="noopener">https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for</a><br><a href="http://cs.au.dk/~jmi/VM/IC-V8.pdf" target="_blank" rel="noopener">http://cs.au.dk/~jmi/VM/IC-V8.pdf</a></p>
+<ol>
+<li>对于各个action，对类型进行缓存和优化的机制<ul>
+<li>这里所说的action可以表示下列任意一种<ul>
+<li>参照，代入（LoadIC, StoreIC)</li>
+<li>数组访问（KeyedLoadIC，KeyedStoreIC）</li>
+<li>二项演算 (BinaryOpIC）<strong>最近的V8中被去掉了？</strong></li>
+<li>函数调用（CallIC）</li>
+<li>比较（CompareIC)</li>
+<li>布尔化(ToBooleanIC) <strong>最近的V8中被去掉了？</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>某些action的jit code被多次调用时需要考虑的<ul>
+<li>循环和函数多次传递相同的JIT code</li>
+</ul>
+</li>
+<li>在执行JIT代码时着眼于操作目标的类型（≒参数）<ul>
+<li>JIT code很可能与上次通过时的操作类型相同</li>
+<li>例如，以下JavaScript代码显示重复相同类型的操作<ul>
+<li>即使对应每个JIT代码，这个推断也应该保持不变<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (var i=<span class="number">0</span>;</span><br><span class="line">    i&lt;<span class="number">10000</span>;    <span class="comment">// 也许一个integer被从i载入，它是很可能去进行integer和integer的比较</span></span><br><span class="line">    i++)        <span class="comment">// 进行整数相加的可能性很大，i可能用一个整数去代替</span></span><br><span class="line">&#123;</span><br><span class="line">    var j =        <span class="comment">// j可能是被赋值为整数</span></span><br><span class="line">            <span class="number">100</span>*i; <span class="comment">// 也许一个整数会从i加载，它是很可能去进行整数相乘</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-08-135721.png" alt=""></p>
+<ol>
+<li>JavaScript类型=map地址<ul>
+<li>从Hidden Class实现中可以看到，如果是相同类型，那么Map地址是相同的。</li>
+</ul>
+</li>
+</ol>
 
       
     </div>
@@ -823,7 +918,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化机制"><span class="nav-number">8.</span> <span class="nav-text">优化机制</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a></li></ol></div>
             
 
           </div>
