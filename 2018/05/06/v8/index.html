@@ -114,7 +114,8 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-131813.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-135721.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-142505.png">
-<meta property="og:updated_time" content="2018-05-08T14:29:42.322Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-143709.png">
+<meta property="og:updated_time" content="2018-05-08T14:39:13.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -670,6 +671,22 @@
 </li>
 <li><p>实际上，由于有多个Map被注册的情况，所以需要进行函数化<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-08-142505.png" alt=""><br>箭头1：当第二个map被注册时<br>箭头2：当第三个map被注册时</p>
 </li>
+<li><p>IC[存储了/持有]State</p>
+<ul>
+<li>UNINITIALIZED(0): 未初始化</li>
+<li>PREMONOMORPHIC(.): 只被执行一次的情况，还没进行IC</li>
+<li>MONOMORPHIC(1): IC注册一个的状态（快速）</li>
+<li>POLYMORPHIC(P): IC注册两个以上的状态（一般的快）</li>
+<li>MEGAMORPHIC(N): IC注册多个的状态</li>
+<li>GENERIC(G):IC已停止的状态<br><strong>括号里是对于之后所说的debug输出（–trace-ic）的省略的标注</strong></li>
+<li>基本上是从上到下进行迁移的(0-&gt;.-&gt;1-&gt;P-&gt;N-&gt;G)<ul>
+<li>有些直接从0→1，如CallIC等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Inline Caching可通过-trace-ic进行确认<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-08-143709.png" alt=""></li>
+<li>使用–use-ic启用IC（默认），使用–no-use-ic禁用</li>
 </ol>
 
       
