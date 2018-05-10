@@ -117,7 +117,14 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-143709.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png">
-<meta property="og:updated_time" content="2018-05-10T05:26:53.664Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-081152.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-082624.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-082716.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-084845.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-085002.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-085250.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-085453.png">
+<meta property="og:updated_time" content="2018-05-10T08:58:22.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -765,7 +772,75 @@
 </li>
 </ul>
 <p><strong>因为，它是一种与当前问题没有太大关系并且不存在于最新代码中的机制，因此省略了细节。<br>如果需要了解细节，可以参考这篇文章：<a href="http://nothingcosmos.github.io/V8Crankshaft/src/blog.html" target="_blank" rel="noopener">http://nothingcosmos.github.io/V8Crankshaft/src/blog.html</a></strong></p>
-<h3 id="TurboFan"><a href="#TurboFan" class="headerlink" title="TurboFan"></a>TurboFan</h3><p><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p</a><br>TurboFan全览<br>下图显示了截至2018年TurboFan的整体情况<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png" alt=""><br>在图中，bytecode在输入中，但在2016年应该不是这样。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png" alt=""></p>
+<h3 id="TurboFan"><a href="#TurboFan" class="headerlink" title="TurboFan"></a>TurboFan</h3><p>参考资料：<br><a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">https://github.com/v8/v8/wiki/TurboFan</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a><br><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p</a></p>
+<h4 id="TurboFan全览"><a href="#TurboFan全览" class="headerlink" title="TurboFan全览"></a>TurboFan全览</h4><p>下图显示了截至2018年TurboFan的整体情况<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png" alt=""><br>在图中，bytecode在输入中，但在2016年应该不是这样。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png" alt=""></p>
+<h4 id="TurboFan的特征"><a href="#TurboFan的特征" class="headerlink" title="TurboFan的特征"></a>TurboFan的特征</h4><ul>
+<li>Graph Building<ul>
+<li>从AST创建一个JavaScript节点的graph<ul>
+<li>SAdd，JSCallFunction，JSLoadProperty，IfTrue，IfFalse等等</li>
+</ul>
+</li>
+<li>在making graphs优化</li>
+</ul>
+</li>
+<li>Optimization<ul>
+<li>graph的各种优化</li>
+</ul>
+</li>
+<li>Code Generation<ul>
+<li>机器码生成</li>
+</ul>
+</li>
+</ul>
+<h4 id="TurboFan优化"><a href="#TurboFan优化" class="headerlink" title="TurboFan优化"></a>TurboFan优化</h4><ul>
+<li>src/compiler/pipeline.cc参考<ul>
+<li>inline<ul>
+<li>inline function call</li>
+</ul>
+</li>
+<li>trimming<ul>
+<li>删除无法访问的节点</li>
+</ul>
+</li>
+<li>typer<ul>
+<li>Type information gathering and type optimization</li>
+</ul>
+</li>
+<li>typed-lowering<ul>
+<li>Convert expressions and instructions based on type</li>
+</ul>
+</li>
+<li>loop-peeling<ul>
+<li>将循环内的处理放在循环之外</li>
+</ul>
+</li>
+<li>simplified-lowering<ul>
+<li>Simplify with more specific instructions</li>
+</ul>
+</li>
+<li>branch-elimination<ul>
+<li>Delete unnecessary branches</li>
+</ul>
+</li>
+<li>generic-lowering<ul>
+<li>Convert JS prefixed instructions to simple calls and stub calls</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-081152.png" alt=""></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-082624.png" alt=""><br>文本框中的文字如下：<br><strong>细节</strong><br>出于某种原因，在名为GenerateCode()的函数中执行了对类型和graph的各种优化。<br>此外，尽管从CreateGraph()调用GenerateCode()，但这些函数原本应该是独立的。(在代码中还有三个独立的部分，job-&gt; CreateGraph()，job-&gt; OptimizeGraph()，job-&gt; GenerateCode()）<br>实际上，在V8的这个时间段中，每个phase都没有完全分离，因为优化和代码生成都是在CreateGraph()函数内部实现的。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-082716.png" alt=""></p>
+<h4 id="Crankshaft-TurboFan检查"><a href="#Crankshaft-TurboFan检查" class="headerlink" title="Crankshaft/TurboFan检查"></a>Crankshaft/TurboFan检查</h4><ul>
+<li>Crankshaft/TurboFan能够被确认使用，通过–trace-opt<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-084845.png" alt=""><br>上面框：大约调用函数10000次<br>下面框：Crankshaft被使用</li>
+</ul>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-085002.png" alt=""><br>Crankshaft不能对包含with语句的函数进行优化，所以如果你在函数后添加add语句，TurboFan将会被调用。</p>
+<ul>
+<li><p>TurboFan还可以通过 –turbo-stats查看优化列表和统计数据<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-085250.png" alt=""></p>
+</li>
+<li><p>Confirm results with d8 –print_code等<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-085453.png" alt=""><br>Crankshaft, TurboFan, Inline Caching related, etc. can be confirmed considerably</p>
+</li>
+</ul>
 
       
     </div>
@@ -1023,7 +1098,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan全览"><span class="nav-number">11.3.1.</span> <span class="nav-text">TurboFan全览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan的特征"><span class="nav-number">11.3.2.</span> <span class="nav-text">TurboFan的特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan优化"><span class="nav-number">11.3.3.</span> <span class="nav-text">TurboFan优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crankshaft-TurboFan检查"><span class="nav-number">11.3.4.</span> <span class="nav-text">Crankshaft/TurboFan检查</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
