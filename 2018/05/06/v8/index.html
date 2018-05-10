@@ -115,7 +115,9 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-135721.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-142505.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-08-143709.png">
-<meta property="og:updated_time" content="2018-05-08T15:08:28.502Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png">
+<meta property="og:updated_time" content="2018-05-10T05:26:53.664Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -722,6 +724,48 @@
 </li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">将函数切换为优化代码时，可以将指针更新为函数对象的JIT区域</span><br><span class="line"><span class="function">function <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;<span class="comment">// hot-code(都有成为hot-code的可能性)</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (var i=<span class="number">0</span>; i&lt;<span class="number">10000</span>; i++) &#123;</span><br><span class="line">    func(); <span class="comment">// hot-code(都有成为hot-code的可能性)</span></span><br><span class="line">&#125;</span><br><span class="line">在循环中，当从中间切换到优化代码时，可以将jmp目标切换到循环的顶部，但仍然存在名为OSR（On-Stack-Replacement）的切换方法。</span><br><span class="line">但这里省略，参考这篇文章：https:<span class="comment">//wingolog.org/archives/2011/06/20/on-stack-replacement-in-v8）</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>最优化编译器的使用条件（主要的）<ol>
+<li>未优化的语法不在函数/循环中使用<ul>
+<li>debugger语句，eval语句，等等</li>
+</ul>
+</li>
+<li>如果有“use asm”语句，则使用TurboFan<ul>
+<li>只有TurboFan可以优化asm.js</li>
+</ul>
+</li>
+<li>如果有Crankshaft不支持的语法，则将使用TurboFan<ul>
+<li>try catch，with等</li>
+</ul>
+</li>
+<li>Crankshaft被默认使用<ul>
+<li>这是2016年的情况，现在Crankshaft被移除。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="Crankshaft"><a href="#Crankshaft" class="headerlink" title="Crankshaft"></a>Crankshaft</h3><p>Crankshaft的特点</p>
+<ul>
+<li>Type-feeback<ul>
+<li>通过使用runtime-profiler收集的信息，确定类型来加快速度</li>
+<li>最终生成的优化代码包含一个类型检查</li>
+<li>当它不能确定类型时，它将返回到优化前的代码。</li>
+</ul>
+</li>
+<li>Hydrogen (optimization by high-level intermediate representation (HIR))<ul>
+<li>AST以SSA格式表示</li>
+<li>各种优化，比如将loop内部不变的变量移到loop外。</li>
+</ul>
+</li>
+<li>lithium（Optimization by Low-Level Intermediate Representation (LIR)）<ul>
+<li>快速的寄存器分配算法</li>
+<li>依赖CPU的优化，code生成</li>
+</ul>
+</li>
+</ul>
+<p><strong>因为，它是一种与当前问题没有太大关系并且不存在于最新代码中的机制，因此省略了细节。<br>如果需要了解细节，可以参考这篇文章：<a href="http://nothingcosmos.github.io/V8Crankshaft/src/blog.html" target="_blank" rel="noopener">http://nothingcosmos.github.io/V8Crankshaft/src/blog.html</a></strong></p>
+<h3 id="TurboFan"><a href="#TurboFan" class="headerlink" title="TurboFan"></a>TurboFan</h3><p><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p</a><br>TurboFan全览<br>下图显示了截至2018年TurboFan的整体情况<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png" alt=""><br>在图中，bytecode在输入中，但在2016年应该不是这样。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png" alt=""></p>
 
       
     </div>
@@ -941,6 +985,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://030.im/" title="Misaka030" target="_blank">Misaka030</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="http://admintony.com" title="AdminTony" target="_blank">AdminTony</a>
                   </li>
                 
@@ -975,7 +1023,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a></li></ol></li></ol></div>
             
 
           </div>
