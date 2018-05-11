@@ -138,7 +138,20 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-165454.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-165926.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-10-173611.png">
-<meta property="og:updated_time" content="2018-05-10T18:11:47.242Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-025437.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-025736.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-032534.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-062509.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-062616.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-062838.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-070014.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-070702.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-071307.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-072518.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-191321.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-192033.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-11-192358.png">
+<meta property="og:updated_time" content="2018-05-11T19:30:07.135Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -1112,16 +1125,148 @@
 </li>
 </ul>
 </li>
-<li>以下是非常有用的<br><a href="https://github.com/danbev/learning-v8/blob/master/README.md" target="_blank" rel="noopener">https://github.com/danbev/learning-v8/blob/master/README.md</a><h2 id="关于V8的GC"><a href="#关于V8的GC" class="headerlink" title="关于V8的GC"></a>关于V8的GC</h2><h3 id="垃圾收集器（GC）"><a href="#垃圾收集器（GC）" class="headerlink" title="垃圾收集器（GC）"></a>垃圾收集器（GC）</h3></li>
+<li>以下是非常有用的<br><a href="https://github.com/danbev/learning-v8/blob/master/README.md" target="_blank" rel="noopener">https://github.com/danbev/learning-v8/blob/master/README.md</a><h2 id="关于V8的GC"><a href="#关于V8的GC" class="headerlink" title="关于V8的GC"></a>关于V8的GC</h2><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><a href="https://github.com/thlorenz/v8-perf/blob/master/gc.md" target="_blank" rel="noopener">https://github.com/thlorenz/v8-perf/blob/master/gc.md</a><br><a href="https://github.com/joyeecheung/v8-gc-talk" target="_blank" rel="noopener">https://github.com/joyeecheung/v8-gc-talk</a></li>
 </ul>
 </li>
-<li>另一个重要组件是垃圾收集器<ul>
+</ul>
+<h3 id="垃圾收集器（GC）"><a href="#垃圾收集器（GC）" class="headerlink" title="垃圾收集器（GC）"></a>垃圾收集器（GC）</h3><ul>
+<li><p>另一个重要组件是垃圾收集器</p>
+<ul>
 <li>一种在V8中单独管理JavaScript对象（称为HeapObject）的机制<ul>
 <li>如何检测废弃的对象并自动释放它们</li>
 </ul>
 </li>
+<li>使用与Linux heap不同的区域</li>
 </ul>
 </li>
+<li><p>GC区域</p>
+<ul>
+<li>除heap以外，还有多个由mmap保护的区域</li>
+<li>V8内部使用的各种HeapObject被保留在这个区域<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-025437.png" alt=""></li>
+</ul>
+</li>
+<li><p>heap区域</p>
+<ul>
+<li>如果不是js object（=不应该由GC管理），用c++语言管理普通object</li>
+<li>虽然是一个JavaScript object，但有些例外，存放在heap而不是HeapObject（例如JSArrayBuffer的BackingStore）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-025736.png" alt=""></li>
+</ul>
+</li>
+</ul>
+<p>GC中有2种generation(= regions with different management methods)</p>
+<ol>
+<li>Young Generation</li>
+<li>Old Generation</li>
+</ol>
+<p>根据GC中object的生存时间，它被分为两类generation ，Young/Old (and New/Old described later)<br>这不是关于V8版本之间的区别<br>除此之外，还有一些区域不属于任何一个generation<br>为了方便起见，它被写为Other，但是其实是关于Large Object Space</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-032534.png" alt=""></p>
+<p>在源代码中，有些地方包含Old generation的large object space的描述，但基本上认为它们是不同的东西</p>
+<h3 id="Young-Generation"><a href="#Young-Generation" class="headerlink" title="Young Generation"></a>Young Generation</h3><ul>
+<li><p>New Space</p>
+<ul>
+<li>新创建的object被保留在这里，并且受到GC管理</li>
+<li>Almost all objects</li>
+<li>code object，map object和large object被排除在外<ul>
+<li>除了看源码之外还有其他的东西，但是从exploit的视角看不重要</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>The GC algorithm is Cheney’s algorithm</p>
+<ul>
+<li><p>为了使用这种算法，它进一步分为两个区域</p>
+<ul>
+<li>ToSpace</li>
+<li>FromSpace<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-062509.png" alt=""></li>
+</ul>
+</li>
+<li><p>这个GC在源码里被称为Scavenge</p>
+<ul>
+<li><strong>我会解读它，因为它很重要。</strong></li>
+<li>这一次我会解读2016年的GC，但最近这个算法发生了变化，与并行化兼容<br>参考资料：<a href="https://v8project.blogspot.jp/2017/11/" target="_blank" rel="noopener">https://v8project.blogspot.jp/2017/11/</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Cheney’s algorithm<ul>
+<li>Each object is reserved from the beginning of ToSpace<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-062616.png" alt=""></li>
+<li>当memory exhaustion（空间用罄）时候，GC被调用</li>
+<li>主线程的操作(Javascript执行的线程)被暂停<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-062838.png" alt=""></li>
+<li>Switch To Space and From Space</li>
+<li>Actually dealing with pointer swap (flip)<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-070014.png" alt=""></li>
+<li>仅将living object复制到To Space<ul>
+<li>首先，确保live (= alive), copy one starting object。<ul>
+<li>有各种各样的root objects (such as global objects, built-in objects, local objects within the scope of living, etc. ）<br>有各种各样的说法，详情请参阅heap/heap.cc的IterateRoots()。</li>
+<li>从Old side可以访问的object (由后面讲解的Write Barrier mechanism管理), etc.<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-070702.png" alt=""></li>
+</ul>
+</li>
+<li>顺次复制living的object。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-071307.png" alt=""><ul>
+<li>还有一些要复制到old generation的object<br> <strong>正如我们后面将会看到的那样,两次在young generation的GC中幸存下来的对象，被复制到old generation的空间而不是复制到ToSpace</strong></li>
+</ul>
+</li>
+<li>完成后，重新选择root并重复复制。</li>
+</ul>
+</li>
+<li>再次分配之前未分配完成的obj-e<ul>
+<li>From Space中还有garbage存在，但是因为我们不会再次使用它们，所以无所谓。</li>
+<li>之后，每次GC发生时，都会重复上面这一系列的流程<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-072518.png" alt="">    </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Old-Generation"><a href="#Old-Generation" class="headerlink" title="Old Generation"></a>Old Generation</h3><ul>
+<li>old space<ul>
+<li>long-lived objects存放的区域<ul>
+<li>New Space中, 在两次GC之后存活下来的object <ul>
+<li>更多细节参考Heap::ShouldBePromoted()</li>
+</ul>
+</li>
+<li>old space发生GC的频率比new space少（取决于使用过程）<ul>
+<li>如果一个object被移动到old space，该object不会受到GC更改layout的影响<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-191321.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>code space<ul>
+<li>仅适用于JIT的code object<ul>
+<li>由于code object是RWX，因此它从一开始就保留在此区域中<ul>
+<li>由于它是JIT代码，因此不仅要读取（R）写入（W），还要执行（X），因此memory permissions与其他的地方不同。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Map Space</p>
+<ul>
+<li>仅Map object<ul>
+<li>出于GC效率的考虑，Map object从一开始就位于此区域<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-192033.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>old generation的GC算法是Mark-Sweep-Compact</p>
+<ul>
+<li>除New Space区域以外的所有算法</li>
+<li>由于它与Exploit无关，因此省略了详细信息<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-192358.png" alt=""><h3 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h3></li>
+</ul>
+</li>
+<li>Large Object Space<ul>
+<li>保留600KB或更大的object的区域<ul>
+<li>它由mmap直接分配</li>
+<li>如果有多个安全区域，请使用链表进行管理</li>
+<li>它不在GC中移动</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Write-Barrier"><a href="#Write-Barrier" class="headerlink" title="Write Barrier"></a>Write Barrier</h3><p>参考资料：</p>
+<ul>
+<li><a href="https://v8project.blogspot.jp/2016/04/jank-busters-part-two-orinoco.html" target="_blank" rel="noopener">https://v8project.blogspot.jp/2016/04/jank-busters-part-two-orinoco.html</a></li>
+<li><a href="https://www.slideshare.net/NodejsFoundation/are-your-v8-garbage-collection-logs-speaking-to-youjoyee-cheung-alibaba-cloudalibaba-group" target="_blank" rel="noopener">https://www.slideshare.net/NodejsFoundation/are-your-v8-garbage-collection-logs-speaking-to-youjoyee-cheung-alibaba-cloudalibaba-group</a></li>
 </ul>
 
       
@@ -1380,7 +1525,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan全览"><span class="nav-number">11.3.1.</span> <span class="nav-text">TurboFan全览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan的特征"><span class="nav-number">11.3.2.</span> <span class="nav-text">TurboFan的特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan优化"><span class="nav-number">11.3.3.</span> <span class="nav-text">TurboFan优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crankshaft-TurboFan检查"><span class="nav-number">11.3.4.</span> <span class="nav-text">Crankshaft/TurboFan检查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器调用的流程"><span class="nav-number">11.4.</span> <span class="nav-text">编译器调用的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#被调用"><span class="nav-number">11.4.1.</span> <span class="nav-text">被调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用堆栈查看"><span class="nav-number">11.4.2.</span> <span class="nav-text">调用堆栈查看</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读V8的源码"><span class="nav-number">12.</span> <span class="nav-text">阅读V8的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Handle-HandleScope"><span class="nav-number">12.1.</span> <span class="nav-text">Handle/HandleScope</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">12.2.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolate"><span class="nav-number">12.3.</span> <span class="nav-text">Isolate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Platform"><span class="nav-number">12.4.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interpreter"><span class="nav-number">12.5.</span> <span class="nav-text">Interpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blob"><span class="nav-number">12.6.</span> <span class="nav-text">blob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICU"><span class="nav-number">12.7.</span> <span class="nav-text">ICU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#third-party"><span class="nav-number">12.8.</span> <span class="nav-text">third_party</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tools"><span class="nav-number">12.9.</span> <span class="nav-text">tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">12.10.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于V8的GC"><span class="nav-number">13.</span> <span class="nav-text">关于V8的GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器（GC）"><span class="nav-number">13.1.</span> <span class="nav-text">垃圾收集器（GC）</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan全览"><span class="nav-number">11.3.1.</span> <span class="nav-text">TurboFan全览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan的特征"><span class="nav-number">11.3.2.</span> <span class="nav-text">TurboFan的特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan优化"><span class="nav-number">11.3.3.</span> <span class="nav-text">TurboFan优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crankshaft-TurboFan检查"><span class="nav-number">11.3.4.</span> <span class="nav-text">Crankshaft/TurboFan检查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器调用的流程"><span class="nav-number">11.4.</span> <span class="nav-text">编译器调用的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#被调用"><span class="nav-number">11.4.1.</span> <span class="nav-text">被调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用堆栈查看"><span class="nav-number">11.4.2.</span> <span class="nav-text">调用堆栈查看</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读V8的源码"><span class="nav-number">12.</span> <span class="nav-text">阅读V8的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Handle-HandleScope"><span class="nav-number">12.1.</span> <span class="nav-text">Handle/HandleScope</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">12.2.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolate"><span class="nav-number">12.3.</span> <span class="nav-text">Isolate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Platform"><span class="nav-number">12.4.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interpreter"><span class="nav-number">12.5.</span> <span class="nav-text">Interpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blob"><span class="nav-number">12.6.</span> <span class="nav-text">blob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICU"><span class="nav-number">12.7.</span> <span class="nav-text">ICU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#third-party"><span class="nav-number">12.8.</span> <span class="nav-text">third_party</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tools"><span class="nav-number">12.9.</span> <span class="nav-text">tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">12.10.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于V8的GC"><span class="nav-number">13.</span> <span class="nav-text">关于V8的GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">13.1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器（GC）"><span class="nav-number">13.2.</span> <span class="nav-text">垃圾收集器（GC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Young-Generation"><span class="nav-number">13.3.</span> <span class="nav-text">Young Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Old-Generation"><span class="nav-number">13.4.</span> <span class="nav-text">Old Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other"><span class="nav-number">13.5.</span> <span class="nav-text">Other</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-Barrier"><span class="nav-number">13.6.</span> <span class="nav-text">Write Barrier</span></a></li></ol></li></ol></div>
             
 
           </div>
