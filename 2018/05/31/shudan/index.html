@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="kernel," />
+  <meta name="keywords" content="入门书单," />
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="这个最后是失败了的，各种原因吧，主要是gdb版本的问题，我又不想重新编译gdb就放弃了这个方法，不过供其他想要搭建qemu+gdb的人参考吧，毕竟我也折腾老半天了。。可能以后哪天成功了回来更新一下。 环境12345parallels@ubuntu:~/ctf/hit/once$ uname -aLinux ubuntu 4.4.0-116-generic #140-Ubuntu SMP Mon F">
-<meta name="keywords" content="kernel">
+<meta name="description" content="因为之前经常有人问我入门看什么书……就写一下吧。 逆向c++反汇编技术解密链接:https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w  密码:k0aa介绍：这本是完整看完了的，后面关于对象和类写的不错。 使用OllyDbg从零开始Cracking(已完结）链接:https://pan.baidu.com/s/1z0bAqzYU9Ii60v7___coDg">
+<meta name="keywords" content="入门书单">
 <meta property="og:type" content="article">
-<meta property="og:title" content="qemu+gdb kernel调试环境搭建">
-<meta property="og:url" content="http://eternalsakura13.com/2018/04/13/qemu/index.html">
+<meta property="og:title" content="ctf re&#x2F;pwn入门书单">
+<meta property="og:url" content="http://eternalsakura13.com/2018/05/31/shudan/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="这个最后是失败了的，各种原因吧，主要是gdb版本的问题，我又不想重新编译gdb就放弃了这个方法，不过供其他想要搭建qemu+gdb的人参考吧，毕竟我也折腾老半天了。。可能以后哪天成功了回来更新一下。 环境12345parallels@ubuntu:~/ctf/hit/once$ uname -aLinux ubuntu 4.4.0-116-generic #140-Ubuntu SMP Mon F">
+<meta property="og:description" content="因为之前经常有人问我入门看什么书……就写一下吧。 逆向c++反汇编技术解密链接:https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w  密码:k0aa介绍：这本是完整看完了的，后面关于对象和类写的不错。 使用OllyDbg从零开始Cracking(已完结）链接:https://pan.baidu.com/s/1z0bAqzYU9Ii60v7___coDg">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-12T16:41:36.010Z">
+<meta property="og:updated_time" content="2018-05-30T17:20:24.151Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="qemu+gdb kernel调试环境搭建">
-<meta name="twitter:description" content="这个最后是失败了的，各种原因吧，主要是gdb版本的问题，我又不想重新编译gdb就放弃了这个方法，不过供其他想要搭建qemu+gdb的人参考吧，毕竟我也折腾老半天了。。可能以后哪天成功了回来更新一下。 环境12345parallels@ubuntu:~/ctf/hit/once$ uname -aLinux ubuntu 4.4.0-116-generic #140-Ubuntu SMP Mon F">
+<meta name="twitter:title" content="ctf re&#x2F;pwn入门书单">
+<meta name="twitter:description" content="因为之前经常有人问我入门看什么书……就写一下吧。 逆向c++反汇编技术解密链接:https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w  密码:k0aa介绍：这本是完整看完了的，后面关于对象和类写的不错。 使用OllyDbg从零开始Cracking(已完结）链接:https://pan.baidu.com/s/1z0bAqzYU9Ii60v7___coDg">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://eternalsakura13.com/2018/04/13/qemu/"/>
+  <link rel="canonical" href="http://eternalsakura13.com/2018/05/31/shudan/"/>
 
 
 
@@ -138,7 +138,7 @@
         }
     })();
 </script>
-  <title>qemu+gdb kernel调试环境搭建 | Sakuraのblog</title>
+  <title>ctf re/pwn入门书单 | Sakuraのblog</title>
   
 
 
@@ -318,7 +318,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/04/13/qemu/">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/05/31/shudan/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
@@ -335,7 +335,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">qemu+gdb kernel调试环境搭建</h1>
+          <h1 class="post-title" itemprop="name headline">ctf re/pwn入门书单</h1>
         
 
         <div class="post-meta">
@@ -347,8 +347,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T00:38:38+08:00">
-                2018-04-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-31T00:42:24+08:00">
+                2018-05-31
               </time>
             
 
@@ -370,30 +370,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/pwn/" itemprop="url" rel="index">
-                    <span itemprop="name">pwn</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/pwn/kernel/" itemprop="url" rel="index">
-                    <span itemprop="name">kernel</span>
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
                   </a>
                 </span>
 
@@ -410,9 +388,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/04/13/qemu/#comments" itemprop="discussionUrl">
+                <a href="/2018/05/31/shudan/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/13/qemu/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/05/31/shudan/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -445,22 +423,17 @@
       
 
       
-        <p>这个最后是失败了的，各种原因吧，主要是gdb版本的问题，我又不想重新编译gdb就放弃了这个方法，不过供其他想要搭建qemu+gdb的人参考吧，毕竟我也折腾老半天了。。<br>可能以后哪天成功了回来更新一下。</p>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">parallels@ubuntu:~/ctf/hit/once$ uname -a</span><br><span class="line">Linux ubuntu 4.4.0-116-generic #140-Ubuntu SMP Mon Feb 12 21:23:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line"></span><br><span class="line">parallels@ubuntu:~/ctf/hit/once$ gcc -v</span><br><span class="line">gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.9)</span><br></pre></td></tr></table></figure>
-<h2 id="下kernel-source-code，解压"><a href="#下kernel-source-code，解压" class="headerlink" title="下kernel source code，解压"></a>下kernel source code，解压</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.10.1.tar.gz</span><br><span class="line">tar -xzvf linux-4.10.1.tar.gz //解压tar.gz</span><br></pre></td></tr></table></figure>
-<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential libncurses5-dev</span><br></pre></td></tr></table></figure>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><ol>
-<li><p>make menuconfig<br>进入kernel hacking<br>勾选以下项目<br>Kernel debugging<br>Compile-time checks and compiler options —&gt; Compile the kernel with debug info和Compile the kernel with frame pointers<br>KGDB<br>然后保存退出</p>
-</li>
-<li><p>make bzImage<br>提示如下信息则编译成功</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Setup is 17436 bytes (padded to 17920 bytes).</span><br><span class="line">System is 7063 kB</span><br><span class="line">CRC 78823741</span><br><span class="line">Kernel: arch/x86/boot/bzImage is ready  (#1)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>从kernel source code根目录取到vmlinux，从arch/x86/boot/取到bzImage</p>
-</li>
-</ol>
-<h2 id="编译busybox"><a href="#编译busybox" class="headerlink" title="编译busybox"></a>编译busybox</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://busybox.net/downloads/busybox-1.27.2.tar.bz2</span><br><span class="line">tar -jxvf busybox-1.27.2.tar.bz2</span><br><span class="line">cd busybox-1.27.2</span><br><span class="line">make menuconfig # Busybox Settings -&gt; Build Options -&gt; Build Busybox as a static binary</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-<h2 id="建立文件系统（busybox"><a href="#建立文件系统（busybox" class="headerlink" title="建立文件系统（busybox)"></a>建立文件系统（busybox)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd _install</span><br><span class="line">mkdir -pv &#123;bin,sbin,etc,proc,sys,usr/&#123;bin,sbin&#125;&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">vim etc/inittab</span><br><span class="line">添加以下内容</span><br><span class="line">::sysinit:/etc/init.d/rcS</span><br><span class="line">::askfirst:/bin/ash</span><br><span class="line">::ctrlaltdel:/sbin/reboot</span><br><span class="line">::shutdown:/sbin/swapoff -a</span><br><span class="line">::shutdown:/bin/umount -a -r</span><br><span class="line">::restart:/sbin/init</span><br><span class="line"></span><br><span class="line">mkdir etc/init.d</span><br><span class="line">vim etc/init.d/rcS </span><br><span class="line">添加以下内容</span><br><span class="line">#!/bin/sh</span><br><span class="line">mount -t proc none /proc</span><br><span class="line">mount -t sys none /sys</span><br><span class="line">/bin/mount -n -t sysfs none /sys</span><br><span class="line">/bin/mount -t ramfs none /dev</span><br><span class="line">/sbin/mdev -s</span><br><span class="line"></span><br><span class="line">chmod +x ./etc/init.d/rcS</span><br><span class="line"></span><br><span class="line">find . | cpio -o --format=newc &gt; ~/core/rootfs.img</span><br><span class="line">gzip -c rootfs.img &gt; rootfs.img.gz</span><br></pre></td></tr></table></figure>
+        <p>因为之前经常有人问我入门看什么书……就写一下吧。</p>
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="c-反汇编技术解密"><a href="#c-反汇编技术解密" class="headerlink" title="c++反汇编技术解密"></a>c++反汇编技术解密</h3><p>链接:<a href="https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w" target="_blank" rel="noopener">https://pan.baidu.com/s/1d-XqvHTU85K88aDwMNBl5w</a>  密码:k0aa<br>介绍：这本是完整看完了的，后面关于对象和类写的不错。</p>
+<h3 id="使用OllyDbg从零开始Cracking-已完结）"><a href="#使用OllyDbg从零开始Cracking-已完结）" class="headerlink" title="使用OllyDbg从零开始Cracking(已完结）"></a>使用OllyDbg从零开始Cracking(已完结）</h3><p>链接:<a href="https://pan.baidu.com/s/1z0bAqzYU9Ii60v7___coDg" target="_blank" rel="noopener">https://pan.baidu.com/s/1z0bAqzYU9Ii60v7___coDg</a>  密码:6imi<br>解压密码:pediy<br>介绍：学习od使用的教程，动手实践上不错，翻译和配套资料在看雪可以搜到。</p>
+<h3 id="逆向工程权威指南"><a href="#逆向工程权威指南" class="headerlink" title="逆向工程权威指南"></a>逆向工程权威指南</h3><p><a href="https://beginners.re/" target="_blank" rel="noopener">https://beginners.re/</a><br>链接:<a href="https://pan.baidu.com/s/1BtJEsqE2e_DHFlzJWrJw2g" target="_blank" rel="noopener">https://pan.baidu.com/s/1BtJEsqE2e_DHFlzJWrJw2g</a>  密码:wenn</p>
+<h2 id="pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf-pwn看过的书）"><a href="#pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf-pwn看过的书）" class="headerlink" title="pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf pwn看过的书）"></a>pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf pwn看过的书）</h2><h3 id="0day安全2"><a href="#0day安全2" class="headerlink" title="0day安全2"></a>0day安全2</h3><p>链接:<a href="https://pan.baidu.com/s/1LITCWADikf7bBUskZiFHAA" target="_blank" rel="noopener">https://pan.baidu.com/s/1LITCWADikf7bBUskZiFHAA</a>  密码:0zgo<br>介绍：我只看了前半本的内容，书有点老了，感觉看不看没影响。</p>
+<h3 id="深入理解计算机系统"><a href="#深入理解计算机系统" class="headerlink" title="深入理解计算机系统"></a>深入理解计算机系统</h3><p>链接:<a href="https://pan.baidu.com/s/1gtB8fEUUtFj8blwJnajICQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1gtB8fEUUtFj8blwJnajICQ</a>  密码:yx0s<br>介绍：必读书，读了大概一个周，不求全懂，大概用到的地方都看过了，其他的用到再查了，其实内容也不是很深。</p>
+<h3 id="程序员的自我修养"><a href="#程序员的自我修养" class="headerlink" title="程序员的自我修养"></a>程序员的自我修养</h3><p>链接:<a href="https://pan.baidu.com/s/1cALpx_D_9CR9hWWM9rIMwQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1cALpx_D_9CR9hWWM9rIMwQ</a>  密码:73pe<br>介绍: 必读的基础书，讲Linux上的程序装载链接什么的，很有意义。</p>
+<h3 id="glibc内存管理ptmalloc源代码分析"><a href="#glibc内存管理ptmalloc源代码分析" class="headerlink" title="glibc内存管理ptmalloc源代码分析"></a>glibc内存管理ptmalloc源代码分析</h3><p>链接:<a href="https://pan.baidu.com/s/1-0odrFdV0Dn7xgehicuz0A" target="_blank" rel="noopener">https://pan.baidu.com/s/1-0odrFdV0Dn7xgehicuz0A</a>  密码:su8n<br>介绍：理解Linux堆管理的必读书</p>
+<h3 id="漏洞战争"><a href="#漏洞战争" class="headerlink" title="漏洞战争"></a>漏洞战争</h3><p>链接：没有电子版，谁有的话补个链接吧……<br>介绍：很好的书，里面的案例能调的都值得调一下。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>书的话入门看看就好，也没必要从头看到尾，用到的内容记住，其他的知道在哪查就好（反正仔细看完也会忘干净的，指自己）<br>一般一本几百页的书，最多看一个周就看完了，如果我只需要看其中一部分可能更快。<br>大部分学习用到的东西都是谷歌搜索，看PPT和博客，这部分就不补充了（因为太多了）</p>
+
       
     </div>
     
@@ -477,7 +450,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
+            <a href="/tags/入门书单/" rel="tag"># 入门书单</a>
           
         </div>
       
@@ -490,8 +463,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/03/heapstorm2/" rel="next" title="0ctf2018 heapstorm2 writeup">
-                <i class="fa fa-chevron-left"></i> 0ctf2018 heapstorm2 writeup
+              <a href="/2018/05/06/v8/" rel="next" title="v8 exploit">
+                <i class="fa fa-chevron-left"></i> v8 exploit
               </a>
             
           </div>
@@ -500,8 +473,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/04/14/cve-2017-8890/" rel="prev" title="CVE-2017-8890调试笔记">
-                CVE-2017-8890调试笔记 <i class="fa fa-chevron-right"></i>
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -717,7 +690,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下kernel-source-code，解压"><span class="nav-number">2.</span> <span class="nav-text">下kernel source code，解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">3.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译"><span class="nav-number">4.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译busybox"><span class="nav-number">5.</span> <span class="nav-text">编译busybox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立文件系统（busybox"><span class="nav-number">6.</span> <span class="nav-text">建立文件系统（busybox)</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#逆向"><span class="nav-number">1.</span> <span class="nav-text">逆向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#c-反汇编技术解密"><span class="nav-number">1.1.</span> <span class="nav-text">c++反汇编技术解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用OllyDbg从零开始Cracking-已完结）"><span class="nav-number">1.2.</span> <span class="nav-text">使用OllyDbg从零开始Cracking(已完结）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逆向工程权威指南"><span class="nav-number">1.3.</span> <span class="nav-text">逆向工程权威指南</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf-pwn看过的书）"><span class="nav-number">2.</span> <span class="nav-text">pwn（浏览器、内核什么的书就不安利了……太多了，只写一下学ctf pwn看过的书）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0day安全2"><span class="nav-number">2.1.</span> <span class="nav-text">0day安全2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深入理解计算机系统"><span class="nav-number">2.2.</span> <span class="nav-text">深入理解计算机系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序员的自我修养"><span class="nav-number">2.3.</span> <span class="nav-text">程序员的自我修养</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#glibc内存管理ptmalloc源代码分析"><span class="nav-number">2.4.</span> <span class="nav-text">glibc内存管理ptmalloc源代码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞战争"><span class="nav-number">2.5.</span> <span class="nav-text">漏洞战争</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">3.</span> <span class="nav-text">其他</span></a></li></ol></div>
             
 
           </div>
@@ -914,9 +887,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://eternalsakura13.com/2018/04/13/qemu/';
-          this.page.identifier = '2018/04/13/qemu/';
-          this.page.title = 'qemu+gdb kernel调试环境搭建';
+          this.page.url = 'http://eternalsakura13.com/2018/05/31/shudan/';
+          this.page.identifier = '2018/05/31/shudan/';
+          this.page.title = 'ctf re/pwn入门书单';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';
