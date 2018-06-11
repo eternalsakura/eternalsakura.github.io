@@ -277,7 +277,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-11T19:57:30.686Z">
+<meta property="og:updated_time" content="2018-06-11T20:03:37.590Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -620,7 +620,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/scwuaptx/peda.git ~/peda</span><br><span class="line">git clone https://github.com/scwuaptx/Pwngdb.git ~/Pwngdb</span><br><span class="line">cp ~/Pwngdb/.gdbinit ~/</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>环境设置<br>ubuntu16.04 x64<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-142104.png" alt=""></p>
-<h3 id="使用make的方式去编译v8（2016年当时）"><a href="#使用make的方式去编译v8（2016年当时）" class="headerlink" title="使用make的方式去编译v8（2016年当时）"></a>使用make的方式去编译v8（2016年当时）</h3></li>
+</li>
+</ol>
+<h3 id="使用make的方式去编译v8（2016年当时）"><a href="#使用make的方式去编译v8（2016年当时）" class="headerlink" title="使用make的方式去编译v8（2016年当时）"></a>使用make的方式去编译v8（2016年当时）</h3><ol>
 <li><p>depot_tools准备</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</span><br><span class="line">$ echo &apos;export PATH=$PATH:&quot;/path/to/depot_tools&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 </li>
@@ -1007,9 +1009,11 @@
 </ul>
 <h3 id="编译器调用的流程"><a href="#编译器调用的流程" class="headerlink" title="编译器调用的流程"></a>编译器调用的流程</h3><h4 id="被调用"><a href="#被调用" class="headerlink" title="被调用"></a>被调用</h4><ul>
 <li>参考samples/hello-world.cc<ul>
-<li>它只涵盖main()<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-090144.png" alt=""><br>有各种各样的东西，但最重要的是Compile()和Run()<h4 id="调用堆栈查看"><a href="#调用堆栈查看" class="headerlink" title="调用堆栈查看"></a>调用堆栈查看</h4></li>
+<li>它只涵盖main()<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-090144.png" alt=""><br>有各种各样的东西，但最重要的是Compile()和Run()</li>
 </ul>
 </li>
+</ul>
+<h4 id="调用堆栈查看"><a href="#调用堆栈查看" class="headerlink" title="调用堆栈查看"></a>调用堆栈查看</h4><ul>
 <li><p>如何调用Full-Codegen</p>
 <ul>
 <li>描述了调用Compile函数时的转换<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-091306.png" alt=""></li>
@@ -1092,11 +1096,13 @@
 </ul>
 </li>
 <li>参考以下的文件<ul>
-<li>include/v8.h，src/handles.h<h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3></li>
+<li>include/v8.h，src/handles.h</li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+<h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><ul>
 <li>在一个V8实例中创建多个执行环境的机制<ul>
 <li>您可以在一个线程中同时运行彼此独立的JavaScript代码</li>
 </ul>
@@ -1191,9 +1197,11 @@
 <li>ld.gold是Google在2012年左右制作的ld的高速版本</li>
 </ul>
 </li>
-<li>使用GYP_DEFINES，您也可以替换环境变量<h3 id="tools"><a href="#tools" class="headerlink" title="tools"></a>tools</h3></li>
+<li>使用GYP_DEFINES，您也可以替换环境变量</li>
 </ul>
 </li>
+</ul>
+<h3 id="tools"><a href="#tools" class="headerlink" title="tools"></a>tools</h3><ul>
 <li>GDB扩展命令已准备好用于调试目的<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-165454.png" alt=""><ul>
 <li>gdb-peda$ source tools/gdbinit</li>
 <li>gdb-peda$ source tools/gdb-v8-support.py</li>
@@ -1228,9 +1236,9 @@
 <ol>
 <li>例如，[0xdeadbee，0xdeadbeef，“hoge”]<br>显示FixedArray（减去0x14，因为它指向FixedArray的第一个偏移量）</li>
 <li>我试图显示FixedArray的Map的内容</li>
-<li>实际上，我不必费心使用v8print命令，但我觉得直接调用内部函数可以调用__gdb_print_v8_object（address），如果我传入一个奇怪的地址，我无法通过SEGV恢复它，所以我直接看内存,它会更安全。<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3></li>
+<li>实际上，我不必费心使用v8print命令，但我觉得直接调用内部函数可以调用__gdb_print_v8_object（address），如果我传入一个奇怪的地址，我无法通过SEGV恢复它，所以我直接看内存,它会更安全。</li>
 </ol>
-<ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
 <li>其他的细节<ul>
 <li>Macro-intensive use<ul>
 <li>如果对源代码进行grep找不到定义，则可能有宏</li>
@@ -1262,10 +1270,11 @@
 </li>
 </ul>
 </li>
-<li>以下是非常有用的<br><a href="https://github.com/danbev/learning-v8/blob/master/README.md" target="_blank" rel="noopener">https://github.com/danbev/learning-v8/blob/master/README.md</a><h2 id="关于V8的GC"><a href="#关于V8的GC" class="headerlink" title="关于V8的GC"></a>关于V8的GC</h2><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><a href="https://github.com/thlorenz/v8-perf/blob/master/gc.md" target="_blank" rel="noopener">https://github.com/thlorenz/v8-perf/blob/master/gc.md</a><br><a href="https://github.com/joyeecheung/v8-gc-talk" target="_blank" rel="noopener">https://github.com/joyeecheung/v8-gc-talk</a></li>
+<li>以下是非常有用的<br><a href="https://github.com/danbev/learning-v8/blob/master/README.md" target="_blank" rel="noopener">https://github.com/danbev/learning-v8/blob/master/README.md</a></li>
 </ul>
 </li>
 </ul>
+<h2 id="关于V8的GC"><a href="#关于V8的GC" class="headerlink" title="关于V8的GC"></a>关于V8的GC</h2><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.com/thlorenz/v8-perf/blob/master/gc.md" target="_blank" rel="noopener">https://github.com/thlorenz/v8-perf/blob/master/gc.md</a><br><a href="https://github.com/joyeecheung/v8-gc-talk" target="_blank" rel="noopener">https://github.com/joyeecheung/v8-gc-talk</a></p>
 <h3 id="垃圾收集器（GC）"><a href="#垃圾收集器（GC）" class="headerlink" title="垃圾收集器（GC）"></a>垃圾收集器（GC）</h3><ul>
 <li><p>另一个重要组件是垃圾收集器</p>
 <ul>
@@ -1387,9 +1396,11 @@
 <li><p>old generation的GC算法是Mark-Sweep-Compact</p>
 <ul>
 <li>除New Space区域以外的所有算法</li>
-<li>由于它与Exploit无关，因此省略了详细信息<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-192358.png" alt=""><h3 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h3></li>
+<li>由于它与Exploit无关，因此省略了详细信息<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-192358.png" alt=""></li>
 </ul>
 </li>
+</ul>
+<h3 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h3><ul>
 <li>Large Object Space<ul>
 <li>保留600KB或更大的object的区域<ul>
 <li>它由mmap直接分配</li>
@@ -1455,11 +1466,12 @@
 </li>
 <li>Exploit<ul>
 <li>了解每个object的内存结构非常重要</li>
-<li>在本文件中，我们将主要讲述下面的内容<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-12-124349.png" alt=""><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-133831.png" alt=""><h3 id="Object和Tagged-Value"><a href="#Object和Tagged-Value" class="headerlink" title="Object和Tagged Value"></a>Object和Tagged Value</h3><h4 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h4></li>
+<li>在本文件中，我们将主要讲述下面的内容<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-12-124349.png" alt=""><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-133831.png" alt=""></li>
 </ul>
 </li>
-<li><p>Object</p>
-<ul>
+</ul>
+<h3 id="Object和Tagged-Value"><a href="#Object和Tagged-Value" class="headerlink" title="Object和Tagged Value"></a>Object和Tagged Value</h3><h4 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h4><ul>
+<li>Object<ul>
 <li>它由以下两种类型组成</li>
 <li>Smi(Small Integer)<ul>
 <li>整数值<ul>
@@ -1478,11 +1490,14 @@
 <li>始终有一个指向Map的指针</li>
 </ul>
 </li>
-<li>由于HeapObject基本上由GC管理，因此它位于GC区域（它不存放在堆区域）<h4 id="Smi"><a href="#Smi" class="headerlink" title="Smi"></a>Smi</h4>如果一个成员的值是一个整数，那么存储它的速度会更快<br>这就是使用Smi的原因（我认为这是原因）</li>
+<li>由于HeapObject基本上由GC管理，因此它位于GC区域（它不存放在堆区域）</li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+<h4 id="Smi"><a href="#Smi" class="headerlink" title="Smi"></a>Smi</h4><p>如果一个成员的值是一个整数，那么存储它的速度会更快<br>这就是使用Smi的原因（我认为这是原因）</p>
+<ul>
 <li><p>对于使用指针来创建一个整数对象(B)的实现，如图<br>指针必须被追踪一次，内存访问两次（慢）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-12-141551.png" alt=""></p>
 </li>
 <li><p>对于省略了指向整数对象(B)的指针并且整数直接存放在内部的实现，如图<br>指针应该指向的整数值在V8中被称为Smi<br>没有必要跟随指针，内存访问执行一次（快速）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-12-141811.png" alt=""></p>
@@ -1528,7 +1543,9 @@
 </li>
 <li>由于0xdeadbee是Smi，因此可以通过在内存中搜索，来查找存储在数组中的值。（换句话说，直接看数组里对应的值就行了）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-081323.png" alt=""></li>
 <li>0xdeadbee（Smi）之后的元素应该是0xdeadbeef（HeapNumber）<br>0x41ebd5b7dde00000是0xdeadbeef的double值表示<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-081433.png" alt=""></li>
-<li>HeapNumber对象和其他对象连续，保证没有任何间隙<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-083012.png" alt=""><h3 id="PropertyCell"><a href="#PropertyCell" class="headerlink" title="PropertyCell"></a>PropertyCell</h3></li>
+<li>HeapNumber对象和其他对象连续，保证没有任何间隙<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-083012.png" alt=""></li>
+</ul>
+<h3 id="PropertyCell"><a href="#PropertyCell" class="headerlink" title="PropertyCell"></a>PropertyCell</h3><ul>
 <li>Object meaning variable<ul>
 <li>继承Object，HeapObject<ul>
 <li>内存结构如下（在64位环境的情况下）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-13-084028.png" alt=""></li>
@@ -1676,11 +1693,13 @@
 <li>BackingStore——可以使用TypedArray指定的类型读取和写入该区域，例如作为原始数据数组访问的8位或32位内存<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-14-153219.png" alt=""></li>
 <li>①预先准备ArrayBuffer<br>var ab = new ArrayBuffer(0x100);</li>
 <li>②向ArrayBuffer中写入一个Float64的值<br>var t64 = new Float64Array(ab);<br>t64[0] = 6.953328187651540e-310;//字节序列是0x00007fffdeadbeef<br><strong>–&gt;当某些地址在V8上泄露时，通常在大多数情况下被迫将其解释为双精度值，为了正确计算偏移量等，需要将其转换为整数值。 对于完成该转换，ArrayBuffer是最佳的</strong></li>
-<li>③从ArrayBuffer读取两个Uint32<br>var t32 = new Uint32Array(ab);<br>k = [t32[1],t32[0]]<br><strong>–&gt;k是6.953328187651540e-310,将字节序列按照4个字节去分开，然后解释为Uint32,于是得到:</strong><br><strong>k=[0x00007fff，0xdeadbeef]</strong><h4 id="JSArrayBuffer-1"><a href="#JSArrayBuffer-1" class="headerlink" title="JSArrayBuffer"></a>JSArrayBuffer</h4></li>
+<li>③从ArrayBuffer读取两个Uint32<br>var t32 = new Uint32Array(ab);<br>k = [t32[1],t32[0]]<br><strong>–&gt;k是6.953328187651540e-310,将字节序列按照4个字节去分开，然后解释为Uint32,于是得到:</strong><br><strong>k=[0x00007fff，0xdeadbeef]</strong></li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+<h4 id="JSArrayBuffer-1"><a href="#JSArrayBuffer-1" class="headerlink" title="JSArrayBuffer"></a>JSArrayBuffer</h4><ul>
 <li>持有ArrayBuffer的对象<ul>
 <li>继承Object，HeapObject，JSReceiver，JSObject<ul>
 <li>内存结构如下（在64位环境的情况下）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-14-155703.png" alt=""></li>
@@ -1709,9 +1728,11 @@
 <h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><ul>
 <li>Plaid CTF 2016 -Pwnables 666pts –js_sandbox<ul>
 <li>下载链接<br><a href="https://goo.gl/Se5HTy" target="_blank" rel="noopener">https://goo.gl/Se5HTy</a></li>
-<li>问题<br>Can you get a flag off of this site(<a href="http://js.pwning.xxx:27251/)?" target="_blank" rel="noopener">http://js.pwning.xxx:27251/)?</a><br>If so, I’ve got 666 points with your name on it!<h2 id="攻略方法-1"><a href="#攻略方法-1" class="headerlink" title="攻略方法"></a>攻略方法</h2></li>
+<li>问题<br>Can you get a flag off of this site(<a href="http://js.pwning.xxx:27251/)?" target="_blank" rel="noopener">http://js.pwning.xxx:27251/)?</a><br>If so, I’ve got 666 points with your name on it!</li>
 </ul>
 </li>
+</ul>
+<h2 id="攻略方法-1"><a href="#攻略方法-1" class="headerlink" title="攻略方法"></a>攻略方法</h2><ul>
 <li>模式1和2，策略如下</li>
 </ul>
 <ol>
@@ -1719,9 +1740,9 @@
 <li>分析patch以确定哪个patch适用于哪个进程<br> Full-Codegen, Crankshaft, TurboFan, Ignition, AST, IC, …<br> Full-Codegen and Crankshaft do not exist in V8 as of 2018 (see below)</li>
 <li>编写利用漏洞的js代码段<br> Think JavaScript code that causes patched parts to pass and causes bugs</li>
 <li>创建一个任意地址读/写的原语<br> 主要使用ArrayBuffer和TypedArray</li>
-<li>getshell<br> 由于这是Pwn类别的问题，getshell是第一目标。<br> 在JIT区域嵌入shell代码经常被使用<h2 id="初步调查"><a href="#初步调查" class="headerlink" title="初步调查"></a>初步调查</h2></li>
+<li>getshell<br> 由于这是Pwn类别的问题，getshell是第一目标。<br> 在JIT区域嵌入shell代码经常被使用</li>
 </ol>
-<ul>
+<h2 id="初步调查"><a href="#初步调查" class="headerlink" title="初步调查"></a>初步调查</h2><ul>
 <li>Plaid CTF 2016-Pwnable 666pts -js_sandbox<ul>
 <li>访问<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-084413.png" alt=""></li>
 </ul>
@@ -1733,19 +1754,20 @@
 <li>natives_blob.bin<br>shell操作所需的文件</li>
 <li>problem.patch<br>有漏洞的v8 patch</li>
 <li>shell<br>构建samples/shell.cc用于本地测试</li>
-<li>snapshot_blob.bin<br>shell操作所需的文件<h2 id="shell文件"><a href="#shell文件" class="headerlink" title="shell文件"></a>shell文件</h2>shell (and *.blob)用作debug的目的<br>distribution file应该包含与problem服务器相同的源文件<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-091059.png" alt=""></li>
+<li>snapshot_blob.bin<br>shell操作所需的文件</li>
 </ol>
+<h2 id="shell文件"><a href="#shell文件" class="headerlink" title="shell文件"></a>shell文件</h2><p>shell (and *.blob)用作debug的目的<br>distribution file应该包含与problem服务器相同的源文件<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-091059.png" alt=""></p>
 <ul>
 <li>V8解释和执行的是JavaScript<ul>
 <li>因此，exploit也只需要用JavaScript编写</li>
 </ul>
 </li>
 <li>对于相同的输入，V8应该表现相同<ul>
-<li>如果你可以通过shell来exp v8，你也可以通过Web服务器exp v8<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-092056.png" alt=""><h2 id="patch分析"><a href="#patch分析" class="headerlink" title="patch分析"></a>patch分析</h2></li>
+<li>如果你可以通过shell来exp v8，你也可以通过Web服务器exp v8<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-092056.png" alt=""></li>
 </ul>
 </li>
 </ul>
-<ol>
+<h2 id="patch分析"><a href="#patch分析" class="headerlink" title="patch分析"></a>patch分析</h2><ol>
 <li>启用PIE，FORTIFY_SOURCE，stack canary<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-092935.png" alt=""></li>
 <li>PIE，FULL-RELRO启用<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093123.png" alt=""></li>
 <li>使read和load函数无效<br>print，read，load，quit和version等功能都是在sample/shell.cc中专门定义的，但是经过patch后，read和load时会失效<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093555.png" alt=""></li>
@@ -1770,9 +1792,11 @@
 <h3 id="Google"><a href="#Google" class="headerlink" title="Google"></a>Google</h3><p>尝试google搜索函数名称<br>触及此功能的评论页尤为重要<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-101230.png" alt=""></p>
 <h3 id="确认内置漏洞的文件名"><a href="#确认内置漏洞的文件名" class="headerlink" title="确认内置漏洞的文件名"></a>确认内置漏洞的文件名</h3><ul>
 <li>src/compiler/typer.cc<ul>
-<li>由于它是src/compiler/下的一个文件，因此它被认为与TurboFan有关<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-104240.png" alt=""><h3 id="确定来源"><a href="#确定来源" class="headerlink" title="确定来源"></a>确定来源</h3></li>
+<li>由于它是src/compiler/下的一个文件，因此它被认为与TurboFan有关<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-104240.png" alt=""></li>
 </ul>
 </li>
+</ul>
+<h3 id="确定来源"><a href="#确定来源" class="headerlink" title="确定来源"></a>确定来源</h3><ul>
 <li>检查修补程序周围的代码<ul>
 <li>看看JSAddRanger()<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-104616.png" alt=""></li>
 </ul>
@@ -1884,9 +1908,12 @@
 <ul>
 <li>下面的JavaScript代码展示了有趣的结果<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-153628.png" alt=""></li>
 <li>如果打了有漏洞的补丁，你会在AND操作之后得到新的范围信息，<strong>而这个范围信息是错误的</strong></li>
-<li><strong>但是，由于该信息仅用作类型提示，因此它不会对选择Word32的类型造成影响，因为它可以用32位表示[0,24]和[0,16]。在这个例子里，f函数正常应该返回24作为结果</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-154204.png" alt=""><h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><a href="https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea" target="_blank" rel="noopener">https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea</a><h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2></li>
+<li><strong>但是，由于该信息仅用作类型提示，因此它不会对选择Word32的类型造成影响，因为它可以用32位表示[0,24]和[0,16]。在这个例子里，f函数正常应该返回24作为结果</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-154204.png" alt=""></li>
 </ul>
 </li>
+</ul>
+<h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><p><a href="https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea" target="_blank" rel="noopener">https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea</a></p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><ul>
 <li>通过假的range信息，你能做什么？<ul>
 <li>这里的目标是创建任意地址读/写的原语</li>
 <li>具体来说，就是伪造一个很大的array的length<ul>
@@ -1954,13 +1981,13 @@
 <li>伪造Array length</li>
 <li>伪造ArrayBuffer</li>
 <li>Identify function object</li>
-<li>在JIT区域嵌入shellcode<h3 id="伪造Array-length"><a href="#伪造Array-length" class="headerlink" title="伪造Array length"></a>伪造Array length</h3></li>
+<li>在JIT区域嵌入shellcode</li>
 </ol>
 </li>
 </ul>
 </li>
 </ul>
-<ol>
+<h3 id="伪造Array-length"><a href="#伪造Array-length" class="headerlink" title="伪造Array length"></a>伪造Array length</h3><ol>
 <li>顺次排列两个FixedArray（其长度通过range漏洞伪造）<br>由于这些FixedArrays的范围是伪造的，因此它们可以在数组之外进行读写操作.<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-173202.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-173214.png" alt=""></li>
 <li>每个double值存储在Element [0]中，并且数组类型被识别为double类型（即FixedArray被转换为FixedDoubleArray）<ul>
 <li>在FixedArray变成FixedDoubleArrayed之后，内存的布局会发生变化并且变的很麻烦，所以让我们先提前认识它是一个只有double类型元素的FixedDoubleArray。<br>这也确保了FixedDoubleArray 1和2连接<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-173539.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-173723.png" alt=""></li>
@@ -1986,20 +2013,24 @@
 <li><p>更新来kByteLengthOffset和kBackingStoreOffset的偏移量</p>
 <ul>
 <li>如果设置元素[kByteLengthOffset_offset] = 0xfffff0，<br>元素[kByteLengthOffset_offset + 1] = rw_addr。<br>请记住在步骤2-2中获得的偏移量，并且在ArrayBuffer读取和写入rw_addr，也就是说，它几乎变成了任何内存读/写的原语。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-185130.png" alt=""></li>
-<li>通过重写kBackingStoreOffset的值，您可以读取和写入任意地址，因此在利用时可以将其作为RW原语的函数来实现。<br>另外，关于i2_to_d()的描述被省略了，它是一个函数，可以使用ArrayBuffer将Uint32转换为double。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-185551.png" alt=""><h3 id="Identify-function-object"><a href="#Identify-function-object" class="headerlink" title="Identify function object"></a>Identify function object</h3></li>
+<li>通过重写kBackingStoreOffset的值，您可以读取和写入任意地址，因此在利用时可以将其作为RW原语的函数来实现。<br>另外，关于i2_to_d()的描述被省略了，它是一个函数，可以使用ArrayBuffer将Uint32转换为double。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-185551.png" alt=""></li>
 </ul>
 </li>
+</ol>
+<h3 id="Identify-function-object"><a href="#Identify-function-object" class="headerlink" title="Identify function object"></a>Identify function object</h3><ol>
 <li><p>ArrayBuffer后面跟着FixedArray 3，它有一个适当的函数对象作为元素<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-185739.png" alt=""><br>选择7作为特征值没有特别的意义。 只要选择你喜欢的长度，然后尝试。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-185837.png" alt=""></p>
 </li>
 <li><p>从FixedDoubleArray 2中，使用漏洞探索FixedArray 3的Element的偏移量，获取函数f的对象地址。</p>
 <ul>
-<li>如果一个值连续出现kLengthOffset次（如图中是7），则可以推断出它可能是包含函数f的对象地址的元素的偏移量。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190158.png" alt=""><h3 id="在JIT区域嵌入shellcode"><a href="#在JIT区域嵌入shellcode" class="headerlink" title="在JIT区域嵌入shellcode"></a>在JIT区域嵌入shellcode</h3></li>
+<li>如果一个值连续出现kLengthOffset次（如图中是7），则可以推断出它可能是包含函数f的对象地址的元素的偏移量。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190158.png" alt=""></li>
 </ul>
 </li>
-<li>通过将函数f的对象地址放入kBackingStoreOffset并读取第七个元素，获取kCodeEntryOffset中的JIT地址<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190809.png" alt=""></li>
-<li>将该地址放在kBackingStoreOffset中，用shellcode覆盖JIT区域，然后调用函数f（）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190858.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-191057.png" alt=""><h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2></li>
 </ol>
-<ul>
+<h3 id="在JIT区域嵌入shellcode"><a href="#在JIT区域嵌入shellcode" class="headerlink" title="在JIT区域嵌入shellcode"></a>在JIT区域嵌入shellcode</h3><ol>
+<li>通过将函数f的对象地址放入kBackingStoreOffset并读取第七个元素，获取kCodeEntryOffset中的JIT地址<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190809.png" alt=""></li>
+<li>将该地址放在kBackingStoreOffset中，用shellcode覆盖JIT区域，然后调用函数f（）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-190858.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-191057.png" alt=""></li>
+</ol>
+<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><ul>
 <li>I am rewriting a part of the author’s write-up<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png" alt=""></li>
 <li>Execute exploit code with V8 sample-shell<ul>
 <li>你可以确认/bin/sh启动<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png" alt=""></li>
@@ -2015,10 +2046,16 @@
 </ul>
 <h1 id="Bonus-Other-JavaScript-issues-and-links"><a href="#Bonus-Other-JavaScript-issues-and-links" class="headerlink" title="Bonus Other JavaScript issues and links"></a>Bonus Other JavaScript issues and links</h1><h2 id="V8"><a href="#V8" class="headerlink" title="V8"></a>V8</h2><ul>
 <li>[SECUINSIDE 2014] Yet another Javascript jail - 300<br><a href="https://gist.github.com/anonymous/b2340ac8429f4c5d186c" target="_blank" rel="noopener">https://gist.github.com/anonymous/b2340ac8429f4c5d186c</a><br><a href="http://ddaa.logdown.com/posts/203080-secuinside-2014-pwn-300-yet-another-javascript-jail" target="_blank" rel="noopener">http://ddaa.logdown.com/posts/203080-secuinside-2014-pwn-300-yet-another-javascript-jail</a><br><a href="https://gist.github.com/potetisensei/9a41a1848da4021c29e5" target="_blank" rel="noopener">https://gist.github.com/potetisensei/9a41a1848da4021c29e5</a></li>
-<li>[34c3 CTF 2017] v9<br><a href="https://github.com/saelo/v9" target="_blank" rel="noopener">https://github.com/saelo/v9</a><br><a href="https://gist.github.com/itsZN/9ae6417129c6658130a898cdaba8d76c" target="_blank" rel="noopener">https://gist.github.com/itsZN/9ae6417129c6658130a898cdaba8d76c</a><h2 id="SpiderMonkey"><a href="#SpiderMonkey" class="headerlink" title="SpiderMonkey"></a>SpiderMonkey</h2></li>
+<li>[34c3 CTF 2017] v9<br><a href="https://github.com/saelo/v9" target="_blank" rel="noopener">https://github.com/saelo/v9</a><br><a href="https://gist.github.com/itsZN/9ae6417129c6658130a898cdaba8d76c" target="_blank" rel="noopener">https://gist.github.com/itsZN/9ae6417129c6658130a898cdaba8d76c</a></li>
+</ul>
+<h2 id="SpiderMonkey"><a href="#SpiderMonkey" class="headerlink" title="SpiderMonkey"></a>SpiderMonkey</h2><ul>
 <li>[33c3 CTF 2016] pwn600 -feuerfuchs<br><a href="https://github.com/saelo/feuerfuchs" target="_blank" rel="noopener">https://github.com/saelo/feuerfuchs</a><br><a href="https://bruce30262.github.io/2017/12/15/Learning-browser-exploitation-via-33C3-CTF-feuerfuchs-challenge/" target="_blank" rel="noopener">https://bruce30262.github.io/2017/12/15/Learning-browser-exploitation-via-33C3-CTF-feuerfuchs-challenge/</a></li>
-<li>[CodeGate 2017] JS World -pwnable500<br><a href="https://gist.github.com/akiym/966b3d24146edb685b8a08edee551de2" target="_blank" rel="noopener">https://gist.github.com/akiym/966b3d24146edb685b8a08edee551de2</a><h2 id="Chakra"><a href="#Chakra" class="headerlink" title="Chakra"></a>Chakra</h2></li>
-<li>[PlaidCTF 2017] Chakrazy -Pwnable600<br><a href="https://lokalhost.pl/ctf/pcft2017_chakra.js" target="_blank" rel="noopener">https://lokalhost.pl/ctf/pcft2017_chakra.js</a><br><a href="https://bruce30262.github.io/2017/12/26/Chakrazy-exploiting-type-confusion-bug-in-ChakraCore/" target="_blank" rel="noopener">https://bruce30262.github.io/2017/12/26/Chakrazy-exploiting-type-confusion-bug-in-ChakraCore/</a><br><a href="https://gist.github.com/eboda/18a3d26cb18f8ded28c899cbd61aeaba" target="_blank" rel="noopener">https://gist.github.com/eboda/18a3d26cb18f8ded28c899cbd61aeaba</a><h2 id="WebKit-JSC"><a href="#WebKit-JSC" class="headerlink" title="WebKit-JSC"></a>WebKit-JSC</h2></li>
+<li>[CodeGate 2017] JS World -pwnable500<br><a href="https://gist.github.com/akiym/966b3d24146edb685b8a08edee551de2" target="_blank" rel="noopener">https://gist.github.com/akiym/966b3d24146edb685b8a08edee551de2</a></li>
+</ul>
+<h2 id="Chakra"><a href="#Chakra" class="headerlink" title="Chakra"></a>Chakra</h2><ul>
+<li>[PlaidCTF 2017] Chakrazy -Pwnable600<br><a href="https://lokalhost.pl/ctf/pcft2017_chakra.js" target="_blank" rel="noopener">https://lokalhost.pl/ctf/pcft2017_chakra.js</a><br><a href="https://bruce30262.github.io/2017/12/26/Chakrazy-exploiting-type-confusion-bug-in-ChakraCore/" target="_blank" rel="noopener">https://bruce30262.github.io/2017/12/26/Chakrazy-exploiting-type-confusion-bug-in-ChakraCore/</a><br><a href="https://gist.github.com/eboda/18a3d26cb18f8ded28c899cbd61aeaba" target="_blank" rel="noopener">https://gist.github.com/eboda/18a3d26cb18f8ded28c899cbd61aeaba</a></li>
+</ul>
+<h2 id="WebKit-JSC"><a href="#WebKit-JSC" class="headerlink" title="WebKit-JSC"></a>WebKit-JSC</h2><ul>
 <li>[BkP CTF 2016] qwn2own -pwn10<br><a href="https://github.com/kitctf/writeups/blob/master/bkp2016/qwn2own/index.html" target="_blank" rel="noopener">https://github.com/kitctf/writeups/blob/master/bkp2016/qwn2own/index.html</a><br><a href="https://rzhou.org/~ricky/bkpctf2016/qwn2own/test.js" target="_blank" rel="noopener">https://rzhou.org/~ricky/bkpctf2016/qwn2own/test.js</a><br><a href="http://vulph.com/2016/03/05/Boston-Key-Party-writeups.html" target="_blank" rel="noopener">http://vulph.com/2016/03/05/Boston-Key-Party-writeups.html</a><br><a href="https://github.com/acama/ctf/tree/master/bkpctf2016/qwn2own" target="_blank" rel="noopener">https://github.com/acama/ctf/tree/master/bkpctf2016/qwn2own</a><br><a href="http://lokalhost.pl/ctf/bkp2016/http://blog.frizn.fr/bkpctf-2016/qwn2own-bkpctf16" target="_blank" rel="noopener">http://lokalhost.pl/ctf/bkp2016/http://blog.frizn.fr/bkpctf-2016/qwn2own-bkpctf16</a></li>
 </ul>
 <h2 id="v8-exploit-study"><a href="#v8-exploit-study" class="headerlink" title="v8 exploit study"></a>v8 exploit study</h2><ul>
@@ -2038,7 +2075,9 @@
 <li><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=776677" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=776677</a></li>
 <li><a href="https://halbecaf.com/2017/05/24/exploiting-a-v8-oob-write/" target="_blank" rel="noopener">https://halbecaf.com/2017/05/24/exploiting-a-v8-oob-write/</a></li>
 <li><a href="https://www.it-sec-catalog.info/browser_exploitation.html" target="_blank" rel="noopener">https://www.it-sec-catalog.info/browser_exploitation.html</a></li>
-<li><a href="https://github.com/tunz/js-vuln-db" target="_blank" rel="noopener">https://github.com/tunz/js-vuln-db</a><h2 id="SpiderMonkey-exploit-study"><a href="#SpiderMonkey-exploit-study" class="headerlink" title="SpiderMonkey exploit study"></a>SpiderMonkey exploit study</h2></li>
+<li><a href="https://github.com/tunz/js-vuln-db" target="_blank" rel="noopener">https://github.com/tunz/js-vuln-db</a></li>
+</ul>
+<h2 id="SpiderMonkey-exploit-study"><a href="#SpiderMonkey-exploit-study" class="headerlink" title="SpiderMonkey exploit study"></a>SpiderMonkey exploit study</h2><ul>
 <li><a href="http://www.geeknik.net/6zawqzuuu" target="_blank" rel="noopener">http://www.geeknik.net/6zawqzuuu</a></li>
 <li><a href="https://phoenhex.re/2017-06-21/firefox-structuredclone-refleak" target="_blank" rel="noopener">https://phoenhex.re/2017-06-21/firefox-structuredclone-refleak</a></li>
 <li><a href="https://grehack.fr/data/2017/slides/GreHack17_Get_the_Spidermonkey_off_your_back.pdf" target="_blank" rel="noopener">https://grehack.fr/data/2017/slides/GreHack17_Get_the_Spidermonkey_off_your_back.pdf</a></li>
