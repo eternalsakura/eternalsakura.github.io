@@ -213,7 +213,35 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-10-104616.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-10-104852.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-10-111002.png">
-<meta property="og:updated_time" content="2018-06-10T11:10:17.894Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-134138.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-134445.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-134751.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-134814.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-134854.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-135415.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-140004.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-140235.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-140844.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-141035.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-141136.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-143220.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-143941.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-144124.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-144643.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-151437.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-151643.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-152135.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-152345.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-152445.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-152615.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-153051.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-153234.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-153628.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-154204.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-155748.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-160205.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-160615.png">
+<meta property="og:updated_time" content="2018-06-11T16:06:29.281Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构plaid ctf 2016 - js_sandbox环境搭建 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone">
@@ -1637,14 +1665,16 @@
 <li>问题<br>Can you get a flag off of this site(<a href="http://js.pwning.xxx:27251/)?" target="_blank" rel="noopener">http://js.pwning.xxx:27251/)?</a><br>If so, I’ve got 666 points with your name on it!<h3 id="攻略方法-1"><a href="#攻略方法-1" class="headerlink" title="攻略方法"></a>攻略方法</h3></li>
 </ul>
 </li>
-<li>模式1和2，策略如下<ul>
-<li>创建用于调试的JavaScript环境版本。<br>If there is a vulnerable patch, hit it and build it (sometimes it is provided from the operation)</li>
-<li>分析patch以确定哪个patch适用于哪个进程<br>Full-Codegen, Crankshaft, TurboFan, Ignition, AST, IC, …<br>Full-Codegen and Crankshaft do not exist in V8 as of 2018 (see below)</li>
-<li>编写利用漏洞的js代码段<br>Think JavaScript code that causes patched parts to pass and causes bugs</li>
-<li>创建一个任意地址读/写的原语<br>主要使用ArrayBuffer和TypedArray</li>
-<li>getshell<br>由于这是Pwn类别的问题，getshell是第一目标。<br>在JIT区域嵌入shell代码经常被使用<h3 id="初步调查"><a href="#初步调查" class="headerlink" title="初步调查"></a>初步调查</h3></li>
+<li>模式1和2，策略如下</li>
 </ul>
-</li>
+<ol>
+<li>创建一个用于调试的js环境版本<br>如果有一个包含漏洞的patch，hit和build它。</li>
+<li>分析patch以确定哪个patch适用于哪个进程<br> Full-Codegen, Crankshaft, TurboFan, Ignition, AST, IC, …<br> Full-Codegen and Crankshaft do not exist in V8 as of 2018 (see below)</li>
+<li>编写利用漏洞的js代码段<br> Think JavaScript code that causes patched parts to pass and causes bugs</li>
+<li>创建一个任意地址读/写的原语<br> 主要使用ArrayBuffer和TypedArray</li>
+<li>getshell<br> 由于这是Pwn类别的问题，getshell是第一目标。<br> 在JIT区域嵌入shell代码经常被使用<h3 id="初步调查"><a href="#初步调查" class="headerlink" title="初步调查"></a>初步调查</h3></li>
+</ol>
+<ul>
 <li>Plaid CTF 2016-Pwnable 666pts -js_sandbox<ul>
 <li>访问<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-084413.png" alt=""></li>
 </ul>
@@ -1672,17 +1702,7 @@
 <li>启用PIE，FORTIFY_SOURCE，stack canary<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-092935.png" alt=""></li>
 <li>PIE，FULL-RELRO启用<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093123.png" alt=""></li>
 <li>使read和load函数无效<br>print，read，load，quit和version等功能都是在sample/shell.cc中专门定义的，但是经过patch后，read和load时会失效<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093555.png" alt=""></li>
-<li>从源代码路径，TurboFan相关补丁和猜测<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093840.png" alt=""><br>lhs：左手侧（左侧）rhs：右手侧（右侧）？<br>此外，因为函数名称是JSAddRanger，所以可以预料可能是与加法有关的漏洞（？）<h3 id="攻略方法（再次列出）"><a href="#攻略方法（再次列出）" class="headerlink" title="攻略方法（再次列出）"></a>攻略方法（再次列出）</h3></li>
-</ol>
-<ul>
-<li>模式1和2，策略如下</li>
-</ul>
-<ol>
-<li>创建一个用于调试的js环境版本<br>如果有一个包含漏洞的patch，hit和build它。</li>
-<li>分析patch以确定哪个patch适用于哪个进程<br> Full-Codegen, Crankshaft, TurboFan, Ignition, AST, IC, …<br> Full-Codegen and Crankshaft do not exist in V8 as of 2018 (see below)</li>
-<li>编写利用漏洞的js代码段<br> Think JavaScript code that causes patched parts to pass and causes bugs</li>
-<li>创建一个任意地址读/写的原语<br> 主要使用ArrayBuffer和TypedArray</li>
-<li>getshell<br> 由于这是Pwn类别的问题，getshell是第一目标。<br> 在JIT区域嵌入shell代码经常被使用</li>
+<li>从源代码路径，TurboFan相关补丁和猜测<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-093840.png" alt=""><br>lhs：左手侧（左侧）rhs：右手侧（右侧）？<br>此外，因为函数名称是JSAddRanger，所以可以预料可能是与加法有关的漏洞（？）</li>
 </ol>
 <h3 id="Identification-of-calling-conditions"><a href="#Identification-of-calling-conditions" class="headerlink" title="Identification of calling conditions"></a>Identification of calling conditions</h3><ul>
 <li>假设被patch的函数是有漏洞的<ul>
@@ -1717,9 +1737,132 @@
 <li>使用gdb回溯调用栈是最快的方法。</li>
 </ul>
 </li>
-<li>编写测试代码<ul>
+<li><p>编写测试代码</p>
+<ul>
 <li>准备Javascript code去调用TurboFan<ul>
 <li>通过代码调用函数10000次，由于我想调用TurboFan，所以不要忘记使用with语句<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-10-111002.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用gdb运行</p>
+<ul>
+<li>如果某些条件不满足，JSAddRanger（）将不会调用…</li>
+<li>In C ++ that does not reach JSAddRanger () in test code, that is, it does not reach the JSAddRanger () in the test code, you can not set a breakpoint unless you specify not only the function name but also the namespace and type to which it belongs. So using nm, it searches for mangled function names and specifies a breakpoint (if PIE is invalid, it is OK even if you set a breakpoint at the found address)</li>
+<li>实际上，您无法在测试代码中访问JSAddRanger（）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-134138.png" alt=""></li>
+</ul>
+</li>
+<li>调用JSAddRanger（）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-134445.png" alt=""><br>图示第一行是函数原型，第二行是函数定义，看看第三行。<ul>
+<li>从JSAddTyper()调用。<ul>
+<li>除非满足某些条件，否则不会调用JSAddRanger()<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-134751.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-134814.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>同时检查JSAddTyper()的调用者<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-134854.png" alt=""><ul>
+<li>在函数定义中只找到一个地方<ul>
+<li>由于无法用简单的grep找到它，因此很有可能涉及宏。<ul>
+<li>追溯更多来源是很麻烦的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在JSAddTyper()上放置一个断点并查看是否能在测试代码中断下来<ul>
+<li>如果没有断下，努力尝试，阅读源码，进一步回溯</li>
+</ul>
+</li>
+<li>使用gdb运行<ul>
+<li>在JSAddTyper()上放置一个断点,发现停在断点处<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-135415.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在停止后进行回溯（查看调用栈）<ul>
+<li>从这个函数名，可以确认JSAddRanger()和JSAddTyper()与优化编译器（TurboFan）相关<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-140004.png" alt=""></li>
+<li>由于它是TyperPhase::Run，证明它是一个关于TurboFan优化中“Typer”阶段的函数。<br>另外，如果TurboFan进行了优化编译运行，就会发现JSAddTyper()在测试代码中被调用。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-140235.png" alt=""></li>
+</ul>
+</li>
+<li>您可以在TyperPhase中看到TurboFan的功能<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-140844.png" alt=""></li>
+<li>到目前为止做一个总结<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-141035.png" alt=""></li>
+<li>JSAddRanger()调用条件探索<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-141136.png" alt=""><ul>
+<li>lhs-&gt; IsRange（）&amp;&amp; rhs-&gt; IsRange（）</li>
+<li>首先，代码中出现的Range是什么？<ul>
+<li>为了知道这一点，我们需要更多地了解TurboFan的优化机制</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Typer和Range调查"><a href="#Typer和Range调查" class="headerlink" title="Typer和Range调查"></a>Typer和Range调查</h4><ul>
+<li>了解V8的优化（特别是Typer和Range相关）<ul>
+<li>GitHub中有很多链接，从上往下依次阅读<ul>
+<li><a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">https://github.com/v8/v8/wiki/TurboFan</a><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-143220.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>和Typer有关的材料<ul>
+<li>TurboFan概述<ul>
+<li><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/</a><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-143941.png" alt=""></li>
+</ul>
+</li>
+<li>Typer收集类型信息并在其他地方完成优化<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-144124.png" alt=""></li>
+</ul>
+</li>
+<li>TurboFan’s JIT Design<ul>
+<li><a href="https://docs.google.com/presentation/d/1sOEF4MlF7LeO7uq-uThJSulJlTh--wgLeaVibsbb3tc/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1sOEF4MlF7LeO7uq-uThJSulJlTh--wgLeaVibsbb3tc/edit#slide=id.p</a><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-144643.png" alt=""></li>
+<li>当JavaScript代码中的变量或值不确定时，表示可以读取的范围的变量或值可以作为范围读取</li>
+<li>据此，JSAddRanger()在添加带有范围信息的不定变量时,会派生出一个新的范围<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-151437.png" alt=""></li>
+</ul>
+</li>
+<li>Fast arithmetic for dynamic languages<br><a href="https://docs.google.com/presentation/d/1wZVIqJMODGFYggueQySdiA3tUYuHNMcyp_PndgXsO1Y/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1wZVIqJMODGFYggueQySdiA3tUYuHNMcyp_PndgXsO1Y/edit#slide=id.p</a><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-151643.png" alt=""><br>虽然它没有直接解释范围，但根据该图，似乎在使用AND操作时变成范围（可能是“％”，这也在MOD操作中）<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-152135.png" alt=""></li>
+</ul>
+<h4 id="确定调用条件"><a href="#确定调用条件" class="headerlink" title="确定调用条件"></a>确定调用条件</h4><ul>
+<li>编写测试代码<ul>
+<li>添加AND操作并在gdb下执行<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-152345.png" alt=""></li>
+<li>在此之后，在断点处停止<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-152445.png" alt=""></li>
+</ul>
+</li>
+<li>调用路径总结<br>  <img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-152615.png" alt=""></li>
+</ul>
+<h3 id="漏洞理解"><a href="#漏洞理解" class="headerlink" title="漏洞理解"></a>漏洞理解</h3><ul>
+<li>补丁周围的代码<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-153051.png" alt=""></li>
+<li>从操作实例理解<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-153234.png" alt=""></li>
+<li><p>用make x64.debug -j 8重新编译</p>
+<ul>
+<li>在“环境设置”描述的步骤中，我已经预先构建了它。</li>
+</ul>
+</li>
+<li><p>尝试有趣的测试case</p>
+<ul>
+<li>下面的JavaScript代码展示了有趣的结果<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-153628.png" alt=""></li>
+<li>如果打了有漏洞的补丁，你会在AND操作之后得到新的范围信息，<strong>而这个范围信息是错误的</strong></li>
+<li><strong>但是，由于该信息仅用作类型提示，因此它不会对选择Word32的类型造成影响，因为它可以用32位表示[0,24]和[0,16]。在这个例子里，f函数正常应该返回24作为结果</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-154204.png" alt=""><h3 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h3><a href="https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea" target="_blank" rel="noopener">https://gist.github.com/sroettger/d077d3907999aaa0f89d11d956b438ea</a><h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3></li>
+</ul>
+</li>
+<li>通过假的range信息，你能做什么？<ul>
+<li>这里的目标是创建任意地址读/写的原语</li>
+<li>具体来说，就是伪造一个很大的array的length<ul>
+<li>许多JavaScript引擎的漏洞利用都是使用这种方法。</li>
+</ul>
+</li>
+<li>OOB-RW (Out-Of-Bounds-Read/Write access)</li>
+<li>如果在array之外读写数据，并劫持JSArrayBuffer的BackingStore的指针，就获胜。</li>
+</ul>
+</li>
+<li>如何用OOB-RW创建任意地址读/写的原语<ul>
+<li>内存排布如下<br>  <img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-155748.png" alt=""></li>
+<li>如果可以模拟长度，就可以通过越界访问来更改JSArrayBuffer的BackingStore的指针<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-160205.png" alt=""></li>
+</ul>
+</li>
+<li>通过range来实现我们的目的（改大array的length）<ul>
+<li>正确的尝试<ul>
+<li>首先用范围信息创建一个值</li>
+<li>使用这个值来创建一个array</li>
+</ul>
+</li>
+<li>测试代码看起来像这样<ul>
+<li>变量sz具有范围信息<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-11-160615.png" alt=""></li>
 </ul>
 </li>
 </ul>
@@ -1986,7 +2129,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan全览"><span class="nav-number">11.3.1.</span> <span class="nav-text">TurboFan全览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan的特征"><span class="nav-number">11.3.2.</span> <span class="nav-text">TurboFan的特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan优化"><span class="nav-number">11.3.3.</span> <span class="nav-text">TurboFan优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crankshaft-TurboFan检查"><span class="nav-number">11.3.4.</span> <span class="nav-text">Crankshaft/TurboFan检查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器调用的流程"><span class="nav-number">11.4.</span> <span class="nav-text">编译器调用的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#被调用"><span class="nav-number">11.4.1.</span> <span class="nav-text">被调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用堆栈查看"><span class="nav-number">11.4.2.</span> <span class="nav-text">调用堆栈查看</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读V8的源码"><span class="nav-number">12.</span> <span class="nav-text">阅读V8的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Handle-HandleScope"><span class="nav-number">12.1.</span> <span class="nav-text">Handle/HandleScope</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">12.2.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolate"><span class="nav-number">12.3.</span> <span class="nav-text">Isolate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Platform"><span class="nav-number">12.4.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interpreter"><span class="nav-number">12.5.</span> <span class="nav-text">Interpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blob"><span class="nav-number">12.6.</span> <span class="nav-text">blob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICU"><span class="nav-number">12.7.</span> <span class="nav-text">ICU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#third-party"><span class="nav-number">12.8.</span> <span class="nav-text">third_party</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tools"><span class="nav-number">12.9.</span> <span class="nav-text">tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">12.10.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于V8的GC"><span class="nav-number">13.</span> <span class="nav-text">关于V8的GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">13.1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器（GC）"><span class="nav-number">13.2.</span> <span class="nav-text">垃圾收集器（GC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Young-Generation"><span class="nav-number">13.3.</span> <span class="nav-text">Young Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Old-Generation"><span class="nav-number">13.4.</span> <span class="nav-text">Old Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other"><span class="nav-number">13.5.</span> <span class="nav-text">Other</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-Barrier"><span class="nav-number">13.6.</span> <span class="nav-text">Write Barrier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从Exploit的角度来看"><span class="nav-number">13.7.</span> <span class="nav-text">从Exploit的角度来看</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8对象模型"><span class="nav-number">14.</span> <span class="nav-text">v8对象模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料-1"><span class="nav-number">14.1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8的object"><span class="nav-number">14.2.</span> <span class="nav-text">V8的object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承关系"><span class="nav-number">14.3.</span> <span class="nav-text">继承关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object和Tagged-Value"><span class="nav-number">14.4.</span> <span class="nav-text">Object和Tagged Value</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Object"><span class="nav-number">14.4.1.</span> <span class="nav-text">Object</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Smi"><span class="nav-number">14.4.2.</span> <span class="nav-text">Smi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tagged-Values"><span class="nav-number">14.4.3.</span> <span class="nav-text">Tagged Values</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HeapNumber"><span class="nav-number">14.5.</span> <span class="nav-text">HeapNumber</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PropertyCell"><span class="nav-number">14.6.</span> <span class="nav-text">PropertyCell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String"><span class="nav-number">14.7.</span> <span class="nav-text">String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oddball"><span class="nav-number">14.8.</span> <span class="nav-text">Oddball</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSObject"><span class="nav-number">14.9.</span> <span class="nav-text">JSObject</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">14.9.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSObject-1"><span class="nav-number">14.9.2.</span> <span class="nav-text">JSObject</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSFunction"><span class="nav-number">14.10.</span> <span class="nav-text">JSFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSArray"><span class="nav-number">14.11.</span> <span class="nav-text">JSArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSArrayBuffer"><span class="nav-number">14.12.</span> <span class="nav-text">JSArrayBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrayBuffer-and-TypedArray"><span class="nav-number">14.12.1.</span> <span class="nav-text">ArrayBuffer and TypedArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSArrayBuffer-1"><span class="nav-number">14.12.2.</span> <span class="nav-text">JSArrayBuffer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Numerical-conversion-tool-It-is-original-work"><span class="nav-number">14.13.</span> <span class="nav-text">Numerical conversion tool (It is original work)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践"><span class="nav-number">15.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法-1"><span class="nav-number">15.1.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初步调查"><span class="nav-number">15.2.</span> <span class="nav-text">初步调查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell文件"><span class="nav-number">15.3.</span> <span class="nav-text">shell文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#patch分析"><span class="nav-number">15.4.</span> <span class="nav-text">patch分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法（再次列出）"><span class="nav-number">15.5.</span> <span class="nav-text">攻略方法（再次列出）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Identification-of-calling-conditions"><span class="nav-number">15.6.</span> <span class="nav-text">Identification of calling conditions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Google"><span class="nav-number">15.6.1.</span> <span class="nav-text">Google</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确认内置漏洞的文件名"><span class="nav-number">15.6.2.</span> <span class="nav-text">确认内置漏洞的文件名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定来源"><span class="nav-number">15.6.3.</span> <span class="nav-text">确定来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定调用路径"><span class="nav-number">15.6.4.</span> <span class="nav-text">确定调用路径</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的知识结构"><span class="nav-number">1.</span> <span class="nav-text">v8的知识结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plaid-ctf-2016-js-sandbox"><span class="nav-number">2.</span> <span class="nav-text">plaid ctf 2016 - js_sandbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境搭建"><span class="nav-number">3.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于js的问题"><span class="nav-number">4.</span> <span class="nav-text">关于js的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js引擎"><span class="nav-number">4.1.</span> <span class="nav-text">js引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的pattern分为两类"><span class="nav-number">4.2.</span> <span class="nav-text">js的pattern分为两类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法"><span class="nav-number">4.3.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">4.4.</span> <span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是v8？"><span class="nav-number">5.</span> <span class="nav-text">什么是v8？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的编译器和优化"><span class="nav-number">6.</span> <span class="nav-text">v8的编译器和优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的种类"><span class="nav-number">6.1.</span> <span class="nav-text">编译器的种类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器的历史"><span class="nav-number">6.2.</span> <span class="nav-text">编译器的历史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今天的问题"><span class="nav-number">6.3.</span> <span class="nav-text">今天的问题~</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器和优化"><span class="nav-number">6.4.</span> <span class="nav-text">编译器和优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Codegen"><span class="nav-number">7.</span> <span class="nav-text">Full-Codegen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">8.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hiddern-Class"><span class="nav-number">9.</span> <span class="nav-text">Hiddern Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map生成"><span class="nav-number">9.1.</span> <span class="nav-text">Map生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">9.2.</span> <span class="nav-text">property的管理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我想在这里说的"><span class="nav-number">9.3.</span> <span class="nav-text">我想在这里说的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">10.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对于各个action，对类型进行缓存和优化的机制"><span class="nav-number">10.1.</span> <span class="nav-text">对于各个action，对类型进行缓存和优化的机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于inline-caching"><span class="nav-number">10.2.</span> <span class="nav-text">关于inline caching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化-1"><span class="nav-number">11.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft和TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">Crankshaft和TurboFan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Crankshaft"><span class="nav-number">11.2.</span> <span class="nav-text">Crankshaft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.3.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan全览"><span class="nav-number">11.3.1.</span> <span class="nav-text">TurboFan全览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan的特征"><span class="nav-number">11.3.2.</span> <span class="nav-text">TurboFan的特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TurboFan优化"><span class="nav-number">11.3.3.</span> <span class="nav-text">TurboFan优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crankshaft-TurboFan检查"><span class="nav-number">11.3.4.</span> <span class="nav-text">Crankshaft/TurboFan检查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器调用的流程"><span class="nav-number">11.4.</span> <span class="nav-text">编译器调用的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#被调用"><span class="nav-number">11.4.1.</span> <span class="nav-text">被调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用堆栈查看"><span class="nav-number">11.4.2.</span> <span class="nav-text">调用堆栈查看</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读V8的源码"><span class="nav-number">12.</span> <span class="nav-text">阅读V8的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Handle-HandleScope"><span class="nav-number">12.1.</span> <span class="nav-text">Handle/HandleScope</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">12.2.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolate"><span class="nav-number">12.3.</span> <span class="nav-text">Isolate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Platform"><span class="nav-number">12.4.</span> <span class="nav-text">Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Interpreter"><span class="nav-number">12.5.</span> <span class="nav-text">Interpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#blob"><span class="nav-number">12.6.</span> <span class="nav-text">blob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICU"><span class="nav-number">12.7.</span> <span class="nav-text">ICU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#third-party"><span class="nav-number">12.8.</span> <span class="nav-text">third_party</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tools"><span class="nav-number">12.9.</span> <span class="nav-text">tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">12.10.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于V8的GC"><span class="nav-number">13.</span> <span class="nav-text">关于V8的GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">13.1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器（GC）"><span class="nav-number">13.2.</span> <span class="nav-text">垃圾收集器（GC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Young-Generation"><span class="nav-number">13.3.</span> <span class="nav-text">Young Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Old-Generation"><span class="nav-number">13.4.</span> <span class="nav-text">Old Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other"><span class="nav-number">13.5.</span> <span class="nav-text">Other</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-Barrier"><span class="nav-number">13.6.</span> <span class="nav-text">Write Barrier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从Exploit的角度来看"><span class="nav-number">13.7.</span> <span class="nav-text">从Exploit的角度来看</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8对象模型"><span class="nav-number">14.</span> <span class="nav-text">v8对象模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料-1"><span class="nav-number">14.1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8的object"><span class="nav-number">14.2.</span> <span class="nav-text">V8的object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承关系"><span class="nav-number">14.3.</span> <span class="nav-text">继承关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object和Tagged-Value"><span class="nav-number">14.4.</span> <span class="nav-text">Object和Tagged Value</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Object"><span class="nav-number">14.4.1.</span> <span class="nav-text">Object</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Smi"><span class="nav-number">14.4.2.</span> <span class="nav-text">Smi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tagged-Values"><span class="nav-number">14.4.3.</span> <span class="nav-text">Tagged Values</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HeapNumber"><span class="nav-number">14.5.</span> <span class="nav-text">HeapNumber</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PropertyCell"><span class="nav-number">14.6.</span> <span class="nav-text">PropertyCell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String"><span class="nav-number">14.7.</span> <span class="nav-text">String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oddball"><span class="nav-number">14.8.</span> <span class="nav-text">Oddball</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSObject"><span class="nav-number">14.9.</span> <span class="nav-text">JSObject</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">14.9.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSObject-1"><span class="nav-number">14.9.2.</span> <span class="nav-text">JSObject</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSFunction"><span class="nav-number">14.10.</span> <span class="nav-text">JSFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSArray"><span class="nav-number">14.11.</span> <span class="nav-text">JSArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSArrayBuffer"><span class="nav-number">14.12.</span> <span class="nav-text">JSArrayBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ArrayBuffer-and-TypedArray"><span class="nav-number">14.12.1.</span> <span class="nav-text">ArrayBuffer and TypedArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSArrayBuffer-1"><span class="nav-number">14.12.2.</span> <span class="nav-text">JSArrayBuffer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Numerical-conversion-tool-It-is-original-work"><span class="nav-number">14.13.</span> <span class="nav-text">Numerical conversion tool (It is original work)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践"><span class="nav-number">15.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#攻略方法-1"><span class="nav-number">15.1.</span> <span class="nav-text">攻略方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初步调查"><span class="nav-number">15.2.</span> <span class="nav-text">初步调查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell文件"><span class="nav-number">15.3.</span> <span class="nav-text">shell文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#patch分析"><span class="nav-number">15.4.</span> <span class="nav-text">patch分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Identification-of-calling-conditions"><span class="nav-number">15.5.</span> <span class="nav-text">Identification of calling conditions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Google"><span class="nav-number">15.5.1.</span> <span class="nav-text">Google</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确认内置漏洞的文件名"><span class="nav-number">15.5.2.</span> <span class="nav-text">确认内置漏洞的文件名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定来源"><span class="nav-number">15.5.3.</span> <span class="nav-text">确定来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定调用路径"><span class="nav-number">15.5.4.</span> <span class="nav-text">确定调用路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Typer和Range调查"><span class="nav-number">15.5.5.</span> <span class="nav-text">Typer和Range调查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定调用条件"><span class="nav-number">15.5.6.</span> <span class="nav-text">确定调用条件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞理解"><span class="nav-number">15.6.</span> <span class="nav-text">漏洞理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解法"><span class="nav-number">15.7.</span> <span class="nav-text">解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用"><span class="nav-number">15.8.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li></ol></div>
             
 
           </div>
