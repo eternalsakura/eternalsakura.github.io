@@ -95,10 +95,16 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-161022.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-06-162728.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-025035.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140512.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-025306.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140547.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-030317.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140712.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-030943.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140742.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-031037.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140755.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-140822.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-032813.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041132.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-05-07-041214.png">
@@ -277,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-11T20:03:37.590Z">
+<meta property="og:updated_time" content="2018-06-14T12:32:04.457Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -691,10 +697,11 @@
 <p>注意，我们主要讲解2016年4月的v8的结构，如果你想了解现在的v8，下面这些资料是十分有用的。<br><a href="https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for" target="_blank" rel="noopener">https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a></p>
 <h2 id="v8的编译器和优化"><a href="#v8的编译器和优化" class="headerlink" title="v8的编译器和优化"></a>v8的编译器和优化</h2><h3 id="编译器的种类"><a href="#编译器的种类" class="headerlink" title="编译器的种类"></a>编译器的种类</h3><p>要理解v8，其中最重要的组件就是编译器。<br>内部大概分成四个编译器<br>旧的baseline编译器：Full-Codegen<br>旧的优化编译器：Crankshaft<br>新的优化编译器：TurboFan<br>新的baseline编译器：Ignition<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-06-162728.png" alt=""></p>
 <p>下面这些资料可以用于参考：<br><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">An overview of the TurboFan compiler</a><br><a href="https://docs.google.com/presentation/d/1_eLlVzcj94_G4r9j9d_Lj5HRKFnq6jgpuPJtnmIBs88" target="_blank" rel="noopener">TurboFan: A new code generation architecture for V8</a></p>
-<h3 id="编译器的历史"><a href="#编译器的历史" class="headerlink" title="编译器的历史"></a>编译器的历史</h3><p>最初，Full-Codegen直接生成和执行汇编语言<br>从AST直接生成汇编语言代码（JIT）相对较快，但是生成的汇编语言代码有很多冗杂部分，还有优化空间。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025035.png" alt=""><br>2010年，用于优化hot-code的Crankshaft被引入。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025306.png" alt=""><br>Full-codegen-&gt;Suboptimization code<br>Full-codegen—&gt;optimize-&gt;Crankshaft-&gt;optimisation code—&gt;Deoptimize(If the optimized code is not appropriate, restore it)-&gt;Suboptimization code</p>
-<p>2015年，又引入了TurboFan，为了更好的适应新的javascript规范。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030317.png" alt=""></p>
-<p>2017年，引入了生成中间语言(bytecode)的Ignition<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030943.png" alt=""></p>
-<p>2018年至今，Full-Codegen和Crankshaft已经被从v8中移除。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-031037.png" alt=""></p>
+<h3 id="编译器的历史"><a href="#编译器的历史" class="headerlink" title="编译器的历史"></a>编译器的历史</h3><p>最初，Full-Codegen直接生成和执行汇编语言<br>从AST直接生成汇编语言代码（JIT）相对较快，但是生成的汇编语言代码有很多冗杂部分，还有优化空间。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025035.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140512.png" alt=""></p>
+<p>2010年，用于优化hot-code的Crankshaft被引入。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-025306.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140547.png" alt=""></p>
+<p>2015年，又引入了TurboFan，为了更好的适应新的javascript规范。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030317.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140712.png" alt=""></p>
+<p>2017年，引入了生成中间语言(bytecode)的Ignition<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-030943.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140742.png" alt=""></p>
+<p>2018年至今，Full-Codegen和Crankshaft已经被从v8中移除。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-031037.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140755.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-13-140822.png" alt=""></p>
 <h3 id="今天的问题"><a href="#今天的问题" class="headerlink" title="今天的问题~"></a>今天的问题~</h3><p>2016年当时的latest<br>Hidden Class和Inline Caching也用作优化。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-032813.png" alt=""></p>
 <h3 id="编译器和优化"><a href="#编译器和优化" class="headerlink" title="编译器和优化"></a>编译器和优化</h3><ul>
 <li>baseline编译器<br>1.Full-Codegen 重要度低—&gt;对于理解这个exp的重要性</li>
