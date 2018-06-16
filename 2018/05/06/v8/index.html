@@ -283,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-14T12:32:04.457Z">
+<meta property="og:updated_time" content="2018-06-15T13:22:29.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -777,23 +777,17 @@
 <p>当访问obj1.x的值时，跟踪obj1所持有的指针，并引用C1以获取“x的偏移量为0”的信息。之后，通过访问obj 1的偏移量0处的值，可以高速的获得x的值。在C1内部，有必要寻找“x”，尽管我个人觉得它与哈希表似乎没有多大区别，但是这会让它更快。</p>
 <p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-130350.png" alt=""><br>①当你添加obj1.y的时候，obj1在内部更改为指向C2<br>②通过向C1添加y的offset信息来创建新的map C2<br>③在C1中添加转换条件<br>条件：添加y时，转换到C2</p>
 <p>此时C0和C1不再使用，但它们不会被移除，因为它们可能在将来被重新使用。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-130848.png" alt=""><br>对于具有完全相同属性的对象，如果你创建类似的对象，自然存在“x”和“y”，你可以使用创建的Map。<br>创建obj 2的时刻指向C0，但通过以与obj 1相同的方式按x和y的顺序添加属性，它遵循转换条件以完成C0-&gt;C1-&gt;C2<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-07-131159.png" alt=""><br><strong>注意：如果属性添加顺序不同，即使具有相同名称的属性的对象也将具有不同的转换条件。 因此，最终创建的map也会变成不同的map，并且无法获得加速的好处。<br>有关详细信息，请参阅<br><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html" target="_blank" rel="noopener">http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html</a><br>另外，如果property添加/删除次数增加太多，Hidden Class的管理会减慢。<br>因此，此时它不使用Hidden Class，而使用字典类型来管理<br><a href="https://v8project.blogspot.jp/2017/08/fast-properties.html" target="_blank" rel="noopener">https://v8project.blogspot.jp/2017/08/fast-properties.html</a></strong></p>
-<h3 id="property的管理方法"><a href="#property的管理方法" class="headerlink" title="property的管理方法"></a>property的管理方法</h3><ol>
-<li>默认情况下,object的内部管理是通过array实现的</li>
-</ol>
+<h3 id="property的管理方法"><a href="#property的管理方法" class="headerlink" title="property的管理方法"></a>property的管理方法</h3><p>1.默认情况下,object的内部管理是通过array实现的</p>
 <ul>
 <li>In-Object property（这次的解说就是用这种方法）</li>
 </ul>
-<ol>
-<li>当property增加到11个以上，使用外部的array来管理。</li>
-</ol>
+<p>2.当property增加到11个以上，使用外部的array来管理。</p>
 <ul>
 <li>Fast property</li>
 </ul>
-<ol>
-<li>如果再进一步增加property，那么就用object外的dictory来管理</li>
-</ol>
+<p>3.如果再进一步增加property，那么就用object外的dictory来管理</p>
 <ul>
-<li>Slow / dict properties<ul>
+<li>slow/dict properties<ul>
 <li>它也被称为self-contained，因为没有使用map且使用外部的dictory保存所有的信息</li>
 <li>尽管实体是一个FixedArray的数组，但它被用作如下所示的字典<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-08-131813.png" alt=""></li>
 </ul>
