@@ -283,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-15T13:22:29.305Z">
+<meta property="og:updated_time" content="2018-06-17T19:42:57.998Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -808,7 +808,17 @@
 </ul>
 </li>
 </ol>
-<h2 id="Inline-Caching"><a href="#Inline-Caching" class="headerlink" title="Inline Caching"></a>Inline Caching</h2><p>参考资料：<br><a href="https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183" target="_blank" rel="noopener">https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a><br><a href="https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for" target="_blank" rel="noopener">https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for</a><br><a href="http://cs.au.dk/~jmi/VM/IC-V8.pdf" target="_blank" rel="noopener">http://cs.au.dk/~jmi/VM/IC-V8.pdf</a></p>
+<h2 id="Inline-Caching"><a href="#Inline-Caching" class="headerlink" title="Inline Caching"></a>Inline Caching</h2><p>参考资料：</p>
+<ul>
+<li><a href="https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183" target="_blank" rel="noopener">https://blog.ghaiklor.com/optimizations-tricks-in-v8-d284b6c8b183</a></li>
+<li><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a></li>
+<li><a href="https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for" target="_blank" rel="noopener">https://www.slideshare.net/ssuser6f246f/v8-javascript-engine-for</a></li>
+<li><a href="http://cs.au.dk/~jmi/VM/IC-V8.pdf" target="_blank" rel="noopener">http://cs.au.dk/~jmi/VM/IC-V8.pdf</a></li>
+</ul>
+<p>附注：其中部分我做了翻译，可以在这里找到</p>
+<ul>
+<li><a href="http://eternalsakura13.com/2018/06/16/nodefest_v8/">http://eternalsakura13.com/2018/06/16/nodefest_v8/</a></li>
+</ul>
 <h3 id="对于各个action，对类型进行缓存和优化的机制"><a href="#对于各个action，对类型进行缓存和优化的机制" class="headerlink" title="对于各个action，对类型进行缓存和优化的机制"></a>对于各个action，对类型进行缓存和优化的机制</h3><ol>
 <li>这里所说的action可以表示下列任意一种<pre><code>- 参照，代入（LoadIC, StoreIC)
 - 数组访问（KeyedLoadIC，KeyedStoreIC）
@@ -944,7 +954,7 @@
 <h4 id="TurboFan的特征"><a href="#TurboFan的特征" class="headerlink" title="TurboFan的特征"></a>TurboFan的特征</h4><ul>
 <li>Graph Building<ul>
 <li>从AST创建一个JavaScript节点的graph<ul>
-<li>SAdd，JSCallFunction，JSLoadProperty，IfTrue，IfFalse等等</li>
+<li>JSAdd，JSCallFunction，JSLoadProperty，IfTrue，IfFalse等等</li>
 </ul>
 </li>
 <li>在making graphs优化</li>
@@ -2225,7 +2235,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
