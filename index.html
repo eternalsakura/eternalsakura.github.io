@@ -582,10 +582,11 @@ arm-linux-androideabi-gdb，也就是gdb-arm版没有提供，要自己找，我
           What is V8?v8是Google的Javascript引擎，它被采用作为Google Chrome/Node.js的Javascript引擎。
 Execution flow
 ParsingBasic parsingv8解析源代码并将其转换为AST抽象语法树
-ProblemsParsing all functions - Slow首先解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。
-Split parsing phase为了延迟解析，将parse分为两个阶段。
-PreParsing事先解析所有函数的布局。
-Lazy Parsingv8仅在调用延迟解析的函数时才进行解析
+Split parsing phase首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。为了延迟解析，将parse分为两个阶段。
+PreParsing事先解析所有函数的布局。v8::internal::PreParser Class一次解析函数的轮廓。由此得到
+
+初步的语法错误检查
+函数的范围生成Lazy
           ...
           <!--noindex-->
           <div class="post-button text-center">
