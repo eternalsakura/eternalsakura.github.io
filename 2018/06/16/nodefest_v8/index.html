@@ -137,7 +137,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-080927.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-081254.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-184155.png">
-<meta property="og:updated_time" content="2018-06-17T19:36:30.652Z">
+<meta property="og:updated_time" content="2018-06-18T15:58:07.208Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source to Binary Jounrney of V8 javascript engine">
 <meta name="twitter:description" content="What is V8?v8是Google的Javascript引擎，它被采用作为Google Chrome/Node.js的Javascript引擎。 Execution flow ParsingBasic parsingv8解析源代码并将其转换为AST抽象语法树 Split parsing phase首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。为了延迟解析，将p">
@@ -479,7 +479,9 @@
 <h4 id="PreParsing"><a href="#PreParsing" class="headerlink" title="PreParsing"></a>PreParsing</h4><p>事先解析所有函数的布局。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-16-133801.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-16-134324.png" alt=""><br>v8::internal::PreParser Class一次解析函数的轮廓。<br>由此得到</p>
 <ul>
 <li>初步的语法错误检查</li>
-<li>函数的范围生成<h4 id="Lazy-Parsing"><a href="#Lazy-Parsing" class="headerlink" title="Lazy Parsing"></a>Lazy Parsing</h4>v8仅在调用延迟解析的函数时才进行解析。<br>更多的可参考：<a href="https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p</a></li>
+<li>函数的范围生成<h4 id="Lazy-Parsing"><a href="#Lazy-Parsing" class="headerlink" title="Lazy Parsing"></a>Lazy Parsing</h4>v8仅在调用延迟解析的函数时才进行解析。<br>更多的可参考：</li>
+<li><a href="https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p</a></li>
+<li><a href="https://www.youtube.com/watch?v=Fg7niTmNNLg" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Fg7niTmNNLg</a></li>
 </ul>
 <h2 id="Abstract-Syntax-Tree"><a href="#Abstract-Syntax-Tree" class="headerlink" title="Abstract Syntax Tree"></a>Abstract Syntax Tree</h2><p>V8自己实现的解析器，不使用编译器编译器，如yacc或lex。使用递归下降语法分析进行解析。</p>
 <h3 id="Subsclass-constructor-return"><a href="#Subsclass-constructor-return" class="headerlink" title="Subsclass constructor return"></a>Subsclass constructor return</h3><p>修改继承类中的构造函数<br>在派生类的构造函数中返回表达式<br>转换为三元运算符<br>如果表达式的结果未定义，则返回该值。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-16-140018.png" alt=""></p>
@@ -595,8 +597,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/06/18/v8_ppt/" rel="prev" title="v8 slide writeup">
-                v8 slide writeup <i class="fa fa-chevron-right"></i>
+              <a href="/2018/06/18/v8_ppt/" rel="prev" title="v8 slide collection">
+                v8 slide collection <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -688,7 +690,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">80</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

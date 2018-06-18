@@ -84,7 +84,7 @@
 <meta name="description" content="The TurboFan architecture / entry points TurboFan pipeline (high-level) Code generation example1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556">
 <meta name="keywords" content="v8">
 <meta property="og:type" content="article">
-<meta property="og:title" content="v8 slide writeup">
+<meta property="og:title" content="v8 slide collection">
 <meta property="og:url" content="http://eternalsakura13.com/2018/06/18/v8_ppt/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="The TurboFan architecture / entry points TurboFan pipeline (high-level) Code generation example1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556">
@@ -130,9 +130,14 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-193124.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-193112.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-193028.png">
-<meta property="og:updated_time" content="2018-06-17T19:32:41.170Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-200254.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-203313.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-150922.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-151626.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-152050.png">
+<meta property="og:updated_time" content="2018-06-18T16:03:13.577Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="v8 slide writeup">
+<meta name="twitter:title" content="v8 slide collection">
 <meta name="twitter:description" content="The TurboFan architecture / entry points TurboFan pipeline (high-level) Code generation example1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-13-135445.png">
 
@@ -180,7 +185,7 @@
         }
     })();
 </script>
-  <title>v8 slide writeup | Sakuraのblog</title>
+  <title>v8 slide collection | Sakuraのblog</title>
   
 
 
@@ -377,7 +382,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">v8 slide writeup</h1>
+          <h1 class="post-title" itemprop="name headline">v8 slide collection</h1>
         
 
         <div class="post-meta">
@@ -490,6 +495,12 @@
 <p><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-191809.png" alt=""></p>
 <p>用作参考：<a href="https://www.cnblogs.com/yumianhu/p/3707427.html" target="_blank" rel="noopener">https://www.cnblogs.com/yumianhu/p/3707427.html</a><br>关于IC的Cahce State,不过内容略过时。</p>
 <p><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-192442.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-192512.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-192553.png" alt=""><br>Crankshaft已经废弃，这里只是看下type feedback和check<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-193124.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-193112.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-193028.png" alt=""></p>
+<h2 id="理解v8-bytecode"><a href="#理解v8-bytecode" class="headerlink" title="理解v8 bytecode"></a>理解v8 bytecode</h2><p><a href="https://zhuanlan.zhihu.com/p/28590489" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/28590489</a><br>有中文翻译，读起来很快（逃<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-200254.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-203313.png" alt=""><br><a href="https://2017.jsconf.eu/speakers/" target="_blank" rel="noopener">https://2017.jsconf.eu/speakers/</a><br><a href="https://www.chromium.org/developers/how-tos/run-chromium-with-flags" target="_blank" rel="noopener">https://www.chromium.org/developers/how-tos/run-chromium-with-flags</a></p>
+<h2 id="Parsing-JavaScript-better-lazy-than-eager"><a href="#Parsing-JavaScript-better-lazy-than-eager" class="headerlink" title="Parsing JavaScript-better lazy than eager?"></a>Parsing JavaScript-better lazy than eager?</h2><p><a href="https://www.youtube.com/watch?v=Fg7niTmNNLg" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Fg7niTmNNLg</a></p>
+<h2 id="Ignition-an-interpreter-for-v8"><a href="#Ignition-an-interpreter-for-v8" class="headerlink" title="Ignition - an interpreter for v8"></a>Ignition - an interpreter for v8</h2><h3 id="bytecode如何产生"><a href="#bytecode如何产生" class="headerlink" title="bytecode如何产生"></a>bytecode如何产生</h3><ul>
+<li>加法<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-18-150922.png" alt=""></li>
+<li>访问对象<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-18-151626.png" alt=""><h3 id="编译bytecode"><a href="#编译bytecode" class="headerlink" title="编译bytecode"></a>编译bytecode</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-06-18-152050.png" alt=""></li>
+</ul>
 
       
     </div>
@@ -530,8 +541,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
-                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              <a href="/2018/06/18/v81/" rel="prev" title="v8 debug writeup">
+                v8 debug writeup <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -623,7 +634,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">80</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -751,7 +762,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-TurboFan-architecture-entry-points"><span class="nav-number">1.</span> <span class="nav-text">The TurboFan architecture / entry points</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TurboFan-pipeline-high-level"><span class="nav-number">2.</span> <span class="nav-text">TurboFan pipeline (high-level)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-generation-example"><span class="nav-number">3.</span> <span class="nav-text">Code generation example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Turbofan-IR"><span class="nav-number">4.</span> <span class="nav-text">Turbofan IR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview"><span class="nav-number">4.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点分层"><span class="nav-number">4.2.</span> <span class="nav-text">节点分层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR分层和phases"><span class="nav-number">4.3.</span> <span class="nav-text">IR分层和phases</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lowering-amp-amp-Typed-Lowering"><span class="nav-number">4.3.1.</span> <span class="nav-text">lowering&amp;&amp;Typed Lowering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Representation-selection"><span class="nav-number">4.3.2.</span> <span class="nav-text">Representation selection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scheduling"><span class="nav-number">4.3.3.</span> <span class="nav-text">Scheduling</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#High-performance-JavaScript-with-V8"><span class="nav-number">5.</span> <span class="nav-text">High performance JavaScript with V8</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-TurboFan-architecture-entry-points"><span class="nav-number">1.</span> <span class="nav-text">The TurboFan architecture / entry points</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TurboFan-pipeline-high-level"><span class="nav-number">2.</span> <span class="nav-text">TurboFan pipeline (high-level)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-generation-example"><span class="nav-number">3.</span> <span class="nav-text">Code generation example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Turbofan-IR"><span class="nav-number">4.</span> <span class="nav-text">Turbofan IR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview"><span class="nav-number">4.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点分层"><span class="nav-number">4.2.</span> <span class="nav-text">节点分层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR分层和phases"><span class="nav-number">4.3.</span> <span class="nav-text">IR分层和phases</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lowering-amp-amp-Typed-Lowering"><span class="nav-number">4.3.1.</span> <span class="nav-text">lowering&amp;&amp;Typed Lowering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Representation-selection"><span class="nav-number">4.3.2.</span> <span class="nav-text">Representation selection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scheduling"><span class="nav-number">4.3.3.</span> <span class="nav-text">Scheduling</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#High-performance-JavaScript-with-V8"><span class="nav-number">5.</span> <span class="nav-text">High performance JavaScript with V8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解v8-bytecode"><span class="nav-number">6.</span> <span class="nav-text">理解v8 bytecode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parsing-JavaScript-better-lazy-than-eager"><span class="nav-number">7.</span> <span class="nav-text">Parsing JavaScript-better lazy than eager?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ignition-an-interpreter-for-v8"><span class="nav-number">8.</span> <span class="nav-text">Ignition - an interpreter for v8</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bytecode如何产生"><span class="nav-number">8.1.</span> <span class="nav-text">bytecode如何产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译bytecode"><span class="nav-number">8.2.</span> <span class="nav-text">编译bytecode</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -950,7 +961,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/06/18/v8_ppt/';
           this.page.identifier = '2018/06/18/v8_ppt/';
-          this.page.title = 'v8 slide writeup';
+          this.page.title = 'v8 slide collection';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';
