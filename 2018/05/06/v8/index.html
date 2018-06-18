@@ -283,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-18T16:12:44.406Z">
+<meta property="og:updated_time" content="2018-06-18T18:31:24.324Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -971,38 +971,16 @@
 </ul>
 <h4 id="TurboFan优化"><a href="#TurboFan优化" class="headerlink" title="TurboFan优化"></a>TurboFan优化</h4><ul>
 <li>src/compiler/pipeline.cc参考<ul>
-<li>inline<ul>
-<li>inline function call</li>
-</ul>
-</li>
-<li>trimming<ul>
-<li>删除无法访问的节点</li>
-</ul>
-</li>
-<li>typer<ul>
-<li>Type information gathering and type optimization</li>
-</ul>
-</li>
-<li>typed-lowering<ul>
-<li>Convert expressions and instructions based on type</li>
-</ul>
-</li>
-<li>loop-peeling<ul>
-<li>将循环内的处理放在循环之外</li>
-</ul>
-</li>
-<li>simplified-lowering<ul>
-<li>Simplify with more specific instructions</li>
-</ul>
-</li>
-<li>branch-elimination<ul>
-<li>Delete unnecessary branches</li>
-</ul>
-</li>
-<li>generic-lowering<ul>
-<li>Convert JS prefixed instructions to simple calls and stub calls</li>
-</ul>
-</li>
+<li>inline<br>内联函数调用</li>
+<li>trimming<br>未到达节点删除</li>
+<li>type<br>类型推断</li>
+<li>typed-lowering<br>根据类型将表达式和指令替换为更简单的处理</li>
+<li>loop-peeling<br>取出循环内的处理。</li>
+<li>loop-exit-elimination<br>删除Loop Exit</li>
+<li>load-elimination<br>删除不必要的读取和检查</li>
+<li>simplified-lowering<br>用更具体的值来进行指令的简单转换</li>
+<li>generic-lowering<br>将JS前缀指令转换为更简单的调用和stub调用</li>
+<li>dead-code-elimination<br>删除无法访问的代码</li>
 </ul>
 </li>
 </ul>

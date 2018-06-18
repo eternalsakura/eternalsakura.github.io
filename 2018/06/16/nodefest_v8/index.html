@@ -137,7 +137,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-080927.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-081254.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-17-184155.png">
-<meta property="og:updated_time" content="2018-06-18T15:58:07.208Z">
+<meta property="og:updated_time" content="2018-06-18T18:31:30.410Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Source to Binary Jounrney of V8 javascript engine">
 <meta name="twitter:description" content="What is V8?v8是Google的Javascript引擎，它被采用作为Google Chrome/Node.js的Javascript引擎。 Execution flow ParsingBasic parsingv8解析源代码并将其转换为AST抽象语法树 Split parsing phase首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。为了延迟解析，将p">
@@ -550,8 +550,9 @@
 <li>load-elimination<br>删除不必要的读取和检查</li>
 <li>simplified-lowering<br>用更具体的值来进行指令的简单转换</li>
 <li>generic-lowering<br>将JS前缀指令转换为更简单的调用和stub调用</li>
-<li>dead-code-elimination<br>删除无法访问的代码<h3 id="Code-generation"><a href="#Code-generation" class="headerlink" title="Code generation"></a>Code generation</h3>最终，Class InstructionSelector分配寄存器<br>根据Graph，CodeGenerator生成机器码<br>将汇编代码写入PC（ProgramCounter）</li>
+<li>dead-code-elimination<br>删除无法访问的代码</li>
 </ul>
+<h3 id="Code-generation"><a href="#Code-generation" class="headerlink" title="Code generation"></a>Code generation</h3><p>最终，Class InstructionSelector分配寄存器<br>根据Graph，CodeGenerator生成机器码<br>将汇编代码写入PC（ProgramCounter）</p>
 <h2 id="Deoptimization"><a href="#Deoptimization" class="headerlink" title="Deoptimization"></a>Deoptimization</h2><h3 id="What-is-Deoptimization"><a href="#What-is-Deoptimization" class="headerlink" title="What is Deoptimization?"></a>What is Deoptimization?</h3><p>Deoptimization在有意料之外的值被传递到优化后的Assembly code时，对函数重新进行编译。<br>让我们看一个Deoptimization发生的例子</p>
 <p><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-080927.png" alt=""></p>
 <h3 id="Wrong-Map"><a href="#Wrong-Map" class="headerlink" title="Wrong Map"></a>Wrong Map</h3><p>在这个例子中，我们为第一个Map{(x)}输出一个优化的Assembly，<br>但是由于第二次调用的是{(x，y)}Map，因此它被强制重新编译<br>让我们看一下汇编<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-17-081254.png" alt=""></p>
