@@ -283,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-17T19:42:57.998Z">
+<meta property="og:updated_time" content="2018-06-18T16:12:44.406Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -950,7 +950,7 @@
 </ul>
 <p><strong>因为，它是一种与当前问题没有太大关系并且不存在于最新代码中的机制，因此省略了细节。<br>如果需要了解细节，可以参考这篇文章：<a href="http://nothingcosmos.github.io/V8Crankshaft/src/blog.html" target="_blank" rel="noopener">http://nothingcosmos.github.io/V8Crankshaft/src/blog.html</a></strong></p>
 <h3 id="TurboFan"><a href="#TurboFan" class="headerlink" title="TurboFan"></a>TurboFan</h3><p>参考资料：<br><a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">https://github.com/v8/v8/wiki/TurboFan</a><br><a href="https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine" target="_blank" rel="noopener">https://speakerdeck.com/brn/source-to-binary-journey-of-v8-javascript-engine</a><br><a href="https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1H1lLsbclvzyOF3IUR05ZUaZcqDxo7_-8f4yJoxdMooU/edit#slide=id.p</a></p>
-<h4 id="TurboFan全览"><a href="#TurboFan全览" class="headerlink" title="TurboFan全览"></a>TurboFan全览</h4><p>下图显示了截至2018年TurboFan的整体情况<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png" alt=""><br>在图中，bytecode在输入中，但在2016年应该不是这样。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png" alt=""></p>
+<h4 id="TurboFan全览"><a href="#TurboFan全览" class="headerlink" title="TurboFan全览"></a>TurboFan全览</h4><p>下图显示了截至2018年TurboFan的整体情况<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-012951.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-013055.png" alt=""></p>
 <h4 id="TurboFan的特征"><a href="#TurboFan的特征" class="headerlink" title="TurboFan的特征"></a>TurboFan的特征</h4><ul>
 <li>Graph Building<ul>
 <li>从AST创建一个JavaScript节点的graph<ul>
@@ -1049,7 +1049,7 @@
 </li>
 </ul>
 <p><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-092812.png" alt=""><br>在确定使用UseTurboFan()的优化编译器后，将创建Crankshaft / TurboFan作业。<br>之后，job-&gt;CreateGraph()实际触发优化编译</p>
-<h2 id="阅读V8的源码"><a href="#阅读V8的源码" class="headerlink" title="阅读V8的源码"></a>阅读V8的源码</h2><p>在exploit中，您还需要阅读源代码.<br>源代码(amples/hello-world.cc),我们还介绍了用于阅读和调试源代码的重要概念<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-121221.png" alt=""><br>顺便说一下，ToLocalChecked()是一个no-NULL检查函数。</p>
+<h2 id="阅读V8的源码"><a href="#阅读V8的源码" class="headerlink" title="阅读V8的源码"></a>阅读V8的源码</h2><p>在exploit中，您还需要阅读源代码.<br>源代码(samples/hello-world.cc),我们还介绍了用于阅读和调试源代码的重要概念<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-10-121221.png" alt=""><br>顺便说一下，ToLocalChecked()是一个no-NULL检查函数。</p>
 <p>本节介绍以下内容<br>我只是总结了我不知道的概念<br>从exploit的角度来看，它们都不是那么重要，但是最好从源码上了解</p>
 <ul>
 <li>Handle/HandleScope</li>
@@ -1255,13 +1255,13 @@
 <li>如果对源代码进行grep找不到定义，则可能有宏</li>
 <li>寻找宏的定义是很好的（在源码中的某处#define 〜）</li>
 <li>In particular, many macros based on the token concatenation operator (##) are used<ul>
-<li>#define HOGE(name,type) hoge<em>name</em>##type();</li>
+<li><code>#define HOGE(name,type) hoge_name_##type();</code></li>
 <li>当我找不到它时，一般会有很多模式</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><strong>asm </strong>（“int 3”）不能嵌入到IC或机器语言生成系统的功能中<ul>
+<li><code>__asm __（“int 3”）</code>不能嵌入到IC或机器语言生成系统的功能中<ul>
 <li>做一个blob作为构建过程的一部分</li>
 <li>目前这些代码似乎被使用，并且在很多情况下构建失败</li>
 </ul>
