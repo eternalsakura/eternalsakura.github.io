@@ -283,7 +283,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191201.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191534.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-11-191712.png">
-<meta property="og:updated_time" content="2018-06-18T18:31:24.324Z">
+<meta property="og:updated_time" content="2018-06-19T15:12:05.839Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8 exploit">
 <meta name="twitter:description" content="v8的知识结构环境搭建预先准备 各种依赖 1apt-get install binutils python2.7 perl socat git build-essential gdb gdbserver  gdb-peda 123git clone https://github.com/scwuaptx/peda.git ~/pedagit clone https://github.com/scw">
@@ -1276,7 +1276,7 @@
 </li>
 <li><p>GC区域</p>
 <ul>
-<li>除heap以外，还有多个由mmap保护的区域</li>
+<li>除heap以外，还有多个由mmap存放的区域</li>
 <li>V8内部使用的各种HeapObject被保留在这个区域<br><img src="http://onc55v8te.bkt.clouddn.com/2018-05-11-025437.png" alt=""></li>
 </ul>
 </li>
@@ -1393,7 +1393,7 @@
 <li>Large Object Space<ul>
 <li>保留600KB或更大的object的区域<ul>
 <li>它由mmap直接分配</li>
-<li>如果有多个安全区域，请使用链表进行管理</li>
+<li>如果有多个存放区域，请使用链表进行管理</li>
 <li>它不在GC中移动</li>
 </ul>
 </li>
