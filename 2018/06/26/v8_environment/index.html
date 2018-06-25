@@ -84,7 +84,7 @@
 <meta name="description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
 <meta name="keywords" content="v8">
 <meta property="og:type" content="article">
-<meta property="og:title" content="v8 exploit">
+<meta property="og:title" content="v8调试环境搭建(解决遇到的一些问题)">
 <meta property="og:url" content="http://eternalsakura13.com/2018/06/26/v8_environment/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
@@ -93,9 +93,9 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203426.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203519.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203545.jpg">
-<meta property="og:updated_time" content="2018-06-25T20:37:05.496Z">
+<meta property="og:updated_time" content="2018-06-25T20:39:14.426Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="v8 exploit">
+<meta name="twitter:title" content="v8调试环境搭建(解决遇到的一些问题)">
 <meta name="twitter:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-201821.png">
 
@@ -143,7 +143,7 @@
         }
     })();
 </script>
-  <title>v8 exploit | Sakuraのblog</title>
+  <title>v8调试环境搭建(解决遇到的一些问题) | Sakuraのblog</title>
   
 
 
@@ -340,7 +340,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">v8 exploit</h1>
+          <h1 class="post-title" itemprop="name headline">v8调试环境搭建(解决遇到的一些问题)</h1>
         
 
         <div class="post-meta">
@@ -908,7 +908,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/06/26/v8_environment/';
           this.page.identifier = '2018/06/26/v8_environment/';
-          this.page.title = 'v8 exploit';
+          this.page.title = 'v8调试环境搭建(解决遇到的一些问题)';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';
