@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203426.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203519.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203545.jpg">
-<meta property="og:updated_time" content="2018-06-25T20:39:14.426Z">
+<meta property="og:updated_time" content="2018-06-27T03:08:39.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8调试环境搭建(解决遇到的一些问题)">
 <meta name="twitter:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
@@ -438,7 +438,7 @@
 </li>
 <li><p>找到hash和test代码<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-25-201821.png" alt=""></p>
 </li>
-<li>切换<br><code>git reset --hard a7a350012c05f644f3f373fb48d7ac72f7f60542</code></li>
+<li>切换<br><code>cd ~/v8/v8</code><br><code>git reset --hard a7a350012c05f644f3f373fb48d7ac72f7f60542</code></li>
 <li><p>同步并编译</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gclient sync</span><br><span class="line">tools/dev/v8gen.py x64.debug </span><br><span class="line">ninja -C out.gn/x64.debug d8</span><br></pre></td></tr></table></figure>
 </li>
@@ -488,8 +488,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
-                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              <a href="/2018/06/26/CVE-2016-5198/" rel="prev" title="case study:cve-2016-5198">
+                case study:cve-2016-5198 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -581,7 +581,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">85</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
