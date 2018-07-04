@@ -579,8 +579,9 @@ arm-linux-androideabi-gdb，也就是gdb-arm版没有提供，要自己找，我
       
         
           
-          参考资料
-patchhttps://github.com/Microsoft/ChakraCore/commit/a1345ad48064921e8eb45fa0297ce405a7df14d3vs调试环境配置编译首先下载ChakraCore然后git clone https://github.com/Microsoft/ChakraCore.git在ChakraCore项目中搜索CVE-2017-0234，找到patch的commit，然后得到有漏洞的版本的hash然后checkout,git checkout d8ef97d90c231e83db96dc4fdff4b39409f7a9b6
+          vs调试环境配置编译首先下载ChakraCore然后git clone https://github.com/Microsoft/ChakraCore.git在ChakraCore项目中搜索CVE-2017-0234，找到patch的commit，然后得到有漏洞的版本的hash 然后checkout,git checkout d8ef97d90c231e83db96dc4fdff4b39409f7a9b6然后在VS2015中打开Build\Chakra.Core.sln，并生成解决方案 
+调试 右键设置为启动项目 在命令参数写好绝对路径并执行  
+windbg调试环境配置在windows st
           ...
           <!--noindex-->
           <div class="post-button text-center">
