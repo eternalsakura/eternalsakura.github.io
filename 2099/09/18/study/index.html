@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-180229.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-19-115842.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-21-173058.jpg">
-<meta property="og:updated_time" content="2018-07-06T09:19:11.276Z">
+<meta property="og:updated_time" content="2018-07-06T10:00:05.700Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのdiary">
 <meta name="twitter:description" content="2018-1-281.看玄武实验室的每日安全推送（主要是看了android挖矿，p2p蠕虫）2.配置shadow尝试用gdb和gdbserver来调试https://github.com/CENSUS/shadowhttps://developer.android.com/ndk/downloads/index.html?hl=zh-cnhttp://kiya.studio/2017/06/21/">
@@ -776,6 +776,13 @@
 <li>目前的计划：<br>先看一些代码和语言标准；<br>talk和blog（可以看看如何移植v8，并思考其中可能出现的漏洞<br>Firefox的<a href="https://github.com/MozillaSecurity/funfuzz/tree/master/src/funfuzz/js/jsfunfuzz" target="_blank" rel="noopener">fuzz</a>（编译原理不止要领会意义，更要能写出来。<br>另外是关于win下用到了v8的各种软件的调试，也是一个学习面（比如可以看看漏洞战争等资料学习windbg和常规利用）</li>
 </ol>
 <p><strong>你要用较少的时间走完别人走了很久的路，所以你要跑起来，要飞快地跑起来。</strong></p>
+<ol>
+<li>和导师聊过自己分析的第一版漏洞，发现很多问题，我需要更深入的思考。其实安全研究有点像一个侦探游戏，每一行都是线索，我漏掉一点东西就拼不出完整的拼图。（因缺思厅<br>PoC能否修改？怎么修改？思考如下：</li>
+</ol>
+<ul>
+<li>不同的对象能否触发？举例：一定要是Uint32Array或者ArrayBuffer么?</li>
+<li>是否一定用到循环？去掉循环行不行？怎么精简PoC?<br>为什么JIT优化去掉边界？它为什么会去掉边界？（和4GB有关，这种特殊的buffer分配方式）<br>（去掉边界的代码是三行，代表一个JIT生成的可选项，为什么要这么选？）</li>
+</ul>
 
       
     </div>
