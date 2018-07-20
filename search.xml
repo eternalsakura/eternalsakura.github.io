@@ -24,6 +24,27 @@
     </entry>
     
     <entry>
+      <title>在mac上使用xcode调试v8</title>
+      <link href="/2018/07/20/v8_xcode/"/>
+      <url>/2018/07/20/v8_xcode/</url>
+      <content type="html"><![CDATA[<h2 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h2><p>最近在看chakra的漏洞，用为知笔记记一些零散的或者思路性的东西还是蛮方便，chakra有点不想搞2333，把0234搞完了继续看v8咯。<br>然后命令行调试还是太太太麻烦了，于是在VPN搭好了之后，就在xcode上干活了。</p><h2 id="搭建VPN并连接"><a href="#搭建VPN并连接" class="headerlink" title="搭建VPN并连接"></a>搭建VPN并连接</h2><p>在之前搭ss的服务器上运行一个vpn的docker(人生苦短，我用docker)<br>直接切换到root然后运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">    --name ipsec-vpn-server \</span><br><span class="line">    --restart=always \</span><br><span class="line">    -e VPN_IPSEC_PSK=你的密码 \</span><br><span class="line">    -e VPN_USER=你的用户名 \</span><br><span class="line">    -e VPN_PASSWORD=你的共享密码（其实和密码填一样就好了，不会弄混） \</span><br><span class="line">    -p 500:500/udp \</span><br><span class="line">    -p 4500:4500/udp \</span><br><span class="line">    -v /lib/modules:/lib/modules:ro \</span><br><span class="line">    -d --privileged \</span><br><span class="line">    hwdsl2/ipsec-vpn-server</span><br></pre></td></tr></table></figure></p><p>连接VPN<br><a href="http://www.vpngate.net/cn/howto_l2tp.aspx" target="_blank" rel="noopener">http://www.vpngate.net/cn/howto_l2tp.aspx</a></p><h2 id="mac上编译"><a href="#mac上编译" class="headerlink" title="mac上编译"></a>mac上编译</h2><p>怎么获取源码，终端编译之前已经写过了，懒得赘述。<br>这里讲一下怎么建立xcode工程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gn gen out/gn --ide=&quot;xcode&quot;</span><br></pre></td></tr></table></figure></p><p>这样，在out目录下就会有gn文件夹，里面有all.xcworkspace文件，可以直接使用xcode打开这个工作区文件，接下来要设置编译的目标，在Product-&gt;Scheme下选择d8，否则会编译出错，这样就只编译d8这个可执行程序，使用d8就可以直接调试v8的源代码。<br>然后直接Build，编译时间有些长，会自动生成v8的链接库，等待编译完成，在Product-&gt;EditScheme菜单中把poc文件作为运行参数，在对应文件中下好断点，直接运行就会断下来了。</p><h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>噫，我好像只是教了怎么搭VPN……</p>]]></content>
+      
+      <categories>
+          
+          <category> 浏览器 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> v8 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>V8 javascript engine代码阅读</title>
       <link href="/2018/07/09/zujian/"/>
       <url>/2018/07/09/zujian/</url>
