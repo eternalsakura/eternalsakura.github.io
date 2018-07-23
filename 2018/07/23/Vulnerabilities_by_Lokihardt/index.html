@@ -90,7 +90,10 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-072310.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-083423.jpg">
-<meta property="og:updated_time" content="2018-07-23T09:16:41.026Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093809.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093857.jpg">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093906.jpg">
+<meta property="og:updated_time" content="2018-07-23T09:39:15.073Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vulnerabilities by Lokihardt">
 <meta name="twitter:description" content="关注更新https://github.com/Microsoft/ChakraCore/wiki/Roadmap v1.8.3CVE-2018-8139 Microsoft Edge: Chakra: A bug in BoundFunction::NewInstancehttps://bugs.chromium.org/p/project-zero/issues/detail?id=1569 P">
@@ -474,7 +477,7 @@
 <li>root cause<br>漏洞成因是BoundFunction::NewInstance在调用Target函数时，没有考虑到CallFlags_ExtraArg这个flag，所以没有拷贝ExtraArg(这里也就是newTarget)。<br>从patch里可以看到，在patch之后，考虑到了这个flag。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+           <span class="keyword">if</span> (args.HasExtraArg())</span><br><span class="line">+            &#123;</span><br><span class="line">+                newValues[index++] = args.Values[argCount];</span><br><span class="line">+            &#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-083423.jpg" alt=""><br>但仍有CallFlag_ExtraArg|CallFlags_NewTarget标记。<br>导致在后面真正调用Target函数的时候，在InterpreterStackFrame::OP_LdNewTarget时，会从栈上的Args数组越界读取8个字节的内容(见PoC标注[0])</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-083423.jpg" alt=""><br><strong>但仍有CallFlags_NewTarget标记</strong>。<br>导致在后面真正调用Target函数的时候，在InterpreterStackFrame::OP_LdNewTarget时，会从栈上的Args数组越界读取8个字节的内容<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093809.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093857.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093906.jpg" alt=""></p>
 
       
     </div>
