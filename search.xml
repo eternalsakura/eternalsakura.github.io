@@ -54,14 +54,18 @@
           
           <category> 浏览器 </category>
           
-          <category> edge </category>
-          
-          <category> chrome </category>
-          
-          <category> safari </category>
-          
       </categories>
       
+      
+        <tags>
+            
+            <tag> edge </tag>
+            
+            <tag> chrome </tag>
+            
+            <tag> safari </tag>
+            
+        </tags>
       
     </entry>
     
