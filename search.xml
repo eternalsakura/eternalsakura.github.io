@@ -24,27 +24,6 @@
     </entry>
     
     <entry>
-      <title>语法分析学习记录</title>
-      <link href="/2018/07/27/yufafenxi/"/>
-      <url>/2018/07/27/yufafenxi/</url>
-      <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看视频容易睡着……写点笔记。<br>以前看只是知道是什么东西，没有具体的去了解算法，今天开始做记录去学习。</p><h2 id="LR-0-分析算法"><a href="#LR-0-分析算法" class="headerlink" title="LR(0)分析算法"></a>LR(0)分析算法</h2><p>整体看一下<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-125415.png" alt=""><br>其实就是这样的一个东西，从右向左进行规约。</p><ul><li><p>点记号<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-125549.png" alt=""><br>这些点明确标记了已经读入了哪些输入<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-125656.png" alt=""></p></li><li><p>最右推导<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-125824.png" alt=""></p></li><li><p>如何确定移进和规约的时机？</p></li><li><p>LR分析算法思想<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-125928.png" alt=""><br>$是一个文件描述符终止，比如EOF<br>自动机DFA<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-130740.png" alt=""><br>逐次读入，状态转移<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-131004.png" alt=""><br>已经识别了一个完整的产生式，要进行规约了<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-133618.png" alt=""><br>利用了一个有记忆能力的自动机</p></li><li><p>LR（0）分析表<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-140318.png" alt=""></p></li><li><p>LR（0）分析算法<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-27-141242.png" alt=""></p></li><li><p>LR（0）表构造算法</p></li></ul>]]></content>
-      
-      <categories>
-          
-          <category> Compile </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Compile </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
       <title>case study:cve-2017-0236</title>
       <link href="/2018/07/25/cve-2017-0236/"/>
       <url>/2018/07/25/cve-2017-0236/</url>
