@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-180229.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-19-115842.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-21-173058.jpg">
-<meta property="og:updated_time" content="2018-07-30T07:26:24.934Z">
+<meta property="og:updated_time" content="2018-07-30T16:34:56.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのdiary">
 <meta name="twitter:description" content="2018-1-281.看玄武实验室的每日安全推送（主要是看了android挖矿，p2p蠕虫）2.配置shadow尝试用gdb和gdbserver来调试https://github.com/CENSUS/shadowhttps://developer.android.com/ndk/downloads/index.html?hl=zh-cnhttp://kiya.studio/2017/06/21/">
@@ -833,7 +833,7 @@
 <li>pizlo的PPT很nice</li>
 <li>开始0236……</li>
 </ol>
-<h2 id="2018-7-25-26"><a href="#2018-7-25-26" class="headerlink" title="2018-7-25-26"></a>2018-7-25-26</h2><p>分析漏洞更深入了，思考的过程和思路慢慢搭起来了。<br>今天开始看编译原理。记录一些有趣的问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perfect hashing</span><br><span class="line">1. 什么是（关键字的）完美哈希？</span><br><span class="line">没有关键字冲突的哈希函数</span><br><span class="line">2. 如何构造完美哈希？试列举一到两种算法。</span><br><span class="line">目前用的比较多的是gperf算法</span><br><span class="line">为什么需要构造完美哈希？用关键字单链表是否可以？</span><br><span class="line">因为完美哈希一次匹配，的时间效率为O(1),而链表要扫描一遍，时间效率为O(N)</span><br></pre></td></tr></table></figure></p>
+<h2 id="2018-7-25-26"><a href="#2018-7-25-26" class="headerlink" title="2018-7-25-26"></a>2018-7-25-26</h2><p>分析漏洞更深入了，思考的过程和思路慢慢搭起来了。<br>今天开始看编译原理。记录一些有趣的问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perfect hashing</span><br><span class="line">1. 什么是（关键字的）完美哈希？</span><br><span class="line">没有关键字冲突的哈希函数</span><br><span class="line">2. 如何构造完美哈希？试列举一到两种算法。</span><br><span class="line">目前用的比较多的是gperf算法</span><br><span class="line">为什么需要构造完美哈希？用关键字单链表是否f可以？</span><br><span class="line">因为完美哈希一次匹配，的时间效率为O(1),而链表要扫描一遍，时间效率为O(N)</span><br></pre></td></tr></table></figure></p>
 <p>正则表达式代码生成工具<br><a href="http://www.txt2re.com/" target="_blank" rel="noopener">http://www.txt2re.com/</a><br>NFA-&gt;DFA,有限状态自动机</p>
 <p>递归下降分析算法<br>LL(1),ANTIR</p>
 <h2 id="2018-7-27"><a href="#2018-7-27" class="headerlink" title="2018-7-27"></a>2018-7-27</h2><p>总结一下今天，组会上分享的刚好是浏览器相关的东西，学到很多，此外最重要的是听了别人每周在干什么，也慢慢的知道了自己以后研究该看什么。<br>*日常被导师吐槽东看瞎看，看的深度不够没有意义2333<br>此外就是在看编译原理了，JIT始终是一个大的攻击面，而且写js/dom fuzz也绕不开编译原理，要吃掉这块始终不容易。。我还是太菜了。</p>
