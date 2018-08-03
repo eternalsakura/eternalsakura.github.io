@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-180229.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-19-115842.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-21-173058.jpg">
-<meta property="og:updated_time" content="2018-08-03T09:29:53.870Z">
+<meta property="og:updated_time" content="2018-08-03T10:39:51.983Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのdiary">
 <meta name="twitter:description" content="2018-1-281.看玄武实验室的每日安全推送（主要是看了android挖矿，p2p蠕虫）2.配置shadow尝试用gdb和gdbserver来调试https://github.com/CENSUS/shadowhttps://developer.android.com/ndk/downloads/index.html?hl=zh-cnhttp://kiya.studio/2017/06/21/">
@@ -852,7 +852,10 @@
 <li>这周清理了一些坑，然后挖了更多坑，结了antlr4之后准备开始污点分析之旅了。<br>顺手列一下煜博推荐的paper：<br>All You Ever Wanted to Know About<br>Dynamic Taint Analysis and Forward Symbolic Execution (but might have been afraid to ask)<br>VUzzer: Application-aware Evolutionary Fuzzing<br>Towards Efficient Heap Overflow Discovery</li>
 <li>发现一个好玩的网站的样子：<a href="http://www.vxjump.net/" target="_blank" rel="noopener">http://www.vxjump.net/</a></li>
 <li>最后再贴一个编译优化的，还是CMU的，不过年份不同。<br><a href="http://www.cs.cmu.edu/afs/cs/academic/class/15745-s06/web/schedule.html" target="_blank" rel="noopener">http://www.cs.cmu.edu/afs/cs/academic/class/15745-s06/web/schedule.html</a></li>
+<li>本来最后了，不过还有新的最后，……<br>sky师傅和我讲下一步干嘛了。<br>整理0234和0236的必要条件和充分条件，两个结合起来对比一下<br>0236中JIT里除了去掉边界还改了虚函数表，实际上在detach的时候，会对虚函数表做一个检查，这个变了么？为什么变了？为什么要变？开发者怎么想的？问题是什么？</li>
 </ol>
+<p>最后和我说了一下，其实ArrayBuffer的这种分配方式，可以完美bypass 64位ASLR<br>其实这里又涉及一个点，那就ASLR的必要条件是虚拟地址空间足够大，而我们的物理地址空间很小，不可能堆喷喷满。<br>但是……我们可以用0x10000的内存去占位4G，那么其实只要喷2G就可以了……这就bypass了，2333</p>
+<p>这些小特性，大特性，系统特性，各种特性的深入理解和消化绝对是十分重要的。<br>我体验了一次如何从0234发现0236的过程，收获颇丰。</p>
 
       
     </div>
