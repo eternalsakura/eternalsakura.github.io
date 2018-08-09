@@ -81,12 +81,12 @@
 
 
 
-<meta name="description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？">
+<meta name="description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Sakuraのblog">
 <meta property="og:url" content="http://eternalsakura13.com/2018/08/08/optimize/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？">
+<meta property="og:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-022106.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-022128.png">
@@ -105,10 +105,32 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-024335.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-024416.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-024428.png">
-<meta property="og:updated_time" content="2018-08-08T02:44:49.963Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-140909.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-140931.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141008.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141029.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141118.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141528.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141551.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141601.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-141902.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-151922.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-152723.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153258.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153356.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153721.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153828.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153905.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-153944.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-154554.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-154644.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160029.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160049.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160351.png">
+<meta property="og:updated_time" content="2018-08-09T03:30:23.900Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのblog">
-<meta name="twitter:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？">
+<meta name="twitter:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-022106.png">
 
 
@@ -430,10 +452,15 @@
 </ul>
 </li>
 <li>全局代码优化<ul>
-<li>多个基本块的优化<h2 id="常用优化方法"><a href="#常用优化方法" class="headerlink" title="常用优化方法"></a>常用优化方法</h2><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024124.png" alt=""><h3 id="删除公共子表达式"><a href="#删除公共子表达式" class="headerlink" title="删除公共子表达式"></a>删除公共子表达式</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022222.png" alt=""><br>例子如下，先看B5，对它进行局部和全局公共子表达式消除。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022339.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022629.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022703.png" alt=""><br>再看B6<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022855.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022906.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-023040.png" alt=""><br>关键问题，如何自动识别公共子表达式？<h3 id="删除无用代码"><a href="#删除无用代码" class="headerlink" title="删除无用代码"></a>删除无用代码</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024246.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024335.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024416.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024428.png" alt=""><br>关键问题，如何自动识别无用代码？</li>
+<li>多个基本块的优化<h2 id="常用优化方法"><a href="#常用优化方法" class="headerlink" title="常用优化方法"></a>常用优化方法</h2><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024124.png" alt=""><h3 id="删除公共子表达式"><a href="#删除公共子表达式" class="headerlink" title="删除公共子表达式"></a>删除公共子表达式</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022222.png" alt=""><br>例子如下，先看B5，对它进行局部和全局公共子表达式消除。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022339.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022629.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022703.png" alt=""><br>再看B6<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022855.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-022906.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-023040.png" alt=""><br>关键问题，如何自动识别公共子表达式？<h3 id="删除无用代码"><a href="#删除无用代码" class="headerlink" title="删除无用代码"></a>删除无用代码</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024246.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024335.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024416.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-024428.png" alt=""><br>关键问题，如何自动识别无用代码？<h3 id="常量合并"><a href="#常量合并" class="headerlink" title="常量合并"></a>常量合并</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-140909.png" alt=""><h3 id="循环代码外提"><a href="#循环代码外提" class="headerlink" title="循环代码外提"></a>循环代码外提</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-140931.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141008.png" alt=""><h3 id="强度削弱"><a href="#强度削弱" class="headerlink" title="强度削弱"></a>强度削弱</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141029.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141118.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141528.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141551.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141601.png" alt=""><h3 id="基本块的优化"><a href="#基本块的优化" class="headerlink" title="基本块的优化"></a>基本块的优化</h3><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-141902.png" alt=""></li>
 </ul>
 </li>
 </ul>
+<h2 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h2><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-151922.png" alt=""><br>s是一个语句，所以说数据流值在经过s之后会变化发，所谓传递函数。</p>
+<h3 id="到达定值分析"><a href="#到达定值分析" class="headerlink" title="到达定值分析"></a>到达定值分析</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-152723.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153258.png" alt=""><br>注意KILL这个概念，是变量x被重新赋值，则原来的定值（语句）被杀死。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153356.png" alt=""> </p>
+<h4 id="到达定值分析的用途"><a href="#到达定值分析的用途" class="headerlink" title="到达定值分析的用途"></a>到达定值分析的用途</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153721.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153828.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153905.png" alt=""></p>
+<h4 id="杀死与生成"><a href="#杀死与生成" class="headerlink" title="杀死与生成"></a>杀死与生成</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153944.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-154554.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-154644.png" alt=""></p>
+<h4 id="到达定值分析的算法"><a href="#到达定值分析的算法" class="headerlink" title="到达定值分析的算法"></a>到达定值分析的算法</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160029.png" alt=""><br>kill置为0，gen置为1<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160049.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160351.png" alt=""></p>
 
       
     </div>
@@ -665,7 +692,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本块？"><span class="nav-number">1.</span> <span class="nav-text">什么是基本块？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是流图"><span class="nav-number">2.</span> <span class="nav-text">什么是流图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化的分类"><span class="nav-number">3.</span> <span class="nav-text">优化的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用优化方法"><span class="nav-number">4.</span> <span class="nav-text">常用优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除公共子表达式"><span class="nav-number">4.1.</span> <span class="nav-text">删除公共子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除无用代码"><span class="nav-number">4.2.</span> <span class="nav-text">删除无用代码</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本块？"><span class="nav-number">1.</span> <span class="nav-text">什么是基本块？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是流图"><span class="nav-number">2.</span> <span class="nav-text">什么是流图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化的分类"><span class="nav-number">3.</span> <span class="nav-text">优化的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用优化方法"><span class="nav-number">4.</span> <span class="nav-text">常用优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除公共子表达式"><span class="nav-number">4.1.</span> <span class="nav-text">删除公共子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除无用代码"><span class="nav-number">4.2.</span> <span class="nav-text">删除无用代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量合并"><span class="nav-number">4.3.</span> <span class="nav-text">常量合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环代码外提"><span class="nav-number">4.4.</span> <span class="nav-text">循环代码外提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强度削弱"><span class="nav-number">4.5.</span> <span class="nav-text">强度削弱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本块的优化"><span class="nav-number">4.6.</span> <span class="nav-text">基本块的优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流分析"><span class="nav-number">5.</span> <span class="nav-text">数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#到达定值分析"><span class="nav-number">5.1.</span> <span class="nav-text">到达定值分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的用途"><span class="nav-number">5.1.1.</span> <span class="nav-text">到达定值分析的用途</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杀死与生成"><span class="nav-number">5.1.2.</span> <span class="nav-text">杀死与生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的算法"><span class="nav-number">5.1.3.</span> <span class="nav-text">到达定值分析的算法</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
