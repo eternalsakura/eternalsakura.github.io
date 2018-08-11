@@ -84,7 +84,7 @@
 <meta name="description" content="ChromeBugs:715582 Security: Out of bound read in FindSharedFunctionInfo (V8)https://bugs.chromium.org/p/chromium/issues/detail?id=715582 patchhttps://github.com/v8/v8/commit/4e78b5a70c6443e3829b0bef10">
 <meta name="keywords" content="edge,chrome,safari">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vulnerabilities by Lokihardt">
+<meta property="og:title" content="Vulnerabilities from Chrome">
 <meta property="og:url" content="http://eternalsakura13.com/2018/07/23/Vulnerabilities/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="ChromeBugs:715582 Security: Out of bound read in FindSharedFunctionInfo (V8)https://bugs.chromium.org/p/chromium/issues/detail?id=715582 patchhttps://github.com/v8/v8/commit/4e78b5a70c6443e3829b0bef10">
@@ -94,9 +94,9 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093809.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093857.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093906.jpg">
-<meta property="og:updated_time" content="2018-08-09T15:58:18.246Z">
+<meta property="og:updated_time" content="2018-08-11T09:49:05.833Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vulnerabilities by Lokihardt">
+<meta name="twitter:title" content="Vulnerabilities from Chrome">
 <meta name="twitter:description" content="ChromeBugs:715582 Security: Out of bound read in FindSharedFunctionInfo (V8)https://bugs.chromium.org/p/chromium/issues/detail?id=715582 patchhttps://github.com/v8/v8/commit/4e78b5a70c6443e3829b0bef10">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-072310.png">
 
@@ -144,7 +144,7 @@
         }
     })();
 </script>
-  <title>Vulnerabilities by Lokihardt | Sakuraのblog</title>
+  <title>Vulnerabilities from Chrome | Sakuraのblog</title>
   
 
 
@@ -341,7 +341,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Vulnerabilities by Lokihardt</h1>
+          <h1 class="post-title" itemprop="name headline">Vulnerabilities from Chrome</h1>
         
 
         <div class="post-meta">
@@ -544,9 +544,10 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Here's a snippet of NodeProperties::InferReceiverMaps.</span><br><span class="line">      <span class="keyword">case</span> IrOpcode::kJSCreate: &#123;</span><br><span class="line">        <span class="keyword">if</span> (IsSame(receiver, effect)) &#123;</span><br><span class="line">          HeapObjectMatcher mtarget(GetValueInput(effect, 0));</span><br><span class="line">          HeapObjectMatcher mnewtarget(GetValueInput(effect, 1));</span><br><span class="line">          <span class="keyword">if</span> (mtarget.HasValue() &amp;&amp; mnewtarget.HasValue()) &#123;</span><br><span class="line">            Handle&lt;JSFunction&gt; original_constructor =</span><br><span class="line">                Handle&lt;JSFunction&gt;::cast(mnewtarget.Value());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (original_constructor-&gt;has_initial_map()) &#123;</span><br><span class="line">              Handle&lt;Map&gt; initial_map(original_constructor-&gt;initial_map());</span><br><span class="line">              <span class="keyword">if</span> (initial_map-&gt;constructor_or_backpointer() ==</span><br><span class="line">                  *mtarget.Value()) &#123;</span><br><span class="line">                *maps_return = ZoneHandleSet&lt;Map&gt;(initial_map);</span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// We reached the allocation of the &#123;receiver&#125;.</span></span><br><span class="line">          <span class="keyword">return</span> kNoReceiverMaps;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
 <p>“mnewtarget” is expected to be a constructor which also can be of type JSBoundFunction. But “mnewtarget” is always cast to JSFunction which leads to type confusion.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">PoC:</span><br><span class="line"><span class="comment">// Flags: --allow-natives-syntax --enable_slow_asserts</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">this</span>.x = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> <span class="keyword">extends</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="comment">// JSCreate emitted I guess.</span></span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> bound = <span class="built_in">Object</span>.bind();</span><br><span class="line"><span class="built_in">Reflect</span>.construct(Derived, [], bound);  <span class="comment">// Feed a bound function as new.target to the profiler, so HeapObjectMatcher can find it.</span></span><br><span class="line"></span><br><span class="line">%OptimizeFunctionOnNextCall(Derived);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Derived();</span><br></pre></td></tr></table></figure></p>
 <h2 id="Bugs-802060"><a href="#Bugs-802060" class="headerlink" title="Bugs:802060"></a>Bugs:802060</h2><ul>
-<li>DCHECK failure in op-&gt;IsAnyLocationOperand() in instruction.h<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=802060" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=802060</a></li>
+<li>DCHECK failure in op-&gt;IsAnyLocationOperand() in instruction.h<br>bug in x64 immediate operand handling for smi-converting loads<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=802060" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=802060</a></li>
 <li>patch<br><a href="https://github.com/v8/v8/commit/9ef2ed308522d86ea93cd5a39bd4e188a5ae4f02" target="_blank" rel="noopener">https://github.com/v8/v8/commit/9ef2ed308522d86ea93cd5a39bd4e188a5ae4f02</a></li>
 <li>影响版本<br>6.6.136及以下</li>
+<li>note<br>看不懂2333</li>
 </ul>
 <h2 id="Bugs-802333"><a href="#Bugs-802333" class="headerlink" title="Bugs:802333"></a>Bugs:802333</h2><ul>
 <li>Security: V8: A bug in the ObjectDescriptor class<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=802333" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=802333</a></li>
@@ -1055,7 +1056,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/07/23/Vulnerabilities/';
           this.page.identifier = '2018/07/23/Vulnerabilities/';
-          this.page.title = 'Vulnerabilities by Lokihardt';
+          this.page.title = 'Vulnerabilities from Chrome';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';
