@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="compiler," />
 
 
 
@@ -82,8 +82,9 @@
 
 
 <meta name="description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
+<meta name="keywords" content="compiler">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sakuraのblog">
+<meta property="og:title" content="哈工大编译优化笔记">
 <meta property="og:url" content="http://eternalsakura13.com/2018/08/08/optimize/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
@@ -127,9 +128,51 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160029.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160049.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-160351.png">
-<meta property="og:updated_time" content="2018-08-09T03:30:23.900Z">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-132942.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-133257.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-133312.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-133357.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-133603.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-135226.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-135254.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-135308.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-140845.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-140935.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-141147.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-141741.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-141807.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-141913.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-142025.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-142153.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-142219.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-143437.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-143405.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-144116.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-144133.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-144340.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-144426.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-145018.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-145033.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-151633.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-151758.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152115.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152330.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152636.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152727.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152910.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-152950.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-153333.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-154117.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-154548.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-154657.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-154741.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-155000.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-155424.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-155708.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-12-160015.png">
+<meta property="og:updated_time" content="2018-08-12T16:04:48.679Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sakuraのblog">
+<meta name="twitter:title" content="哈工大编译优化笔记">
 <meta name="twitter:description" content="什么是基本块？ 什么是流图 优化的分类 机器无关优化 针对中间代码   局部代码优化 单个基本块范围内的优化   全局代码优化 多个基本块的优化常用优化方法删除公共子表达式例子如下，先看B5，对它进行局部和全局公共子表达式消除。再看B6关键问题，如何自动识别公共子表达式？删除无用代码关键问题，如何自动识别无用代码？常量合并循环代码外提强度削弱基本块的优化    数据流分析s是一个语句，所以说数据流">
 <meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-08-022106.png">
 
@@ -177,7 +220,7 @@
         }
     })();
 </script>
-  <title> | Sakuraのblog</title>
+  <title>哈工大编译优化笔记 | Sakuraのblog</title>
   
 
 
@@ -374,7 +417,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">哈工大编译优化笔记</h1>
         
 
         <div class="post-meta">
@@ -396,6 +439,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -461,6 +526,36 @@
 <h4 id="到达定值分析的用途"><a href="#到达定值分析的用途" class="headerlink" title="到达定值分析的用途"></a>到达定值分析的用途</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153721.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153828.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153905.png" alt=""></p>
 <h4 id="杀死与生成"><a href="#杀死与生成" class="headerlink" title="杀死与生成"></a>杀死与生成</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-153944.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-154554.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-154644.png" alt=""></p>
 <h4 id="到达定值分析的算法"><a href="#到达定值分析的算法" class="headerlink" title="到达定值分析的算法"></a>到达定值分析的算法</h4><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160029.png" alt=""><br>kill置为0，gen置为1<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160049.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-08-160351.png" alt=""></p>
+<h3 id="活跃变量分析"><a href="#活跃变量分析" class="headerlink" title="活跃变量分析"></a>活跃变量分析</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-132942.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-133257.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-133312.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-133357.png" alt=""><br>活跃变量就是定义了以后会被用到嘛2333</p>
+<p>因为这是一个逆向数据流问题，所以用x表示在基本块出口处的活跃变量的集合，f(x)表示基本块入口处活跃变量的集合。</p>
+<p>use表示在基本块中首次出现，以引用形式出现的变量的集合，所以这些变量在基本块入口处肯定是活跃的。</p>
+<p>def表示在基本块中首次出现，以定值形式出现的变量的集合，所以这些变量在基本块入口处肯定是不活跃的。<br>所以说def杀死了某些变量在基本块入口处成为活跃变量的可能性。</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-133603.png" alt=""><br>解释一下B2，i和j在基本块B2中都是以引用形式首次出现，所以在use里，而def为∅<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-135226.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-135254.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-135308.png" alt=""><br>得到活跃变量表<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-140845.png" alt=""></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-140935.png" alt=""></p>
+<h3 id="可用表达式分析"><a href="#可用表达式分析" class="headerlink" title="可用表达式分析"></a>可用表达式分析</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-141147.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-141741.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-141807.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-141913.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-142025.png" alt=""><br>z=x op y生成了表达式x op y，加入gen<br>同时这条语句对z定值，于是删除与z相关的表达式。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-142153.png" alt=""><br>z = x op y，于是从kill中删除表达式x op y，代表它复活了。<br>同时这条语句对z定值，于是把和z相关的表达式加入kill中</p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-142219.png" alt=""><br><strong>注意是IN的交集</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-143437.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-143405.png" alt=""></p>
+<h2 id="对循环的优化"><a href="#对循环的优化" class="headerlink" title="对循环的优化"></a>对循环的优化</h2><p>要想对循环进行优化，首先要识别出流图中的循环。</p>
+<h3 id="支配节点（Dominators-和回边"><a href="#支配节点（Dominators-和回边" class="headerlink" title="支配节点（Dominators)和回边"></a>支配节点（Dominators)和回边</h3><ul>
+<li><p>支配节点<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-144116.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-144133.png" alt=""><br>在支配节点树中，每个节点只支配它和它的后代节点。<br>可以看出一个节点可能会有若干个支配节点，于是给出直接支配节点的定义<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-144340.png" alt=""><br>寻找支配节点是一个数据流问题<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-144426.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-145018.png" alt=""><br><strong>注意交运算，所以初始化时初始为全集</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-145033.png" alt=""></p>
+</li>
+<li><p>回边<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-151633.png" alt=""></p>
+</li>
+</ul>
+<h3 id="自然循环及其识别"><a href="#自然循环及其识别" class="headerlink" title="自然循环及其识别"></a>自然循环及其识别</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-151758.png" alt=""><br>如图2和3不存在彼此支配的关系，2和3构成了一个循环，控制既可以从2，也可以从3号节点进入，这样循环的入口节点就不唯一了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152115.png" alt=""></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152330.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152636.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152727.png" alt=""></p>
+<h3 id="删除全局子表达式"><a href="#删除全局子表达式" class="headerlink" title="删除全局子表达式"></a>删除全局子表达式</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152910.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-152950.png" alt=""></p>
+<h3 id="删除复制语句"><a href="#删除复制语句" class="headerlink" title="删除复制语句"></a>删除复制语句</h3><p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-153333.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-154117.png" alt=""><br>注意到达定义分析是并 IN[P]，可用表达式分析是交 IN[P]</p>
+<h3 id="代码移动"><a href="#代码移动" class="headerlink" title="代码移动"></a>代码移动</h3><ul>
+<li>循环不变计算</li>
+<li>代码外提<h4 id="循环不变计算"><a href="#循环不变计算" class="headerlink" title="循环不变计算"></a>循环不变计算</h4>一条语句是循环不变，当且仅当运算分量的值在循环中不变</li>
+</ul>
+<ol>
+<li>运算分量是常数</li>
+<li>运算分量的所有定值点在循环以外</li>
+<li>运算分量只有一个到达定值，且在循环以内，且该定值本身就是循环内的一个不变计算。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-154548.png" alt=""><h4 id="代码外提"><a href="#代码外提" class="headerlink" title="代码外提"></a>代码外提</h4><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-154657.png" alt=""></li>
+</ol>
+<p>注意不一定所有的循环不变量都能外提<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-154741.png" alt=""><br>如图，B2并不一定被执行，那么其中的代码外提就是错误的。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-155000.png" alt=""><br>如果还有其他语句对x赋值，那么就有可能让原来的定值语句被杀死。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-155424.png" alt=""></p>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-155708.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-12-160015.png" alt=""></p>
 
       
     </div>
@@ -475,6 +570,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/compiler/" rel="tag"># compiler</a>
+          
+        </div>
       
 
       
@@ -692,7 +793,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本块？"><span class="nav-number">1.</span> <span class="nav-text">什么是基本块？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是流图"><span class="nav-number">2.</span> <span class="nav-text">什么是流图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化的分类"><span class="nav-number">3.</span> <span class="nav-text">优化的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用优化方法"><span class="nav-number">4.</span> <span class="nav-text">常用优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除公共子表达式"><span class="nav-number">4.1.</span> <span class="nav-text">删除公共子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除无用代码"><span class="nav-number">4.2.</span> <span class="nav-text">删除无用代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量合并"><span class="nav-number">4.3.</span> <span class="nav-text">常量合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环代码外提"><span class="nav-number">4.4.</span> <span class="nav-text">循环代码外提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强度削弱"><span class="nav-number">4.5.</span> <span class="nav-text">强度削弱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本块的优化"><span class="nav-number">4.6.</span> <span class="nav-text">基本块的优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流分析"><span class="nav-number">5.</span> <span class="nav-text">数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#到达定值分析"><span class="nav-number">5.1.</span> <span class="nav-text">到达定值分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的用途"><span class="nav-number">5.1.1.</span> <span class="nav-text">到达定值分析的用途</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杀死与生成"><span class="nav-number">5.1.2.</span> <span class="nav-text">杀死与生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的算法"><span class="nav-number">5.1.3.</span> <span class="nav-text">到达定值分析的算法</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本块？"><span class="nav-number">1.</span> <span class="nav-text">什么是基本块？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是流图"><span class="nav-number">2.</span> <span class="nav-text">什么是流图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化的分类"><span class="nav-number">3.</span> <span class="nav-text">优化的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用优化方法"><span class="nav-number">4.</span> <span class="nav-text">常用优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除公共子表达式"><span class="nav-number">4.1.</span> <span class="nav-text">删除公共子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除无用代码"><span class="nav-number">4.2.</span> <span class="nav-text">删除无用代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量合并"><span class="nav-number">4.3.</span> <span class="nav-text">常量合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环代码外提"><span class="nav-number">4.4.</span> <span class="nav-text">循环代码外提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强度削弱"><span class="nav-number">4.5.</span> <span class="nav-text">强度削弱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本块的优化"><span class="nav-number">4.6.</span> <span class="nav-text">基本块的优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流分析"><span class="nav-number">5.</span> <span class="nav-text">数据流分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#到达定值分析"><span class="nav-number">5.1.</span> <span class="nav-text">到达定值分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的用途"><span class="nav-number">5.1.1.</span> <span class="nav-text">到达定值分析的用途</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杀死与生成"><span class="nav-number">5.1.2.</span> <span class="nav-text">杀死与生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#到达定值分析的算法"><span class="nav-number">5.1.3.</span> <span class="nav-text">到达定值分析的算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#活跃变量分析"><span class="nav-number">5.2.</span> <span class="nav-text">活跃变量分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可用表达式分析"><span class="nav-number">5.3.</span> <span class="nav-text">可用表达式分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对循环的优化"><span class="nav-number">6.</span> <span class="nav-text">对循环的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#支配节点（Dominators-和回边"><span class="nav-number">6.1.</span> <span class="nav-text">支配节点（Dominators)和回边</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自然循环及其识别"><span class="nav-number">6.2.</span> <span class="nav-text">自然循环及其识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除全局子表达式"><span class="nav-number">6.3.</span> <span class="nav-text">删除全局子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除复制语句"><span class="nav-number">6.4.</span> <span class="nav-text">删除复制语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码移动"><span class="nav-number">6.5.</span> <span class="nav-text">代码移动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#循环不变计算"><span class="nav-number">6.5.1.</span> <span class="nav-text">循环不变计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码外提"><span class="nav-number">6.5.2.</span> <span class="nav-text">代码外提</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -891,7 +992,7 @@
         var disqus_config = function () {
           this.page.url = 'http://eternalsakura13.com/2018/08/08/optimize/';
           this.page.identifier = '2018/08/08/optimize/';
-          this.page.title = '';
+          this.page.title = '哈工大编译优化笔记';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://sakura1328.disqus.com/embed.js';
