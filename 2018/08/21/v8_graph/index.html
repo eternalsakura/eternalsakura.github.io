@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="v8," />
 
 
 
@@ -81,13 +81,23 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Sakuraのblog">
-<meta property="og:url" content="http://eternalsakura13.com/categories/CTF/page/2/index.html">
+<meta name="description" content="v8 Graph首先说一个结论，v8的graph都是由下往上遍历。具体举一个例子,从json里随便提取一句{&amp;quot;source&amp;quot;:0,&amp;quot;target&amp;quot;:13,&amp;quot;index&amp;quot;:3,&amp;quot;type&amp;quot;:&amp;quot;control&amp;quot;},123456789101112131415161718192021222324252627">
+<meta name="keywords" content="v8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="v8 IR连连看">
+<meta property="og:url" content="http://eternalsakura13.com/2018/08/21/v8_graph/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="v8 Graph首先说一个结论，v8的graph都是由下往上遍历。具体举一个例子,从json里随便提取一句{&amp;quot;source&amp;quot;:0,&amp;quot;target&amp;quot;:13,&amp;quot;index&amp;quot;:3,&amp;quot;type&amp;quot;:&amp;quot;control&amp;quot;},123456789101112131415161718192021222324252627">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-21-034849.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-21-035048.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-21-035742.png">
+<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-21-050445.png">
+<meta property="og:updated_time" content="2018-08-21T05:13:16.219Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sakuraのblog">
+<meta name="twitter:title" content="v8 IR连连看">
+<meta name="twitter:description" content="v8 Graph首先说一个结论，v8的graph都是由下往上遍历。具体举一个例子,从json里随便提取一句{&amp;quot;source&amp;quot;:0,&amp;quot;target&amp;quot;:13,&amp;quot;index&amp;quot;:3,&amp;quot;type&amp;quot;:&amp;quot;control&amp;quot;},123456789101112131415161718192021222324252627">
+<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-08-21-034849.png">
 
 
 
@@ -117,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://eternalsakura13.com/categories/CTF/page/2/"/>
+  <link rel="canonical" href="http://eternalsakura13.com/2018/08/21/v8_graph/"/>
 
 
 
@@ -133,7 +143,7 @@
         }
     })();
 </script>
-  <title>分类: CTF | Sakuraのblog</title>
+  <title>v8 IR连连看 | Sakuraのblog</title>
   
 
 
@@ -161,7 +171,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -299,311 +309,207 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>CTF<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/08/21/v8_graph/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/03/29/kernel/" itemprop="url">
-              
-                <span itemprop="name">kernel pwn资料整理（更新ing)</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">v8 IR连连看</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-29T02:18:07+08:00"
-              content="2018-03-29" >
-          03-29
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-21T11:45:08+08:00">
+                2018-08-21
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/21/v8_graph/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/21/v8_graph/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/27/opm/" itemprop="url">
-              
-                <span itemprop="name">强网杯2018 opm writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-27T16:11:18+08:00"
-              content="2018-03-27" >
-          03-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/26/silen2/" itemprop="url">
-              
-                <span itemprop="name">强网杯2018 silent2 writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-26T19:20:54+08:00"
-              content="2018-03-26" >
-          03-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/25/aslr/" itemprop="url">
-              
-                <span itemprop="name">ctf pwn中的缓解机制及其原理</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-25T15:20:12+08:00"
-              content="2018-03-25" >
-          03-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/21/lctf2/" itemprop="url">
-              
-                <span itemprop="name">large bins attack及lctf2017 2ez4u writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-21T07:42:43+08:00"
-              content="2018-03-21" >
-          03-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/19/pwnme/" itemprop="url">
-              
-                <span itemprop="name">格式化字符串pwn retaddr及三个白帽-pwnme_k0 writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-19T15:50:10+08:00"
-              content="2018-03-19" >
-          03-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/05/pwn_fmtstr/" itemprop="url">
-              
-                <span itemprop="name">格式化字符串漏洞原理及湖湘杯pwn200 writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-05T22:31:57+08:00"
-              content="2018-03-05" >
-          03-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/05/pragyan/" itemprop="url">
-              
-                <span itemprop="name">pragyan ctf2018 pwn writeup</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-05T20:09:56+08:00"
-              content="2018-03-05" >
-          03-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/02/fastbin/" itemprop="url">
-              
-                <span itemprop="name">Fastbin Double Free</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-02T10:11:08+08:00"
-              content="2018-03-02" >
-          03-02
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/01/unlink1/" itemprop="url">
-              
-                <span itemprop="name">CTF pwn中的unlink</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-01T00:59:01+08:00"
-              content="2018-03-01" >
-          03-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h2 id="v8-Graph"><a href="#v8-Graph" class="headerlink" title="v8 Graph"></a>v8 Graph</h2><p>首先说一个结论，v8的graph都是由下往上遍历。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-21-034849.png" alt=""><br>具体举一个例子,从json里随便提取一句<br><code>{&quot;source&quot;:0,&quot;target&quot;:13,&quot;index&quot;:3,&quot;type&quot;:&quot;control&quot;},</code><br><img src="http://onc55v8te.bkt.clouddn.com/2018-08-21-035048.png" alt=""><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PrintEdges</span><span class="params">(Node* node)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; node-&gt;InputCount(); i++) &#123;</span><br><span class="line">    Node* input = node-&gt;InputAt(i);</span><br><span class="line">    <span class="keyword">if</span> (input == <span class="literal">nullptr</span>) <span class="keyword">continue</span>;</span><br><span class="line">    PrintEdge(node, i, input);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PrintEdge</span><span class="params">(Node* from, <span class="keyword">int</span> index, Node* to)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (first_edge_) &#123;</span><br><span class="line">    first_edge_ = <span class="literal">false</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    os_ &lt;&lt; <span class="string">",\n"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span>* edge_type = <span class="literal">nullptr</span>;</span><br><span class="line">  <span class="keyword">if</span> (index &lt; NodeProperties::FirstValueIndex(from)) &#123;</span><br><span class="line">    edge_type = <span class="string">"unknown"</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; NodeProperties::FirstContextIndex(from)) &#123;</span><br><span class="line">    edge_type = <span class="string">"value"</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; NodeProperties::FirstFrameStateIndex(from)) &#123;</span><br><span class="line">    edge_type = <span class="string">"context"</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; NodeProperties::FirstEffectIndex(from)) &#123;</span><br><span class="line">    edge_type = <span class="string">"frame-state"</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; NodeProperties::FirstControlIndex(from)) &#123;</span><br><span class="line">    edge_type = <span class="string">"effect"</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    edge_type = <span class="string">"control"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  os_ &lt;&lt; <span class="string">"&#123;\"source\":"</span> &lt;&lt; SafeId(to) &lt;&lt; <span class="string">",\"target\":"</span> &lt;&lt; SafeId(from)</span><br><span class="line">      &lt;&lt; <span class="string">",\"index\":"</span> &lt;&lt; index &lt;&lt; <span class="string">",\"type\":\""</span> &lt;&lt; edge_type &lt;&lt; <span class="string">"\"&#125;"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>事实上反映到代码里，它是这样的。<br>也就是说,from对应node，input对应to。<br>画图的时候，source即to，target即from。<br><strong>注意这里的from和to到底指谁，在看代码的时候才不会迷失。</strong></p>
+<p>以一个函数为例<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> GraphReducer::ReplaceWithValue(Node* node, Node* value, Node* effect,</span><br><span class="line">                                    Node* control) &#123;</span><br><span class="line">  <span class="keyword">if</span> (effect == <span class="literal">nullptr</span> &amp;&amp; node-&gt;op()-&gt;EffectInputCount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    effect = NodeProperties::GetEffectInput(node);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (control == <span class="literal">nullptr</span> &amp;&amp; node-&gt;op()-&gt;ControlInputCount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    control = NodeProperties::GetControlInput(node);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Requires distinguishing between value, effect and control edges.</span></span><br><span class="line">  <span class="keyword">for</span> (Edge edge : node-&gt;use_edges()) &#123;</span><br><span class="line">    Node* <span class="keyword">const</span> user = edge.from();</span><br><span class="line">    DCHECK(!user-&gt;IsDead());</span><br><span class="line">    <span class="keyword">if</span> (NodeProperties::IsControlEdge(edge)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (user-&gt;opcode() == IrOpcode::kIfSuccess) &#123;</span><br><span class="line">        Replace(user, control);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (user-&gt;opcode() == IrOpcode::kIfException) &#123;</span><br><span class="line">        DCHECK_NOT_NULL(dead_);</span><br><span class="line">        edge.UpdateTo(dead_);</span><br><span class="line">        Revisit(user);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        DCHECK_NOT_NULL(control);</span><br><span class="line">        edge.UpdateTo(control);</span><br><span class="line">        Revisit(user);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (NodeProperties::IsEffectEdge(edge)) &#123;</span><br><span class="line">      DCHECK_NOT_NULL(effect);</span><br><span class="line">      edge.UpdateTo(effect);</span><br><span class="line">      Revisit(user);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      DCHECK_NOT_NULL(value);</span><br><span class="line">      edge.UpdateTo(value);</span><br><span class="line">      Revisit(user);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Edge edge : node-&gt;use_edges()<br>use_edges即图中的红色边。绿色边代表的是input，红色边代表use<br>这其实很好理解，如果我们来写一个双向图搜索，在设计的时候，每个节点肯定有进行前后遍历的两条边可以选择，v8也是这么设计的。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">V8_EXPORT_PRIVATE</span> <span class="title">Node</span> <span class="title">final</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">InputEdges</span>;</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> InputEdges <span class="title">input_edges</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inputs</span>;</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> Inputs <span class="title">inputs</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">UseEdges</span> <span class="title">final</span> &#123;</span></span><br><span class="line">        <span class="keyword">public</span>:</span><br><span class="line">        <span class="keyword">typedef</span> Edge value_type;</span><br><span class="line"></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">iterator</span>;</span></span><br><span class="line">        <span class="function"><span class="keyword">inline</span> iterator <span class="title">begin</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">inline</span> iterator <span class="title">end</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">empty</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">        explicit UseEdges(Node* node) : node_(node) &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">        Node* node_;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function">UseEdges <span class="title">use_edges</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> UseEdges(<span class="keyword">this</span>); &#125;</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-21-035742.png" alt=""></p>
+<ul>
+<li><p>Node<em> const user = edge.from();<br><em>*还记得每条边的from么？对，就是target，现在知道对应谁了么？上一个和下一个都是相对的概念，只是我们要知道究竟对应的是谁即可</em></em></p>
+</li>
+<li><p>接下来代码是一个选择分支，我选一个else if分析</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (NodeProperties::IsEffectEdge(edge)) &#123;</span><br><span class="line">    DCHECK_NOT_NULL(effect);</span><br><span class="line">    edge.UpdateTo(effect);</span><br><span class="line">    Revisit(user);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先effect来源于<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (effect == <span class="literal">nullptr</span> &amp;&amp; node-&gt;op()-&gt;EffectInputCount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">  effect = NodeProperties::GetEffectInput(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里是取的原来的节点的输入边，假设它就是effect input。<br>那么假设我们现在就是0-&gt;5-&gt;13，0即effect，5即node，13即user<br>edge是5-&gt;13的这条边。<br>然后我们edge.UpdateTo(effect);<br><strong>还记得每条边的from么？是的，这个to本来应该是5，这里就是把5-&gt;13变成了0-&gt;13，就移走了原本在这个路径上的这个节点，要注意的是这个移走并不是直接移除，因为它可能在其他路径上还被用到，只是不在这条路径上了，具体的看我贴的源码（fuck the source code…)</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">UpdateTo</span><span class="params">(Node* new_to)</span> </span>&#123;</span><br><span class="line">    Node* old_to = *input_ptr_;</span><br><span class="line">    <span class="keyword">if</span> (old_to != new_to) &#123;</span><br><span class="line">      <span class="keyword">if</span> (old_to) old_to-&gt;RemoveUse(use_);</span><br><span class="line">      *input_ptr_ = new_to;</span><br><span class="line">      <span class="keyword">if</span> (new_to) new_to-&gt;AppendUse(use_);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">void</span> Node::RemoveUse(Use* use) &#123;</span><br><span class="line">  DCHECK(first_use_ == <span class="literal">nullptr</span> || first_use_-&gt;prev == <span class="literal">nullptr</span>);</span><br><span class="line">  <span class="keyword">if</span> (use-&gt;prev) &#123;</span><br><span class="line">    DCHECK_NE(first_use_, use);</span><br><span class="line">    use-&gt;prev-&gt;next = use-&gt;next;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    DCHECK_EQ(first_use_, use);</span><br><span class="line">    first_use_ = use-&gt;next;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (use-&gt;next) &#123;</span><br><span class="line">    use-&gt;next-&gt;prev = use-&gt;prev;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://onc55v8te.bkt.clouddn.com/2018-08-21-050445.png" alt=""><br>如图有两条红线，通过一个use链链接起来。</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/08/optimize/" rel="next" title="哈工大编译优化笔记">
+                <i class="fa fa-chevron-left"></i> 哈工大编译优化笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/categories/CTF/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/categories/CTF/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/CTF/page/3/">3</a><a class="page-number" href="/categories/CTF/page/4/">4</a><a class="extend next" rel="next" href="/categories/CTF/page/3/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -611,6 +517,20 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -631,8 +551,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -745,6 +674,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8-Graph"><span class="nav-number">1.</span> <span class="nav-text">v8 Graph</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -912,6 +857,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -929,6 +878,18 @@
       <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/08/21/v8_graph/';
+          this.page.identifier = '2018/08/21/v8_graph/';
+          this.page.title = 'v8 IR连连看';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sakura1328.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
