@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-18-180229.png">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-19-115842.jpg">
 <meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-21-173058.jpg">
-<meta property="og:updated_time" content="2018-10-08T05:42:47.355Z">
+<meta property="og:updated_time" content="2018-10-08T08:25:27.127Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sakuraのdiary">
 <meta name="twitter:description" content="2018-1-281.看玄武实验室的每日安全推送（主要是看了android挖矿，p2p蠕虫）2.配置shadow尝试用gdb和gdbserver来调试https://github.com/CENSUS/shadowhttps://developer.android.com/ndk/downloads/index.html?hl=zh-cnhttp://kiya.studio/2017/06/21/">
@@ -946,7 +946,6 @@
 <li>今天整理了一下接下来看什么，先把v8 oob和type confused的几种利用方法和primitive写了一下，ArrayBuffer的backing store这块涉及PartitionAlloc就不是很懂，学习看看。</li>
 </ol>
 <h2 id="2018-9-23-28"><a href="#2018-9-23-28" class="headerlink" title="2018-9-23-28"></a>2018-9-23-28</h2><ol>
-<li>可能有女朋友了</li>
 <li>这周主要还是顺着JIT的洞看了一下，主要就是loki交的几个洞。<br>762874是lastIndexOf中Range Analysis出错，本来范围应该是(-1,maxlength)，但是它代码是写的是(-1,maxlength-1)，然后范围分析错了之后，通过简单构造，可以在优化的时候觉得索引始终在数组边界内，于是就在simplifed lowering里reduce掉了checkbounds。<br>但是在新版本v8里，它不会对checkbounds进行消除，加了一个flag，只能在终端启动的时候选择禁用，无法绕过。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  var i = &apos;A&apos;.repeat(2**28 - 16).indexOf(&quot;&quot;, 2**28);</span><br><span class="line">  i += 16; // real value: i = 2**28, optimizer: i = 2**28-1</span><br><span class="line">  i &gt;&gt;= 28; // real value i = 1, optimizer: i = 0</span><br><span class="line">  i *= 100000; // real value i = 100000, optimizer: i = 0</span><br><span class="line">  if (i &gt; 3) &#123;</span><br><span class="line">    return 0;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    var arr = [0.1, 0.2, 0.3, 0.4];</span><br><span class="line">    return arr[i];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
