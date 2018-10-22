@@ -89,16 +89,16 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="ChromeBugs:715582 Security: Out of bound read in FindSharedFunctionInfo (V8)https://bugs.chromium.org/p/chromium/issues/detail?id=715582 patchhttps://github.com/v8/v8/commit/4e78b5a70c6443e3829b0bef10">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-072310.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-083423.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093809.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093857.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-093906.jpg">
-<meta property="og:updated_time" content="2018-08-13T06:36:28.706Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-072310.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-083423.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093809.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093857.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093906.jpg">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vulnerabilities from Chrome">
 <meta name="twitter:description" content="ChromeBugs:715582 Security: Out of bound read in FindSharedFunctionInfo (V8)https://bugs.chromium.org/p/chromium/issues/detail?id=715582 patchhttps://github.com/v8/v8/commit/4e78b5a70c6443e3829b0bef10">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-07-23-072310.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-072310.png">
 
 
 
@@ -601,12 +601,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Reflect.construct(target, argumentsList[, newTarget])</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>不引入newTarget这个可选参数，就和new target(…args)用法一致<br>但是引入的话，就是为了在一些框架里满足一种罕见的需求，也就是要求<strong>用target来初始化实例，但是却要求表现出来的结果是newTarget的实例</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-072310.png" alt=""></p>
+<p>不引入newTarget这个可选参数，就和new target(…args)用法一致<br>但是引入的话，就是为了在一些框架里满足一种罕见的需求，也就是要求<strong>用target来初始化实例，但是却要求表现出来的结果是newTarget的实例</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-072310.png" alt=""></p>
 <ul>
 <li>root cause<br>漏洞成因是BoundFunction::NewInstance在调用Target函数时，没有考虑到CallFlags_ExtraArg这个flag，所以没有拷贝ExtraArg(这里也就是newTarget)。<br>从patch里可以看到，在patch之后，考虑到了这个flag。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+           <span class="keyword">if</span> (args.HasExtraArg())</span><br><span class="line">+            &#123;</span><br><span class="line">+                newValues[index++] = args.Values[argCount];</span><br><span class="line">+            &#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-083423.jpg" alt=""><br><strong>但仍有CallFlags_NewTarget标记</strong>。<br>导致在后面真正调用Target函数的时候，在InterpreterStackFrame::OP_LdNewTarget时，会从栈上的Args数组越界读取8个字节的内容<br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093809.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093857.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-07-23-093906.jpg" alt=""></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-083423.jpg" alt=""><br><strong>但仍有CallFlags_NewTarget标记</strong>。<br>导致在后面真正调用Target函数的时候，在InterpreterStackFrame::OP_LdNewTarget时，会从栈上的Args数组越界读取8个字节的内容<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093809.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093857.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-23-093906.jpg" alt=""></p>
 <ul>
 <li>info leak<br>能不能布置栈上数据？</li>
 <li>how to find?<br>对标志位的处理，逻辑bug，审计？</li>
@@ -754,7 +754,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -765,7 +765,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -776,7 +776,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -89,12 +89,12 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命令被翻">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png">
-<meta property="og:updated_time" content="2018-04-03T11:59:17.021Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-14-185642.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手把手教你构建 C 语言编译器（解释器）学习笔记">
 <meta name="twitter:description" content="手把手教你构建 C 语言编译器（解释器）学习笔记虚拟机背景高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。在第一个阶段，高级语言被解析出来，其命令被翻">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-14-185642.png">
 
 
 
@@ -425,7 +425,7 @@
       
 
       
-        <h1 id="手把手教你构建-C-语言编译器（解释器）学习笔记"><a href="#手把手教你构建-C-语言编译器（解释器）学习笔记" class="headerlink" title="手把手教你构建 C 语言编译器（解释器）学习笔记"></a>手把手教你构建 C 语言编译器（解释器）学习笔记</h1><h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。<br>通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。<br>减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。<br>在第一个阶段，高级语言被解析出来，其命令被翻译成一种中间处理结果——既不是高级，也不是低级的结果。<br>在第二个阶段，这些中间结果被进一步翻译成目标硬件的机器语言。<br>从软件工程的角度来分解是十分吸引人的，第一阶段仅依赖于高级语言的细节，第二阶段仅依赖于目标机器语言的细节。<br>当然，两个编译阶段之间的接口十分重要，甚至应该单独抽象成一种语言。<br>实际上我们可以明确的描述这种虚拟机，其指令就是由高级语言分解成的中间处理步骤。<br>这种模型的范例有java(java-&gt;byte code(run in JVM))、c#(.NET-&gt;IL(run in CLR))<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-14-185642.png" alt=""></p>
+        <h1 id="手把手教你构建-C-语言编译器（解释器）学习笔记"><a href="#手把手教你构建-C-语言编译器（解释器）学习笔记" class="headerlink" title="手把手教你构建 C 语言编译器（解释器）学习笔记"></a>手把手教你构建 C 语言编译器（解释器）学习笔记</h1><h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>高级语言程序能够在目标计算机上运行之前，它必须被翻译成机器语言，这个翻译过程，也就是编译。<br>通常必须对任意给定的高级程序和与其对应的机器语言编写专用的编译器，但是这样每种编译器编译的高级语言与编译之后的机器语言之间就存在很强的依赖性。<br>减少这种依赖的方法之一是，将整个编译过程划分为几乎独立的两个阶段。<br>在第一个阶段，高级语言被解析出来，其命令被翻译成一种中间处理结果——既不是高级，也不是低级的结果。<br>在第二个阶段，这些中间结果被进一步翻译成目标硬件的机器语言。<br>从软件工程的角度来分解是十分吸引人的，第一阶段仅依赖于高级语言的细节，第二阶段仅依赖于目标机器语言的细节。<br>当然，两个编译阶段之间的接口十分重要，甚至应该单独抽象成一种语言。<br>实际上我们可以明确的描述这种虚拟机，其指令就是由高级语言分解成的中间处理步骤。<br>这种模型的范例有java(java-&gt;byte code(run in JVM))、c#(.NET-&gt;IL(run in CLR))<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-14-185642.png" alt=""></p>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ol>
 <li>我们只设置代码段、数据段（只存放字符串）和栈</li>
 <li>理论上当用户需要分配内存的时候，理论上我们的虚拟机需要维护一个堆用于内存分配，但实际实现上较为复杂且与编译无关，故我们引入一个指令MSET，使我们能直接使用编译器（解释器）中的内存。</li>
@@ -574,7 +574,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -585,7 +585,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -596,7 +596,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

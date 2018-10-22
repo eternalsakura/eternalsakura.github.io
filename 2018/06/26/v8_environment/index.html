@@ -89,15 +89,15 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-201821.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203426.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203519.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-203545.jpg">
-<meta property="og:updated_time" content="2018-06-27T03:08:39.216Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-201821.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203426.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203519.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203545.jpg">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8调试环境搭建(解决遇到的一些问题)">
 <meta name="twitter:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-06-25-201821.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-201821.png">
 
 
 
@@ -436,7 +436,7 @@
 <li>bug<br><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=659475" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=659475</a></li>
 <li><p>fix commit<br><a href="https://chromium.googlesource.com/v8/v8/+/2bd7464ec1efc9eb24a38f7400119a5f2257f6e6" target="_blank" rel="noopener">https://chromium.googlesource.com/v8/v8/+/2bd7464ec1efc9eb24a38f7400119a5f2257f6e6</a></p>
 </li>
-<li><p>找到hash和test代码<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-25-201821.png" alt=""></p>
+<li><p>找到hash和test代码<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-201821.png" alt=""></p>
 </li>
 <li>切换<br><code>cd ~/v8/v8</code><br><code>git reset --hard a7a350012c05f644f3f373fb48d7ac72f7f60542</code></li>
 <li><p>同步并编译</p>
@@ -447,7 +447,7 @@
 </ul>
 <h2 id="搭建ftp服务器"><a href="#搭建ftp服务器" class="headerlink" title="搭建ftp服务器"></a>搭建ftp服务器</h2><p>打包编译好的v8目录，<code>tar -czvf v8.tar v8</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install vsftpd -y</span><br><span class="line">service vsftpd start</span><br><span class="line">netstat -nltp | grep 21</span><br></pre></td></tr></table></figure></p>
 <p>此时，访问 ftp://<ip 地址=""> 可浏览机器上的/var/ftp目录了。<br>把源码cp到这个目录下，直接下载即可了。</ip></p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>然后删除原来的，对tar进行解包，得到我们要调试的v8<br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-25-203426.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-25-203519.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-06-25-203545.jpg" alt=""></p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>然后删除原来的，对tar进行解包，得到我们要调试的v8<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203426.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203519.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203545.jpg" alt=""></p>
 
       
     </div>
@@ -478,8 +478,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/23/CVE-2016-1646/" rel="next" title="Case	study CVE-2016-1646">
-                <i class="fa fa-chevron-left"></i> Case	study CVE-2016-1646
+              <a href="/2018/06/18/v8_ppt/" rel="next" title="v8 slide collection">
+                <i class="fa fa-chevron-left"></i> v8 slide collection
               </a>
             
           </div>
@@ -488,8 +488,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/06/26/CVE-2016-5198/" rel="prev" title="case study:cve-2016-5198">
-                case study:cve-2016-5198 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/06/29/algorithm/" rel="prev" title="algorithm期末考试">
+                algorithm期末考试 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -581,7 +581,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -592,7 +592,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -603,7 +603,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

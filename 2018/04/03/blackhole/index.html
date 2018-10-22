@@ -89,12 +89,12 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz 分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点的把">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-02-205935.jpg">
-<meta property="og:updated_time" content="2018-04-03T11:50:20.000Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-02-205935.jpg">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0ctf2018 blackhole writeup">
 <meta name="twitter:description" content="题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz 分析这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。所以说没办法getshell，只能一点一点的把">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-02-205935.jpg">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-02-205935.jpg">
 
 
 
@@ -450,7 +450,7 @@
         <h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/0ctf2018/blackhole.tar.gz</a></p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>这题和babystack是一样的，除了变成了64位，也是完全没有可以用来输出的函数。<br>而且，这题还设置了沙箱，限制了能够执行的系统调用为mprotect/read/write/exit。<br>所以说没办法getshell，只能一点一点的把flag给“注入”出来。</p>
 <p>思路是先弄出一个syscall gadget,调一下mprotect，读进来shellcode就可以随便操作了。<br>sc逻辑的话，就把flag读进来，然后一个bit一个bit去爆破..<br>相当于sql盲注那样..可以构造个if flag[x]==’a’ sleep else exit..这样</p>
-<p>另外，要想要调用系统调用，可以通过在got表地址里面写掉一个低Byte，从而可以可以跳转到附近的函数去，这里就是系统调用，如图。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-02-205935.jpg" alt=""></p>
+<p>另外，要想要调用系统调用，可以通过在got表地址里面写掉一个低Byte，从而可以可以跳转到附近的函数去，这里就是系统调用，如图。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-02-205935.jpg" alt=""></p>
 <h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>TODO<br>TODO<br>TODO<br>应该会写吧……嗯……</p>
 
       
@@ -587,7 +587,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -598,7 +598,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -609,7 +609,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

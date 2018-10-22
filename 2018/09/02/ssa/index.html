@@ -89,19 +89,19 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="计算Dominator tree 计算控制边界123456789for all nodes, n, in the CFG    DF(n) &amp;lt;- NULLfor all nodes, n, in the CFG    if n has multiple predecessors then//必须有2个或2个以上的predecessors        for each predecesso">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-02-122833.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-02-122907.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-061548.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-061607.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-061622.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-061753.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-072211.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-03-072226.png">
-<meta property="og:updated_time" content="2018-09-03T07:28:10.082Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-02-122833.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-02-122907.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061548.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061607.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061622.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061753.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-072211.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-072226.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.727Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Building SSA Form">
 <meta name="twitter:description" content="计算Dominator tree 计算控制边界123456789for all nodes, n, in the CFG    DF(n) &amp;lt;- NULLfor all nodes, n, in the CFG    if n has multiple predecessors then//必须有2个或2个以上的predecessors        for each predecesso">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-09-02-122833.jpg">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-02-122833.jpg">
 
 
 
@@ -433,18 +433,18 @@
 
       
         <ol>
-<li>计算Dominator tree<br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-02-122833.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-02-122907.jpg" alt=""></li>
+<li>计算Dominator tree<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-02-122833.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-02-122907.jpg" alt=""></li>
 <li>计算控制边界<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for all nodes, n, in the CFG</span><br><span class="line">    DF(n) &lt;- NULL</span><br><span class="line">for all nodes, n, in the CFG</span><br><span class="line">    if n has multiple predecessors then//必须有2个或2个以上的predecessors</span><br><span class="line">        for each predecessor p of n</span><br><span class="line">            runner &lt;- p</span><br><span class="line">            while runner != IDom(n)</span><br><span class="line">                DF(runner) &lt;- DF(runner) U &#123;n&#125;</span><br><span class="line">                runner &lt;- IDom(runner)</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>举例如下：<br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-061548.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-061607.png" alt=""><br>最后得到Dominance Frontiers<br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-061622.png" alt=""></p>
-<p><strong>对于n的定义语句可以放置一个PHI函数在m处，如果</strong><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-061753.png" alt=""></p>
+<p>举例如下：<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061548.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061607.png" alt=""><br>最后得到Dominance Frontiers<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061622.png" alt=""></p>
+<p><strong>对于n的定义语句可以放置一个PHI函数在m处，如果</strong><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-061753.png" alt=""></p>
 <ol>
 <li>插入PHI函数<br>在真正插入PHI函数之前，我们需要在Dominance Frontiers的基础上，更精确的找到需要PHI函数的地方。</li>
 </ol>
 <p>“The basic idea is simple. A definition of x in block b forces a ϕ-function at every node in df(b).<br>Since that ϕ-function is a new definition of x, it may, in turn, force the insertion of additional ϕ-functions.”</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for each name x∈ Globals</span><br><span class="line">    WorkList &lt;- Blocks(x)</span><br><span class="line">    for each block b∈ WorkList</span><br><span class="line">        for each block d in DF(b)</span><br><span class="line">            if d has no PHI function for x then </span><br><span class="line">                insert a PHI function for x in d</span><br><span class="line">                WorkList &lt;- WorkList U &#123;d&#125;</span><br></pre></td></tr></table></figure>
-<p>对于每个global name x，算法将WorkList初始化为Blocks(x)。<br>对于WorkList上的每个block b，算法在b的支配边界(DF(b))中每个block d的起始处插入PHI函数。<br><strong>在向d中添加对应于x的PHI函数之后，算法将d添加到WorkList，以反映d中对x的新赋值操作</strong><br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-072211.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-09-03-072226.png" alt=""></p>
+<p>对于每个global name x，算法将WorkList初始化为Blocks(x)。<br>对于WorkList上的每个block b，算法在b的支配边界(DF(b))中每个block d的起始处插入PHI函数。<br><strong>在向d中添加对应于x的PHI函数之后，算法将d添加到WorkList，以反映d中对x的新赋值操作</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-072211.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-03-072226.png" alt=""></p>
 <ol>
 <li>重命名变量的名字，满足SSA规则</li>
 </ol>
@@ -572,7 +572,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -583,7 +583,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -594,7 +594,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

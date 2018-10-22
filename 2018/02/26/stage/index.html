@@ -88,16 +88,16 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="思路关于CVE-2015-3824漏洞本身漏洞的原理是一个因为整数溢出，可以构造堆利用。https://bbs.pediy.com/thread-222893.htm 在进行漏洞利用时，要关注各种可能分配内存的地方，灵活的使用代码中的内存分配，来布局内存。 同时研究一个漏洞要把相关知识给补齐。对于这个漏洞就是 MPEG4的文件格式和相关的处理代码了。 谷歌的expgp0是构造对象，然后溢出它的虚表">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083340.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083427.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083439.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083554.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083812.png">
-<meta property="og:updated_time" content="2018-04-03T12:01:35.000Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083340.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083427.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083439.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083554.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083812.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CVE-2015-3864的思路">
 <meta name="twitter:description" content="思路关于CVE-2015-3824漏洞本身漏洞的原理是一个因为整数溢出，可以构造堆利用。https://bbs.pediy.com/thread-222893.htm 在进行漏洞利用时，要关注各种可能分配内存的地方，灵活的使用代码中的内存分配，来布局内存。 同时研究一个漏洞要把相关知识给补齐。对于这个漏洞就是 MPEG4的文件格式和相关的处理代码了。 谷歌的expgp0是构造对象，然后溢出它的虚表">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-26-083340.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083340.png">
 
 
 
@@ -432,7 +432,7 @@
 <p><strong>在进行漏洞利用时，要关注各种可能分配内存的地方，灵活的使用代码中的内存分配，来布局内存。 同时研究一个漏洞要把相关知识给补齐。对于这个漏洞就是 MPEG4的文件格式和相关的处理代码了。</strong></p>
 <h2 id="谷歌的exp"><a href="#谷歌的exp" class="headerlink" title="谷歌的exp"></a>谷歌的exp</h2><p>gp0是构造对象，然后溢出它的虚表，重定向到我们的gadaget。<br>进行大量的heap spray，保证能够执行到gadaget。</p>
 <h2 id="Metaphor"><a href="#Metaphor" class="headerlink" title="Metaphor"></a>Metaphor</h2><p>另外有一个Metaphor，是CVE-2015-3824的利用工具，<br>攻击载荷：Web页面（可执行js代码），受害者需要在exp页面上驻留一会（heap spray需要多次尝试）</p>
-<h2 id="关于虚表"><a href="#关于虚表" class="headerlink" title="关于虚表"></a>关于虚表</h2><p>(1)识别构造函数：给对象分配内存、将vtable拷贝到分配内存中、成员变量初始化。<br>(2)识别真正的vtable：vtable一定会在某个构造函数中被引用到，所以被引用到的就是真正的vtable。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-083340.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-083427.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-083439.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-083554.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-26-083812.png" alt=""></p>
+<h2 id="关于虚表"><a href="#关于虚表" class="headerlink" title="关于虚表"></a>关于虚表</h2><p>(1)识别构造函数：给对象分配内存、将vtable拷贝到分配内存中、成员变量初始化。<br>(2)识别真正的vtable：vtable一定会在某个构造函数中被引用到，所以被引用到的就是真正的vtable。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083340.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083427.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083439.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083554.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-26-083812.png" alt=""></p>
 
       
     </div>
@@ -560,7 +560,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -571,7 +571,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -582,7 +582,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

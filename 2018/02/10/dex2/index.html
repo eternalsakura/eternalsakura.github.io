@@ -89,12 +89,12 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="考察知识点 dex文件头修复 onCreate修复  前置参考http://eternalsakura13.com/2018/02/10/dex/ 赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk 分析直接反编译apk，然后得到算法：输入用户名和密码，长度要想等，用户名和密码的逆序串相等则输出字符">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102018.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102059.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102330.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102729.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102944.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-103234.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102018.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102059.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102330.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102729.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102944.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-103234.png">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fobcm7wpmvj30xm0bytce.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fobcni6b4rj31340sa7g8.jpg">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcly1fobgknwblbj312i0li0zm.jpg">
@@ -102,14 +102,14 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fobgrylh8mj31961fa4q8.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fobgwnp7gaj31gs13yak5.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fobh0wskgbj30q20e20w1.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-095349.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-095751.png">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-095902.png">
-<meta property="og:updated_time" content="2018-04-03T11:53:09.532Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095349.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095751.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095902.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2015XCTF&amp;RCTF-where writeup">
 <meta name="twitter:description" content="考察知识点 dex文件头修复 onCreate修复  前置参考http://eternalsakura13.com/2018/02/10/dex/ 赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk 分析直接反编译apk，然后得到算法：输入用户名和密码，长度要想等，用户名和密码的逆序串相等则输出字符">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-02-10-102018.png">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102018.png">
 
 
 
@@ -457,12 +457,12 @@
 </ul>
 <h2 id="前置参考"><a href="#前置参考" class="headerlink" title="前置参考"></a>前置参考</h2><p><a href="http://eternalsakura13.com/2018/02/10/dex/">http://eternalsakura13.com/2018/02/10/dex/</a></p>
 <h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk</a></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>直接反编译apk，然后得到算法：输入用户名和密码，长度要想等，用户名和密码的逆序串相等则输出字符串,返回flag。<br>这当然是不可能的，这题可是道misc!<br>实际上，检查apk解压文件发现，下图的abc大小刚好为112字节也就是70h，是一个dex头的大小。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-102018.png" alt=""><br>用010editor打开后发现确实是dex头。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-102059.png" alt=""><br>而CERT.RSA这个不正常的大，其实就是因为把dex主体藏在这了。<br>用010editor打开观察<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-102330.png" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-102729.png" alt=""><br>关键信息就是KEY和aes-128-cbc这个加密方式，KEY后面有一个DEX=…<br>我们知道dex头后面紧接着就是字符串索引项，应该是很整齐的四字节四字节，现在明显是被加密过了。<br>首先把DEX=…后面的数据拷贝出来，保存成文件。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-102944.png" alt=""><br>再把数据直接复制粘贴在新建的文件里就行了。<br>用openssl或者其他工具解密这个文件。<br><code>openssl aes-128-cbc -d -k &quot;Misc@inf0#fjhx11&quot; -nosalt -in encfile -out decfile</code><br>-in encfile是被加密的文件，-out decfile是解密后的文件。<br>打开解密后的文件，现在就很整齐了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-103234.png" alt=""><br>再把文件头拷贝到前面，就拼接出了一个dex文件，嗯，就叫flag好了。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>直接反编译apk，然后得到算法：输入用户名和密码，长度要想等，用户名和密码的逆序串相等则输出字符串,返回flag。<br>这当然是不可能的，这题可是道misc!<br>实际上，检查apk解压文件发现，下图的abc大小刚好为112字节也就是70h，是一个dex头的大小。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102018.png" alt=""><br>用010editor打开后发现确实是dex头。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102059.png" alt=""><br>而CERT.RSA这个不正常的大，其实就是因为把dex主体藏在这了。<br>用010editor打开观察<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102330.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102729.png" alt=""><br>关键信息就是KEY和aes-128-cbc这个加密方式，KEY后面有一个DEX=…<br>我们知道dex头后面紧接着就是字符串索引项，应该是很整齐的四字节四字节，现在明显是被加密过了。<br>首先把DEX=…后面的数据拷贝出来，保存成文件。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102944.png" alt=""><br>再把数据直接复制粘贴在新建的文件里就行了。<br>用openssl或者其他工具解密这个文件。<br><code>openssl aes-128-cbc -d -k &quot;Misc@inf0#fjhx11&quot; -nosalt -in encfile -out decfile</code><br>-in encfile是被加密的文件，-out decfile是解密后的文件。<br>打开解密后的文件，现在就很整齐了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-103234.png" alt=""><br>再把文件头拷贝到前面，就拼接出了一个dex文件，嗯，就叫flag好了。</p>
 <h3 id="修复dex"><a href="#修复dex" class="headerlink" title="修复dex"></a>修复dex</h3><p>用010 editor打开拼接好的flag文件，执行dex解析脚本，报错。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobcm7wpmvj30xm0bytce.jpg" alt=""><br>检查后发现是因为索引区各索引分区的size(其实就是索引项的项数）为0，需要填补。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobcni6b4rj31340sa7g8.jpg" alt=""></p>
 <p>关于怎么计算，了解dex文件格式的应该很easy，我举个例子。<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fobgknwblbj312i0li0zm.jpg" alt=""><br><code>type_id_off</code>为A8h,<code>string_ids_off</code>偏移为70h，因为每个项的大小为4字节，所以(A8-70)/4=E</p>
 <p>string_ids size = (0x000091DC - 0x00000070) / 4  = 0x0000245B<br>type_ids size   = (0x0000A3EC - 0x000091DC) / 4  = 0x00000484<br>proto_ids size  = (0x0000EF28 - 0x0000A3EC) / 12 = 0x00000645<br>field_ids size  = (0x00015DB8 - 0x0000EF28) / 8  = 0x00000DD2<br>method_ids size = (0x00026DC8 - 0x00015DB8) / 8  = 0x00002202</p>
 <p>这样就算完，填入进行修补。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobgqepacfj30ny0fs0x4.jpg" alt=""><br>重新解析一下，我们的dex文件就修复好了。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobgrylh8mj31961fa4q8.jpg" alt=""></p>
-<h3 id="修复onCreate"><a href="#修复onCreate" class="headerlink" title="修复onCreate"></a>修复onCreate</h3><p>用jadx反编译拼接好的dex文件，发现onCreate()方法反编译失败，用IDA打开后发现全被nop掉了（抽空）<br>可以想到运行时动态恢复指令，但是这里没有so，明显不是（这真是道misc……）<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobgwnp7gaj31gs13yak5.jpg" alt=""><br>所以藏在哪里呢？实际上被抽空的onCreate指令就在下图的y中。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobh0wskgbj30q20e20w1.jpg" alt=""><br>用IDA打开搜索onCreate，找到nop的起始地址，CODE:00097390<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-095349.png" alt=""><br>用010editor找到对应空白<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-095751.png" alt=""><br>将y的数据拷贝进去，刚好完全填补<br><img src="http://onc55v8te.bkt.clouddn.com/2018-02-10-095902.png" alt=""><br>再次用jadx反编译修复好的dex。</p>
+<h3 id="修复onCreate"><a href="#修复onCreate" class="headerlink" title="修复onCreate"></a>修复onCreate</h3><p>用jadx反编译拼接好的dex文件，发现onCreate()方法反编译失败，用IDA打开后发现全被nop掉了（抽空）<br>可以想到运行时动态恢复指令，但是这里没有so，明显不是（这真是道misc……）<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobgwnp7gaj31gs13yak5.jpg" alt=""><br>所以藏在哪里呢？实际上被抽空的onCreate指令就在下图的y中。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobh0wskgbj30q20e20w1.jpg" alt=""><br>用IDA打开搜索onCreate，找到nop的起始地址，CODE:00097390<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095349.png" alt=""><br>用010editor找到对应空白<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095751.png" alt=""><br>将y的数据拷贝进去，刚好完全填补<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095902.png" alt=""><br>再次用jadx反编译修复好的dex。</p>
 <h3 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h3><p>修复好的onCreate<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String seed = <span class="string">"m3ll0t_yetFLag"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView((<span class="keyword">int</span>) C0095R.layout.activity_main);</span><br><span class="line">        StringBuilder strb = <span class="keyword">new</span> StringBuilder(<span class="keyword">this</span>.seed);</span><br><span class="line">        strb.replace(<span class="number">0</span>, <span class="number">1</span>, <span class="string">"h"</span>);</span><br><span class="line">        strb.replace(<span class="number">5</span>, <span class="number">6</span>, <span class="string">"2"</span>);</span><br><span class="line">        strb.replace(<span class="number">10</span>, <span class="number">11</span>, <span class="string">"f"</span>);</span><br><span class="line">        strb.replace(<span class="number">7</span>, <span class="number">8</span>, <span class="string">"G"</span>);</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"flag is "</span> + strb.toString(), <span class="number">0</span>).show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">        getMenuInflater().inflate(C0095R.menu.main, menu);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (item.getItemId() == C0095R.id.action_settings) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringBuilder <span class="title">replace</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end, String str)</span></span></span><br></pre></td></tr></table></figure>
 <ul>
@@ -605,7 +605,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -616,7 +616,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -627,7 +627,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

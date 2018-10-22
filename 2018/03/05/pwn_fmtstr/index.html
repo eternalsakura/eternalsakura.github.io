@@ -89,10 +89,10 @@
 <meta property="og:site_name" content="Sakuraのblog">
 <meta property="og:description" content="格式化字符串漏洞原理pwn题中，有形如下述代码的形式就是格式化字符串漏洞123char str[100];scanf(&quot;%s&quot;,str);printf(str) 也许使用者的目的只是直接输出字符串，但是这段字符串来源于可控的输入，就造成了漏洞。示例程序如下123456#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;  char str[100];  scanf(&quot;%">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-05-142756.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-05-142805.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-05-142854.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-05-142934.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142756.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142805.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142854.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142934.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fnq89d4w5qj30m40biabl.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fnq88fzh3pj30w00r8afi.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1fnq8hv6sgdj30i8080jsr.jpg">
@@ -100,11 +100,11 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fnq8nmhuy3j30jc067gmz.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1fnqg75wqhuj31bo0yen3e.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1fnqhotz7ahj30d708mdh6.jpg">
-<meta property="og:updated_time" content="2018-04-03T12:00:30.894Z">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串漏洞原理及湖湘杯pwn200 writeup">
 <meta name="twitter:description" content="格式化字符串漏洞原理pwn题中，有形如下述代码的形式就是格式化字符串漏洞123char str[100];scanf(&quot;%s&quot;,str);printf(str) 也许使用者的目的只是直接输出字符串，但是这段字符串来源于可控的输入，就造成了漏洞。示例程序如下123456#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;  char str[100];  scanf(&quot;%">
-<meta name="twitter:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-05-142756.jpg">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142756.jpg">
 
 
 
@@ -459,8 +459,8 @@
       
         <h2 id="格式化字符串漏洞原理"><a href="#格式化字符串漏洞原理" class="headerlink" title="格式化字符串漏洞原理"></a>格式化字符串漏洞原理</h2><p>pwn题中，有形如下述代码的形式就是格式化字符串漏洞<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line"><span class="built_in">printf</span>(str)</span><br></pre></td></tr></table></figure></p>
 <p>也许使用者的目的只是直接输出字符串，但是这段字符串来源于可控的输入，就造成了漏洞。<br>示例程序如下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line">  <span class="built_in">printf</span>(str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>编译：<code>gcc -m32 -o str str.c</code><br>输入：<code>%2$x</code><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-05-142756.jpg" alt=""><br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-05-142805.jpg" alt=""><br>原因是如果直接printf(“占位符”)这种形式，就会把栈上的偏移当做数据输出出来。通过构造格式化串，就可以实现任意地址读和任意地址写。</p>
-<h3 id="任意地址读"><a href="#任意地址读" class="headerlink" title="任意地址读"></a>任意地址读</h3><p>事实上，我们在scanf(或者read)来输入字符串的时候，字符串就已经在栈中了，如图，可以看出偏移为6。如果我们构造出<code>addr(4字节)%6$s</code>，就能读取这个地址的值了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-05-142854.jpg" alt=""><br>我们尝试一下，输入<code>AAAA%6$s</code>，当然不可能真的读到地址为41414141的内存值，不过从下图我框起来的内容就知道，如果我们输入一个合法的值，就可以读了。<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-05-142934.jpg" alt=""></p>
+<p>编译：<code>gcc -m32 -o str str.c</code><br>输入：<code>%2$x</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142756.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142805.jpg" alt=""><br>原因是如果直接printf(“占位符”)这种形式，就会把栈上的偏移当做数据输出出来。通过构造格式化串，就可以实现任意地址读和任意地址写。</p>
+<h3 id="任意地址读"><a href="#任意地址读" class="headerlink" title="任意地址读"></a>任意地址读</h3><p>事实上，我们在scanf(或者read)来输入字符串的时候，字符串就已经在栈中了，如图，可以看出偏移为6。如果我们构造出<code>addr(4字节)%6$s</code>，就能读取这个地址的值了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142854.jpg" alt=""><br>我们尝试一下，输入<code>AAAA%6$s</code>，当然不可能真的读到地址为41414141的内存值，不过从下图我框起来的内容就知道，如果我们输入一个合法的值，就可以读了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142934.jpg" alt=""></p>
 <h3 id="任意地址写"><a href="#任意地址写" class="headerlink" title="任意地址写"></a>任意地址写</h3><p>和上面的任意地址读是同理的，只不过利用了格式化字符串的一个比较冷门的特性，%n。<br>这个占位符可以把它前面输出的字符的数量，写入指定的地址。<br>比如<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"abc%n"</span>, &amp;val);</span><br></pre></td></tr></table></figure></p>
 <p>val的值就被改变为3。</p>
 <h3 id="pwntools"><a href="#pwntools" class="headerlink" title="pwntools"></a>pwntools</h3><h4 id="fmtstr"><a href="#fmtstr" class="headerlink" title="fmtstr"></a><a href="http://pwntools.readthedocs.io/en/stable/fmtstr.html" target="_blank" rel="noopener">fmtstr</a></h4><p>上面说过我们要利用格式化串漏洞就要得到格式化串的偏移,pwntools有自动化代码可以得到这个偏移。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_fmt</span><span class="params">(payload)</span>:</span></span><br><span class="line">    p = process(program)</span><br><span class="line">    p.sendline(payload)</span><br><span class="line">    info = p.recv()</span><br><span class="line">    p.close()</span><br><span class="line">    <span class="keyword">return</span> info</span><br><span class="line"></span><br><span class="line">autofmt = FmtStr(exec_fmt)</span><br><span class="line"><span class="keyword">print</span> autofmt.offset</span><br></pre></td></tr></table></figure></p>
@@ -616,7 +616,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,7 +627,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -638,7 +638,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

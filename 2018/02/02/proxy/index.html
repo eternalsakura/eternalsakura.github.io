@@ -92,10 +92,10 @@
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fo25z0wtk0j30io0m2td6.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fo25zd0bvmj30qc0ikwh9.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fo262zvsgjj30qo0humza.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-27-195715.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195715.png">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg">
-<meta property="og:image" content="http://onc55v8te.bkt.clouddn.com/2018-03-27-195650.png">
-<meta property="og:updated_time" content="2018-04-12T16:53:49.000Z">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195650.png">
+<meta property="og:updated_time" content="2018-10-22T14:25:51.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="本机和虚拟机终端代理设置">
 <meta name="twitter:description" content="Mac终端代理vim ~/.bash_profile然后在里面输入12alias setproxy=&amp;quot;export ALL_PROXY=socks5://127.0.0.1:1086&amp;quot; alias unsetproxy=&amp;quot;unset ALL_PROXY&amp;quot; export ALL_PROXY=socks5://127.0.0.1:1086,这里的1086根据自己">
@@ -434,7 +434,7 @@
 <p>export ALL_PROXY=socks5://127.0.0.1:<strong>1086</strong>,这里的1086根据自己的电脑去修改，设置如下<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo25z0wtk0j30io0m2td6.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo25zd0bvmj30qc0ikwh9.jpg" alt=""></p>
 <p>可以直接把上述代码拷贝到上述对应文件的末尾，修改完成之后执行如下命令使修改生效<br><code>source ~/.bash_profile</code><br>然后只要输入setproxy就可以设置代理，输入unsetproxy就取消代理<br>设置完毕后，输入<code>curl -i http://ip.cn</code>确认修改成功。</p>
 <h1 id="虚拟机走终端代理"><a href="#虚拟机走终端代理" class="headerlink" title="虚拟机走终端代理"></a>虚拟机走终端代理</h1><h2 id="修改ss配置"><a href="#修改ss配置" class="headerlink" title="修改ss配置"></a>修改ss配置</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo262zvsgjj30qo0humza.jpg" alt=""></p>
-<h2 id="设置虚拟机"><a href="#设置虚拟机" class="headerlink" title="设置虚拟机"></a>设置虚拟机</h2><p>先看一下自己电脑的ip是多少<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-27-195715.png" alt=""><br>我这里使用的是共享网络，不知道换其他行不行。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg" alt=""><br>然后在setting-&gt;network<br><img src="http://onc55v8te.bkt.clouddn.com/2018-03-27-195650.png" alt="">修改成功后在终端输入<br><code>export ALL_PROXY=http://192.168.10.201:1087</code><br>然后输入<br><code>curl -i http://ip.cn</code>确认。</p>
+<h2 id="设置虚拟机"><a href="#设置虚拟机" class="headerlink" title="设置虚拟机"></a>设置虚拟机</h2><p>先看一下自己电脑的ip是多少<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195715.png" alt=""><br>我这里使用的是共享网络，不知道换其他行不行。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg" alt=""><br>然后在setting-&gt;network<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195650.png" alt="">修改成功后在终端输入<br><code>export ALL_PROXY=http://192.168.10.201:1087</code><br>然后输入<br><code>curl -i http://ip.cn</code>确认。</p>
 <h2 id="windodws"><a href="#windodws" class="headerlink" title="windodws"></a>windodws</h2><p>算是一个补充<br>勾选上允许来自局域网的链接选项。<br>然后设置虚拟机的网络模式为桥接模式（注意不要勾选复制主机的网络）<br>这样主机和虚拟机在一个局域网里。<br>然后在setting-&gt;network里向上面那么设置，1087改成1080.<br>在终端里export ALL_PROXY=<a href="http://xxxx:1080" target="_blank" rel="noopener">http://xxxx:1080</a><br>这个1080其实就是那个本地端口，一般我们都是设置1080的。</p>
 
       
@@ -569,7 +569,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">97</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -580,7 +580,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -591,7 +591,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
