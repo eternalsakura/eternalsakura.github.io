@@ -93,7 +93,7 @@
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203426.png">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203519.jpg">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203545.jpg">
-<meta property="og:updated_time" content="2018-10-22T14:25:51.720Z">
+<meta property="og:updated_time" content="2018-11-15T10:38:12.513Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="v8调试环境搭建(解决遇到的一些问题)">
 <meta name="twitter:description" content="前言写这个是因为之前一直没有一个特别好的v8调试环境搭建的方法。最主要的原因就是墙,然后花了一晚上摸索了一个感觉还行的解决方案吧。。 准备工作谷歌云的centos 7 x64地区选台湾，4核机器就行。其他国外云主机应该也行。。不过谷歌云用完了删除实例就好，很方便。 fetch源码123456789sudo yum groupinstall &amp;quot;Development Tools&amp;quot;">
@@ -445,7 +445,7 @@
 <li><p>测试<br>用test里的代码测试一下效果，省略。</p>
 </li>
 </ul>
-<h2 id="搭建ftp服务器"><a href="#搭建ftp服务器" class="headerlink" title="搭建ftp服务器"></a>搭建ftp服务器</h2><p>打包编译好的v8目录，<code>tar -czvf v8.tar v8</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install vsftpd -y</span><br><span class="line">service vsftpd start</span><br><span class="line">netstat -nltp | grep 21</span><br></pre></td></tr></table></figure></p>
+<h2 id="搭建ftp服务器"><a href="#搭建ftp服务器" class="headerlink" title="搭建ftp服务器"></a>搭建ftp服务器</h2><p>打包编译好的v8目录，<code>tar -czvf v8.tar v8</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install vsftpd -y</span><br><span class="line">sudo service vsftpd start</span><br><span class="line">sudo netstat -nltp | grep 21</span><br></pre></td></tr></table></figure></p>
 <p>此时，访问 ftp://<ip 地址=""> 可浏览机器上的/var/ftp目录了。<br>把源码cp到这个目录下，直接下载即可了。</ip></p>
 <h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>然后删除原来的，对tar进行解包，得到我们要调试的v8<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203426.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203519.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-25-203545.jpg" alt=""></p>
 
