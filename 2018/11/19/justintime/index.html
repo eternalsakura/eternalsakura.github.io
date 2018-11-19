@@ -116,7 +116,7 @@
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091930.png">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091917.png">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091900.png">
-<meta property="og:updated_time" content="2018-11-19T04:07:31.384Z">
+<meta property="og:updated_time" content="2018-11-19T04:08:57.399Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Google CTF justintime exploit">
 <meta name="twitter:description" content="Referencehttps://github.com/google/google-ctf/tree/master/2018/finals/pwn-just-in-time/Thanks for Stephen, I learned a lot from his amazing challenge. Environment SetupI am lazy, so I use Xcode to com">
@@ -492,7 +492,7 @@
 <h3 id="exploit-1"><a href="#exploit-1" class="headerlink" title="exploit"></a>exploit</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/chrome</span><br><span class="line">./chrome index.html</span><br></pre></td></tr></table></figure>
 <p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091400.jpg" alt=""></p>
 <h2 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h2><h3 id="Acknowledgement"><a href="#Acknowledgement" class="headerlink" title="Acknowledgement"></a>Acknowledgement</h3><p>I would acknowledge stephen(@_tsuro) who guides me and points out my stupid mistakes.<br>Debugging d8 is quite different from chrome，when leaking cxa，it will map builtin to a random address，and cxa is mapped to libv8.so，so we cannot find offset via cxa.<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091930.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091917.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-16-091900.png" alt=""><br>When you complete a arbitrary r/w primitive in v8，you can exploit chrome via the script without additional debug（yes, u don’t need to debug a full chrome)</p>
-<p>Thanks Auxy(@realAuxy233) for translating~</p>
+<p>Thanks Auxy(@realAuxy233) for translating~<br>If you find any errors or corrections, contact me. </p>
 
       
     </div>
