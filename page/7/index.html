@@ -239,9 +239,43 @@
       
 
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
     </ul>
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -275,7 +309,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -348,6 +382,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/11/loop/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/11/loop/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -374,26 +419,19 @@
       
         
           
-            <h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/LoopAndLoop.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/LoopAndLoop.apk</a></p>
-<h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><ul>
-<li>native层代码分析</li>
-</ul>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="java层"><a href="#java层" class="headerlink" title="java层"></a>java层</h3><p>首先用jadx-gui反编译，找到主要逻辑<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-050917.png" alt=""><br>如果我们能check(input,99)==1835996258，这个input就是flag。<br>那么check函数是什么呢？<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-051045.png" alt=""><br>可以看到check函数实际上就是调用chec函数，而chec函数是一个native方法。</p>
-<h3 id="native层"><a href="#native层" class="headerlink" title="native层"></a>native层</h3><p>找到chec后，修复一些类型和重命名变量。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-051153.png" alt=""><br>关于怎么修正，可以看我的<a href="http://eternalsakura13.com/2018/02/07/mobicrackNDK/">另一篇wp</a></p>
-<p>主要代码如下：</p>
-<ul>
-<li><p>首先得到java层的check1/2/3三个函数的MethodID，供调用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v10 = _JNIEnv::GetMethodID(vEnv, jclass_MainActivity, <span class="string">"check1"</span>, <span class="string">"(II)I"</span>);</span><br><span class="line">v11 = _JNIEnv::GetMethodID(vEnv, jclass_MainActivity, <span class="string">"check2"</span>, <span class="string">"(II)I"</span>);</span><br><span class="line">v12 = _JNIEnv::GetMethodID(vEnv, jclass_MainActivity, <span class="string">"check3"</span>, <span class="string">"(II)I"</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过<code>*(&amp;v10 + 2 * num_99 % 3)</code>来选择调用哪个函数.<br>num%3，得到的结果可能是0,1,2；<br>然后以v10为基准来加，emmm，只能解释到这了，再不懂的话看asm吧。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-052101.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-052354.png" alt=""></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( num_99 - <span class="number">1</span> &lt;= <span class="number">0</span> )</span><br><span class="line">    result = input_user;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    result = _JNIEnv::CallIntMethod(vEnv, v9, *(&amp;v10 + <span class="number">2</span> * num_99 % <span class="number">3</span>), input_user, num_99 - <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>然后我们再看一下check1/2/3的具体内容，发现其实就是对input做了一些加减操作，然后再传进去，递归调用chec。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-052208.png" alt=""><br>至此我们已经可以写出脚本来算出flag了。<br>其实就是把它做的操作倒过来走一遍，从输出反推到输入即可。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">re_check1</span><span class="params">(input, s)</span>:</span></span><br><span class="line">    t = input</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">100</span>):</span><br><span class="line">        t -= i</span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">re_check2</span><span class="params">(input, s)</span>:</span></span><br><span class="line">    t = input</span><br><span class="line">    <span class="keyword">if</span> (s % <span class="number">2</span> == <span class="number">0</span>):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">1000</span>):</span><br><span class="line">            t -= i</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">1000</span>):</span><br><span class="line">            t += i</span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">re_check3</span><span class="params">(input, s)</span>:</span></span><br><span class="line">    t = input</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">10000</span>):</span><br><span class="line">        t -= i</span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    output = <span class="number">1835996258</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">2</span>, <span class="number">100</span>):</span><br><span class="line">        <span class="keyword">if</span> ((<span class="number">2</span> * i) % <span class="number">3</span> == <span class="number">0</span>):</span><br><span class="line">            output = re_check1(output, i + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">elif</span> ((<span class="number">2</span> * i) % <span class="number">3</span> == <span class="number">1</span>):</span><br><span class="line">            output = re_check2(output, i + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            output = re_check3(output, i + <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">print</span> output</span><br></pre></td></tr></table></figure></p>
-<p>计算得到：236492408</p>
-<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-11-055507.png" alt=""></p>
+          题目链接https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/LoopAndLoop.apk
+考察知识点
+native层代码分析
 
-          
+分析java层首先用jadx-gui反编译，找到主要逻辑如果我们
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/11/loop/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -445,7 +483,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -518,6 +556,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/11/timer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/11/timer/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -544,18 +593,19 @@
       
         
           
-            <h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><ul>
-<li>smali代码修改</li>
-</ul>
-<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/Timer.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/Timer.apk</a></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>jadx反编译之后，找逻辑。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-171209.png" alt=""><br>总结就是：循环200000次，每循环一次停顿1秒左右，然后循环的时候进行is2()判断，根据判断的结果进行不同的操作。<br>写代码计算<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is2</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">3</span>):</span><br><span class="line">        <span class="keyword">if</span> (n &gt; <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    <span class="keyword">elif</span> (n % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">or</span> n % <span class="number">3</span> == <span class="number">0</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        i = <span class="number">5</span></span><br><span class="line">        <span class="keyword">while</span> (i * i &lt;= n):</span><br><span class="line">            <span class="keyword">if</span> (n % i == <span class="number">0</span> <span class="keyword">or</span> n % (i + <span class="number">2</span>) == <span class="number">0</span>):</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">            i += <span class="number">6</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    time = <span class="number">200000</span></span><br><span class="line">    k = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> time &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> is2(time):</span><br><span class="line">            k += <span class="number">100</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            k -= <span class="number">1</span></span><br><span class="line">        time -= <span class="number">1</span></span><br><span class="line">    print(k)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-171708.png" alt=""><br>计算得到，k=1616384</p>
-<h2 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h2><p>得到要传入的数之后，接下来都是调用一个native方法，将这个数传进去得到结果。<br>可以修改smali文件重打包，也可以直接新建一个android工程，调用这个so文件。</p>
-<h2 id="直接调用so文件"><a href="#直接调用so文件" class="headerlink" title="直接调用so文件"></a>直接调用so文件</h2><p>Android Studio 默认的so文件路径是app/src/main/jniLibs/armeabi，新建一个jniLibs/armeabi文件夹，把so文件放进去。<br>且为了保证native层和java层的方法对应上，我们使用和原来apk一样的包名。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> net.bluelotus.tomorrow.easyandroid;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> android.util.Log;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"lhm"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> String <span class="title">stringFromJNI2</span><span class="params">(<span class="keyword">int</span> i)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        Log.i(<span class="string">"sakura"</span>, stringFromJNI2(<span class="number">1616384</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-173716.png" alt=""><br>得到flag，Y0vAr3TimerMa3te7</p>
-<h2 id="修改smali文件重打包"><a href="#修改smali文件重打包" class="headerlink" title="修改smali文件重打包"></a>修改smali文件重打包</h2><p>todo</p>
+          考察知识点
+smali代码修改
 
-          
+赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/Timer.apk
+分析jadx反编译之后，找逻辑。总结就是：循环200000次，每循环一次停顿1秒左右，然后循环的时候进行is2(
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/11/timer/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -607,7 +657,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -680,6 +730,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/10/easyre/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/10/easyre/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -706,27 +767,20 @@
       
         
           
-            <h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><ul>
-<li>hook 系统函数</li>
-<li>dump 内存搜索 flag</li>
-</ul>
-<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/EasyRe.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/EasyRe.apk</a></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="java层"><a href="#java层" class="headerlink" title="java层"></a>java层</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-110325.png" alt=""><br>用jadx反编译apk，在java层的逻辑很简单。<br>读取flag.txt这个文件的内容，然后和我们的输入数据相对比，如果一致就提示“That’s the flag!”<br>找一下这个文件，<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-110615.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-110630.png" alt=""><br><code>0ctf{Too_Simple_Sometimes_Naive!!!}</code><br>不出意外是个假flag。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-111700.png" alt=""><br><strong>提示一下，请不要用模拟器打开去输入flag，那你会输出That’s the flag!</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-111805.png" alt=""><br>究其原因是因为模拟器都是用的x86去模拟arm，而这里动的手脚是在so文件里，所以请用真机测试。</p>
-<h3 id="so层分析"><a href="#so层分析" class="headerlink" title="so层分析"></a>so层分析</h3><p>我们推测应该是在apk运行前做了什么操作，找到so文件用IDA打开<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-111935.png" alt="">so文件里没有JNI_Onload函数，找到.init_array段，调用了my_init函数<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-112136.png" alt=""></p>
-<p>打开后F5反编译，发现CheckSig和j_hook函数，推测做了签名验证反调试和对系统函数进行hook。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-112537.png" alt=""><br>并且根据传入的参数判断应该是hook的read函数。</p>
-<h2 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h2><p><a href="http://www.purpleroc.com/MD/2015-03-31@0CTF_WriteUp.html" target="_blank" rel="noopener">http://www.purpleroc.com/MD/2015-03-31@0CTF_WriteUp.html</a><br><a href="http://ipushino.blogspot.de/2015/04/0ops-ctf-qualifiers-2015-simpleapk.html" target="_blank" rel="noopener">http://ipushino.blogspot.de/2015/04/0ops-ctf-qualifiers-2015-simpleapk.html</a><br>github上面给出的两篇wp都没有分析代码，而是在内存中搜索字符串。<br>我翻了翻代码看不太懂，就先学习一下这种姿势。</p>
-<h2 id="dump-内存搜索-flag"><a href="#dump-内存搜索-flag" class="headerlink" title="dump 内存搜索 flag"></a>dump 内存搜索 flag</h2><p>利用 ddms 的 dump HPROF file 功能 (带箭头的油桶图标)<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-121436.png" alt=""><br>然后搜索字符串：<br><code>strings easyre.sjl.gossip.easyre.hprof | grep 0ctf</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-121533.png" alt=""><br>flag得到：0ctf{It’s_More_Than_Meets_The_Eye!}<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-121945.png" alt=""></p>
-<h2 id="利用-gore"><a href="#利用-gore" class="headerlink" title="利用 gore"></a>利用 gore</h2><h3 id="gdb下载"><a href="#gdb下载" class="headerlink" title="gdb下载"></a>gdb下载</h3><p>Android NDK 在 r11 之后去掉了 toolchain 中的 gdb 工具，所以我下载了r10 的.(整包下载，只有gdbserver和gdb会报bug)，就像下图这样。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-125248.png" alt=""></p>
-<h3 id="将gdbserver放入手机并添加执行权限"><a href="#将gdbserver放入手机并添加执行权限" class="headerlink" title="将gdbserver放入手机并添加执行权限"></a>将gdbserver放入手机并添加执行权限</h3><p><code>adb push gdbserver /data/local/tmp</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-123351.png" alt=""></p>
-<h3 id="查找要dump的应用的pid"><a href="#查找要dump的应用的pid" class="headerlink" title="查找要dump的应用的pid"></a>查找要dump的应用的pid</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-123425.png" alt=""><br><code>ps | grep 名字</code></p>
-<h3 id="启动gdbserver，指定监听端口"><a href="#启动gdbserver，指定监听端口" class="headerlink" title="启动gdbserver，指定监听端口"></a>启动gdbserver，指定监听端口</h3><p><code>./gdbserver :1234 --attach pid</code><br>1234可随意指定<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-123847.png" alt=""></p>
-<h3 id="转发端口并调试"><a href="#转发端口并调试" class="headerlink" title="转发端口并调试"></a>转发端口并调试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adb forward tcp:1234 tcp:1234</span><br><span class="line">./arm-linux-androideabi-gdb</span><br><span class="line">(gdb) target remote :1234</span><br><span class="line">(gdb) gcore</span><br></pre></td></tr></table></figure>
-<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-130054.png" alt=""></p>
-<h3 id="gore-dump-出内存后-搜索字符串"><a href="#gore-dump-出内存后-搜索字符串" class="headerlink" title="gore dump 出内存后,搜索字符串"></a>gore dump 出内存后,搜索字符串</h3><p><code>strings core.xxx | grep xxx</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-130657.png" alt=""></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>dump出内存的第一种方法比第二种要快速高效一些。<br>另外，在我测试的时候，在不进行任何输入的时候，搜索字符串是搜索不到真正的flag的。<br>click前：<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-133139.png" alt=""><br>click后（随便输个123456）：<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-133248.png" alt=""></p>
-<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-131427.png" alt=""><br>这也验证了确实是hook了read函数，把从flag.txt读取的字符串进行了某种变换，得到0ctf{It’s_More_Than_Meets_The_Eye!}在内存中。</p>
+          考察知识点
+hook 系统函数
+dump 内存搜索 flag
 
-          
+赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/EasyRe.apk
+分析java层用jadx反编译apk，在java层的逻辑很简单。读取flag.t
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/10/easyre/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -778,7 +832,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -851,6 +905,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/10/dex2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/10/dex2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -877,29 +942,21 @@
       
         
           
-            <h2 id="考察知识点"><a href="#考察知识点" class="headerlink" title="考察知识点"></a>考察知识点</h2><ul>
-<li>dex文件头修复</li>
-<li>onCreate修复</li>
-</ul>
-<h2 id="前置参考"><a href="#前置参考" class="headerlink" title="前置参考"></a>前置参考</h2><p><a href="http://eternalsakura13.com/2018/02/10/dex/">http://eternalsakura13.com/2018/02/10/dex/</a></p>
-<h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk</a></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>直接反编译apk，然后得到算法：输入用户名和密码，长度要想等，用户名和密码的逆序串相等则输出字符串,返回flag。<br>这当然是不可能的，这题可是道misc!<br>实际上，检查apk解压文件发现，下图的abc大小刚好为112字节也就是70h，是一个dex头的大小。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102018.png" alt=""><br>用010editor打开后发现确实是dex头。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102059.png" alt=""><br>而CERT.RSA这个不正常的大，其实就是因为把dex主体藏在这了。<br>用010editor打开观察<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102330.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102729.png" alt=""><br>关键信息就是KEY和aes-128-cbc这个加密方式，KEY后面有一个DEX=…<br>我们知道dex头后面紧接着就是字符串索引项，应该是很整齐的四字节四字节，现在明显是被加密过了。<br>首先把DEX=…后面的数据拷贝出来，保存成文件。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-102944.png" alt=""><br>再把数据直接复制粘贴在新建的文件里就行了。<br>用openssl或者其他工具解密这个文件。<br><code>openssl aes-128-cbc -d -k &quot;Misc@inf0#fjhx11&quot; -nosalt -in encfile -out decfile</code><br>-in encfile是被加密的文件，-out decfile是解密后的文件。<br>打开解密后的文件，现在就很整齐了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-103234.png" alt=""><br>再把文件头拷贝到前面，就拼接出了一个dex文件，嗯，就叫flag好了。</p>
-<h3 id="修复dex"><a href="#修复dex" class="headerlink" title="修复dex"></a>修复dex</h3><p>用010 editor打开拼接好的flag文件，执行dex解析脚本，报错。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobcm7wpmvj30xm0bytce.jpg" alt=""><br>检查后发现是因为索引区各索引分区的size(其实就是索引项的项数）为0，需要填补。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobcni6b4rj31340sa7g8.jpg" alt=""></p>
-<p>关于怎么计算，了解dex文件格式的应该很easy，我举个例子。<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fobgknwblbj312i0li0zm.jpg" alt=""><br><code>type_id_off</code>为A8h,<code>string_ids_off</code>偏移为70h，因为每个项的大小为4字节，所以(A8-70)/4=E</p>
-<p>string_ids size = (0x000091DC - 0x00000070) / 4  = 0x0000245B<br>type_ids size   = (0x0000A3EC - 0x000091DC) / 4  = 0x00000484<br>proto_ids size  = (0x0000EF28 - 0x0000A3EC) / 12 = 0x00000645<br>field_ids size  = (0x00015DB8 - 0x0000EF28) / 8  = 0x00000DD2<br>method_ids size = (0x00026DC8 - 0x00015DB8) / 8  = 0x00002202</p>
-<p>这样就算完，填入进行修补。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobgqepacfj30ny0fs0x4.jpg" alt=""><br>重新解析一下，我们的dex文件就修复好了。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobgrylh8mj31961fa4q8.jpg" alt=""></p>
-<h3 id="修复onCreate"><a href="#修复onCreate" class="headerlink" title="修复onCreate"></a>修复onCreate</h3><p>用jadx反编译拼接好的dex文件，发现onCreate()方法反编译失败，用IDA打开后发现全被nop掉了（抽空）<br>可以想到运行时动态恢复指令，但是这里没有so，明显不是（这真是道misc……）<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobgwnp7gaj31gs13yak5.jpg" alt=""><br>所以藏在哪里呢？实际上被抽空的onCreate指令就在下图的y中。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobh0wskgbj30q20e20w1.jpg" alt=""><br>用IDA打开搜索onCreate，找到nop的起始地址，CODE:00097390<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095349.png" alt=""><br>用010editor找到对应空白<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095751.png" alt=""><br>将y的数据拷贝进去，刚好完全填补<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-10-095902.png" alt=""><br>再次用jadx反编译修复好的dex。</p>
-<h3 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h3><p>修复好的onCreate<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String seed = <span class="string">"m3ll0t_yetFLag"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView((<span class="keyword">int</span>) C0095R.layout.activity_main);</span><br><span class="line">        StringBuilder strb = <span class="keyword">new</span> StringBuilder(<span class="keyword">this</span>.seed);</span><br><span class="line">        strb.replace(<span class="number">0</span>, <span class="number">1</span>, <span class="string">"h"</span>);</span><br><span class="line">        strb.replace(<span class="number">5</span>, <span class="number">6</span>, <span class="string">"2"</span>);</span><br><span class="line">        strb.replace(<span class="number">10</span>, <span class="number">11</span>, <span class="string">"f"</span>);</span><br><span class="line">        strb.replace(<span class="number">7</span>, <span class="number">8</span>, <span class="string">"G"</span>);</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"flag is "</span> + strb.toString(), <span class="number">0</span>).show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">        getMenuInflater().inflate(C0095R.menu.main, menu);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (item.getItemId() == C0095R.id.action_settings) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringBuilder <span class="title">replace</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end, String str)</span></span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>start − This is the beginning index, inclusive.</li>
-<li>end − This is the ending index, exclusive.</li>
-<li>str − This is the String that will replace previous contents.</li>
-</ul>
-<p>查阅文档，然后手动换了一下，得到flag是h3ll02_GetfLag</p>
-<h2 id="我修复好的dex文件链接"><a href="#我修复好的dex文件链接" class="headerlink" title="我修复好的dex文件链接"></a>我修复好的dex文件链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/flag.dex" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/flag.dex</a></p>
+          考察知识点
+dex文件头修复
+onCreate修复
 
-          
+前置参考http://eternalsakura13.com/2018/02/10/dex/
+赛题链接https://github.com/eternalsakura/ctf_pwn/blob/master/android逆向/misc.apk
+
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/10/dex2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -951,7 +1008,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1013,6 +1070,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/10/dex/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/10/dex/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1039,148 +1107,55 @@
       
         
           
-            <h2 id="快速简记："><a href="#快速简记：" class="headerlink" title="快速简记："></a>快速简记：</h2><table>
-<thead>
-<tr>
-<th>结构</th>
-<th style="text-align:right">单位结构体占字节</th>
-<th style="text-align:center">共计字节</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DexHeader</td>
-<td style="text-align:right">-</td>
-<td style="text-align:center">0x70h</td>
-</tr>
-<tr>
-<td>String Table</td>
-<td style="text-align:right">4</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Type Table</td>
-<td style="text-align:right">4</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Proto Table</td>
-<td style="text-align:right">12</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Field Table</td>
-<td style="text-align:right">8</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Method Table</td>
-<td style="text-align:right">8</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Class Def Table</td>
-<td style="text-align:right">32</td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td>Data Section(含Map Section)</td>
-<td style="text-align:right">-</td>
-<td style="text-align:center">-</td>
-</tr>
-</tbody>
-</table>
-<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fob6z70k4mj30yq0rsh0w.jpg" alt=""></p>
-<h2 id="练习用的dex文件链接"><a href="#练习用的dex文件链接" class="headerlink" title="练习用的dex文件链接"></a>练习用的dex文件链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/Hello.dex" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/Hello.dex</a></p>
-<h2 id="文件布局"><a href="#文件布局" class="headerlink" title="文件布局"></a>文件布局</h2><p>dex 文件可以分为3个模块，头文件(header)、索引区(xxxx_ids)、数据区(data)。<br>头文件概况的描述了整个 dex 文件的分布，包括每一个索引区的大小跟偏移。索引区的ids 是 identifiers 的缩写，表示每个数据的标识，索引区主要是指向数据区的偏移。<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob912et4zj30m80mq76i.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fob93y9wvcj31co0fedkx.jpg" alt=""><br>010Editor 中除了数据区(data)没有显示出来，其他区段都有显示，另外 <code>link_data</code> 在模板中被定为<code>map_list</code></p>
-<h2 id="header"><a href="#header" class="headerlink" title="header"></a>header</h2><p>header 描述了 dex 文件信息，和其他各个区的索引。010Editor中用结构体 struct header_item 来描述 header。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    dex_magic magic &lt;comment=<span class="string">"Magic value"</span>&gt;; </span><br><span class="line">    uint checksum &lt;format=hex, comment=<span class="string">"Alder32 checksum of rest of file"</span>&gt;;</span><br><span class="line">    SHA1 signature &lt;comment=<span class="string">"SHA-1 signature of rest of file"</span>&gt;;</span><br><span class="line">    uint file_size &lt;comment=<span class="string">"File size in bytes"</span>&gt;;</span><br><span class="line">    uint header_size &lt;comment=<span class="string">"Header size in bytes"</span>&gt;;</span><br><span class="line">    uint endian_tag &lt;format=hex, comment=<span class="string">"Endianness tag"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(endian_tag != ENDIAN_CONSTANT) &#123;</span><br><span class="line">        <span class="comment">// XXX we don't handle big endian files</span></span><br><span class="line">        Warning(<span class="string">"Invalid endian_tag %.8X, should be %.8X"</span>, endian_tag, ENDIAN_CONSTANT);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint link_size &lt;comment=<span class="string">"Size of link section"</span>&gt;;</span><br><span class="line">    uint link_off &lt;comment=<span class="string">"File offset of link section"</span>&gt;;</span><br><span class="line">    uint map_off &lt;comment=<span class="string">"File offset of map list"</span>&gt;;</span><br><span class="line">    uint string_ids_size &lt;comment=<span class="string">"Count of strings in the string ID list"</span>&gt;;</span><br><span class="line">    uint string_ids_off &lt;comment=<span class="string">"File offset of string ID list"</span>&gt;;</span><br><span class="line">    uint type_ids_size &lt;comment=<span class="string">"Count of types in the type ID list"</span>&gt;;</span><br><span class="line">    uint type_ids_off &lt;comment=<span class="string">"File offset of type ID list"</span>&gt;;</span><br><span class="line">    uint proto_ids_size &lt;comment=<span class="string">"Count of items in the method prototype ID list"</span>&gt;;</span><br><span class="line">    uint proto_ids_off &lt;comment=<span class="string">"File offset of method prototype ID list"</span>&gt;;</span><br><span class="line">    uint field_ids_size &lt;comment=<span class="string">"Count of items in the field ID list"</span>&gt;;</span><br><span class="line">    uint field_ids_off &lt;comment=<span class="string">"File offset of field ID list"</span>&gt;; </span><br><span class="line">    uint method_ids_size &lt;comment=<span class="string">"Count of items in the method ID list"</span>&gt;;</span><br><span class="line">    uint method_ids_off &lt;comment=<span class="string">"File offset of method ID list"</span>&gt;;</span><br><span class="line">    uint class_defs_size &lt;comment=<span class="string">"Count of items in the class definitions list"</span>&gt;;</span><br><span class="line">    uint class_defs_off &lt;comment=<span class="string">"File offset of class definitions list"</span>&gt;;</span><br><span class="line">    uint data_size &lt;comment=<span class="string">"Size of data section in bytes"</span>&gt;;</span><br><span class="line">    uint data_off &lt;comment=<span class="string">"File offset of data section"</span>&gt;;    </span><br><span class="line">&#125; header_item;</span><br></pre></td></tr></table></figure></p>
-<h3 id="magic"><a href="#magic" class="headerlink" title="magic"></a>magic</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// utility for reading/checking the magic value</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> dex[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">char</span> newline;</span><br><span class="line">    <span class="keyword">char</span> ver[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">char</span> zero;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// XXX not checking the version, but it should be 035</span></span><br><span class="line">    <span class="keyword">if</span>((Strcmp(dex, <span class="string">"dex"</span>) &amp;&amp; Strcmp(dex, <span class="string">"dey"</span>)) ||</span><br><span class="line">        newline != <span class="string">'\n'</span> ||</span><br><span class="line">        zero != <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        Warning(<span class="string">"Invalid DEX file"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; dex_magic &lt;read=DexMagicRead&gt;;</span><br></pre></td></tr></table></figure>
-<p>‘\n’ 10(十进制) 换行（newline）<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob9ghjr85j31420zqdu4.jpg" alt=""></p>
-<h3 id="checksum"><a href="#checksum" class="headerlink" title="checksum:"></a>checksum:</h3><p>文件校验码，使用 alder32 算法校验文件除去 maigc、checksum 外余下的所有文件区域，用于检查文件错误。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fob9kpcoarj311c0b0n10.jpg" alt=""><br>uint类型，大小为4个字节。</p>
-<h3 id="signature"><a href="#signature" class="headerlink" title="signature"></a>signature</h3><p>使用 SHA-1 算法 hash 除去 magic、checksum 和 signature 外余下的所有文件区域， 用于唯一识别本文件,大小为20字节。<br><figure class="highlight plain"><figcaption><span>utility type to show the SHA1 hash in the value column</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef ubyte SHA1[20] &lt;read=SHA1Read, format=hex&gt;;</span><br></pre></td></tr></table></figure></p>
-<h3 id="file-size"><a href="#file-size" class="headerlink" title="file_size"></a>file_size</h3><p>dex 文件大小，4个字节。</p>
-<h3 id="header-size"><a href="#header-size" class="headerlink" title="header_size"></a>header_size</h3><p>header 区域的大小，目前是固定为 0x70<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob9piyvjoj310a0dgn1g.jpg" alt=""></p>
-<h3 id="endian-tag"><a href="#endian-tag" class="headerlink" title="endian_tag"></a>endian_tag</h3><p>大小端标签，dex 文件格式为小端，固定值为 0x12345678 常量</p>
-<h3 id="link-size"><a href="#link-size" class="headerlink" title="link_size"></a>link_size</h3><p>link section的大小</p>
-<h3 id="link-off"><a href="#link-off" class="headerlink" title="link_off"></a>link_off</h3><p>link section在文件中的偏移</p>
-<h3 id="map-off"><a href="#map-off" class="headerlink" title="map_off"></a>map_off</h3><p><code>map_item</code> 的偏移地址，该 item 属于 data 区里的内容，值要大于等于 <code>data_off</code> 的大小，处于 dex 文件的末端。</p>
-<h3 id="string-ids-size和string-ids-off"><a href="#string-ids-size和string-ids-off" class="headerlink" title="string_ids_size和string_ids_off"></a><code>string_ids_size</code>和<code>string_ids_off</code></h3><p>这两个字段表示dex中用到的所有的字符串内容的大小和偏移值，我们需要解析完这部分，然后用一个字符串池存起来，后面有其他的数据结构会用索引值来访问字符串，这个池子也是非常重要的。后面会详细介绍string_ids的数据结构</p>
-<h3 id="type-ids-size和type-ids-off"><a href="#type-ids-size和type-ids-off" class="headerlink" title="type_ids_size和type_ids_off"></a><code>type_ids_size</code>和<code>type_ids_off</code></h3><p>这两个字段表示dex中的类型数据结构的大小和偏移值，比如类类型，基本类型等信息，后面会详细介绍type_ids的数据结构</p>
-<h3 id="proto-ids-size和type-ids-off"><a href="#proto-ids-size和type-ids-off" class="headerlink" title="proto_ids_size和type_ids_off"></a><code>proto_ids_size</code>和<code>type_ids_off</code></h3><p>这两个字段表示dex中的元数据信息数据结构的大小和偏移值，描述方法的元数据信息，比如方法的返回类型，参数类型等信息，后面会详细介绍proto_ids的数据结构</p>
-<h3 id="field-ids-size和field-ids-off"><a href="#field-ids-size和field-ids-off" class="headerlink" title="field_ids_size和field_ids_off"></a><code>field_ids_size</code>和<code>field_ids_off</code></h3><p>这两个字段表示dex中的字段信息数据结构的大小和偏移值，后面会详细介绍field_ids的数据结构</p>
-<h3 id="method-ids-size和method-ids-off"><a href="#method-ids-size和method-ids-off" class="headerlink" title="method_ids_size和method_ids_off"></a><code>method_ids_size</code>和<code>method_ids_off</code></h3><p>这两个字段表示dex中的方法信息数据结构的大小和偏移值，后面会详细介绍method_ids的数据结构</p>
-<h3 id="class-defs-size和class-defs-off"><a href="#class-defs-size和class-defs-off" class="headerlink" title="class_defs_size和class_defs_off"></a><code>class_defs_size</code>和<code>class_defs_off</code></h3><p>这两个字段表示dex中的类信息数据结构的大小和偏移值，这个数据结构是整个dex中最复杂的数据结构.</p>
-<h3 id="data-size和data-off"><a href="#data-size和data-off" class="headerlink" title="data_size和data_off`"></a><code>data_size和</code>data_off`</h3><p>这两个字段表示dex中数据区域的结构信息的大小和偏移值，这个结构中存放的是数据区域，比如我们定义的常量值等信息。</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1foba16m16aj30w40h0gq8.jpg" alt=""><br>上述这些其实就是对应在下图中圈起来的部分的每部分的开头和大小。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1foba2csy42j30hi0ehabr.jpg" alt=""></p>
-<h2 id="string-ids"><a href="#string-ids" class="headerlink" title="string_ids"></a>string_ids</h2><p><code>string_ids</code> 区段描述了 dex 文件中所有的字符串。格式很简单只有一个偏移量，偏移量指向了 <code>string_data</code> 区段的一个字符串：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// strings</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uleb128 utf16_size &lt;comment=<span class="string">"Size of string in UTF-16 code units"</span>&gt;;</span><br><span class="line">    <span class="built_in">string</span> data &lt;comment=<span class="string">"A string in MUTF-8 format"</span>&gt;;</span><br><span class="line">&#125; string_item;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint string_data_off &lt;comment=<span class="string">"File offset of string data"</span>&gt;;</span><br><span class="line">    string_item string_data &lt;comment=<span class="string">"String item"</span>&gt;;</span><br><span class="line">&#125; string_id_item &lt;read=StringDataReader, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure></p>
-<p>一个<code>string_id_item</code>里有两个数据结构:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint string_data_off </span><br><span class="line">string_item string_data &lt;comment=&quot;String item&quot;&gt;;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobah7zyq3j310m0hon4l.jpg" alt=""><br>根据<code>string_data_off</code>可以找到字符串的数据位置。<br><code>string_data</code>里存放字符串的大小和具体数据。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobapdko3mj311e106ap7.jpg" alt=""></p>
-<h2 id="type-ids"><a href="#type-ids" class="headerlink" title="type_ids"></a>type_ids</h2><p>type_ids 区索引了 dex 文件里的所有数据类型，包括 class 类型，数组类型(array types)和基本类型<br>(primitive types)。区段里的元素格式为 <code>type_ids_item</code><br><code>type_ids_item</code> 里面 <code>descriptor_idx</code> 的值的意思，是 <code>string_ids</code> 里的 index 序号，是用来描述此 type 的字符串。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobatus0iyj30rs07u411.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobau84mjuj30tm03wabf.jpg" alt=""><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// type IDs</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint descriptor_idx &lt;read=StringIdRead, comment=<span class="string">"String ID for this type descriptor"</span>&gt;;</span><br><span class="line">&#125; type_id_item &lt;read=TypeIDRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeIDRead</span><span class="params">(type_id_item &amp;i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> GetLongTypeDescriptor(GetStringById(i.descriptor_idx));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> s = size;</span><br><span class="line">    type_id_item type_id[size] &lt;comment=<span class="string">"Type ID"</span>&gt;;</span><br><span class="line">&#125; type_id_list &lt;read=TypeIDListRead&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeIDListRead</span><span class="params">(type_id_list &amp;l)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> s;</span><br><span class="line">    s = SPrintf(s, <span class="string">"%d types"</span>, l.s);</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// type list</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort type_idx &lt;comment=<span class="string">"Index into type_ids list"</span>&gt;;</span><br><span class="line">&#125; type_item;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint size &lt;comment=<span class="string">"Number of entries in type list"</span>&gt;;</span><br><span class="line">    type_item <span class="built_in">list</span>[size] &lt;read=TypeItemRead, comment=<span class="string">"Type entry"</span>&gt;;</span><br><span class="line">&#125; type_item_list &lt;read=TypeItemListRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeItemRead</span><span class="params">(type_item &amp;t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> GetTypeById(t.type_idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeItemListRead</span><span class="params">(type_item_list &amp;l)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> s = <span class="string">""</span>;</span><br><span class="line">    <span class="built_in">string</span> tmp;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; l.size; i++) &#123;</span><br><span class="line">        s += GetTypeById(l.<span class="built_in">list</span>[i].type_idx);</span><br><span class="line">        <span class="keyword">if</span>(i+<span class="number">1</span> &lt; l.size) &#123;</span><br><span class="line">            s += <span class="string">", "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">GetLongTypeDescriptor</span><span class="params">(<span class="built_in">string</span> descriptor)</span> </span>&#123;</span><br><span class="line">    local <span class="built_in">string</span> desc = <span class="string">""</span>;</span><br><span class="line">    local <span class="built_in">string</span> post = <span class="string">""</span>;</span><br><span class="line">    local <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    local <span class="keyword">int</span> len = Strlen(descriptor);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// array descriptors</span></span><br><span class="line">    <span class="keyword">while</span>(descriptor[i] == <span class="string">'['</span>) &#123;</span><br><span class="line">        post += <span class="string">"[]"</span>;</span><br><span class="line">        i++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(i &gt;= len) <span class="keyword">return</span> <span class="string">"ERROR"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(descriptor[i] == <span class="string">'L'</span>) &#123;</span><br><span class="line">        <span class="comment">// fully qualified class descriptors</span></span><br><span class="line">        i++;</span><br><span class="line">        <span class="keyword">while</span>(i &lt; len) &#123;</span><br><span class="line">            <span class="keyword">if</span>(descriptor[i] == <span class="string">'/'</span>) desc += <span class="string">"."</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(descriptor[i] == <span class="string">';'</span>) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">else</span> desc += descriptor[i];</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// simple type descriptors</span></span><br><span class="line">        <span class="keyword">switch</span>(descriptor[i]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'V'</span>: desc = <span class="string">"void"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'Z'</span>: desc = <span class="string">"boolean"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'B'</span>: desc = <span class="string">"byte"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'S'</span>: desc = <span class="string">"short"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'C'</span>: desc = <span class="string">"char"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'I'</span>: desc = <span class="string">"int"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'J'</span>: desc = <span class="string">"long"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'F'</span>: desc = <span class="string">"float"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'D'</span>: desc = <span class="string">"double"</span>; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> desc + post;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="proto-ids"><a href="#proto-ids" class="headerlink" title="proto_ids"></a>proto_ids</h2><p>proto 的意思是 method prototype 代表 java 语言里的一个 method 的原型 。<code>proto_ids</code> 里的元素为 <code>proto_id_item</code>，结构如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// protoypes</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint shorty_idx &lt;read=StringIdRead, comment=<span class="string">"String ID of short-form descriptor"</span>&gt;;</span><br><span class="line">    uint return_type_idx &lt;read=TypeIdRead, comment=<span class="string">"Type ID of the return type"</span>&gt;;</span><br><span class="line">    uint parameters_off &lt;comment=<span class="string">"File offset of parameter type list"</span>&gt;;</span><br><span class="line">   ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>shorty_idx</code>: 跟<code>type_ids</code> 一样，它的值是一个 <code>string_ids</code> 的 index 号 ，最终是一个简短的字符串描述，用来说明该 method 原型。</li>
-<li><code>return_type_idx</code>: 它的值是一个 <code>type_ids</code> 的 index 号 ，表示该 method 原型的返回值类型。</li>
-<li><code>parameters_off</code>: 指向 method 原型的参数列表 <code>type_list</code>，若 method 没有参数，值为0。<br>参数列表的格式是 <code>type_list</code>，下面会有描述。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobbc9yqqcj31gc0jak32.jpg" alt=""></li>
-</ul>
-<h2 id="field-ids"><a href="#field-ids" class="headerlink" title="field_ids"></a>field_ids</h2><p><code>filed_ids</code> 区里面有 dex 文件引用的所有的 field。区段的元素格式是 <code>field_id_item</code>，结构如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// fields</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort class_idx &lt;read=LongTypeIdRead, comment=<span class="string">"Type ID of the class that defines this field"</span>&gt;;</span><br><span class="line">    ushort type_idx &lt;read=LongTypeIdRead, comment=<span class="string">"Type ID for the type of this field"</span>&gt;;</span><br><span class="line">    uint name_idx &lt;read=StringIdRead, comment=<span class="string">"String ID for the field's name"</span>&gt;;</span><br><span class="line">&#125; field_id_item &lt;read=FieldIdItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><p><code>class_idx</code>: 表示 field 所属的 class 类型，class_idx 的值是 <code>type_ids</code> 的一个 index，并且必须指向一个 class 类型。</p>
-</li>
-<li><p><code>type_idx</code>: 表示本 field 的类型，它的值也是 <code>type_ids</code>的一个 index 。</p>
-</li>
-<li><p><code>name_idx</code>: 表示本 field 的名称，它的值是 <code>string_ids</code> 的一个 index 。</p>
-</li>
-</ul>
-<h2 id="method-ids"><a href="#method-ids" class="headerlink" title="method_ids"></a>method_ids</h2><p><code>method_ids</code> 描述了 dex 文件里的所有的 method。<code>method_ids</code> 的元素格式是<code>method_id_item</code>，结构跟 fields_ids 很相似:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// methods</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort class_idx &lt;read=LongTypeIdRead, comment=<span class="string">"Type ID of the class that defines this method"</span>&gt;;</span><br><span class="line">    ushort proto_idx &lt;read=ProtoIdxRead, comment=<span class="string">"Prototype ID for this method"</span>&gt;;</span><br><span class="line">    uint name_idx &lt;read=StringIdRead, comment=<span class="string">"String ID for the method's name"</span>&gt;;</span><br><span class="line">&#125; method_id_item &lt;read=MethodIdItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>class_idx</code>: 表示 method 所属的 class 类型，<code>class_idx</code> 的值是 <code>type_ids</code> 的一个 index，并且必须指向一个 class 类型。</li>
-<li><code>proto_idx</code>: 表示 method 的类型，它的值也是 type_ids 的一个 index。</li>
-<li><code>name_idx</code>: 表示 method 的名称，它的值是 string_ids 的一个 index。<br>都是索引，分别指向类型池，函数原型池，字符串池<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fobbk6i570j30uo09w42d.jpg" alt=""></li>
-</ul>
-<h2 id="class-defs"><a href="#class-defs" class="headerlink" title="class_defs"></a>class_defs</h2><h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><ul>
-<li><p><code>class_idx</code>: 描述具体的 class 类型，值是 <code>type_ids</code> 的一个 index 。值必须是一个 class 类型，不能是数组类型或者基本类型。</p>
-</li>
-<li><p><code>access_flags</code>: 描述 class 的访问类型，诸如 public , final , static 等。在 dex-format.html 里 “<code>access_flags</code> Definitions” 有具体的描述 。</p>
-</li>
-<li><p><code>superclass_idx</code>: 描述 supperclass 的类型，值的形式跟 <code>class_idx</code> 一样 。</p>
-</li>
-<li><p><code>interfaces_off</code>: 值为偏移地址，指向 class 的 interfaces，被指向的数据结构为 <code>type_list</code> 。class 若没有 interfaces,则值为 0。</p>
-</li>
-<li><p><code>source_file_idx</code>: 表示源代码文件的信息，值是 <code>string_ids</code> 的一个 index。若此项信息缺失，此项值赋值为 <code>NO_INDEX</code>=0xffff ffff。</p>
-</li>
-<li><p><code>annotions_off</code>: 值是一个偏移地址，指向的内容是该 class 的注释，位置在 data 区，格式为 <code>annotations_direcotry_item</code>。若没有此项内容，值为 0 。</p>
-</li>
-<li><p><code>class_data_off</code>: 值是一个偏移地址，指向的内容是该 class 的使用到的数据，位置在 data 区，格式为 <code>class_data_item</code>。若没有此项内容值为 0。该结构里有很多内容，详细描述该 class 的 field、method, method 里的执行代码等信息，后面会介绍 <code>class_data_item</code>。</p>
-</li>
-<li><p><code>static_value_off</code>: 值是一个偏移地址 ，指向 data 区里的一个列表 (list)，格式为 <code>encoded_array_item</code>。若没有此项内容值为 0。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    local int64 pos;</span><br><span class="line"></span><br><span class="line">    uint class_idx &lt;read=LongTypeIdRead, comment=<span class="string">"Type ID for this class"</span>&gt;;</span><br><span class="line">    ACCESS_FLAGS access_flags &lt;comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">    uint superclass_idx &lt;read=LongTypeIdRead, comment=<span class="string">"Type ID for this class's superclass"</span>&gt;; </span><br><span class="line"></span><br><span class="line">    uint interfaces_off &lt;comment=<span class="string">"File offset to interface list"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(interfaces_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + interfaces_off);</span><br><span class="line">        type_item_list interfaces &lt;read=InterfacesRead, comment=<span class="string">"Interface data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint source_file_idx &lt;read=StringIdRead, comment=<span class="string">"String ID for the name of the file with this class defined"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    uint annotations_off &lt;comment=<span class="string">"File offset to the annotation structure for this class"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(annotations_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + annotations_off);</span><br><span class="line">        annotations_directory_item annotations &lt;comment=<span class="string">"Annotation data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint class_data_off &lt;comment=<span class="string">"File offset to the class data for this class"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(class_data_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + class_data_off);</span><br><span class="line">        class_data_item class_data &lt;comment=<span class="string">"Class data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint static_values_off &lt;comment=<span class="string">"File offset to static field data"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(static_values_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + static_values_off);</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">encoded_array_item</span> <span class="title">static_values</span> &lt;comment="Static values"&gt;;</span></span><br><span class="line">        FSeek(pos);        </span><br><span class="line">    &#125;</span><br><span class="line">&#125; class_def_item &lt;read=ClassDefItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="type-list"><a href="#type-list" class="headerlink" title="type_list"></a><code>type_list</code></h3><p><code>type_list</code> 在 data 区段，<code>class_def_item-&gt;interface_off</code> 就是指的这里的数据。数据结构如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">type_list</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint       size;</span><br><span class="line">    type_item  <span class="built_in">list</span> [size] </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">type_item</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ushort type_idx   <span class="comment">//--&gt;type_ids</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>size: 表示类型个数</li>
-<li><p><code>type_idx: 对应一个 type_ids 的 index</code></p>
-<h3 id="annotations-directory-item"><a href="#annotations-directory-item" class="headerlink" title="annotations_directory_item"></a><code>annotations_directory_item</code></h3><p><code>class_def_item-&gt;annotations_off</code> 指向的数据区段，定义了 annotation 相关的数据描述，数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">annotation_directory_item</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint class_annotations_off;        <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">    uint fields_size;</span><br><span class="line">    uint annotated_methods_size;</span><br><span class="line">    uint annotated_parameters_size;</span><br><span class="line">    </span><br><span class="line">    field_annotation field_annotations[fields_size];</span><br><span class="line">    method_annotation method_annotations[annotated_methods_size];</span><br><span class="line">    parameter_annotation parameter_annotations[annotated_parameters_size];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">field_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint field_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint method_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">parameter_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint method_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_ref_list</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>class_annotations_off</code>: 这个偏移指向了<code>annotation_set_item</code> </p>
-</li>
-<li><code>fields_size</code>: 表示属性的个数</li>
-<li><code>annotated_methods_size</code>: 表示方法的个数</li>
-<li><code>annotated_parameters_size</code>: 表示参数的个数</li>
-</ul>
-<h3 id="class-data-item"><a href="#class-data-item" class="headerlink" title="class_data_item"></a><code>class_data_item</code></h3><p><code>class_data_off</code> 指向 data 区里的 <code>class_data_item</code> 结构，<code>class_data_item</code> 里存放着本 class 使用到的各种数据，下面是 <code>class_data_item</code> 的结构 :<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uleb128 static_fields_size &lt;comment=<span class="string">"The number of static fields"</span>&gt;;</span><br><span class="line">    uleb128 instance_fields_size &lt;comment=<span class="string">"The number of instance fields"</span>&gt;;</span><br><span class="line">    uleb128 direct_methods_size &lt;comment=<span class="string">"The number of direct methods"</span>&gt;;</span><br><span class="line">    uleb128 virtual_methods_size &lt;comment=<span class="string">"The number of virtual methods"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(static_fields_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        encoded_field_list static_fields(uleb128_value(static_fields_size)) &lt;comment="Encoded sequence of static fields"&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(instance_fields_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        encoded_field_list instance_fields(uleb128_value(instance_fields_size)) &lt;comment="Encoded sequence of instance fields"&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(direct_methods_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        encoded_method_list direct_methods(uleb128_value(direct_methods_size)) &lt;comment="Encoded sequence of direct methods"&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(virtual_methods_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        encoded_method_list virtual_methods(uleb128_value(virtual_methods_size)) &lt;comment="Encoded sequence of virtual methods"&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; class_data_item &lt;read=ClassDataItemRead&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// encoded fields</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> previd)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> p = previd;</span><br><span class="line"></span><br><span class="line">    uleb128 field_idx_diff &lt;comment=<span class="string">"Field ID for this field, represented as the difference from the previous index"</span>&gt;;</span><br><span class="line">    uleb128 access_flags &lt;read=AccessFlagsReadUleb, comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">&#125; encoded_field &lt;read=EncodedFieldRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// encoded methods</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> previd)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> p = previd;</span><br><span class="line"></span><br><span class="line">    uleb128 method_idx_diff &lt;comment=<span class="string">"Method ID for this method, represented as the difference from the previous index"</span>&gt;;</span><br><span class="line">    uleb128 access_flags &lt;read=AccessFlagsReadUleb, comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">    uleb128 code_off &lt;comment=<span class="string">"File offset to the code for this method"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(code_off) != <span class="number">0</span>) &#123;</span><br><span class="line">        local int64 pos = FTell();</span><br><span class="line">        FSeek(odexpad + uleb128_value(code_off));</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">code_item</span> <span class="title">code</span> &lt;comment="Code structure for this method"&gt;;</span></span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; encoded_method &lt;read=EncodedMethodRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>static_fields_size</code>: 静态成员变量的个数</li>
-<li><code>instance_fields_size</code>: 实例成员变量个数</li>
-<li><code>direct_methods_size</code>: 直接函数个数</li>
-<li><code>virtual_methods_size</code>: 虚函数个数<h4 id="encoded-methods"><a href="#encoded-methods" class="headerlink" title="encoded_methods"></a><code>encoded_methods</code></h4></li>
-<li><code>access_flags</code>: 访问权限，比如 public、private、static、final 等。</li>
-<li><code>code_off</code>: 一个指向 data 区的偏移地址，目标是本 method 的代码实现。被指向的结构是<code>code_item</code>，有近 10 项元素。<h4 id="code-item"><a href="#code-item" class="headerlink" title="code_item"></a><code>code_item</code></h4><code>code_item</code> 结构里描述着某个 method 的具体实现.</li>
-</ul>
-<h2 id="map-list"><a href="#map-list" class="headerlink" title="map_list"></a><code>map_list</code></h2><p><code>map_list</code> 中大部分 item 跟 header 中的相应描述相同，都是介绍了各个区的偏移和大小，但是 <code>map_list</code> 中描述的更加全面，包括了 <code>HEADER_ITEM 、TYPE_LIST、STRING_DATA_ITEM、DEBUG_INFO_ITEM</code> 等信息。</p>
+          快速简记：
 
-          
+
+结构
+单位结构体占字节
+共计字节
+
+
+
+
+DexHeader
+-
+0x70h
+
+
+String Table
+4
+-
+
+
+Type Table
+4
+-
+
+
+Proto Table
+12
+-
+
+
+Field Table
+8
+-
+
+
+Method Table
+8
+-
+
+
+Class Def
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/10/dex/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1232,7 +1207,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1294,6 +1269,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/09/gradle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/09/gradle/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1320,65 +1306,20 @@
       
         
           
-            <h2 id="Groovy介绍"><a href="#Groovy介绍" class="headerlink" title="Groovy介绍"></a>Groovy介绍</h2><ul>
-<li><p>Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def a = <span class="number">5</span>;</span><br><span class="line">def b = <span class="string">"groovy"</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数的定义，我们也无需进行参数类型的声明.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">String <span class="title">testFunction</span><span class="params">(arg1,arg2)</span></span>&#123;<span class="comment">//无需指定参数类型</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>除了变量定义可以不指定类型外，Groovy中函数的返回值也可以是无类型的。比如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无类型的函数定义，必须使用def关键字</span></span><br><span class="line"><span class="function">def  <span class="title">nonReturnTypeFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">     last_line   <span class="comment">//最后一行代码的执行结果就是本函数的返回值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果指定了函数返回类型，则可不必加def关键字来定义函数</span></span><br><span class="line"><span class="function">String  <span class="title">getString</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="string">"I am a string"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数返回值：Groovy的函数里，可以不使用return xxx来设置xxx为函数返回值。如果不使用return语句的话，则函数里最后一句代码的执行结果被设置成返回值。比如</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">getSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="string">"getSomething return value"</span> <span class="comment">//如果这是最后一行代码，则返回类型为String</span></span><br><span class="line"></span><br><span class="line">      <span class="number">1000</span> <span class="comment">//如果这是最后一行代码，则返回类型为Integer</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>注意，如果函数定义时候指明了返回值类型的话，函数中则必须返回正确的数据类型，否则运行时报错。如果使用了动态类型的话，你就可以返回任何类型了。</p>
-<ul>
-<li>除了每行代码不用加分号外，Groovy中函数调用的时候还可以不加括号。比如：<br><code>println(&quot;test&quot;) 等价于 println &quot;test&quot;</code></li>
-<li>函数调用支持 参数名：参数值方式调用<br><code>apply plugin: &#39;com.android.library&#39;</code><br>plugin:参数名，’com.android.library’：参数值</li>
-<li><p>强大字符串支持功能</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单引号''中的内容严格对应Java中的String，不对$符号进行转义</span></span><br><span class="line">def singleQuote=<span class="string">'I am $ dolloar'</span>  <span class="comment">//输出就是I am $ dolloar</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//双引号,则它会$表达式先求值。</span></span><br><span class="line">def doubleQuoteWithoutDollar = <span class="string">"I am one dollar"</span> <span class="comment">//输出 I am one dollar</span></span><br><span class="line">def x = <span class="number">1</span></span><br><span class="line">def doubleQuoteWithDollar = <span class="string">"I am $x dolloar"</span> <span class="comment">//输出I am 1 dolloar</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//通过换行实现每一行的间距</span></span><br><span class="line">str3 = <span class="string">''</span><span class="string">'begin</span></span><br><span class="line"><span class="string">    line1</span></span><br><span class="line"><span class="string">    line2</span></span><br><span class="line"><span class="string">end'</span><span class="string">''</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>闭包<br>（英语：Closure），又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。所以，有另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。对于闭包的实现，从函数式编程的角度来看就为了解决一个输入对应一个输出的问题。例如当我们想实现一个加法，我们必须通过传递两个参数来实现，但是借助于函数式编程，我们可以做到只传递一个参数。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">plusAny</span><span class="params">(first)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> function(second) &#123;</span><br><span class="line">        <span class="keyword">return</span> first + second;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var longLiveSeniorFunc = plusAny(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">longLiveSeniorFunc(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><strong>闭包，是一种数据类型，它代表了一段可执行的代码</strong>。其外形如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def aClosure = &#123;<span class="comment">//闭包是一段代码，所以需要用花括号括起来..  </span></span><br><span class="line">    String param1, <span class="keyword">int</span> param2 -&gt;  <span class="comment">//这个箭头很关键。箭头前面是参数定义，箭头后面是代码  </span></span><br><span class="line">    println <span class="string">"this is code"</span> <span class="comment">//这是代码，最后一句是返回值，  </span></span><br><span class="line">   <span class="comment">//也可以使用return，和Groovy中普通函数一样  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>简而言之，Closure的定义格式是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def xxx = &#123;paramters -&gt; code&#125;  <span class="comment">//或者  </span></span><br><span class="line">def xxx = &#123;无参数，纯code&#125;  这种<span class="keyword">case</span>不需要-&gt;符号</span><br></pre></td></tr></table></figure></p>
-<p>说实话，从C/C++语言的角度看，闭包和函数指针很像。闭包定义好后，要调用它的方法就是：<br>闭包对象.call(参数)  或者更像函数指针调用的方法：<br>闭包对象(参数)<br>比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aClosure.call(<span class="string">"this is string"</span>,<span class="number">100</span>)  或者  </span><br><span class="line">aClosure(<span class="string">"this is string"</span>, <span class="number">100</span>)</span><br></pre></td></tr></table></figure></p>
-<p>如果闭包没定义参数的话，则隐含有一个参数，这个参数名字叫it，和this的作用类似。it代表闭包的参数。<br>比如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def greeting = &#123; <span class="string">"Hello, $it!"</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">assert</span> <span class="title">greeting</span><span class="params">(<span class="string">'Patrick'</span>)</span> </span>== <span class="string">'Hello, Patrick!'</span></span><br></pre></td></tr></table></figure></p>
-<p>等同于：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def greeting = &#123; it -&gt; <span class="string">"Hello, $it!"</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">assert</span> <span class="title">greeting</span><span class="params">(<span class="string">'Patrick'</span>)</span> </span>== <span class="string">'Hello, Patrick!'</span></span><br></pre></td></tr></table></figure></p>
-<p>但是，如果在闭包定义时，采用下面这种写法，则表示闭包没有参数.<br><code>def noParamClosure = { -&gt; true }</code><br>这个时候，我们就不能给noParamClosure传参数了。</p>
-<ul>
-<li>Groovy中，当函数的最后一个参数是闭包的话，可以省略圆括号。比如<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def  <span class="title">testClosure</span><span class="params">(<span class="keyword">int</span> a1,String b1, Closure closure)</span></span>&#123;</span><br><span class="line">      <span class="comment">//do something</span></span><br><span class="line">      closure() <span class="comment">//调用闭包</span></span><br><span class="line">&#125;</span><br><span class="line">那么调用的时候，就可以免括号！</span><br><span class="line">testClosure (<span class="number">4</span>, <span class="string">"test"</span>, &#123;</span><br><span class="line">   println <span class="string">"i am in closure"</span></span><br><span class="line">&#125; )  <span class="comment">//外面的括号可以不写..</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>注意，这个特点非常关键，因为以后在Gradle中经常会出现这样的代码。<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foamyow3zkj309k03aglh.jpg" alt=""><br>省略圆括号虽然使得代码简洁，看起来更像脚本语言，但是它这经常会让我confuse，以doLast为例，完整的代码应该按下面这种写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doLast(&#123;</span><br><span class="line">   println <span class="string">'Hello world!'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>有了圆括号，你会知道 doLast只是把一个Closure对象传了进去。很明显，它不代表这段脚本解析到doLast的时候就会调用println ‘Hello world!’ 。<br>但是把圆括号去掉后，就感觉好像println ‘Hello world!’立即就会被调用一样.</p>
-<h2 id="Gradle工作流程"><a href="#Gradle工作流程" class="headerlink" title="Gradle工作流程"></a>Gradle工作流程</h2><p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foalfwtituj30800ay0t4.jpg" alt=""><br>如上图所示，在一个Project中，除了我们项目自身的代码和资源之外，会有多个与项目构建相关的.gradle文件。<br>Gradle中，每一个待编译的工程都叫一个Project。每一个Project在构建的时候都包含一系列的Task。比如一个Android APK的编译可能包含：Java源码编译Task、资源编译Task、JNI编译Task、lint检查Task、打包生成APK的Task、签名Task等。</p>
-<p>Gradle的工作流程如下图所示，在每一个工作流程的前后，我们都可以进行一些hook操作，来满足自己的需求。<br><img src="https://ws3.sinaimg.cn/large/006tNc79ly1foalgl23j6j30q7065js9.jpg" alt=""><br>Gradle工作包含三个阶段：</p>
-<ul>
-<li>首先是初始化阶段。对我们前面的multi-project build而言，就是执行settings.gradle</li>
-<li>Initiliazation phase的下一个阶段是Configration阶段。</li>
-<li>Configration阶段的目标是解析每个project中的build.gradle。比如multi-project build例子中，解析每个子目录中的build.gradle。在这两个阶段之间，我们可以加一些定制化的Hook。这当然是通过API来添加的。</li>
-<li>Configuration阶段完了后，整个build的project以及内部的Task关系就确定了。一个Project包含很多Task，每个Task之间有依赖关系。Configuration会建立一个有向图来描述Task之间的依赖关系。所以，我们可以添加一个HOOK，即当Task关系图建立好后，执行一些操作。</li>
-<li>最后一个阶段就是执行任务了。当然，任务执行完后，我们还可以加Hook。</li>
-</ul>
-<p>简言之，Gradle有一个初始化流程，这个时候settings.gradle会执行。<br>在配置阶段，每个Project都会被解析，其内部的任务也会被添加到一个有向图里，用于解决执行过程中的依赖关系。然后才是执行阶段。你在gradle xxx中指定什么任务，gradle就会将这个xxx任务链上的所有任务全部按依赖顺序执行一遍。</p>
-<h2 id="Gradle-Wrapper"><a href="#Gradle-Wrapper" class="headerlink" title="Gradle Wrapper"></a>Gradle Wrapper</h2><p>Gradle Wrapper ，意为 Gradle 的包装，什么意思呢？<br>假设我们本地有多个项目，一个是比较老的项目，还用着 Gradle 1.0 的版本，一个是比较新的项目用了 Gradle 2.0 的版本，但是你两个项目肯定都想要同时运行的，如果你只装了 Gradle 1.0 的话那肯定不行，所以为了解决这个问题，Google 推出了 Gradle Wrapper 的概念。<br>就是他在你每个项目都配置了一个指定版本的 Gradle ，你可以理解为每个 Android 项目本地都有一个小型的 Gradle ，通过这个每个项目你可以支持用不同的 Gradle 版本来构建项目。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foanvlylrhj312m0fk415.jpg" alt=""></p>
-<h2 id="Android-项目包含的-Gradle-配置文件"><a href="#Android-项目包含的-Gradle-配置文件" class="headerlink" title="Android 项目包含的 Gradle 配置文件"></a>Android 项目包含的 Gradle 配置文件</h2><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foanyhm51xj308z0ieq44.jpg" alt=""></p>
-<ul>
-<li>9GAG/app/build.gradle<br>这个文件是 app 文件夹下这个 Module 的 gradle 配置文件，也可以算是整个项目最主要的 gradle 配置文件。</li>
-<li>9GAG/extras/ShimmerAndroid/build.gradle<br>每一个 Module 都需要有一个 gradle 配置文件，语法都是一样，唯一不同的是开头声明的是<code>apply plugin: &#39;com.android.library&#39;</code></li>
-<li>9GAG/gradle<br>这个目录下有个 wrapper 文件夹，里面可以看到有两个文件，我们主要看下 gradle-wrapper.properties 这个文件的内容：<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foaouah7rdj311q09cgnu.jpg" alt=""><br>可以看到里面声明了 gradle 的目录与下载路径以及当前项目使用的 gradle 版本，这些默认的路径我们一般不会更改的，这个文件里指明的 gradle 版本不对也是很多导包不成功的原因之一。</li>
-<li>9GAG/build.gradle<br>这个文件是整个项目的 gradle 基础配置文件，默认的内容就是声明了 android gradle plugin 的版本。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1foaow75wlsj30tw0gi40d.jpg" alt=""></li>
-<li>9GAG/settings.gradle<br>这个文件是全局的项目配置文件，里面主要声明一些需要加入 gradle 的 module，我们来看看 9GAG 该文件的内容：<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1foaoxckd1bj31800piq6r.jpg" alt=""></li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.infoq.com/cn/articles/android-in-depth-gradle" target="_blank" rel="noopener">http://www.infoq.com/cn/articles/android-in-depth-gradle</a><br><a href="http://android.walfud.com/android-gradle-看这一篇就够了/" target="_blank" rel="noopener">http://android.walfud.com/android-gradle-看这一篇就够了/</a></p>
+          Groovy介绍
+Groovy中支持动态类型，即定义变量的时候可以不指定其类型。(Groovy中，变量定义可以使用关键字def。def不是必须的，但是为了代码清晰，建议还是使用def关键字)
+12def a = 5;def b = "groovy"
 
-          
+函数的定义，我们也无需进行参数类型的声明.
+12
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/09/gradle/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1430,7 +1371,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1492,6 +1433,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/09/build/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/09/build/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1518,80 +1470,15 @@
       
         
           
-            <h2 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h2><p>项目的构建：当我们打开一个项目，我们可以看到的是我们写的Java Code文件or Other JVM Code，资源文件，Build配置文件，但是通过run the project，我们就可以得到一个在我们的Andoid设备上可以运行的Apk，上线应用市场，还需要我们对其进行签名处理，来确保我们App的唯一性和安全性。整个过程就是所谓的项目构建。如下图所示。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foadhjy9xvj30fr052wen.jpg" alt=""><br>如何实现整个构建的过程，对于每一个构建的步骤，都需要相应的功能模块来进行，比如Java Code编译，如何打成dex包等等，而这Android则为我们提供了相应的工具，在Android Studio命令行窗口中，我们可以通过相应的命令行来进行控制，但是，整个构建过程涉及到很多的步骤，很多的工具的使用，如果都通过命令行来进行控制，势必会相当麻烦，因此Androd Studio等IDE则对整个过程进行了一个打包，当我们在Run project的时候，底层的打包工具就会被调用，打包流程都会自动执行。然后我们只需要对构建文件按照自己的需求进行相应的配置，就可以构建出自己所需要的项目。<br>那么，整个Andoid项目的构建过程中，都执行了那些构建的任务呢？</p>
-<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>首先看一下，Google官方为我们提供的详细的构建过程图<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foadr7q3yvj30ew0oiabi.jpg" alt=""><br>图中绿色标注为其中用到的相应工具，蓝色代表的是中间生成的各类文件类型。</p>
-<ul>
-<li>首先aapt工具会将资源文件进行转化，生成对应资源ID的R文件和资源文件。</li>
-<li>adil工具会将其中的aidl接口转化成Java的接口</li>
-<li>至此，Java Compiler开始进行Java文件向class文件的转化，将R文件，Java源代码，由aidl转化来的Java接口，统一转化成.class文件。</li>
-<li>通过dx工具将class文件转化为dex文件。</li>
-<li>此时我们得到了经过处理后的资源文件和一个dex文件，当然，还会存在一些其它的资源文件，这个时候，就是将其打包成一个类似apk的文件。但还并不是直接可以安装在Android系统上的APK文件。</li>
-<li>通过签名工具对其进行签名。</li>
-<li>通过Zipalign进行优化，提升运行速度（原理后文会提及）。</li>
-<li>最终，一个可以安装在我们手机上的APK完成了。</li>
-</ul>
-<p>下图是一个Android项目构建过程的详细步骤图。<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foadmdugoxj30rl0u3q87.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foadql0c6bj30qe0to779.jpg" alt=""></p>
-<h2 id="aapt打包资源文件，生成R-java和编译后的资源（二进制文件）"><a href="#aapt打包资源文件，生成R-java和编译后的资源（二进制文件）" class="headerlink" title="aapt打包资源文件，生成R.java和编译后的资源（二进制文件）"></a>aapt打包资源文件，生成R.java和编译后的资源（二进制文件）</h2><p>第1步：aapt打包资源文件，生成R.java和编译后的资源（二进制文件）<br>讲到资源文件的处理，我们先来看一下Android中的资源文件有那些呢?Android应用程序资源可以分为两大类，分别是assets和res：</p>
-<ol>
-<li><p>assets类资源放在android根目录的assets子目录下，它里面保存的是一些原始的文件，可以以任何方式来进行组织。这些文件最终会被原装不动地打包在apk文件中。如果我们要在程序中访问这些文件，那么就需要指定文件名来访问。例如，假设在assets目录下有一个名称为filename的文件，那么就可以使用以下代码来访问它：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AssetManager am= getAssets();    </span><br><span class="line">InputStream is = assset.open(<span class="string">"filename"</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>res类资源放在android根目录的res子目录下，它里面保存的文件大多数都会被编译，并且都会被赋予资源ID。这样我们就可以在程序中通过ID来访问res类的资源。res类资源按照不同的用途可以进一步划分为以下10种子类型：<br>layout(布局文件)，drawable，xml，value，menu，raw，color，anim，animator，mipmap。<br>为了使得一个应用程序能够在运行时同时支持不同的大小和密度的屏幕，以及支持国际化，即支持不同的国家地区和语言，Android应用程序资源的组织方式有18个维度，每一个维度都代表一个配置信息，从而可以使得应用程序能够根据设备的当前配置信息来找到最匹配的资源来展现在UI上，从而提高用户体验。由于Android应用程序资源的组织方式可以达到18个维度，因此就要求Android资源管理框架能够快速定位最匹配设备当前配置信息的资源来展现在UI上，否则的话，就会影响用户体验。为了支持Android资源管理框架快速定位最匹配资源，Android资源打包工具aapt在编译和打包资源的过程中，会执行以下两个额外的操作：</p>
-</li>
-</ol>
-<ul>
-<li>赋予每一个非assets资源一个ID值，这些ID值以常量的形式定义在一个R.java文件中。</li>
-<li>生成一个resources.arsc文件，用来描述那些具有ID值的资源的配置信息，它的内容就相当于是一个资源索引表。包含了所有的id值的数据集合。在该文件中，如果某个id对应的是string，那么该文件会直接包含该值，如果id对应的资源是某个layout或者drawable资源，那么该文件会存入对应资源的路径。</li>
-</ul>
-<p><strong>为什么要转化为二进制文件？</strong></p>
-<ul>
-<li>二进制格式的XML文件占用空间更小。这是由于所有XML元素的标签、属性名称、属性值和内容所涉及到的字符串都会被统一收集到一个字符串资源池中去，并且会去重。有了这个字符串资源池，原来使用字符串的地方就会被替换成一个索引到字符串资源池的整数值，从而可以减少文件的大小。</li>
-<li>二进制格式的XML文件解析速度更快。这是由于二进制格式的XML元素里面不再包含有字符串值，因此就避免了进行字符串解析，从而提高速度。<br>有了资源ID以及资源索引表之后，Android资源管理框架就可以迅速将根据设备当前配置信息来定位最匹配的资源了。</li>
-</ul>
-<h3 id="R-java解读"><a href="#R-java解读" class="headerlink" title="R.java解读"></a>R.java解读</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1foae9ndz40j31h80q87fa.jpg" alt=""><br>原始的资源文件res/values/strings.xml内容如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;  </span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span>  </span><br><span class="line">  </span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"app_name"</span>&gt;</span>Cert<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"hello_world"</span>&gt;</span>Hello world!<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"action_settings"</span>&gt;</span>Settings<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>对应R.java文件的内容:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">R</span> </span>&#123;  </span><br><span class="line">              ...  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">string</span> </span>&#123;  </span><br><span class="line">                     ...  </span><br><span class="line">        <span class="comment">/**  Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE]  </span></span><br><span class="line"><span class="comment">         */</span>  </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> abc_shareactionprovider_share_with=<span class="number">0x7f0a000c</span>;  </span><br><span class="line">        <span class="comment">/**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE]  </span></span><br><span class="line"><span class="comment">         */</span>  </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> abc_shareactionprovider_share_with_application=<span class="number">0x7f0a000b</span>;  </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> action_settings=<span class="number">0x7f0a000f</span>;  </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> app_name=<span class="number">0x7f0a000d</span>;  </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> hello_world=<span class="number">0x7f0a000e</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">                     ...  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以看到每个资源文件在R中都是一个<strong>class</strong>，每个资源项名称都分配了一个id，id值是一个四字节无符号整数，格式是这样的：0xpptteeee，（p代表的是package，t代表的是type，e代表的是entry），最高字节代表Package ID，次高字节代表Type ID，后面两个字节代表Entry ID。</p>
-<p>Package ID相当于是一个命名空间，限定资源的来源。Android系统当前定义了两个资源命令空间，其中一个系统资源命令空间，它的Package ID等于0x01，另外一个是应用程序资源命令空间，它的Package ID等于0x7f。所有位于[0x01, 0x7f]之间的Package ID都是合法的，而在这个范围之外的都是非法的Package ID。</p>
-<p>Type ID是指资源的类型ID。资源的类型有animator、anim、color、drawable、layout、menu、raw、string和xml等等若干种，每一种都会被赋予一个ID。</p>
-<p>Entry ID是指每一个资源在其所属的资源类型中所出现的次序。注意，不同类型的资源的Entry ID有可能是相同的，但是由于它们的类型不同，我们仍然可以通过其资源ID来区别开来。</p>
-<h3 id="AAPT"><a href="#AAPT" class="headerlink" title="AAPT"></a>AAPT</h3><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1foaetlrxa6j30k50idwg6.jpg" alt=""><br>通过上图我们可以看到Resources是通过resources.arsc把Resource的ID转化成资源文件的名称，然后交由AssetManager来加载的。<br>而Resources.arsc这个文件是存放在APK包中的，他是由AAPT工具在打包过程中生成的，他本身是一个资源的索引表，里面维护者资源ID、Name、Path或者Value的对应关系，AssetManager通过这个索引表，就可以通过资源的ID找到这个资源对应的文件或者数据。<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1foaev2m0asj30p20c2jsm.jpg" alt=""></p>
-<p>AAPT这个工具在打包过程中主要做了下列工作：</p>
-<ul>
-<li>把”assets”和”res/raw”目录下的所有资源进行打包（会根据不同的文件后缀选择压缩或不压缩），而”res/“目录下的其他资源进行编译或者其他处理（具体处理方式视文件后缀不同而不同，例如：”.xml”会编译成二进制文件，”.png”文件会进行优化等等）后才进行打包；</li>
-<li>会对除了assets资源之外所有的资源赋予一个资源ID常量，并且会生成一个资源索引表resources.arsc；</li>
-<li>编译AndroidManifest.xml成二进制的XML文件；</li>
-<li>把上面3个步骤中生成结果保存在一个*.ap_文件，并把各个资源ID常量定义在一个R.java中；</li>
-</ul>
-<p>*.ap_这个文件存放在build/intermediates/res的目录下，下图是这个文件存放的路径截图：<br><img src="https://ws1.sinaimg.cn/large/006tNc79ly1foaexegnhsj30t211awjr.jpg" alt=""><br>解压出来。<br><img src="https://ws4.sinaimg.cn/large/006tNc79ly1foaezs5xmlj312019ytp9.jpg" alt=""></p>
-<h2 id="aidl"><a href="#aidl" class="headerlink" title="aidl"></a>aidl</h2><p>第2步：aidl<br>aidl，全名Android Interface Definition Language，即Android接口定义语言。是我们在编写进程间通信的代码的时候，定义的接口。<br>输入：aidl后缀的文件。输出：可用于进程通信的C/S端java代码，位于build/generated/source/aidl。</p>
-<h2 id="Java源码编译"><a href="#Java源码编译" class="headerlink" title="Java源码编译"></a>Java源码编译</h2><p>第3步：Java源码编译<br>我们有了R.java和aidl生成的Java文件，再加上工程的源代码，现在可以使用javac进行正常的java编译生成class文件了。</p>
-<p>输入：java source的文件夹（另外还包括了build/generated下的：R.java, aidl生成的java文件，以及BuildConfig.java）。<br>输出：对于gradle编译，可以在build/intermediates/classes里，看到输出的class文件。<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foafpkdhndj30pi16kgr2.jpg" alt=""></p>
-<h2 id="代码混淆（proguard）"><a href="#代码混淆（proguard）" class="headerlink" title="代码混淆（proguard）"></a>代码混淆（proguard）</h2><p>第4步：代码混淆（proguard）<br>源码编译之后，我们可能还会对其进行代码的混淆，混淆的作用是增加反编译的难度，同时也将一些代码的命名进行了缩短，减少代码占用的空间。混淆完成之后，会生成一个混淆前后的映射表，这个是用来在反应我们的应用执行的时候的一些堆栈信息，可以将混淆后的信息转化为我们混淆前实际代码中的内容。<br>而这个过程使用的工具就是ProGuard，是一个开源的Java代码混淆器（obfuscation）。ADT r8开始它被默认集成到了Android SDK中。 其具备三个主要功能。</p>
-<ul>
-<li>压缩 - 移除无效的类、属性、方法等</li>
-<li>优化 - 优化bytecode移除没用的结构</li>
-<li>混淆 - 把类名、属性名、方法名替换为晦涩难懂的1到2个字母的名字<br>当然它也只能混淆Java代码，Android工程中Native代码，资源文件（图片、xml），它是无法混淆的。而且对于Java的常量值也是无法混淆的，所以不要使用常量定义密码等重要信息。同时对于混淆，我们可以通过代码制定去混淆哪些，不去混淆哪些。</li>
-</ul>
-<h2 id="转化为dex"><a href="#转化为dex" class="headerlink" title="转化为dex"></a>转化为dex</h2><p>第5步：转化为dex<br>调用dx.bat将所有的class文件转化为classes.dex文件，dx会将class转换为Dalvik字节码，生成常量池，消除冗余数据等。由于dalvik是一种针对嵌入式设备而特殊设计的java虚拟机，所以dex文件与标准的class文件在结构设计上有着本质的区别,当java程序编译成class后，使用dx工具将所有的class文件整合到一个dex文件，目的是其中各个类能够共享数据，在一定程度上降低了冗余，同时也是文件结构更加经凑，实验表明，dex文件是传统jar文件大小的50%左右。class文件结构和dex文件结构比对。<br><img src="https://ws2.sinaimg.cn/large/006tNc79ly1foafs9dnnij30ao093t9g.jpg" alt=""></p>
-<h2 id="apkbuilder"><a href="#apkbuilder" class="headerlink" title="apkbuilder"></a>apkbuilder</h2><p>第6步：apkbuilder<br>打包生成APK文件。旧的apkbuilder脚本已经废弃，现在都已经通过sdklib.jar的ApkBuilder类进行打包了。输入为我们之前生成的包含resources.arcs的.ap<em>文件，上一步生成的dex文件，以及其他资源如jni、.so文件。<br>大致步骤为<br>以包含resources.arcs的.ap</em>文件为基础，new一个ApkBuilder，设置debugMode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apkBuilder.addZipFile(f);</span><br><span class="line">apkBuilder.addSourceFolder(f);</span><br><span class="line">apkBuilder.addResourcesFromJar(f);</span><br><span class="line">apkBuilder.addNativeLibraries(nativeFileList);</span><br><span class="line">apkBuilder.sealApk(); // 关闭apk文件</span><br><span class="line">generateDependencyFile(depFile, inputPaths, outputFile.getAbsolutePath());</span><br></pre></td></tr></table></figure></p>
-<h2 id="对APK签名"><a href="#对APK签名" class="headerlink" title="对APK签名"></a>对APK签名</h2><p>第7步：对APK签名<br>对APK文件进行签名。Android系统在安装APK的时候，首先会检验APK的签名，如果发现签名文件不存在或者校验签名失败，则会拒绝安装，所以应用程序在发布之前一定要进行签名。签名信息中包含有开发者信息，在一定程度上可以防止应用被伪造。对一个APK文件签名之后，APK文件根目录下会增加META-INF目录，该目录下增加三个文件：</p>
-<ul>
-<li>MANIFEST.MF</li>
-<li>NETEASE.RSA</li>
-<li>NETEASE.SF<br>Android系统就是根据这三个文件的内容对APK文件进行签名检验的。签名过程主要利用apksign.jar或者jarsinger.jar两个工具。将根据我们提供的Debug和Release两个版本的Keystore进行相应的签名。</li>
-</ul>
-<h2 id="zipalign优化"><a href="#zipalign优化" class="headerlink" title="zipalign优化"></a>zipalign优化</h2><p>第8步：zipalign优化<br>Zipalign是一个Android平台上整理APK文件的工具，它首次被引入是在Android 1.6版本的SDK软件开发工具包中。它能够对打包的Android应用程序进行优化， 以使Android操作系统与应用程序之间的交互作用更有效率，这能够让应用程序和整个系统运行得更快。用Zipalign处理过的应用程序执行时间达到最低限度，当设备运行APK应用程序时占更少的RAM。<br><strong>Zipalign如何进行优化的呢？</strong><br>调用buildtoolszipalign，对签名后的APK文件进行对齐处理，使APK中所有资源文件距离文件起始偏移为4字节的整数倍，从而在通过内存映射访问APK文件时会更快。同时也减少了在设备上运行时的内存消耗。<br>最终这样我们的APK就生成完毕了。</p>
-<h2 id="典型的APK中内容"><a href="#典型的APK中内容" class="headerlink" title="典型的APK中内容"></a>典型的APK中内容</h2><ul>
-<li>AndroidManifest.xml 程序全局配置文件</li>
-<li>classes.dex Dalvik字节码</li>
-<li>resources.arsc 资源索引表</li>
-<li>META-INF该目录下存放的是签名信息</li>
-<li>res 该目录存放资源文件</li>
-<li>assets该目录可以存放一些配置或资源文件</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>res/values/public.xml：<a href="https://codeday.me/bug/20170816/57361.html" target="_blank" rel="noopener">https://codeday.me/bug/20170816/57361.html</a><br>Android代码混淆之ProGuard<br><a href="http://rensanning.iteye.com/blog/2224635" target="_blank" rel="noopener">http://rensanning.iteye.com/blog/2224635</a><br>Android资源管理框架（Asset Manager）简要介绍和学习计划<br><a href="http://blog.csdn.net/luoshengyang/article/details/8738877" target="_blank" rel="noopener">http://blog.csdn.net/luoshengyang/article/details/8738877</a><br>Android应用程序资源的编译和打包过程分析<br><a href="http://blog.csdn.net/luoshengyang/article/details/8744683" target="_blank" rel="noopener">http://blog.csdn.net/luoshengyang/article/details/8744683</a></p>
-
-          
+          构建过程项目的构建：当我们打开一个项目，我们可以看到的是我们写的Java Code文件or Other JVM Code，资源文件，Build配置文件，但是通过run the project，我们就可以得到一个在我们的Andoid设备上可以运行的Apk，上线应用市场，还需要我们对其进行签名处理，来确
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/09/build/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1643,7 +1530,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1705,6 +1592,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/08/crawel/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/08/crawel/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1731,11 +1629,16 @@
       
         
           
-            <p>今天AI让我把一个课程的slides都下载一下，就写了一个爬取页面所有链接的脚本。</p>
-<h2 id="单线程爬虫"><a href="#单线程爬虫" class="headerlink" title="单线程爬虫"></a>单线程爬虫</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取网页内容</span></span><br><span class="line">r = requests.get(<span class="string">'http://www.cs.cmu.edu/afs/cs/academic/class/15745-s06/web/schedule.html'</span>)</span><br><span class="line">data = r.text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 利用正则查找所有链接</span></span><br><span class="line">link_list =re.findall(<span class="string">r"(?&lt;=href=\").+?(?=\")|(?&lt;=href=\').+?(?=\')"</span> ,data)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存成文件</span></span><br><span class="line"><span class="keyword">for</span> url <span class="keyword">in</span> link_list:</span><br><span class="line">    <span class="keyword">print</span> url</span><br><span class="line">    r = requests.get(url)</span><br><span class="line">    <span class="comment"># print url.split('/')[-1]</span></span><br><span class="line">    <span class="keyword">with</span> open(url.split(<span class="string">'/'</span>)[<span class="number">-1</span>], <span class="string">"wb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(r.content)</span><br></pre></td></tr></table></figure>
-<h2 id="多线程爬虫"><a href="#多线程爬虫" class="headerlink" title="多线程爬虫"></a>多线程爬虫</h2><p>思路：先通过爬虫查找到所有链接，然后放进队列里下载。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> threading, Queue</span><br><span class="line"></span><br><span class="line">lock = threading.Lock()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_queue</span><span class="params">(list)</span>:</span></span><br><span class="line">    link_queue = Queue.Queue()</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> list:</span><br><span class="line">        link_queue.put(p)</span><br><span class="line">    <span class="keyword">return</span> link_queue</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GetPdf</span><span class="params">(threading.Thread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        threading.Thread.__init__(self)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_pdf</span><span class="params">(self, link)</span>:</span></span><br><span class="line">        <span class="keyword">global</span> lock</span><br><span class="line">        <span class="keyword">print</span> link</span><br><span class="line">        r = requests.get(link)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            lock.acquire()</span><br><span class="line">            <span class="comment"># print url.split('/')[-1]</span></span><br><span class="line">            <span class="keyword">with</span> open(link.split(<span class="string">'/'</span>)[<span class="number">-1</span>], <span class="string">"wb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(r.content)</span><br><span class="line">            lock.release()</span><br><span class="line">        <span class="keyword">except</span> IOError:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"Error: 读取文件失败"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GetPdfMulti</span><span class="params">(GetPdf)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, link_queue)</span>:</span></span><br><span class="line">        GetPdf.__init__(self)</span><br><span class="line">        self.link_queue = link_queue</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> link_queue.empty():</span><br><span class="line">            link = self.link_queue.get()</span><br><span class="line">            self.get_pdf(link)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">'__main__'</span> == __name__:</span><br><span class="line">    <span class="comment"># 获取网页内容</span></span><br><span class="line">    r = requests.get(<span class="string">'http://www.cs.cmu.edu/afs/cs/academic/class/15745-s06/web/schedule.html'</span>)</span><br><span class="line">    data = r.text</span><br><span class="line">    thread_num = <span class="number">20</span></span><br><span class="line">    <span class="comment"># 利用正则查找所有链接</span></span><br><span class="line">    link_list = re.findall(<span class="string">r"(?&lt;=href=\").+?(?=\")|(?&lt;=href=\').+?(?=\')"</span>, data)</span><br><span class="line">    link_queue = get_queue(link_list)</span><br><span class="line">    ThreadList = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, thread_num):</span><br><span class="line">        t = GetPdfMulti(link_queue)</span><br><span class="line">        ThreadList.append(t)</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> ThreadList:</span><br><span class="line">        t.start()</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> ThreadList:</span><br><span class="line">        t.join()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"done"</span></span><br></pre></td></tr></table></figure></p>
-
-          
+          今天AI让我把一个课程的slides都下载一下，就写了一个爬取页面所有链接的脚本。
+单线程爬虫123456789101112131415161718# coding:utf-8import reimport requests# 获取网页内容r = requests.get('http://www.c
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/08/crawel/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1787,7 +1690,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1849,6 +1752,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/08/jnienv/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/08/jnienv/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -1875,11 +1789,17 @@
       
         
           
-            <h2 id="local-type"><a href="#local-type" class="headerlink" title="local type"></a>local type</h2><p>shift+F1打开local type<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo96bavidhj30kk0iaq5g.jpg" alt=""><br>现在的内容是这样的<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo96bsjkzcj30od0aa75u.jpg" alt=""><br>然后shift+F9,按下insert<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo96crhcpfj30cn081dga.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo96dfiyvlj30g509lwgg.jpg" alt=""><br>都导入进去了<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fo96dnjtdfj30wd0maafb.jpg" alt=""></p>
-<h2 id="指定函数类型"><a href="#指定函数类型" class="headerlink" title="指定函数类型"></a>指定函数类型</h2><p>剩下的就是手动指定函数类型即可~<br>按下y，输入JNIEnv即可。<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo96e17kfuj30s80crtaq.jpg" alt=""></p>
-<h2 id="JNIEnv的函数调用对照表"><a href="#JNIEnv的函数调用对照表" class="headerlink" title="JNIEnv的函数调用对照表"></a>JNIEnv的函数调用对照表</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/JNI_ENV_FUNCTIONS.xls" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/JNI_ENV_FUNCTIONS.xls</a></p>
-
-          
+          local typeshift+F1打开local type现在的内容是这样的然后shift+F9,按下insert都导入进去了
+指定函数类型剩下的就是手动指定函数类型即可~按下y，输入JNIEnv即可。
+JNIEnv的函数调用对照表https://github.com/eternalsakura/
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/08/jnienv/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1931,7 +1851,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/sakura_heart.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1993,6 +1913,17 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/08/niming/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/08/niming/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -2019,16 +1950,15 @@
       
         
           
-            <h2 id="MainActivity-1-smali"><a href="#MainActivity-1-smali" class="headerlink" title="MainActivity$1.smali"></a>MainActivity$1.smali</h2><p>在android逆向中我们经常遇到xxx.smali和xxx$1.smali这种一起出现，这是什么意思呢？<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fo8h8p471kj30jc0giaap.jpg" alt=""><br>我用jadx反编译并导出gradle工程看看。<br><code>jadx -e AliCrackme_2.apk</code>，得到文件如下，观察MainActivity.java<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fo8hefe1dfj31kw0qpna2.jpg" alt=""><br>用apktools反编译并用jd-gui打开<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo8hfx3ttij313q0ro0um.jpg" alt=""><br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fo8hitia92j31cq0zmq5s.jpg" alt=""></p>
-<p>这样一对比就很清楚了，反编译出来的MainActivity$1，实际上是MainActivity的匿名内部类。</p>
-<h2 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h2><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>定义一个匿名内部类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Out</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object obj = <span class="keyword">new</span> Object() &#123;</span><br><span class="line">        <span class="keyword">private</span> String name = <span class="string">"匿名内部类"</span>;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> name;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Object obj = <span class="keyword">new</span> Object() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(b);</span><br><span class="line">                <span class="keyword">return</span> String.valueOf(a);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        System.out.println(obj.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>匿名内部类可以出现在任何允许表达式出现的地方，定义格式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> 类/接口&#123; </span><br><span class="line">  <span class="comment">//匿名内部类实现部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>Out.java编译后匿名内部类会生成相应的class文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Out</span>$1 </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    Out$<span class="number">1</span>(Out var1) &#123;</span><br><span class="line">        <span class="keyword">this</span>.<span class="keyword">this</span>$<span class="number">0</span> = var1;</span><br><span class="line">        <span class="keyword">this</span>.name = <span class="string">"匿名内部类"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>匿名内部类可以访问外部类所有的变量和方法。</p>
-<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>匿名内部类使用广泛，比如我们常用的绑定监听的时候。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">view.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">    Toast.makeText(v.getContext(),<span class="string">"click"</span>,Toast.LENGTH_SHORT).show();    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>所以逆向的时候不必过于关注xxx$数字这样的文件。</p>
-
-          
+          MainActivity$1.smali在android逆向中我们经常遇到xxx.smali和xxx$1.smali这种一起出现，这是什么意思呢？我用jadx反编译并导出gradle工程看看。jadx -e AliCrackme_2.apk，得到文件如下，观察MainActivity.java用ap
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/08/niming/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2101,6 +2031,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
               <p class="site-author-name" itemprop="name">sakura</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -2152,11 +2086,65 @@
           
 
           
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
 
           
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p1umer.club/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lirsakura.me/" title="绘梨衣" target="_blank">绘梨衣</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://dwfault-blog.imwork.net:30916/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.auxy.xyz" title="Auxy" target="_blank">Auxy</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
@@ -2317,6 +2305,14 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -2346,6 +2342,323 @@
 
 
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 
