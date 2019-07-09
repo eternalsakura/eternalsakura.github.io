@@ -24,27 +24,6 @@
     </entry>
     
     <entry>
-      <title>Attack TurboFan Debug write-up</title>
-      <link href="/2019/07/08/attak_turbofan/"/>
-      <url>/2019/07/08/attak_turbofan/</url>
-      <content type="html"><![CDATA[<p>issue-944062<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-08-064357.png" alt=""></p><ol><li>inferring the receiver maps<ul><li>遍历effect chain</li><li>搜索有关receiver的map的信息</li><li>可能的结果<ul><li>没有map信息被发现</li><li>Recevier maps可以被充分信任</li><li>Recevier maps可能已经改变</li></ul></li></ul></li><li>计算elements kind</li><li>使用elements kind</li></ol>]]></content>
-      
-      <categories>
-          
-          <category> 浏览器 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> v8 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
       <title>34c3 v9 writeup</title>
       <link href="/2019/04/29/v9/"/>
       <url>/2019/04/29/v9/</url>

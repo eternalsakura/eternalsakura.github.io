@@ -42,33 +42,6 @@
   </entry>
   
   <entry>
-    <title>Attack TurboFan Debug write-up</title>
-    <link href="http://eternalsakura13.com/2019/07/08/attak_turbofan/"/>
-    <id>http://eternalsakura13.com/2019/07/08/attak_turbofan/</id>
-    <published>2019-07-08T06:38:40.371Z</published>
-    <updated>2019-07-08T06:47:18.976Z</updated>
-    
-    <content type="html"><![CDATA[<p>issue-944062<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-08-064357.png" alt=""></p><ol><li>inferring the receiver maps<ul><li>遍历effect chain</li><li>搜索有关receiver的map的信息</li><li>可能的结果<ul><li>没有map信息被发现</li><li>Recevier maps可以被充分信任</li><li>Recevier maps可能已经改变</li></ul></li></ul></li><li>计算elements kind</li><li>使用elements kind</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;issue-944062&lt;br&gt;&lt;img src=&quot;https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-08-064357.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;inferring the
-      
-    
-    </summary>
-    
-      <category term="浏览器" scheme="http://eternalsakura13.com/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/"/>
-    
-    
-      <category term="v8" scheme="http://eternalsakura13.com/tags/v8/"/>
-    
-  </entry>
-  
-  <entry>
     <title>34c3 v9 writeup</title>
     <link href="http://eternalsakura13.com/2019/04/29/v9/"/>
     <id>http://eternalsakura13.com/2019/04/29/v9/</id>
@@ -516,6 +489,32 @@
     
     
       <category term="edge" scheme="http://eternalsakura13.com/tags/edge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hexo blog搭建及域名解析</title>
+    <link href="http://eternalsakura13.com/2018/06/30/blog_build/"/>
+    <id>http://eternalsakura13.com/2018/06/30/blog_build/</id>
+    <published>2018-06-30T01:49:47.147Z</published>
+    <updated>2018-10-22T14:25:51.720Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近有个小傻子弄不好域名解析。。我写一下吧。</p><h2 id="blog搭建"><a href="#blog搭建" class="headerlink" title="blog搭建"></a>blog搭建</h2><p>参考我学弟写的就可以，很详细<br><a href="https://kabeor.cn/Hexo+GitPage%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" target="_blank" rel="noopener">https://kabeor.cn/Hexo+GitPage%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</a></p><h2 id="DNS解析"><a href="#DNS解析" class="headerlink" title="DNS解析"></a>DNS解析</h2><p>我域名在主机壳买的，安利一下<br><a href="https://www.zhujike.com/" target="_blank" rel="noopener">https://www.zhujike.com/</a><br>买了之后可以在域名列表里看到<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-015647.png" alt=""><br>然后可以在域名解析里添加域名解析<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-015720.png" alt=""><br>具体的</p><ul><li>@<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-015731.png" alt=""></li><li>www<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-015747.png" alt=""><h2 id="hexo-CNAME"><a href="#hexo-CNAME" class="headerlink" title="hexo CNAME"></a>hexo CNAME</h2>然后在如图路径下建立一个CNAME文件<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-015835.png" alt=""><br>内容就是你的域名了。<br>然后同步一下，等一会就解析好了。<h2 id="关于博客管理"><a href="#关于博客管理" class="headerlink" title="关于博客管理"></a>关于博客管理</h2>建议写好分类和标签<br>能用tag来分的小类不要用categories来分<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-30-020002.png" alt=""><br>其他的多读wiki，等我哪天博客重建了再写。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近有个小傻子弄不好域名解析。。我写一下吧。&lt;/p&gt;
+&lt;h2 id=&quot;blog搭建&quot;&gt;&lt;a href=&quot;#blog搭建&quot; class=&quot;he
+      
+    
+    </summary>
+    
+      <category term="杂项" scheme="http://eternalsakura13.com/categories/%E6%9D%82%E9%A1%B9/"/>
+    
+    
+      <category term="blog搭建" scheme="http://eternalsakura13.com/tags/blog%E6%90%AD%E5%BB%BA/"/>
     
   </entry>
   
