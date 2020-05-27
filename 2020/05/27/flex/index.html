@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="compiler,Lexical Analysis," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+<meta name="keywords" content="compiler,Lexical Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flex中文文档">
+<meta property="og:url" content="http://eternalsakura13.com/2020/05/27/flex/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-27T15:37:03.324Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flex中文文档">
+<meta name="twitter:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2020/05/27/flex/"/>
+
+
+
+
+
+  <title>Flex中文文档 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2020/05/27/flex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flex中文文档</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-27T23:37:03+08:00">
+                2020-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/05/27/flex/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/05/27/flex/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="4-Some-Simple-Examples"><a href="#4-Some-Simple-Examples" class="headerlink" title="4 Some Simple Examples"></a>4 Some Simple Examples</h2><p>首先，通过一些简单的示例来了解使用flex。<br>以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">username    printf( &quot;%s&quot;, getlogin() );</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效果是仅将每次出现的用户名替换了。<br>在此输入中，只有一个规则(rule)。’username’是模式(pattern)，而’print’就是action。’%%’符号标志着rules的开始。<br>另一个简单的例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">        int num_lines = 0, num_chars = 0;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">\n      ++num_lines; ++num_chars;</span><br><span class="line">.       ++num_chars;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">        &#123;</span><br><span class="line">        yylex();</span><br><span class="line">        printf( &quot;# of lines = %d, # of chars = %d\n&quot;,</span><br><span class="line">                num_lines, num_chars );</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
+<p>该扫描仪计算其输入中的字符数和行数。除了有关字符数和行数的最终报告外，它不产生任何输出。<br>第一行声明了两个全局变量，num_lines和num_chars，在第二个%%之后声明的yylex()的main()例程都可以访问它们。<br>有两个规则（rule)，一个匹配换行符（’\n’），并同时增加行数和字符数。<br>另一个匹配除了换行符之外的任何字符（通过.正则表达式）</p>
+<p>看一个更复杂的例子。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">/* scanner for a toy Pascal-like language */</span><br><span class="line"></span><br><span class="line">%&#123;</span><br><span class="line">/* need this for the call to atof() below */</span><br><span class="line">#include &lt;math.h&gt;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">DIGIT    [0-9]</span><br><span class="line">ID       [a-z][a-z0-9]*</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">&#123;DIGIT&#125;+    &#123;</span><br><span class="line">            printf( &quot;An integer: %s (%d)\n&quot;, yytext,</span><br><span class="line">                    atoi( yytext ) );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">&#123;DIGIT&#125;+&quot;.&quot;&#123;DIGIT&#125;*        &#123;</span><br><span class="line">            printf( &quot;A float: %s (%g)\n&quot;, yytext,</span><br><span class="line">                    atof( yytext ) );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">if|then|begin|end|procedure|function        &#123;</span><br><span class="line">            printf( &quot;A keyword: %s\n&quot;, yytext );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">&#123;ID&#125;        printf( &quot;An identifier: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;   printf( &quot;An operator: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">&quot;&#123;&quot;[^&#123;&#125;\n]*&quot;&#125;&quot;     /* eat up one-line comments */</span><br><span class="line"></span><br><span class="line">[ \t\n]+          /* eat up whitespace */</span><br><span class="line"></span><br><span class="line">.           printf( &quot;Unrecognized character: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">int main( int argc, char **argv )</span><br><span class="line">    &#123;</span><br><span class="line">    ++argv, --argc;  /* skip over program name */</span><br><span class="line">    if ( argc &gt; 0 )</span><br><span class="line">            yyin = fopen( argv[0], &quot;r&quot; );</span><br><span class="line">    else</span><br><span class="line">            yyin = stdin;</span><br><span class="line"></span><br><span class="line">    yylex();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是针对Pascal等语言的简单scanner的开始。它标识不同类型的token并报告所见内容。<br>以下部分将说明此示例的详细信息。</p>
+<h2 id="5-Format-of-the-Input-File"><a href="#5-Format-of-the-Input-File" class="headerlink" title="5 Format of the Input File"></a>5 Format of the Input File</h2><p>flex输入文件包括三部分，由%%分开。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">definitions</span><br><span class="line">%%</span><br><span class="line">rules</span><br><span class="line">%%</span><br><span class="line">user code</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-1-Format-of-the-Definitions-Section"><a href="#5-1-Format-of-the-Definitions-Section" class="headerlink" title="5.1 Format of the Definitions Section"></a>5.1 Format of the Definitions Section</h3><p>该定义部分包含了简单的Name definitions的声明，这简化了scanner，以及start conditions的声明，这将在后面的章节解释。<br>Name definitions有如下形式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">name definition</span><br></pre></td></tr></table></figure></p>
+<p>name是一个以字母或下划线开头的单词，然后是零个或多个字母，数字，’_’，或者’-‘（破折号）。<br>definition从名称后的第一个非空白字符开始，一直到该行的末尾。该definition随后可以使用{definition}，它将扩展为(definition)。例如，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DIGIT    [0-9]</span><br><span class="line">ID       [a-z][a-z0-9]*</span><br></pre></td></tr></table></figure></p>
+<p>定义“数字“是与一位数字匹配的正则表达式，而’ID’是一个正则表达式，它匹配一个字母，后跟零个或多个字母及数字。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;DIGIT&#125;+&quot;.&quot;&#123;DIGIT&#125;*</span><br></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">([0-9])+&quot;.&quot;([0-9])*</span><br></pre></td></tr></table></figure></p>
+<p>其可以匹配一个或多个数字，后跟一个’.’,然后跟零个或多个数字。12.34<br>不缩进的注释（以<code>/*</code>开头的行)逐字复制到输出，直到遇到下一个<code>&#39;* /&#39;</code>。<br>任何缩进文本，或者包括在<code>%{</code>和<code>%}</code>之中的也将逐字复制到输出中(移除<code>%{和%}</code>符号)，<code>％{和％}</code>符号本身必须在行上没有缩进。<br><code>%top</code>块是类似于<code>%{和}%</code>的，但它将块中的代码重定位到生成的文件的顶部（在所有flex定义之前），<code>%top</code>在当您要定义某些预处理器宏或在生成的代码之前包含某些文件时，该块很有用。单个字符’{‘和’}’用于分隔%top块，如以下示例所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%top&#123;</span><br><span class="line">    /* This code goes at the &quot;top&quot; of the generated file. */</span><br><span class="line">    #include &lt;stdint.h&gt;</span><br><span class="line">    #include &lt;inttypes.h&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>%top</code>允许多个块，并保留其顺序。</p>
+<h3 id="5-2-Format-of-the-Rules-Section"><a href="#5-2-Format-of-the-Rules-Section" class="headerlink" title="5.2 Format of the Rules Section"></a>5.2 Format of the Rules Section</h3><p>Flex输入的 rules section 对以下表格有一系列的规则： </p>
+<table>
+<thead>
+<tr>
+<th>pattern</th>
+<th>action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>其中 pattern 必须是不缩进的，action 必须开始在同一行。 有关 patterns 和 actions 的进一步描述，请参见Patterns。 </p>
+<p>在rules section中，出现在第一个rule之前的任何缩进或<code>%{ %}</code>括号内的文本都可用于声明scanning routine的局部变量和每次进入scanning routine时执行的（声明之后的）代码。<br>rules section中的其他缩进文本或<code>%{ %}</code>文本仍然复制到输出中，但其含义没有良好定义，并且很可能导致编译时错误（这个特性是为了符合 POSIX 要求。查看 Lex 和 Posix，以获得其他此类特性）。 </p>
+<p> <code>%{</code> 和 <code>%}</code>中包含的任何缩进文本或文本都会被逐字复制到输出中（删除了<code>%{</code>和<code>%}</code>符号）。 <code>%{</code>和<code>%}</code>符号本身必须在该行没有缩进。 </p>
+<h3 id="5-3-Format-of-the-User-Code-Section"><a href="#5-3-Format-of-the-User-Code-Section" class="headerlink" title="5.3 Format of the User Code Section"></a>5.3 Format of the User Code Section</h3><p>用户代码部分仅逐字复制到lex.yy.c。它作为scanner的辅助函数使用。此部分的出现是可选的；如果不存在，则输入文件中的第二个”%%”可以被省略。</p>
+<h3 id="5-4-Comments-in-the-Input"><a href="#5-4-Comments-in-the-Input" class="headerlink" title="5.4 Comments in the Input"></a>5.4 Comments in the Input</h3><p>Flex支持C风格的注释，即：介于<code>/ *</code>和<code>* /</code>之间的任何内容都被认为是注释。Flex遇到注释时，会将整个注释逐字复制到生成的源代码中。注释可能出现在任何地方，但有以下例外情况：</p>
+<ul>
+<li>在需要正则表达式的 flex 中，注释可能不会出现在 Rules 部分。 即：注释可能不会出现在一行的开头，或紧跟在scanner states列表之后。 </li>
+<li>注释不能出现在 Definitions 部分的<code>%option</code>行上。</li>
+</ul>
+<p>如果您希望遵循一个简单的规则，那么始终在新行上开始注释，在开始的<code>/*</code>之前使用一个或多个空格字符。 此规则适用于输入文件的任何位置。下面例子中的所有注释都是有效的: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">/* code block */</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">/* Definitions Section */</span><br><span class="line">%x STATE_X</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">    /* Rules Section */</span><br><span class="line">ruleA   /* after regex */ &#123; /* code block */ &#125; /* after code block */</span><br><span class="line">        /* Rules Section (indented) */</span><br><span class="line">&lt;STATE_X&gt;&#123;</span><br><span class="line">ruleC   ECHO;</span><br><span class="line">ruleD   ECHO;</span><br><span class="line">%&#123;</span><br><span class="line">/* code block */</span><br><span class="line">%&#125;</span><br><span class="line">&#125;</span><br><span class="line">%%</span><br><span class="line">/* User Code Section */</span><br></pre></td></tr></table></figure>
+<h2 id="6-patterns"><a href="#6-patterns" class="headerlink" title="6 patterns"></a>6 patterns</h2><p> 输入里的patterns是根据一个正则表达式扩展集合来写的:</p>
+<ul>
+<li><p>‘x’:  </p>
+<p>  匹配字符‘x’</p>
+</li>
+<li><p>‘.’:  </p>
+<p>  匹配任意字符(1字节)，除了换行符</p>
+</li>
+<li><p>‘[xyz]’:  </p>
+<p>  单个字符类;在该case，表示匹配x或y或z</p>
+</li>
+<li><p>‘[abj-oZ]’: </p>
+<p>  具有范围的字符类;在该case表示匹配a或b，或在j-o之中选择一个匹配，或者匹配一个Z</p>
+</li>
+<li><p>‘[^A-Z]’:</p>
+<p>  否定字符类，即除该类之外的任何字符;在该case表示不匹配大写字母</p>
+</li>
+<li><p>‘[^A-Z\n]’: </p>
+<p>  不匹配大写字母和回车</p>
+</li>
+<li><p>‘[a-z]{-}[aeiou]’: </p>
+<p>  匹配除了元音字母之外的字符</p>
+</li>
+<li><p>‘r*’  </p>
+<p>  r是一个正则表达式, 匹配零次或多次</p>
+</li>
+<li><p>‘r+’ </p>
+<p>  匹配一次或多次。</p>
+</li>
+<li><p>‘r?’  </p>
+<p>  匹配零次或一次。</p>
+</li>
+<li><p>‘r{2,5}’  </p>
+<p>  {n,m}, m 和 n 均为非负整数，其中n &lt;= m。最少匹配 n 次且最多匹配 m 次。</p>
+</li>
+<li><p>‘r{2,}’ </p>
+<p>  {n,}, n 是一个非负整数。至少匹配n 次。</p>
+</li>
+<li><p>‘r{4}’ </p>
+<p>  {n}, n 是一个非负整数。匹配确定的 n 次。</p>
+</li>
+<li><p>‘{name}’  </p>
+<p>  name定义的扩展，查看<a href="http://westes.github.io/flex/manual/Format.html#Format" target="_blank" rel="noopener">format</a></p>
+</li>
+<li><p>‘“[xyz]\”foo”‘  </p>
+<p>  匹配[xyz]”foo这个字符串</p>
+</li>
+<li><p>‘\X’  </p>
+<p>  if X is ‘a’, ‘b’, ‘f’, ‘n’, ‘r’, ‘t’, or ‘v’, then the ANSI-C interpretation of ‘\x’. Otherwise, a literal ‘X’ (used to escape operators such as ‘*’)</p>
+</li>
+<li><p>‘\0’ </p>
+<p>  匹配NULL(ascii code 0)</p>
+</li>
+<li><p>‘\123’ </p>
+<p>  匹配八进制值为123的字符</p>
+</li>
+<li><p>‘\x2a’ </p>
+<p>  匹配16进制值为2a的字符</p>
+</li>
+<li><p>‘(r)’   </p>
+<p>  match ‘r’；括号用于提高优先级</p>
+</li>
+<li><p>‘(?r-s:pattern)’<br>  :之后的是使用的pattern，而使用r并略去s对pattern进行解释<br>  r和s这两个参数可以为空或者’i’ ‘s’ ‘x’<br>  i表示大小写不敏感 -i表示大小写不敏感<br>  s表示通过’.’匹配单字节的任意字符, -s表示’.’匹配\n之外的任何字节（译者注:其实就是用s来指明<code>.</code>的意思）<br>  x会忽略注释和空白符，除非空格被反斜杠转义，或者包含在””中或者出现在前面所说的字符类里，否则将被忽略<br>  以下表达式都是合法的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(?:foo)         same as  (foo)</span><br><span class="line">(?i:ab7)        same as  ([aA][bB]7)</span><br><span class="line">(?-i:ab)        same as  (ab)</span><br><span class="line">(?s:.)          same as  [\x00-\xFF]</span><br><span class="line">(?-s:.)         same as  [^\n]</span><br><span class="line">(?ix-s: a . b)  same as  ([Aa][^\n][bB])</span><br><span class="line">(?x:a  b)       same as  (&quot;ab&quot;)</span><br><span class="line">(?x:a\ b)       same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a&quot; &quot;b)      same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a[ ]b)      same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a</span><br><span class="line">    /* comment */</span><br><span class="line">    b</span><br><span class="line">    c)          same as  (abc)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>‘(?# comment )’  </p>
+<p>  忽略任何在()里的字符</p>
+</li>
+<li><p>‘rs’  </p>
+<p>  将r和s两个正则表达式相串联 (不是很懂)</p>
+</li>
+<li><p>‘r|s’ </p>
+<p>  用r或s去匹配,并联的意思。</p>
+</li>
+<li><p>‘r/s’<br>  匹配r，但是r之后必须有s，确定此规则为最长匹配项时包括s，但是在返回文本时只返回r。</p>
+</li>
+<li><p>‘^r’<br>  只在一行的开头去匹配r（即，刚开始扫描时或在扫描到换行符之后）</p>
+</li>
+<li><p>‘r$’<br>  在一行的结尾去匹配r</p>
+</li>
+<li><p><code>&lt;s&gt;r</code><br>  在start condition为s的时候才用r匹配;</p>
+</li>
+<li><p>‘<s1,s2,s3>r’</s1,s2,s3></p>
+<p>  start condition为s1或s2或s3时才用r匹配;</p>
+</li>
+<li><p>‘&lt;*&gt;r’    </p>
+<p>  在任何start condition都可以用r匹配</p>
+</li>
+<li><p>‘&lt;<eof>&gt;’ </eof></p>
+<p>  匹配EOF(文件结束)</p>
+</li>
+<li><p>‘<s1,s2>&lt;<eof>&gt;’</eof></s1,s2></p>
+<p>  在start condition为s1和s2的时候,匹配EOF</p>
+</li>
+</ul>
+<p>注意一下在字符集合里，所有的正则表达式的operator丢失了他们的特殊意义，除了’\‘   ‘-‘   ‘]]’和在集合前面的’^’</p>
+<p>上面所有提到的正则表达式都被根据优先级从最高到最低来组织，那些被分组到一起的是具有相同优先级的(在–posix 遵从POSIX标准的参数的文档中关于repeat operator ‘{}’优先级的特殊标记) 例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo|bar*</span><br></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(foo)|(ba(r*))</span><br></pre></td></tr></table></figure></p>
+<p>因为’*’操作符比串联有更高的优先级，串联比并联(|)更高的优先级。</p>
+<p>因此这个pattern匹配的是字符串”foo”或者”ba”后面跟着0或多个满足r的字符串</p>
+<p>为了匹配’foo’或者0或多个”bar” 可以这么写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo|(bar)*</span><br></pre></td></tr></table></figure></p>
+<p>或者为了匹配0个或多个”foo或bar”，可以写成这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(foo|bar)*</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>‘{-}’这个是求差集的operator，他会计算两个character class的差集</p>
+<p>  例如‘[a-c]{-}[b-z]’ 会匹配在a-c里不在b-z里的字符</p>
+</li>
+<li><p>‘{+}’是求并集的operator，他会计算两个character class的并集</p>
+<p>  例如在“C”的运行环境中‘[[:alpha:]]{-}[[:lower:]]{+}[q]’这个和‘[A-Zq]’是等价的</p>
+</li>
+<li><p>一条规则最多可以包含一个尾随上下文实例（“/”运算符或“$”运算符）。起始条件“^”和“&lt;<eof>&gt;”模式只能出现在模式的开头，并且不能与“/”和“$”一起放在括号内。规则开头没有出现的“^”或规则结尾没有出现的“$”将失去其特殊属性，并被视为普通字符。</eof></p>
+</li>
+</ul>
+<ul>
+<li><p>以下表达式是不合法的:<br>  第一句可以被写成这样‘foo/bar\n’</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo/bar$</span><br><span class="line"> &lt;sc1&gt;foo&lt;sc2&gt;bar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以下情况$或者^会被忽略，当作一个普通字符</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo|(bar$)</span><br><span class="line"> foo|^bar</span><br></pre></td></tr></table></figure>
+<p>如果你希望匹配的是’foo’或者’bar’后接一个新行，可以这么写，一个小trick将work。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo      |</span><br><span class="line"> bar$     /* action goes here */</span><br></pre></td></tr></table></figure>
+<h2 id="7-How-the-Input-Is-Matched"><a href="#7-How-the-Input-Is-Matched" class="headerlink" title="7 How the Input Is Matched"></a>7 How the Input Is Matched</h2><p>生成的扫描程序(scanner)运行的时候，它会分析输入来寻找与模式(pattern)匹配的字符串。如果找到多个匹配字符串，它会匹配文本最多的那一个（for trailing context rules，包括trailing部分的长度）。如果找到多个长度相同的匹配字符串，则按照flex输入文件中最先列出的规则选择。</p>
+<p>一旦确定匹配，就在全局字符指针yytext中提供与该匹配相对应的文本（称为token），并在全局int变量yyleng中提供长度。然后执行与匹配模式(pattern)相对应的操作(action)，然后扫描剩余的输入寻找下一个匹配。</p>
+<p>如果找不到匹配，则执行默认规则：下一个输入的字符将被视为匹配并复制到标准输出中。因此，最简单的有效flex输入是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br></pre></td></tr></table></figure></p>
+<p>其生成一个扫描程序(scanner)将输入（一次一个字符）简单地复制到输出。</p>
+<p>注意yytext可以用两种方式定义：作为字符指针或者字符数组。你可以通过在你的flex输入的开头（定义）部分包含<code>%pointer</code> 或<code>%array</code>中的一个来控制flex使用哪一个定义。</p>
+<p>默认是<code>%pointer</code>，除非使用<code>&#39;-l&#39;</code>lex兼容性选项，在这种情况下yytext就是一个数组。使用<code>％pointer</code>的好处是在匹配非常大的token时（除非您用尽了动态内存），扫描速度明显加快，并且没有缓冲区溢出，缺点是在修改yytext方面，你的action将受到限制(参考<a href="http://westes.github.io/flex/manual/Actions.html#Actions" target="_blank" rel="noopener">action</a>)，而且对<code>unput()</code>函数的调用会破坏yytext的当前内容，这在不同lex版本之间移动的时候可能会有很大的麻烦。</p>
+<p>使用<code>%array</code>的好处在于你可以修改yytext为你想要的内容，而且调用<code>unput()</code>不会破坏yytext。此外，现有的lex程序有时会使用以下形式的声明从外部访问yytext：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extern char yytext[];</span><br></pre></td></tr></table></figure></p>
+<p>这个声明在使用<code>%pointer</code>时是错误的，但在使用<code>%array</code>时是正确的。</p>
+<p><code>％array</code>声明将yytext定义为YYLMAX个字符的数组，YYLMAX默认为相当大的值，你可以在flex输入的第一部分中简单的#define YYLMAX为另一个值来更改它的大小。如上所述，使用<code>%pointer</code>时yytext会动态地增长来容纳很大的token。即你的<code>%pointer</code>扫描程序(scanner)可以容纳非常大的token（例如匹配整个注释块），但请记住每次扫描器必须重新调整yytext的大小时，还必须从头开始重新扫描整个token，因此匹配这种token可能会很慢。<br>如果调用unput()导致太多文本被push back，则yytext目前不会动态增长，而是会导致运行时错误。</p>
+<p>另外注意，不能将<code>％array</code>与C++扫描程序(scanner)类一起使用（参考<a href="http://westes.github.io/flex/manual/Cxx.html#Cxx" target="_blank" rel="noopener">Cxx</a>）。</p>
+<h2 id="8-Actions"><a href="#8-Actions" class="headerlink" title="8 Actions"></a>8 Actions</h2><p>规则中的每个pattern都有一个相应的action, 这些action可以是任意的c语言.</p>
+<p>Pattern以第一个非转义的空字符结束; 这一行剩下的部分就是它的action.</p>
+<p>如果这个action是空的,那么当pattern进行匹配时, 它的input token就会被简单的丢弃.</p>
+<p>例如, 下面是一个程序的rule, 它从输入中删除了所有出现的”zap me”:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">&quot;zap me&quot;</span><br></pre></td></tr></table></figure>
+<p>这个示例将输入中的所有其他字符复制到输出中, 因为这些其他字符将由默认规则匹配.</p>
+<p>下面是一个程序, 它将多个空格和制表符(tabs)压缩到单个的空白(blank), 并丢弃行尾的空格:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">[ \t]+        putchar( &apos; &apos; );</span><br><span class="line">[ \t]+$       /* ignore this token */</span><br></pre></td></tr></table></figure>
+<p>如果这个action包含<code>&quot;{&quot;</code>, 那么该action将一直持续到找到<code>&quot;}&quot;</code>, 并且这个操作可能会跨越几行. </p>
+<p>flex明白C的strings和注释, 所以flex不会因为字符串和注释里面的大括号而上当. 并且flex允许action以<code>&#39;%{&#39;</code>开头的操作,并将该action视为<code>&quot;%}&quot;</code>之前的所有文本(而不管action中出现的普通大括号).</p>
+<p>一个仅包括竖线<code>&quot;|&quot;</code>的action表示与下一个action的规则(rule)相同。可见于下面的例证.</p>
+<p>Actions可以包括任意的C代码,包括<code>return</code>语句–将一个值返回给任何调用<code>yylex()</code>的程序.每次调用<code>yylex()</code>,它将从上次中断的地方继续处理token,直到文件的末尾或者执行返回.</p>
+<p>Actions可以自由地修改<code>yytext</code>,除了延长它的长度(向其末尾增加字符––这样会覆盖输入流中后面的字符). 但是,使用<code>%array</code>的情况不适用于此(请参考Matching).在这种情况下,可以任意修改<code>yytext</code>.</p>
+<p>Actions可以自由地修改<code>yyleng</code>,但是如果action还包括<code>yymore()</code>的使用,则不应该修改<code>yyleng</code>(见下文).</p>
+<p>这里有许多特殊的指令(directives),这些指令可以被用于action中:</p>
+<ul>
+<li><p>ECHO<br>   拷贝yytext到scanner的输出</p>
+</li>
+<li><p>BEGIN<br>   紧随其后的是开始条件的名称,将scanner置于相应的开始条件中(见下文)</p>
+</li>
+</ul>
+<!-- - REJECT
+     指示scanner进行按照"second best"规则来匹配输入(或输入的前缀).这个规则在Matching中说明过,并适当的设置`yytext`和`yyleng`.它可以与最初选择的匹配规则所匹配的文本数相同,但稍后出现在`flex`输入文件中,或者匹配较少的文本(?这句话我翻译不清楚orz).例如,每当看到`'frob'`时,以下代码都将对输入中的单词计数,并调用程序`Special()`:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">        int word_count = 0;</span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">frob        special(); REJECT;</span><br><span class="line">[^ \t\n]+   ++word_count;</span><br></pre></td></tr></table></figure>
+<pre><code>没有`REJECT`,输入中出现的的任何`frob`都不会被记作单词,因为scanner通常每个token只执行一个操作.多次使用`REJECT`是允许的,每个`REJECT`都找到当前规则下的next best chocie.例如,当scanner扫描token`&apos;abcd&apos;`,它会将`‘abcdabcaba’`写作输出:
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">a        |</span><br><span class="line">ab       |</span><br><span class="line">abc      |</span><br><span class="line">abcd     ECHO; REJECT;</span><br><span class="line">.|\n     /* eat up any unmatched character */</span><br></pre></td></tr></table></figure>
+<pre><code>前三条规则共享第四条规则,因为他们使用了特殊的`&apos;|&apos;`cation.
+</code></pre><p><code>REJECT</code>是一个特别重要的特性在scanner的性能方面.如果在scanner的任何actions使用它,都将减缓所有scanner的匹配.此外,<code>REJECT</code>不能与<code>&#39;-Cf&#39;</code>或者<code>&#39;-CF&#39;</code>选项一起使用(参考于<a href="http://westes.github.io/flex/manual/Scanner-Options.html#Scanner-Options">Scanner Options</a>).</p>
+<p>还需要注意,于其他特殊的action不同,<code>REJECT</code>是一个分支(branch),在action后面紧跟的代码将不会被执行. –&gt;</p>
+<ul>
+<li>yymore()<br>   告诉scanner,下次它匹配规则时,应该将对应的token加到<code>yytext</code>的当前值上,不是替换它.例如,给定输入为<code>&#39;mega-kludge&#39;</code>,下面的输出将写入<code>mega-mega-kludge’</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">mega-    ECHO; yymore();</span><br><span class="line">kludge   ECHO;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这是关于<code>yymore()</code>的两个说明.<br>首先,<code>yymore()</code>取决于<code>yyleng</code>的值,它正确的反应了当前token的大小,所以如果使用<code>yymore()</code>则不能修改<code>yyleng</code>.<br>其次,scanner的action中存在<code>yymore()</code>会对scanner的匹配速度造成轻微的性能损失.</p>
+<ul>
+<li>yyless(n)<br>   除了当前token的前n个字符,将剩下的字符返回到输入流,当scanner查找下一个匹配时,这些字符将被重新查找.对于<code>yytext</code>和<code>yyleng</code>做了一些适当地调整(例如,<code>yyleng</code>现在等于n).例如,在输入<code>&#39;foobar&#39;</code>,下面将输出<code>&#39;foobarbar&#39;</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">foobar    ECHO; yyless(3);</span><br><span class="line">[a-z]+    ECHO;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将0作为参数传入<code>yyless()</code>将导致再次扫描当前输入的字符串.除非您已经改变了scanner处理输入的方式(例如使用了<code>BEGIN</code>),否则这将导致一个死循环.<br>注意,<code>yyless()</code>是一个宏,只能在flex输入文件中使用,而不能从其他源文件中使用.</p>
+<ul>
+<li>unput(c)<br>   将字符<code>c</code>放回输入流.这将是下一个字符扫描.下面的action将使用当前的token,进行重新扫描,并用括号闭合。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">int i;</span><br><span class="line">/* Copy yytext because unput() trashes yytext */</span><br><span class="line">char *yycopy = strdup( yytext );</span><br><span class="line">unput( &apos;)&apos; );</span><br><span class="line">for ( i = yyleng - 1; i &gt;= 0; --i )</span><br><span class="line">    unput( yycopy[i] );</span><br><span class="line">unput( &apos;(&apos; );</span><br><span class="line">free( yycopy );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意,由于每个<code>unput()</code>都将给定的字符放回输入流的开头,所以必须由后向前插入字符串.</p>
+<p>使用<code>unput</code>时的一个重要的潜在问题是,如果使用<code>%pointer</code>(默认),调用<code>unput()</code>会破坏<code>yytext</code>的内容,从其最右边的字符开始，并在每次调用时向左吞噬一个字符。如果你需要在调用<code>unput()</code>后保留<code>yytext</code>的值(如上面的示例所示),则必须先将它复制到其他地方,或者使用<code>%array</code>构建scanner(参见<a href="http://westes.github.io/flex/manual/Matching.html#Matching">Matching</a>).</p>
+<p>最后,请注意,不能将<code>&#39;EOF&#39;</code>插入(push back)来尝试用文件结束来标记输入流.</p>
+<ul>
+<li>input()<br>   从输入流读取下一个字符.例如,以下是清除C注释的一种方法:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">  &quot;/*&quot;        &#123;</span><br><span class="line">              int c;</span><br><span class="line"></span><br><span class="line">              for ( ; ; )</span><br><span class="line">                  &#123;</span><br><span class="line">                  while ( (c = input()) != &apos;*&apos; &amp;&amp;</span><br><span class="line">                          c != EOF )</span><br><span class="line">                      ;    /* eat up text of comment */</span><br><span class="line"></span><br><span class="line">                  if ( c == &apos;*&apos; )</span><br><span class="line">                      &#123;</span><br><span class="line">                      while ( (c = input()) == &apos;*&apos; )</span><br><span class="line">                          ;</span><br><span class="line">                      if ( c == &apos;/&apos; )</span><br><span class="line">                          break;    /* found the end */</span><br><span class="line">                      &#125;</span><br><span class="line"></span><br><span class="line">                  if ( c == EOF )</span><br><span class="line">                      &#123;</span><br><span class="line">                      error( &quot;EOF in comment&quot; );</span><br><span class="line">                      break;</span><br><span class="line">                      &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>(请注意,如果scanner是使用c++编译的,那么<code>input()</code>将被替换为<code>yyinput()</code>,以避免产生与c++流名字冲突的情况.</p>
+<ul>
+<li><p>YY_FLUSH_BUFFER<br>   刷新scanner的内部缓冲区,以便下次scanner尝试匹配token,它将首先使用<code>YY_INPUT()</code>填充缓冲区(参见<a href="http://westes.github.io/flex/manual/Generated-Scanner.html#Generated-Scanner">Generated Scanner</a>.这个action是比<code>yy_flush_buffer</code>函数更通用的特例.如下所述(参见 <a href="http://westes.github.io/flex/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers">Multiple Input Buffers</a>)</p>
+</li>
+<li><p>yyterminate()<br>   可以用来代替action中的返回语句.它终止scanner并将0返回给scanner的调用者,指示”全部完成”.默认情况下,当遇到文件结束,也会调用<code>yyterminate()</code>.它是一个宏,可以重新定义.</p>
+</li>
+</ul>
+<h2 id="9-The-Generated-Scanner"><a href="#9-The-Generated-Scanner" class="headerlink" title="9 The Generated Scanner"></a>9 The Generated Scanner</h2><p>flex的输出是lex.yy.c,包括扫描程序(scanning routine) yylex(),许多用于匹配token的表，一些辅助函数和宏定义。<br>默认yylex()函数被声明如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int yylex()</span><br><span class="line">    &#123;</span><br><span class="line">    ... various definitions and the actions in here ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是我们可以通过一个宏定义来改变它。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define YY_DECL float lexscan( a, b ) float a, b;</span><br></pre></td></tr></table></figure></p>
+<p>这代表另scanning routine名为lexscan，并包括两个float类型的参数和返回一个float类型的变量。<br>此外flex创建的程序遵循c99标准。<br>每次yylex调用，都会从全局输入yyin（默认为stdin）中顺序扫描token，直到到达文件末尾（此时返回0），或者遇到一个执行”return”语句的action。<br>如果scanner到达文件末尾，则后续调用是不确定的。<br>既可以将yyin指向新的输入文件（在这种情况下，扫描将从该文件继续进行），也可以调用yyrestart()函数。<br>yyrestart()接受一个参数，一个FILE <em>指针（这个指针可能是NULL，如果你已经设置了YY_INPUT宏从其他地方读取，而不是从yyin），然后它将初始化yyin，用于从这个文件(FILE </em>)继续扫描。<br>这两种方法之间基本上没有区别。<br>后者可以兼容早期版本的flex，因为它可以用于在扫描的过程中就切换输入文件；通过将yyin传递给yyrestart，调用这个函数，也可以用来丢弃当前的input buffer，但是最好还是使用YY_FLUSH_BUFFER。<br>请注意，yyrestart()不会将开始条件重置为INITIAL<br>如果yylex()由于在某个action上执行了return而停止扫描，则可以再次调用scanner，并且它将从中断处继续扫描。<br>默认情况下（为了提高效率），scanner使用块读取而不是简单的getc()调用来读取字符y，可以通过定义YY_INPUT宏来控制如何获取输入。<br>YY_INPUT() is YY_INPUT(buf,result,max_size)，它用于在buf数组里放置最多max_size个字节，并且在整数变量result中，记录读取的字节数量或者YY_NULL（在Unix系统上值为0），YY_NULL是为了表示遇到EOF。<br>YY_INPUT默认从yyin中读取。<br>下面是一个简单的例子，在输入文件的define部分的示例定义。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">#define YY_INPUT(buf,result,max_size) \</span><br><span class="line">    &#123; \</span><br><span class="line">    int c = getchar(); \</span><br><span class="line">    result = (c == EOF) ? YY_NULL : (buf[0] = c, 1); \</span><br><span class="line">    &#125;</span><br><span class="line">%&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此定义会将输入处理更改为一次读取一个字符。<br>当scanner从YY_INPUT接收到EOF时，它将使用yywrap()函数进行检查。如果yywrap()返回false（零），则假定该函数已进行设置y指向另一个输入文件，然后继续扫描。<br>如果返回true（非零），则scanner终止，并向其调用方返回0。<br>请注意，无论哪种情况，start condition均保持不变；它并没有恢复 INITIAL。<br>如果您没有提供自己的版本yywrap()，则必须使用%option noyywrap（在这种情况下，scanner的行为就像yywrap()返回1），或者您必须链接“-lfl’来获取默认的yywrap版本，该版本始终返回1。<br>关于从内存缓冲区扫描(例如 scanning string)，在Scanning Strings和Multiple Input Buffers部分。<br>scanner将写入它的ECHO输出到yyout global(默认为stdout)，用户只需将其分配给其他FILE指针即可重新定义。</p>
+<h2 id="10-Start-Conditions"><a href="#10-Start-Conditions" class="headerlink" title="10 Start Conditions"></a>10 Start Conditions</h2><p>flex提供了有条件的激活规则机制，任何以<code>&lt;sc&gt;</code>前缀的pattern，仅在scanner处于名为sc的开始状态时，才处于活动状态。<br>例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;STRING&gt;[^&quot;]*        &#123; /* eat up the string body ... */</span><br><span class="line">            ...</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个pattern将被激活，仅当scanner处于STRING状态。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;INITIAL,STRING,QUOTE&gt;\.        &#123; /* handle an escape ... */</span><br><span class="line">            ...</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个pattern将被激活，仅当scanner处于INITIAL,STRING或QUOTE状态</p>
+<p>可以使用%s和%x来定义两种特殊的start condition。<br>一个开始条件被激活，通过BEGIN action。在执行下一个BEGIN action之前，具有给定开始条件的规则将处于活动状态，而具有其他开始条件的规则将处于非活动状态</p>
+<p>包容性（inclusive）的启动条件<br>如果启动条件是inclusive的，则完全没有给出sc限定的规则也将处于活动状态。</p>
+<p>排他性（exclusive）的启动条件<br>如果是排他性的，则只有符合开始条件的规则才是活动的。<br>一组基于相同排他开始条件的规则描述了一个扫描程序，该扫描程序独立于以下任何其他来自flex input的规则。<br>因此，排它的启动条件使指定”mini-scanners”变得容易，该”mini-scanners”将扫描输入中与其余语法（例如，注释）不同的部分。</p>
+<p>如果上述描述有点模糊，考虑以下例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%s example</span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">&lt;example&gt;foo   do_something();</span><br><span class="line"></span><br><span class="line">bar            something_else();</span><br></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%x example</span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">&lt;example&gt;foo   do_something();</span><br><span class="line"></span><br><span class="line">&lt;INITIAL,example&gt;bar    something_else();</span><br></pre></td></tr></table></figure></p>
+<p>如果没有<code>&lt;INITIAL,example&gt;</code>限定符，则bar第二个示例中的pattern在启动条件处于example时，将不会处于活动状态（即无法匹配）。<br>但是，如果我们仅用<code>&lt;example&gt;</code>限定条件bar，那么它将仅在处于example时被激活而不在处于INITIAL时被激活。<br>而在第一个示例中它同时在两个中都起作用。<br>（译者注：排他是在已经进入了某个sc时的排他，包容也是在某个sc里的包容）</p>
+<p>还要注意，特殊的启动条件说明符<code>&lt;*&gt;</code>匹配每个启动条件。因此，上面的示例也可以写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">％x example</span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">&lt;example&gt; foo do_something（）;</span><br><span class="line"></span><br><span class="line">&lt;*&gt; bar something_else（）;</span><br></pre></td></tr></table></figure></p>
+<p>The default rule (to ECHO any unmatched character) remains active in start conditions. It is equivalent to:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;*&gt;.|\n     ECHO;</span><br></pre></td></tr></table></figure></p>
+<p>BEGIN(0)返回到没有开始条件被激活的初始状态。<br>此状态也可以称为INITIAL，因此BEGIN(INITIAL)等效于BEGIN(0)。（在开始条件名称周围的括号不是必需的，但是被认为是很好的样式）</p>
+<p>BEGIN动作也可以在规则部分的开头以缩进代码的形式给出。例如，以下内容将导致scanner进入SPECIAL开始状态，当每次yylex()被调用且全局变量enter_special为true。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">        int enter_special;</span><br><span class="line"></span><br><span class="line">%x SPECIAL</span><br><span class="line">%%</span><br><span class="line">        if ( enter_special )</span><br><span class="line">            BEGIN(SPECIAL);</span><br><span class="line"></span><br><span class="line">&lt;SPECIAL&gt;blahblahblah</span><br><span class="line">...more rules follow...</span><br></pre></td></tr></table></figure></p>
+<p>为了说明开始条件的用法，下面是一个scanner，它提供了两种不同的字符串解释，例如’123.456’。<br>默认情况下，它将视为三个token，即整数’123’，点（’.’）和整数’456’。<br>但是，如果该行字符串的前缀是’expect-floats’,它会将其视为单个令牌，即浮点数’123.456’：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">    #include &lt;math.h&gt;</span><br><span class="line">    %&#125;</span><br><span class="line">    %s expect</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line">    expect-floats        BEGIN(expect);</span><br><span class="line"></span><br><span class="line">    &lt;expect&gt;[0-9]+.[0-9]+      &#123;</span><br><span class="line">                printf( &quot;found a float, = %f\n&quot;,</span><br><span class="line">                        atof( yytext ) );</span><br><span class="line">                &#125;</span><br><span class="line">    &lt;expect&gt;\n           &#123;</span><br><span class="line">                /* that&apos;s the end of the line, so</span><br><span class="line">                 * we need another &quot;expect-number&quot;</span><br><span class="line">                 * before we&apos;ll recognize any more</span><br><span class="line">                 * numbers</span><br><span class="line">                 */</span><br><span class="line">                BEGIN(INITIAL);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">    [0-9]+      &#123;</span><br><span class="line">                printf( &quot;found an integer, = %d\n&quot;,</span><br><span class="line">                        atoi( yytext ) );</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">    &quot;.&quot;         printf( &quot;found a dot\n&quot; );</span><br></pre></td></tr></table></figure></p>
+<p>下面是一个scanner，其可以在保持当前输入行计数的同时，识别并丢弃掉注释。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">%x comment</span><br><span class="line">%%</span><br><span class="line">        int line_num = 1;</span><br><span class="line"></span><br><span class="line">&quot;/*&quot;         BEGIN(comment);</span><br><span class="line"></span><br><span class="line">&lt;comment&gt;[^*\n]*        /* eat anything that&apos;s not a &apos;*&apos; */</span><br><span class="line">&lt;comment&gt;&quot;*&quot;+[^*/\n]*   /* eat up &apos;*&apos;s not followed by &apos;/&apos;s */</span><br><span class="line">&lt;comment&gt;\n             ++line_num;</span><br><span class="line">&lt;comment&gt;&quot;*&quot;+&quot;/&quot;        BEGIN(INITIAL);</span><br></pre></td></tr></table></figure></p>
+<p>请注意，起始条件名称实际上是以整数值存储。因此，上述内容可以通过以下方式扩展：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">%x comment foo</span><br><span class="line">%%</span><br><span class="line">        int line_num = 1;</span><br><span class="line">        int comment_caller;</span><br><span class="line"></span><br><span class="line">&quot;/*&quot;         &#123;</span><br><span class="line">             comment_caller = INITIAL;</span><br><span class="line">             BEGIN(comment);</span><br><span class="line">             &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&lt;foo&gt;&quot;/*&quot;    &#123;</span><br><span class="line">             comment_caller = foo;</span><br><span class="line">             BEGIN(comment);</span><br><span class="line">             &#125;</span><br><span class="line"></span><br><span class="line">&lt;comment&gt;[^*\n]*        /* eat anything that&apos;s not a &apos;*&apos; */</span><br><span class="line">&lt;comment&gt;&quot;*&quot;+[^*/\n]*   /* eat up &apos;*&apos;s not followed by &apos;/&apos;s */</span><br><span class="line">&lt;comment&gt;\n             ++line_num;</span><br><span class="line">&lt;comment&gt;&quot;*&quot;+&quot;/&quot;        BEGIN(comment_caller);</span><br></pre></td></tr></table></figure></p>
+<p>此外，您可以使用整数值YY_START宏访问当前的start condition。例如，上面的分配comment_caller可以改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">comment_caller = YY_START；</span><br></pre></td></tr></table></figure></p>
+<p>Flex提供YYSTATE作为YY_START的别名（因为AT＆T使用了它）。</p>
+<p>最后，这是一个示例，说明如何使用排他的开始条件来匹配C样式的带引号的字符串，包括扩展的转义序列（但不包括检查过长的字符串）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">%x str</span><br><span class="line"></span><br><span class="line">   %%</span><br><span class="line">           char string_buf[MAX_STR_CONST];</span><br><span class="line">           char *string_buf_ptr;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   \&quot;      string_buf_ptr = string_buf; BEGIN(str);</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\&quot;        &#123; /* saw closing quote - all done */</span><br><span class="line">           BEGIN(INITIAL);</span><br><span class="line">           *string_buf_ptr = &apos;\0&apos;;</span><br><span class="line">           /* return string constant token type and</span><br><span class="line">            * value to parser</span><br><span class="line">            */</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\n        &#123;</span><br><span class="line">           /* error - unterminated string constant */</span><br><span class="line">           /* generate error message */</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\\[0-7]&#123;1,3&#125; &#123;</span><br><span class="line">           /* octal escape sequence */</span><br><span class="line">           int result;</span><br><span class="line"></span><br><span class="line">           (void) sscanf( yytext + 1, &quot;%o&quot;, &amp;result );</span><br><span class="line"></span><br><span class="line">           if ( result &gt; 0xff )</span><br><span class="line">                   /* error, constant is out-of-bounds */</span><br><span class="line"></span><br><span class="line">           *string_buf_ptr++ = result;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\\[0-9]+ &#123;</span><br><span class="line">           /* generate error - bad escape sequence; something</span><br><span class="line">            * like &apos;\48&apos; or &apos;\0777777&apos;</span><br><span class="line">            */</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\\n  *string_buf_ptr++ = &apos;\n&apos;;</span><br><span class="line">   &lt;str&gt;\\t  *string_buf_ptr++ = &apos;\t&apos;;</span><br><span class="line">   &lt;str&gt;\\r  *string_buf_ptr++ = &apos;\r&apos;;</span><br><span class="line">   &lt;str&gt;\\b  *string_buf_ptr++ = &apos;\b&apos;;</span><br><span class="line">   &lt;str&gt;\\f  *string_buf_ptr++ = &apos;\f&apos;;</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;\\(.|\n)  *string_buf_ptr++ = yytext[1];</span><br><span class="line"></span><br><span class="line">   &lt;str&gt;[^\\\n\&quot;]+        &#123;</span><br><span class="line">           char *yptr = yytext;</span><br><span class="line"></span><br><span class="line">           while ( *yptr )</span><br><span class="line">                   *string_buf_ptr++ = *yptr++;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通常，例如在上面的某些示例中，您最终要编写一堆规则，所有规则都以相同的开始条件开头。通过引入启动条件范围的概念，Flex使此操作变得更加轻松和简洁。起始条件范围始于：<code>&lt;SCs&gt; {</code><br>其中<code>&lt;SCs&gt;</code>是一个或多个开始条件的列表。在开始条件范围内，每个规则都会自动为其应用前缀<code>&lt;SCs&gt;</code>，直到遇到匹配的“}“。因此，例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;ESC&gt;&#123;</span><br><span class="line">    &quot;\\n&quot;   return &apos;\n&apos;;</span><br><span class="line">    &quot;\\r&quot;   return &apos;\r&apos;;</span><br><span class="line">    &quot;\\f&quot;   return &apos;\f&apos;;</span><br><span class="line">    &quot;\\0&quot;   return &apos;\0&apos;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;ESC&gt;&quot;\\n&quot;  return &apos;\n&apos;;</span><br><span class="line">&lt;ESC&gt;&quot;\\r&quot;  return &apos;\r&apos;;</span><br><span class="line">&lt;ESC&gt;&quot;\\f&quot;  return &apos;\f&apos;;</span><br><span class="line">&lt;ESC&gt;&quot;\\0&quot;  return &apos;\0&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>起始条件范围可以嵌套。<br>以下routines可用于操纵开始条件的堆栈：</p>
+<ul>
+<li><p><code>void yy_push_state （int new_state）</code><br>  将当前启动条件推送到启动条件堆栈的顶部，并切换到 new_state, 就好像您曾经使用过的一样 BEGIN new_state （请注意，启动条件名称也是整数）。</p>
+</li>
+<li><p><code>void yy_pop_state （）</code><br>  弹出堆栈的顶部，然后切换到堆栈的顶部BEGIN。</p>
+</li>
+<li><p><code>int yy_top_state （）</code><br>  返回堆栈的顶部而不更改堆栈的内容。</p>
+</li>
+</ul>
+<p>起始条件堆栈会动态增长，因此没有内置的大小限制。如果内存耗尽，程序将中止执行。<br>要使用开始条件堆栈，scanner必须包含一个%option stack指令（请参阅scanner选项）。</p>
+<h2 id="11-Multiple-Input-Buffers"><a href="#11-Multiple-Input-Buffers" class="headerlink" title="11 Multiple Input Buffers"></a>11 Multiple Input Buffers</h2><p>一些scanner（例如支持“ include”文件的scanner）需要从多个输入流中读取。由于Flex扫描程序会进行大量缓冲，因此无法通过简单地重写对扫描上下文敏感的<code>YY_INPUT（）</code>来控制将从下一个输入读取的位置。<br><code>YY_INPUT（）</code>仅在扫描程序到达其缓冲区的末尾时才调用，这可能是在扫描诸如include语句之类的语句(会花费)很长的时间，(在这之后)，该语句要求切换输入源。</p>
+<p>为了解决这类问题，flex提供了一种创建多个输入缓冲区之间和切换的机制。输入缓冲区是通过使用以下命令创建的：</p>
+<ul>
+<li><code>YY_BUFFER_STATE  yy_create_buffer( FILE *file, int size )</code></li>
+</ul>
+<p>参数是FILE指针和size，并创建与给定文件关联的缓冲区，缓冲区足够大以容纳size大小的字符（发生问题时，试试使用<code>YY_BUF_SIZE</code>作为大小）。它返回一个<code>YY_BUFFER_STATE</code>句柄，可以用来将其传递给其他例程（请参见下文）。<br><code>YY_BUFFER_STATE</code>类型是指向opaque structure <code>yy_buffer_state</code>结构的指针，因此您可以根据需要将<code>YY_BUFFER_STATE</code>变量安全地初始化为<code>（（YY_BUFFER_STATE）0）</code>，还可以引用opaque structure以正确声明源文件中的输入缓冲区（而非源文件中的scanner）。请注意，调用<code>yy_create_buffer</code>时的FILE指针仅用作<code>YY_INPUT</code>看到的<code>yyin</code>值。如果重新定义<code>YY_INPUT（）</code>使其不再使用<code>yyin</code>，则可以安全地将NULL<br>FILE指针传递给<code>yy_create_buffer</code>。</p>
+<p>您可以使用以下方法选择要扫描的特定缓冲区：</p>
+<ul>
+<li><code>void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer )</code></li>
+</ul>
+<p>这个函数可切换扫描器的输入缓冲区，使得后续tokens将来自new_buffer。请注意，<code>yywrap（）</code>可以使用<code>yy_switch_to_buffer（）</code>来设置要继续扫描的内容，而不是打开新文件并用<code>yyin</code>指向它。如果您正在寻找输入缓冲区的堆栈，那么您想使用<code>yypush_buffer_state（）</code>代替此函数。还要注意，通过<code>yy_switch_to_buffer（）</code>或<code>yywrap（）</code>切换输入源不会更改启动条件。</p>
+<ul>
+<li><code>void yy_delete_buffer ( YY_BUFFER_STATE buffer )</code></li>
+</ul>
+<p>用于回收与缓冲区关联的存储。 （缓冲区可以为NULL，在这种情况下例程不执行任何操作。）</p>
+<p>您还可以使用以下方法清除缓冲区的当前内容：</p>
+<ul>
+<li><code>void yypush_buffer_state( YY_BUFFER_STATE buffer )</code></li>
+</ul>
+<p>该函数将新的缓冲区状态压入内部栈。压入的状态变为新的当前状态。栈由flex维护，并将根据需要增长。当您要更改状态时，应使用此函数代替<code>yy_switch_to_buffer</code>，但保留当前状态以供以后使用。</p>
+<ul>
+<li><code>void yypop_buffer_state ( )</code></li>
+</ul>
+<p>此函数从栈顶部弹出当前状态，并通过调用<code>yy_delete_buffer</code>删除它。堆栈中的下一个状态（如果有）将成为新的当前状态。</p>
+<p><code>void yy_flush_buffer ( YY_BUFFER_STATE buffer )</code></p>
+<p>此函数会丢弃缓冲区的内容，因此，下次扫描程序尝试从缓冲区中匹配token时，它将首先使用<code>YY_INPUT（）</code>重新填充缓冲区。</p>
+<p><code>YY_BUFFER_STATE yy_new_buffer ( FILE *file, int size )</code></p>
+<p>是<code>yy_create_buffer（）</code>的别名，用于兼容 C ++的new和delete用于创建和销毁动态对象。<br><code>YY_CURRENT_BUFFER</code>宏将<code>YY_BUFFER_STATE</code>句柄返回到当前缓冲区。不应将其用作左值。</p>
+<p>这是使用这些功能编写扩展包含文件的扫描仪的两个示例（下面将讨论&lt;&lt; EOF &gt;&gt;功能）。</p>
+<p>第一个示例使用<code>yypush_buffer_state</code>和<code>yypop_buffer_state</code>。 Flex在维护一个内部栈。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/* the &quot;incl&quot; state is used for picking up the name</span><br><span class="line">    * of an include file</span><br><span class="line">    */</span><br><span class="line">   %x incl</span><br><span class="line">   %%</span><br><span class="line">   include             BEGIN(incl);</span><br><span class="line"></span><br><span class="line">   [a-z]+              ECHO;</span><br><span class="line">   [^a-z\n]*\n?        ECHO;</span><br><span class="line"></span><br><span class="line">   &lt;incl&gt;[ \t]*      /* eat the whitespace */</span><br><span class="line">   &lt;incl&gt;[^ \t\n]+   &#123; /* got the include file name */</span><br><span class="line">           yyin = fopen( yytext, &quot;r&quot; );</span><br><span class="line"></span><br><span class="line">           if ( ! yyin )</span><br><span class="line">               error( ... );</span><br><span class="line"></span><br><span class="line">		yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));</span><br><span class="line"></span><br><span class="line">           BEGIN(INITIAL);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;&lt;EOF&gt;&gt; &#123;</span><br><span class="line">		yypop_buffer_state();</span><br><span class="line"></span><br><span class="line">           if ( !YY_CURRENT_BUFFER )</span><br><span class="line">               &#123;</span><br><span class="line">               yyterminate();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
+<p>下面的第二个示例执行与上一个示例相同的操作，但是手动管理其自己的输入缓冲区栈（而不是让flex进行操作）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">/* the &quot;incl&quot; state is used for picking up the name</span><br><span class="line">     * of an include file</span><br><span class="line">     */</span><br><span class="line">    %x incl</span><br><span class="line"></span><br><span class="line">    %&#123;</span><br><span class="line">    #define MAX_INCLUDE_DEPTH 10</span><br><span class="line">    YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];</span><br><span class="line">    int include_stack_ptr = 0;</span><br><span class="line">    %&#125;</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line">    include             BEGIN(incl);</span><br><span class="line"></span><br><span class="line">    [a-z]+              ECHO;</span><br><span class="line">    [^a-z\n]*\n?        ECHO;</span><br><span class="line"></span><br><span class="line">    &lt;incl&gt;[ \t]*      /* eat the whitespace */</span><br><span class="line">    &lt;incl&gt;[^ \t\n]+   &#123; /* got the include file name */</span><br><span class="line">            if ( include_stack_ptr &gt;= MAX_INCLUDE_DEPTH )</span><br><span class="line">                &#123;</span><br><span class="line">                fprintf( stderr, &quot;Includes nested too deeply&quot; );</span><br><span class="line">                exit( 1 );</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            include_stack[include_stack_ptr++] =</span><br><span class="line">                YY_CURRENT_BUFFER;</span><br><span class="line"></span><br><span class="line">            yyin = fopen( yytext, &quot;r&quot; );</span><br><span class="line"></span><br><span class="line">            if ( ! yyin )</span><br><span class="line">                error( ... );</span><br><span class="line"></span><br><span class="line">            yy_switch_to_buffer(</span><br><span class="line">                yy_create_buffer( yyin, YY_BUF_SIZE ) );</span><br><span class="line"></span><br><span class="line">            BEGIN(INITIAL);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    &lt;&lt;EOF&gt;&gt; &#123;</span><br><span class="line">            if ( --include_stack_ptr  0 )</span><br><span class="line">                &#123;</span><br><span class="line">                yyterminate();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            else</span><br><span class="line">                &#123;</span><br><span class="line">                yy_delete_buffer( YY_CURRENT_BUFFER );</span><br><span class="line">                yy_switch_to_buffer(</span><br><span class="line">                     include_stack[include_stack_ptr] );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<p>以下例程可用于设置输入缓冲区以扫描内存中的字符串而不是文件。它们都创建了一个新的输入缓冲区来扫描字符串，并返回一个对应的<code>YY_BUFFER_STATE</code>句柄（完成后应使用<code>yy_delete_buffer（）</code>删除）。还使用<code>yy_switch_to_buffer（）</code>切换到新缓冲区，因此对<code>yylex（）</code>的下一次调用将开始扫描这个字符串。</p>
+<ul>
+<li><code>YY_BUFFER_STATE yy_scan_string ( const char *str )</code></li>
+</ul>
+<p>扫描NULL结尾的字符串</p>
+<ul>
+<li><code>YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len )</code></li>
+</ul>
+<p>扫描len长度（包括NULL）的字符串</p>
+<p>请注意，这两个函数都会创建并扫描字符串或字节的副本。 （这可能是可取的，因为<code>yylex（）</code>修改了它正在扫描的缓冲区的内容。）您可以使用以下方法避免复制：</p>
+<ul>
+<li><code>YY_BUFFER_STATE yy_scan_buffer (char *base, yy_size_t size)</code></li>
+</ul>
+<p>它将扫描从基址开始的缓冲区，该缓冲区由size大小字节组成，其最后两个字节必须为<code>YY_END_OF_BUFFER_CHAR（ASCII NUL）</code>。最后两个字节不扫描。因此，扫描由base [0]到base [size-2]组成。</p>
+<p>如果您无法以这种方式设置base（即忘记最后两个<code>YY_END_OF_BUFFER_CHAR</code>字节），则<code>yy_scan_buffer（）</code>将返回NULL指针，而不是创建新的输入缓冲区。</p>
+<p>Data type: <code>yy_size_t</code></p>
+<p>是整数类型，您可以将其转换为反映缓冲区大小的整数表达式。</p>
+<h2 id="12-End-of-File-Rules"><a href="#12-End-of-File-Rules" class="headerlink" title="12 End-of-File Rules"></a>12 End-of-File Rules</h2><p>特殊规则<code>&lt;&lt;EOF&gt;&gt;</code>指示遇到文件结尾符（end-of-file）和<code>yywrap()</code>返回非零值时，要采取的action（即，表示没有其他要处理的文件）。该action必须通过执行以下任一action来完成：</p>
+<ul>
+<li>分配 yyin 到新的输入文件（在的<code>flex</code>早期版本中 ，完成分配后，您必须调用特殊action<code>YY_NEW_FILE</code>。现在，这不再是必需的。）</li>
+<li>执行一条<code>return</code>语句；</li>
+<li>执行<code>yyterminate()</code>特殊action。</li>
+<li>或者，如上例所示，用<code>yy_switch_to_buffer()</code>切换到新的缓冲区。</li>
+</ul>
+<p><code>&lt;&lt;EOF&gt;&gt;</code>规则不得与其他pattern一起使用，他们可能只能用start condition进行限定。如果给出了未限定的<code>&lt;&lt;EOF&gt;&gt;</code>规则，则该规则适用于它适用于尚未执行<code>&lt;&lt;EOF&gt;&gt;</code>action的所有启动条件。。要只为初始开始条件指名<code>&lt;&lt;EOF&gt;&gt;</code>规则，请使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;INITIAL&gt;&lt;&lt;EOF&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>这些规则对于捕获未封闭的注释（comments）等有用。例子如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> %x quote</span><br><span class="line"> %%</span><br><span class="line"></span><br><span class="line"> ...other rules for dealing with quotes...</span><br><span class="line"></span><br><span class="line"> &lt;quote&gt;&lt;&lt;EOF&gt;&gt;   &#123;</span><br><span class="line">          error( &quot;unterminated quote&quot; );</span><br><span class="line">          yyterminate();</span><br><span class="line">          &#125;</span><br><span class="line">&lt;&lt;EOF&gt;&gt;  &#123;</span><br><span class="line">          if ( *++filelist )</span><br><span class="line">              yyin = fopen( *filelist, &quot;r&quot; );</span><br><span class="line">          else</span><br><span class="line">             yyterminate();</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="13-Miscellaneous-Macros"><a href="#13-Miscellaneous-Macros" class="headerlink" title="13 Miscellaneous Macros"></a>13 Miscellaneous Macros</h2><p><code>YY_USER_ACTION</code> 可以定义宏以提供始终在匹配规则的操作之前执行的操作。例如，可以使用<code>#define’d</code>去调用一个routine以将yytext转换为小写，当<code>YY_USER_ACTION</code> 被调用，（规则编号从1开始）匹配的规则编号会保存在变量<code>yy_act</code>中。如果你想知道每一个规则的匹配频率，请看下面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define YY_USER_ACTION ++ctr[yy_act]</span><br></pre></td></tr></table></figure>
+<p><code>ctr</code> 是一个数组，用于保存不同规则的计数结果。请注意，<code>YY_NUM_RULES</code> 宏命令给出了规则总数（包括默认规则），即使你使用 ‘-s)’，所以，正确的<code>ctr</code>声明是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int ctr[YY_NUM_RULES];</span><br></pre></td></tr></table></figure>
+<p><code>YY_USER_INIT</code>可以定义宏以提供始终在第一次扫描之前（以及在完成扫描器的内部初始化之前）执行的操作。例如，它可以被用来调用一个例程（routine ）来读入数据或者打开一个日志文件。</p>
+<p>宏<code>yy_set_interactive(is_interactive)</code>可以被用来控制当前缓冲区是否被认为是交互式的。一个交互式的缓冲区处理速度较慢，但是当扫描器的输入源是交互式时，必须使用交互式缓冲区，以避免由于等待填充缓冲区而引出的问题（请参阅 <a href="http://westes.github.io/flex/manual/Scanner-Options.html#Scanner-Options">Scanner Options</a> 一文中关于‘-I’ flag的讨论）。<br>宏调用中的非零值会将缓冲区标记为交互式，零值记为非交互式的。请注意，这个宏的使用将覆盖<code>%option always-interactive</code>和 <code>%option never-interactive</code> (参阅 <a href="http://westes.github.io/flex/manual/Scanner-Options.html#Scanner-Options">Scanner Options</a>)。`yy_set_interactive必须在开始扫描交互式（或者非交互式）缓冲区之前调用。</p>
+<p>The macro yy_set_bol(at_bol) can be used to control whether the current buffer’s scanning context for the next token match is done as though at the beginning of a line. A non-zero macro argument makes rules anchored with ‘^’ active, while a zero argument makes ‘^’ rules inactive.</p>
+<p>如果从当前缓冲区扫描的下一个token将启用“^”规则，则宏YY_AT_BOL（）返回true，否则返回false。</p>
+<p>在生成的扫描程序中，所有actions都收集在一个大的switch语句中，并使用<code>YY_BREAK</code>分开，<code>YY_BREAK</code>可以被重新定义。<br>默认情况下，它只是一个<code>break</code>，用于将每个规则的action与后面规则的action分开。<br>允许对<code>YY_BREAK</code> 重新定义，例如，C++用户可以通过#define YY_BREAK 来让YY_BREAK不执行任何操作（要非常小心，每个规则都需要以一个<code>break</code>或一个<code>return</code>结尾！），以避免遇到提示编译warnning(unreachable statement)，因为规则的action以<code>return</code>的话，则<code>YY_BREAK</code>无法访问到。</p>
+<h2 id="14-Values-Available-To-the-User"><a href="#14-Values-Available-To-the-User" class="headerlink" title="14 Values Available To the User"></a>14 Values Available To the User</h2><p>本节总结了在rule actions下，可供用户使用的一些值:</p>
+<ul>
+<li><p><code>char *yytext</code></p>
+<p>维护当前token的文本信息，它可以被修改，但是不能加长，即不能在末尾添加字符。</p>
+<p>如果特殊的directive %array出现在scanner description的first section，那么<code>yytext</code>将被声明为<code>char yytext[YYLMAX]</code>.</p>
+<p><code>YYLMAX</code>是一个宏定义，默认值为<code>8KB</code>，你可以在first section重定义它的大小。 使用<code>％array</code>会导致scanner的速度稍慢一些，但是<code>yytext</code>的值不受<code>unput（）</code>调用的影响。当<code>yytext</code>是字符指针时，<code>unput（）</code>可能会破坏其值。与％array相对的是％pointer，%pointer是默认设置。<br>生成c++ scanner（开启“-+”flag）时，不能使用％array。</p>
+</li>
+<li><p><code>int yyleng</code></p>
+<p>保存当前token的长度</p>
+</li>
+<li><p><code>FILE *yyin</code></p>
+<p>是默认情况下flex读取的文件。它可以重新定义，但只有在开始扫描之前或遇到<code>EOF</code>之后才有意义。在扫描过程中更改它会产生意外结果，因为flex会缓存其输入。当由于遇到<code>EOF</code>而终止扫描后，可以重新分配<code>yyin</code>指向新的输入文件，然后再次调用scanner以继续扫描。</p>
+</li>
+<li><p><code>void yyrestart( FILE *new_file )</code></p>
+<p>可以将<code>yyin</code>指向新的输入文件。立即切换到新文件（任何先前缓存的输入都将丢失）。请注意，使用<code>yyin</code>作为参数调用<code>yyrestart（）</code>会丢弃当前的输入缓冲区(input buffer)，并继续扫描相同的输入文件。</p>
+</li>
+<li><p><code>FILE *yyout</code></p>
+<p>是执行ECHO操作的文件。可以由用户重新定义。</p>
+</li>
+<li><p><code>YY_CURRENT_BUFFER</code></p>
+<p>返回 <code>YY_BUFFER_STATE</code> 句柄到当前的缓冲区</p>
+</li>
+<li><p><code>YY_START</code><br>返回与当前开始条件相对应的整数值。随后，您可以将这个值与BEGIN一起使用以返回到该开始条件。</p>
+</li>
+</ul>
+<h2 id="15-Interfacing-with-Yacc"><a href="#15-Interfacing-with-Yacc" class="headerlink" title="15 Interfacing with Yacc"></a>15 Interfacing with Yacc</h2><p>flex的主要用途之一是与yacc解析器生成器一起使用。 yacc解析器应当调用<code>yylex（）</code>来查找下一个输入token。yylex应返回下一个token的类型，并将所有关联的值放入全局变量<code>yylval</code>中。<br>要将flex与yacc一起使用，请为yacc指定“-d”选项，来生成文件y.tab.h，其中包含所有出现在yacc输入中的<code>％token</code>的定义。<br>然后，将此文件包含在Flex scanner中。例如，如果token之一是<code>TOK_NUMBER</code>，则scanner的一部分可能看起来像：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">#include &quot;y.tab.h&quot;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">[0-9]+        yylval = atoi( yytext ); return TOK_NUMBER;</span><br></pre></td></tr></table></figure></p>
+<h2 id="16-Scanner-Options"><a href="#16-Scanner-Options" class="headerlink" title="16 Scanner Options"></a>16 Scanner Options</h2><p>//todo</p>
+<h2 id="17-Performance-Considerations"><a href="#17-Performance-Considerations" class="headerlink" title="17 Performance Considerations"></a>17 Performance Considerations</h2><p>//todo</p>
+<h2 id="18-Generating-C-Scanners"><a href="#18-Generating-C-Scanners" class="headerlink" title="18 Generating C++ Scanners"></a>18 Generating C++ Scanners</h2><p>重要:当前的扫描类的形式是实验性的，并且在各主要版本中有较大的不同。</p>
+<p>flex提供两种不同的方式来生成用于C++的scanner。第一种方式就是简单的编译一个由flex生成的scanner，scanner由C++编译而不是C编译。你应该不会遇到任何编译错误(有就查看错误报告)。你可以在rule actions中使用C++代码而不是C代码。注意scanner的默认输入源仍然是 yyin, 默认回显仍然是 yyout。这两者都是 FILE* 变量，而不是C++流。</p>
+<p>你也可以使用flex去生成一个C++ scanner类，使用’-+’选项(或者，相等的，%option c++)，如果flex可执行文件的名称以”+”结尾，则会自动指定，比如 flex++。<br>当使用此选项时，flex默认将扫描程序生成为文件lex.yy.cc 而不是 lex.yy.c。生成的扫描程序包括头文件 FlexLexer.h，该文件定义了两个C++类的接口。</p>
+<p>在FlexLexer.h中的第一个类是FlexLexer，它提供定义基本扫描程序类接口的抽象基类。它提供以下成员函数：</p>
+<ul>
+<li><code>const char* YYText()</code></li>
+</ul>
+<p>返回最近匹配的token的文本，与yytext等效。</p>
+<ul>
+<li><code>int YYLeng()</code></li>
+</ul>
+<p>返回最近匹配的token的长度，与yyleng等效。</p>
+<ul>
+<li><code>int lineno() const</code></li>
+</ul>
+<p>返回当前输入行号(参考 %option yylineno)，如果未使用 ％option yylineno，则返回1。</p>
+<ul>
+<li><code>void set_debug( int flag )</code></li>
+</ul>
+<p>设置scanner的调试flag，等效于分配给 yy_flex_debug(参考<a href="http://westes.github.io/flex/manual/Scanner-Options.html#Scanner-Options">Scanner Options</a>),注意必须使用％option debug来构建扫描程序，才能在其中包含调试信息。</p>
+<ul>
+<li><code>int debug() const</code></li>
+</ul>
+<p>返回调试标志的当前设置。</p>
+<p>还提供了等效于yy_switch_to_buffer(),yy_create_buffer()(尽管第一个参数是istream＆对象的引用，而不是FILE *)，yy_flush_buffer(),yy_delete_buffer()和yyrestart()(第一个参数依旧是istream＆对象的引用)的成员函数。</p>
+<p>在FlexLexer.h中的第二个类是yyFlexLexer，它是从FlexLexer派生的。它定义了以下附加成员函数：</p>
+<ul>
+<li><code>yyFlexLexer( istream* arg_yyin = 0, ostream* arg_yyout = 0 )</code></li>
+<li><code>yyFlexLexer( istream&amp; arg_yyin, ostream&amp; arg_yyout )</code></li>
+</ul>
+<p>使用给定的输入和输出流构造yyFlexLexer对象。如果未指定，则流分别默认为cin和cout。yyFlexLexer不拥有其流参数的所有权。用户有责任确保所指向的流至少在yyFlexLexer实例中保持有效。</p>
+<ul>
+<li><code>virtual int yylex()</code></li>
+</ul>
+<p>yylex()和原始的flex scanner起着相同的作用:它会扫描输入流并消耗令牌(tokens)，直到rule的action返回一个值。如果你从yyFlexLexer派生一个子类S并想要在yylex()里访问S的成员函数和变量，则需要使用％option yyclass =”S”通知flex您将使用该子类而不是yyFlexLexer。</p>
+<p>在这种情况下，Flex不会生成yyFlexLexer::yylex()，而是会生成S::yylex()(并且还会生成一个dummy yyFlexLexer::yylex()，如果调用它，则会调用yyFlexLexer::LexerError。</p>
+<ul>
+<li><code>virtual void switch_streams(istream* new_in = 0, ostream* new_out = 0)</code></li>
+<li><code>virtual void switch_streams(istream&amp; new_in, ostream&amp; new_out)</code></li>
+</ul>
+<p>重新分配yyin到new_in(如果非空)，重新分配yyout到new_out(如果非空)，如果重新分配yyin，则删除先前的输入缓冲区。</p>
+<ul>
+<li><code>int yylex( istream* new_in, ostream* new_out = 0 )</code></li>
+<li><code>int yylex( istream&amp; new_in, ostream&amp; new_out )</code></li>
+</ul>
+<p>首先通过switch_streams(new_in，new_out)切换输入流，然后返回yylex()的值。</p>
+<p>此外，yyFlexLexer定义了以下受保护的虚函数，您可以在派生类中重新定义它们以定制scanner：</p>
+<ul>
+<li><code>virtual int LexerInput( char* buf, int max_size )</code></li>
+</ul>
+<p>将最多max_size个字符读取到buf中，并返回读取的字符数。为了表示输入结束，返回0。<br>注意interactive scanner(参考”<a href="http://westes.github.io/flex/manual/Scanner-Options.html#Scanner-Options">Scanner Options</a>中的’ -B’和’-I’ flag)定义宏YY_INTERACTIVE。<br>如果重新定义LexerInput()并需要根据scanner是否正在扫描interactive input source而采取不同的操作，则可以通过#ifdef语句测试此名称的存在。</p>
+<ul>
+<li><p><code>virtual void LexerOutput( const char* buf, int size )</code><br>从缓冲区buf中写出size个字符，如果scanner的rules可以匹配带有NUL的text，则该文本在NUL终止时也可能包含内部NUL。(？)<br>上句原句:writes out <code>size</code> characters from the buffer <code>buf</code>, which, while <code>NUL</code>-terminated, may also contain internal <code>NUL</code>s if the scanner’s rules can match text with <code>NUL</code>s in them.</p>
+</li>
+<li><p><code>virtual void LexerError( const char* msg )</code><br>报告致命错误消息。该函数的默认版本将message写入流cerr并退出。</p>
+</li>
+</ul>
+<p>注意yyFlexLexer对象包含其整个扫描状态。因此，您可以使用此类对象创建可重入的scanner，但另请参考<a href="http://westes.github.io/flex/manual/Reentrant.html#Reentrant">Reentrant</a>。你可以实例化同一yyFlexLexer类的多个实例，并且你还可以使用上述的”-P”选项在同一程序中将多个C++ scanner类组合在一起。</p>
+<p>最后，请注意％array功能不适用于C++扫描程序类，你必须使用％pointer(默认设置)。<br>这是一个简单的C++ scanner的示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">// An example of using the flex C++ scanner class.</span><br><span class="line"></span><br><span class="line">    %&#123;</span><br><span class="line">    #include &lt;iostream&gt;</span><br><span class="line">    using namespace std;</span><br><span class="line">    int mylineno = 0;</span><br><span class="line">    %&#125;</span><br><span class="line"></span><br><span class="line">    %option noyywrap c++</span><br><span class="line"></span><br><span class="line">    string  \&quot;[^\n&quot;]+\&quot;</span><br><span class="line"></span><br><span class="line">    ws      [ \t]+</span><br><span class="line"></span><br><span class="line">    alpha   [A-Za-z]</span><br><span class="line">    dig     [0-9]</span><br><span class="line">    name    (&#123;alpha&#125;|&#123;dig&#125;|\$)(&#123;alpha&#125;|&#123;dig&#125;|[_.\-/$])*</span><br><span class="line">    num1    [-+]?&#123;dig&#125;+\.?([eE][-+]?&#123;dig&#125;+)?</span><br><span class="line">    num2    [-+]?&#123;dig&#125;*\.&#123;dig&#125;+([eE][-+]?&#123;dig&#125;+)?</span><br><span class="line">    number  &#123;num1&#125;|&#123;num2&#125;</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line"></span><br><span class="line">    &#123;ws&#125;    /* skip blanks and tabs */</span><br><span class="line"></span><br><span class="line">    &quot;/*&quot;    &#123;</span><br><span class="line">            int c;</span><br><span class="line"></span><br><span class="line">            while((c = yyinput()) != 0)</span><br><span class="line">                &#123;</span><br><span class="line">                if(c == &apos;\n&apos;)</span><br><span class="line">                    ++mylineno;</span><br><span class="line"></span><br><span class="line">                else if(c == &apos;*&apos;)</span><br><span class="line">                    &#123;</span><br><span class="line">                    if((c = yyinput()) == &apos;/&apos;)</span><br><span class="line">                        break;</span><br><span class="line">                    else</span><br><span class="line">                        unput(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    &#123;number&#125;  cout &lt;&lt; &quot;number &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    \n        mylineno++;</span><br><span class="line"></span><br><span class="line">    &#123;name&#125;    cout &lt;&lt; &quot;name &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    &#123;string&#125;  cout &lt;&lt; &quot;string &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line"></span><br><span class="line">	// This include is required if main() is an another source file.</span><br><span class="line">	//#include &lt;FlexLexer.h&gt;</span><br><span class="line"></span><br><span class="line">    int main( int /* argc */, char** /* argv */ )</span><br><span class="line">    &#123;</span><br><span class="line">        FlexLexer* lexer = new yyFlexLexer;</span><br><span class="line">        while(lexer-&gt;yylex() != 0)</span><br><span class="line">            ;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果要创建多个(不同)词法分析器类，你可以使用”-P”标志(或者是prefix=选项), 将每个yyFlexLexer重命名为其他一些”xxFlexLexer”。然后你可以将<code>&lt;FlexLexer.h&gt;</code>包含在你的其他每一个词法分析类(lexer class)源码中，首先按以下方式重命名yyFlexLexer：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#undef yyFlexLexer</span><br><span class="line">  #define yyFlexLexer xxFlexLexer</span><br><span class="line">  #include &lt;FlexLexer.h&gt;</span><br><span class="line"></span><br><span class="line">  #undef yyFlexLexer</span><br><span class="line">  #define yyFlexLexer zzFlexLexer</span><br><span class="line">  #include &lt;FlexLexer.h&gt;</span><br></pre></td></tr></table></figure>
+<p>例如，如果你为一台扫描仪使用了％option prefix =”xx”，而另一台则使用％option prefix =”zz”。</p>
+<h2 id="19-Reentrant-C-Scanners"><a href="#19-Reentrant-C-Scanners" class="headerlink" title="19 Reentrant C Scanners"></a>19 Reentrant C Scanners</h2><p>//todo</p>
+<h2 id="20-Incompatibilities-with-Lex-and-Posix"><a href="#20-Incompatibilities-with-Lex-and-Posix" class="headerlink" title="20 Incompatibilities with Lex and Posix"></a>20 Incompatibilities with Lex and Posix</h2><p>//undo</p>
+<h2 id="21-Memory-Management"><a href="#21-Memory-Management" class="headerlink" title="21 Memory Management"></a>21 Memory Management</h2><p>//todo</p>
+<h2 id="22-Serialized-Tables"><a href="#22-Serialized-Tables" class="headerlink" title="22 Serialized Tables"></a>22 Serialized Tables</h2><p>//undo</p>
+<h2 id="23-Diagnostics"><a href="#23-Diagnostics" class="headerlink" title="23 Diagnostics"></a>23 Diagnostics</h2><p>//todo</p>
+<h2 id="24-Limitations"><a href="#24-Limitations" class="headerlink" title="24 Limitations"></a>24 Limitations</h2><p>//todo</p>
+<h2 id="25-Additional-Reading"><a href="#25-Additional-Reading" class="headerlink" title="25 Additional Reading"></a>25 Additional Reading</h2><p>您可能希望阅读有关以下程序的更多信息：</p>
+<ul>
+<li>lex</li>
+<li>yacc</li>
+<li>sed</li>
+<li>awk<br>以下书籍可能包含感兴趣的材料：<br>John Levine，Tony Mason和Doug Brown的《Lex＆Yacc》，O’Reilly和Associates。确保获得第二版。<br>ME Lesk和E.Schmidt的《LEX – Lexical Analyzer Generator》<br>Alfred Aho，Ravi Sethi和Jeffrey Ullman的《Compilers: Principles, Techniques and Tools》，Addison-Wesley（1986）描述flex（确定性有限自动机）使用的模式匹配技术。</li>
+</ul>
+<h2 id="Indices"><a href="#Indices" class="headerlink" title="Indices"></a>Indices</h2><p><a href="http://westes.github.io/flex/manual/Indices.html#Indices">http://westes.github.io/flex/manual/Indices.html#Indices</a></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>Lexical Analysis With Flex, for Flex 2.6.2<br><a href="http://westes.github.io/flex/manual/">http://westes.github.io/flex/manual/</a></p>
+-->
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/compiler/" rel="tag"># compiler</a>
+          
+            <a href="/tags/Lexical-Analysis/" rel="tag"># Lexical Analysis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/18/unicorn_learn/" rel="next" title="sakuraのall fuzz:afl-unicorn">
+                <i class="fa fa-chevron-left"></i> sakuraのall fuzz:afl-unicorn
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Some-Simple-Examples"><span class="nav-number">1.</span> <span class="nav-text">4 Some Simple Examples</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Format-of-the-Input-File"><span class="nav-number">2.</span> <span class="nav-text">5 Format of the Input File</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Format-of-the-Definitions-Section"><span class="nav-number">2.1.</span> <span class="nav-text">5.1 Format of the Definitions Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-Format-of-the-Rules-Section"><span class="nav-number">2.2.</span> <span class="nav-text">5.2 Format of the Rules Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-Format-of-the-User-Code-Section"><span class="nav-number">2.3.</span> <span class="nav-text">5.3 Format of the User Code Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-Comments-in-the-Input"><span class="nav-number">2.4.</span> <span class="nav-text">5.4 Comments in the Input</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-patterns"><span class="nav-number">3.</span> <span class="nav-text">6 patterns</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-How-the-Input-Is-Matched"><span class="nav-number">4.</span> <span class="nav-text">7 How the Input Is Matched</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-Actions"><span class="nav-number">5.</span> <span class="nav-text">8 Actions</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2020/05/27/flex/';
+          this.page.identifier = '2020/05/27/flex/';
+          this.page.title = 'Flex中文文档';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
