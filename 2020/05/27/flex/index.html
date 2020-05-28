@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+<meta name="description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该scanner">
 <meta name="keywords" content="compiler,Lexical Analysis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flex中文文档">
 <meta property="og:url" content="http://eternalsakura13.com/2020/05/27/flex/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+<meta property="og:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该scanner">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-27T15:41:13.266Z">
+<meta property="og:updated_time" content="2020-05-28T03:02:25.922Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flex中文文档">
-<meta name="twitter:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效">
+<meta name="twitter:description" content="4 Some Simple Examples首先，通过一些简单的示例来了解使用flex。以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：12%%username    printf( &amp;quot;%s&amp;quot;, getlogin() ); 默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该scanner">
 
 
 
@@ -419,16 +419,16 @@
 
       
         <h2 id="4-Some-Simple-Examples"><a href="#4-Some-Simple-Examples" class="headerlink" title="4 Some Simple Examples"></a>4 Some Simple Examples</h2><p>首先，通过一些简单的示例来了解使用flex。<br>以下flex输入指定了一个扫描程序scanner，当它遇到字符串’username’将其替换为用户的登录名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%%</span><br><span class="line">username    printf( &quot;%s&quot;, getlogin() );</span><br></pre></td></tr></table></figure></p>
-<p>默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该扫描仪的最终效果是仅将每次出现的用户名替换了。<br>在此输入中，只有一个规则(rule)。’username’是模式(pattern)，而’print’就是action。’%%’符号标志着rules的开始。<br>另一个简单的例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">        int num_lines = 0, num_chars = 0;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">\n      ++num_lines; ++num_chars;</span><br><span class="line">.       ++num_chars;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">        &#123;</span><br><span class="line">        yylex();</span><br><span class="line">        printf( &quot;# of lines = %d, # of chars = %d\n&quot;,</span><br><span class="line">                num_lines, num_chars );</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
-<p>该扫描仪计算其输入中的字符数和行数。除了有关字符数和行数的最终报告外，它不产生任何输出。<br>第一行声明了两个全局变量，num_lines和num_chars，在第二个%%之后声明的yylex()的main()例程都可以访问它们。<br>有两个规则（rule)，一个匹配换行符（’\n’），并同时增加行数和字符数。<br>另一个匹配除了换行符之外的任何字符（通过.正则表达式）</p>
+<p>默认情况下，任何与flex scanner不匹配的文本都将被复制到输出中，因此，该scanner的最终效果是仅将每次出现的用户名替换了。<br>在此输入中，只有一个规则(rule)。’username’是模式(pattern)，而’print’就是action。’%%’符号标志着rules的开始。<br>另一个简单的例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">        int num_lines = 0, num_chars = 0;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">\n      ++num_lines; ++num_chars;</span><br><span class="line">.       ++num_chars;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">        &#123;</span><br><span class="line">        yylex();</span><br><span class="line">        printf( &quot;# of lines = %d, # of chars = %d\n&quot;,</span><br><span class="line">                num_lines, num_chars );</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
+<p>该scanner计算其输入中的字符数和行数。除了有关字符数和行数的最终报告外，它不产生任何输出。<br>第一行声明了两个全局变量，num_lines和num_chars，在第二个%%之后声明的yylex()的main()例程都可以访问它们。<br>有两个规则（rule)，一个匹配换行符（’\n’），并同时增加行数和字符数。<br>另一个匹配除了换行符之外的任何字符（通过.正则表达式）</p>
 <p>看一个更复杂的例子。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">/* scanner for a toy Pascal-like language */</span><br><span class="line"></span><br><span class="line">%&#123;</span><br><span class="line">/* need this for the call to atof() below */</span><br><span class="line">#include &lt;math.h&gt;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">DIGIT    [0-9]</span><br><span class="line">ID       [a-z][a-z0-9]*</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">&#123;DIGIT&#125;+    &#123;</span><br><span class="line">            printf( &quot;An integer: %s (%d)\n&quot;, yytext,</span><br><span class="line">                    atoi( yytext ) );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">&#123;DIGIT&#125;+&quot;.&quot;&#123;DIGIT&#125;*        &#123;</span><br><span class="line">            printf( &quot;A float: %s (%g)\n&quot;, yytext,</span><br><span class="line">                    atof( yytext ) );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">if|then|begin|end|procedure|function        &#123;</span><br><span class="line">            printf( &quot;A keyword: %s\n&quot;, yytext );</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">&#123;ID&#125;        printf( &quot;An identifier: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">&quot;+&quot;|&quot;-&quot;|&quot;*&quot;|&quot;/&quot;   printf( &quot;An operator: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">&quot;&#123;&quot;[^&#123;&#125;\n]*&quot;&#125;&quot;     /* eat up one-line comments */</span><br><span class="line"></span><br><span class="line">[ \t\n]+          /* eat up whitespace */</span><br><span class="line"></span><br><span class="line">.           printf( &quot;Unrecognized character: %s\n&quot;, yytext );</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">int main( int argc, char **argv )</span><br><span class="line">    &#123;</span><br><span class="line">    ++argv, --argc;  /* skip over program name */</span><br><span class="line">    if ( argc &gt; 0 )</span><br><span class="line">            yyin = fopen( argv[0], &quot;r&quot; );</span><br><span class="line">    else</span><br><span class="line">            yyin = stdin;</span><br><span class="line"></span><br><span class="line">    yylex();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <p>这是针对Pascal等语言的简单scanner的开始。它标识不同类型的token并报告所见内容。<br>以下部分将说明此示例的详细信息。</p>
 <h2 id="5-Format-of-the-Input-File"><a href="#5-Format-of-the-Input-File" class="headerlink" title="5 Format of the Input File"></a>5 Format of the Input File</h2><p>flex输入文件包括三部分，由%%分开。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">definitions</span><br><span class="line">%%</span><br><span class="line">rules</span><br><span class="line">%%</span><br><span class="line">user code</span><br></pre></td></tr></table></figure></p>
-<h3 id="5-1-Format-of-the-Definitions-Section"><a href="#5-1-Format-of-the-Definitions-Section" class="headerlink" title="5.1 Format of the Definitions Section"></a>5.1 Format of the Definitions Section</h3><p>该定义部分包含了简单的Name definitions的声明，这简化了scanner，以及start conditions的声明，这将在后面的章节解释。<br>Name definitions有如下形式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">name definition</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-1-Format-of-the-Definitions-Section"><a href="#5-1-Format-of-the-Definitions-Section" class="headerlink" title="5.1 Format of the Definitions Section"></a>5.1 Format of the Definitions Section</h3><p>该定义部分包含了简单的Name definitions的声明，以及start conditions的声明，这将在后面的章节解释。<br>Name definitions有如下形式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">name definition</span><br></pre></td></tr></table></figure></p>
 <p>name是一个以字母或下划线开头的单词，然后是零个或多个字母，数字，’_’，或者’-‘（破折号）。<br>definition从名称后的第一个非空白字符开始，一直到该行的末尾。该definition随后可以使用{definition}，它将扩展为(definition)。例如，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DIGIT    [0-9]</span><br><span class="line">ID       [a-z][a-z0-9]*</span><br></pre></td></tr></table></figure></p>
 <p>定义“数字“是与一位数字匹配的正则表达式，而’ID’是一个正则表达式，它匹配一个字母，后跟零个或多个字母及数字。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;DIGIT&#125;+&quot;.&quot;&#123;DIGIT&#125;*</span><br></pre></td></tr></table></figure></p>
 <p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">([0-9])+&quot;.&quot;([0-9])*</span><br></pre></td></tr></table></figure></p>
-<p>其可以匹配一个或多个数字，后跟一个’.’,然后跟零个或多个数字。12.34<br>不缩进的注释（以<code>/*</code>开头的行)逐字复制到输出，直到遇到下一个<code>&#39;* /&#39;</code>。<br>任何缩进文本，或者包括在<code>%{</code>和<code>%}</code>之中的也将逐字复制到输出中(移除<code>%{和%}</code>符号)，<code>％{和％}</code>符号本身必须在行上没有缩进。<br><code>%top</code>块是类似于<code>%{和}%</code>的，但它将块中的代码重定位到生成的文件的顶部（在所有flex定义之前），<code>%top</code>在当您要定义某些预处理器宏或在生成的代码之前包含某些文件时，该块很有用。单个字符’{‘和’}’用于分隔%top块，如以下示例所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%top&#123;</span><br><span class="line">    /* This code goes at the &quot;top&quot; of the generated file. */</span><br><span class="line">    #include &lt;stdint.h&gt;</span><br><span class="line">    #include &lt;inttypes.h&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其可以匹配一个或多个数字，后跟一个’.’,然后跟零个或多个数字。12.34<br>不缩进的注释（以<code>/*</code>开头的行)逐字复制到输出，直到遇到下一个<code>*/</code>。<br>任何缩进文本，或者包括在<code>%{</code>和<code>%}</code>之中的也将逐字复制到输出中(移除<code>%{和%}</code>符号)，<code>％{和％}</code>符号本身必须在行上没有缩进。<br><code>%top</code>块是类似于<code>%{和}%</code>的，但它将块中的代码重定位到生成的文件的顶部（在所有flex定义之前），<code>%top</code>在当您要定义某些预处理器宏或在生成的代码之前包含某些文件时，该块很有用。单个字符<code>{</code>和<code>}</code>用于分隔<code>%top</code>块，如以下示例所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%top&#123;</span><br><span class="line">    /* This code goes at the &quot;top&quot; of the generated file. */</span><br><span class="line">    #include &lt;stdint.h&gt;</span><br><span class="line">    #include &lt;inttypes.h&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p><code>%top</code>允许多个块，并保留其顺序。</p>
 <h3 id="5-2-Format-of-the-Rules-Section"><a href="#5-2-Format-of-the-Rules-Section" class="headerlink" title="5.2 Format of the Rules Section"></a>5.2 Format of the Rules Section</h3><p>Flex输入的 rules section 对以下表格有一系列的规则： </p>
 <table>
@@ -457,118 +457,118 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">/* code block */</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">/* Definitions Section */</span><br><span class="line">%x STATE_X</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">    /* Rules Section */</span><br><span class="line">ruleA   /* after regex */ &#123; /* code block */ &#125; /* after code block */</span><br><span class="line">        /* Rules Section (indented) */</span><br><span class="line">&lt;STATE_X&gt;&#123;</span><br><span class="line">ruleC   ECHO;</span><br><span class="line">ruleD   ECHO;</span><br><span class="line">%&#123;</span><br><span class="line">/* code block */</span><br><span class="line">%&#125;</span><br><span class="line">&#125;</span><br><span class="line">%%</span><br><span class="line">/* User Code Section */</span><br></pre></td></tr></table></figure>
 <h2 id="6-patterns"><a href="#6-patterns" class="headerlink" title="6 patterns"></a>6 patterns</h2><p> 输入里的patterns是根据一个正则表达式扩展集合来写的:</p>
 <ul>
-<li><p>‘x’:  </p>
-<p>  匹配字符‘x’</p>
+<li><p><code>x</code>:  </p>
+<p>  匹配字符<code>x</code></p>
 </li>
-<li><p>‘.’:  </p>
+<li><p><code>.</code>:  </p>
 <p>  匹配任意字符(1字节)，除了换行符</p>
 </li>
-<li><p>‘[xyz]’:  </p>
+<li><p><code>[xyz]</code>:  </p>
 <p>  单个字符类;在该case，表示匹配x或y或z</p>
 </li>
-<li><p>‘[abj-oZ]’: </p>
+<li><p><code>[abj-oZ]</code>: </p>
 <p>  具有范围的字符类;在该case表示匹配a或b，或在j-o之中选择一个匹配，或者匹配一个Z</p>
 </li>
-<li><p>‘[^A-Z]’:</p>
+<li><p><code>[^A-Z]</code>:</p>
 <p>  否定字符类，即除该类之外的任何字符;在该case表示不匹配大写字母</p>
 </li>
-<li><p>‘[^A-Z\n]’: </p>
+<li><p><code>[^A-Z\n]</code>: </p>
 <p>  不匹配大写字母和回车</p>
 </li>
-<li><p>‘[a-z]{-}[aeiou]’: </p>
+<li><p><code>[a-z]{-}[aeiou]</code>: </p>
 <p>  匹配除了元音字母之外的字符</p>
 </li>
-<li><p>‘r*’  </p>
+<li><p><code>r*</code>  </p>
 <p>  r是一个正则表达式, 匹配零次或多次</p>
 </li>
-<li><p>‘r+’ </p>
+<li><p><code>r+</code> </p>
 <p>  匹配一次或多次。</p>
 </li>
-<li><p>‘r?’  </p>
+<li><p><code>r?</code>  </p>
 <p>  匹配零次或一次。</p>
 </li>
-<li><p>‘r{2,5}’  </p>
+<li><p><code>r{2,5}</code>  </p>
 <p>  {n,m}, m 和 n 均为非负整数，其中n &lt;= m。最少匹配 n 次且最多匹配 m 次。</p>
 </li>
-<li><p>‘r{2,}’ </p>
+<li><p><code>r{2,}</code> </p>
 <p>  {n,}, n 是一个非负整数。至少匹配n 次。</p>
 </li>
-<li><p>‘r{4}’ </p>
+<li><p><code>r{4}</code> </p>
 <p>  {n}, n 是一个非负整数。匹配确定的 n 次。</p>
 </li>
-<li><p>‘{name}’  </p>
+<li><p><code>{name}</code>  </p>
 <p>  name定义的扩展，查看<a href="http://westes.github.io/flex/manual/Format.html#Format" target="_blank" rel="noopener">format</a></p>
 </li>
-<li><p>‘“[xyz]\”foo”‘  </p>
-<p>  匹配[xyz]”foo这个字符串</p>
+<li><p><code>&quot;[xyz]\&quot;foo&quot;</code>  </p>
+<p>  匹配<code>[xyz]&quot;foo</code>这个字符串</p>
 </li>
 <li><p>‘\X’  </p>
 <p>  if X is ‘a’, ‘b’, ‘f’, ‘n’, ‘r’, ‘t’, or ‘v’, then the ANSI-C interpretation of ‘\x’. Otherwise, a literal ‘X’ (used to escape operators such as ‘*’)</p>
 </li>
-<li><p>‘\0’ </p>
+<li><p><code>\0</code> </p>
 <p>  匹配NULL(ascii code 0)</p>
 </li>
-<li><p>‘\123’ </p>
+<li><p><code>\123</code> </p>
 <p>  匹配八进制值为123的字符</p>
 </li>
-<li><p>‘\x2a’ </p>
+<li><p><code>\x2a</code> </p>
 <p>  匹配16进制值为2a的字符</p>
 </li>
-<li><p>‘(r)’   </p>
-<p>  match ‘r’；括号用于提高优先级</p>
+<li><p><code>(r)</code>   </p>
+<p>  match <code>r</code>；括号用于提高优先级</p>
 </li>
-<li><p>‘(?r-s:pattern)’<br>  :之后的是使用的pattern，而使用r并略去s对pattern进行解释<br>  r和s这两个参数可以为空或者’i’ ‘s’ ‘x’<br>  i表示大小写不敏感 -i表示大小写不敏感<br>  s表示通过’.’匹配单字节的任意字符, -s表示’.’匹配\n之外的任何字节（译者注:其实就是用s来指明<code>.</code>的意思）<br>  x会忽略注释和空白符，除非空格被反斜杠转义，或者包含在””中或者出现在前面所说的字符类里，否则将被忽略<br>  以下表达式都是合法的</p>
+<li><p><code>(?r-s:pattern)</code><br>  :之后的是使用的pattern，而使用r并略去s对pattern进行解释<br>  r和s这两个参数可以为空或者<code>i</code> <code>s</code> <code>x</code><br>  i表示大小写不敏感 -i表示大小写不敏感<br>  s表示通过<code>.</code>匹配单字节的任意字符, -s表示<code>.</code>匹配\n之外的任何字节（译者注:其实就是用s来指明<code>.</code>的意思）<br>  x会忽略注释和空白符，除非空格被反斜杠转义，或者包含在””中或者出现在前面所说的字符类里，否则将被忽略<br>  以下表达式都是合法的</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(?:foo)         same as  (foo)</span><br><span class="line">(?i:ab7)        same as  ([aA][bB]7)</span><br><span class="line">(?-i:ab)        same as  (ab)</span><br><span class="line">(?s:.)          same as  [\x00-\xFF]</span><br><span class="line">(?-s:.)         same as  [^\n]</span><br><span class="line">(?ix-s: a . b)  same as  ([Aa][^\n][bB])</span><br><span class="line">(?x:a  b)       same as  (&quot;ab&quot;)</span><br><span class="line">(?x:a\ b)       same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a&quot; &quot;b)      same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a[ ]b)      same as  (&quot;a b&quot;)</span><br><span class="line">(?x:a</span><br><span class="line">    /* comment */</span><br><span class="line">    b</span><br><span class="line">    c)          same as  (abc)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>‘(?# comment )’  </p>
+<li><p><code>(?# comment )</code>  </p>
 <p>  忽略任何在()里的字符</p>
 </li>
-<li><p>‘rs’  </p>
+<li><p><code>rs</code>  </p>
 <p>  将r和s两个正则表达式相串联 (不是很懂)</p>
 </li>
-<li><p>‘r|s’ </p>
+<li><p><code>r|s</code> </p>
 <p>  用r或s去匹配,并联的意思。</p>
 </li>
-<li><p>‘r/s’<br>  匹配r，但是r之后必须有s，确定此规则为最长匹配项时包括s，但是在返回文本时只返回r。</p>
+<li><p><code>r/s</code><br>  匹配r，但是r之后必须有s，确定此规则为最长匹配项时包括s，但是在返回文本时只返回r。</p>
 </li>
-<li><p>‘^r’<br>  只在一行的开头去匹配r（即，刚开始扫描时或在扫描到换行符之后）</p>
+<li><p><code>^r</code><br>  只在一行的开头去匹配r（即，刚开始扫描时或在扫描到换行符之后）</p>
 </li>
-<li><p>‘r$’<br>  在一行的结尾去匹配r</p>
+<li><p><code>r$</code><br>  在一行的结尾去匹配r</p>
 </li>
 <li><p><code>&lt;s&gt;r</code><br>  在start condition为s的时候才用r匹配;</p>
 </li>
-<li><p>‘<s1,s2,s3>r’</s1,s2,s3></p>
+<li><p><code>&lt;s1,s2,s3&gt;r</code></p>
 <p>  start condition为s1或s2或s3时才用r匹配;</p>
 </li>
-<li><p>‘&lt;*&gt;r’    </p>
+<li><p><code>&lt;*&gt;r</code>    </p>
 <p>  在任何start condition都可以用r匹配</p>
 </li>
-<li><p>‘&lt;<eof>&gt;’ </eof></p>
+<li><p><code>&lt;&lt;EOF&gt;&gt;</code> </p>
 <p>  匹配EOF(文件结束)</p>
 </li>
-<li><p>‘<s1,s2>&lt;<eof>&gt;’</eof></s1,s2></p>
+<li><p><code>&lt;s1,s2&gt;&lt;&lt;EOF&gt;&gt;</code></p>
 <p>  在start condition为s1和s2的时候,匹配EOF</p>
 </li>
 </ul>
 <p>注意一下在字符集合里，所有的正则表达式的operator丢失了他们的特殊意义，除了’\‘   ‘-‘   ‘]]’和在集合前面的’^’</p>
 <p>上面所有提到的正则表达式都被根据优先级从最高到最低来组织，那些被分组到一起的是具有相同优先级的(在–posix 遵从POSIX标准的参数的文档中关于repeat operator ‘{}’优先级的特殊标记) 例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo|bar*</span><br></pre></td></tr></table></figure></p>
 <p>等价于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(foo)|(ba(r*))</span><br></pre></td></tr></table></figure></p>
-<p>因为’*’操作符比串联有更高的优先级，串联比并联(|)更高的优先级。</p>
+<p>因为<code>*</code>操作符比串联有更高的优先级，串联比并联(<code>|</code>)更高的优先级。</p>
 <p>因此这个pattern匹配的是字符串”foo”或者”ba”后面跟着0或多个满足r的字符串</p>
 <p>为了匹配’foo’或者0或多个”bar” 可以这么写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo|(bar)*</span><br></pre></td></tr></table></figure></p>
 <p>或者为了匹配0个或多个”foo或bar”，可以写成这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(foo|bar)*</span><br></pre></td></tr></table></figure></p>
 <ul>
-<li><p>‘{-}’这个是求差集的operator，他会计算两个character class的差集</p>
-<p>  例如‘[a-c]{-}[b-z]’ 会匹配在a-c里不在b-z里的字符</p>
+<li><p><code>{-}</code>这个是求差集的operator，他会计算两个character class的差集</p>
+<p>  例如<code>[a-c]{-}[b-z]</code> 会匹配在a-c里不在b-z里的字符</p>
 </li>
-<li><p>‘{+}’是求并集的operator，他会计算两个character class的并集</p>
-<p>  例如在“C”的运行环境中‘[[:alpha:]]{-}[[:lower:]]{+}[q]’这个和‘[A-Zq]’是等价的</p>
+<li><p><code>{+}</code>是求并集的operator，他会计算两个character class的并集</p>
+<p>  例如在“C”的运行环境中<code>[[:alpha:]]{-}[[:lower:]]{+}[q]</code>这个和<code>[A-Zq]</code>是等价的</p>
 </li>
 <li><p>一条规则最多可以包含一个尾随上下文实例（“/”运算符或“$”运算符）。起始条件“^”和“&lt;<eof>&gt;”模式只能出现在模式的开头，并且不能与“/”和“$”一起放在括号内。规则开头没有出现的“^”或规则结尾没有出现的“$”将失去其特殊属性，并被视为普通字符。</eof></p>
 </li>
 </ul>
 <ul>
-<li><p>以下表达式是不合法的:<br>  第一句可以被写成这样‘foo/bar\n’</p>
+<li><p>以下表达式是不合法的:<br>  第一句可以被写成这样<code>foo/bar\n</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo/bar$</span><br><span class="line"> &lt;sc1&gt;foo&lt;sc2&gt;bar</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>以下情况$或者^会被忽略，当作一个普通字符</p>
@@ -698,7 +698,7 @@
 <p>此函数会丢弃缓冲区的内容，因此，下次扫描程序尝试从缓冲区中匹配token时，它将首先使用<code>YY_INPUT（）</code>重新填充缓冲区。</p>
 <p><code>YY_BUFFER_STATE yy_new_buffer ( FILE *file, int size )</code></p>
 <p>是<code>yy_create_buffer（）</code>的别名，用于兼容 C ++的new和delete用于创建和销毁动态对象。<br><code>YY_CURRENT_BUFFER</code>宏将<code>YY_BUFFER_STATE</code>句柄返回到当前缓冲区。不应将其用作左值。</p>
-<p>这是使用这些功能编写扩展包含文件的扫描仪的两个示例（下面将讨论&lt;&lt; EOF &gt;&gt;功能）。</p>
+<p>这是使用这些功能编写扩展包含文件的scanner的两个示例（下面将讨论&lt;&lt; EOF &gt;&gt;功能）。</p>
 <p>第一个示例使用<code>yypush_buffer_state</code>和<code>yypop_buffer_state</code>。 Flex在维护一个内部栈。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/* the &quot;incl&quot; state is used for picking up the name</span><br><span class="line">    * of an include file</span><br><span class="line">    */</span><br><span class="line">   %x incl</span><br><span class="line">   %%</span><br><span class="line">   include             BEGIN(incl);</span><br><span class="line"></span><br><span class="line">   [a-z]+              ECHO;</span><br><span class="line">   [^a-z\n]*\n?        ECHO;</span><br><span class="line"></span><br><span class="line">   &lt;incl&gt;[ \t]*      /* eat the whitespace */</span><br><span class="line">   &lt;incl&gt;[^ \t\n]+   &#123; /* got the include file name */</span><br><span class="line">           yyin = fopen( yytext, &quot;r&quot; );</span><br><span class="line"></span><br><span class="line">           if ( ! yyin )</span><br><span class="line">               error( ... );</span><br><span class="line"></span><br><span class="line">		yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));</span><br><span class="line"></span><br><span class="line">           BEGIN(INITIAL);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">   &lt;&lt;EOF&gt;&gt; &#123;</span><br><span class="line">		yypop_buffer_state();</span><br><span class="line"></span><br><span class="line">           if ( !YY_CURRENT_BUFFER )</span><br><span class="line">               &#123;</span><br><span class="line">               yyterminate();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
 <p>下面的第二个示例执行与上一个示例相同的操作，但是手动管理其自己的输入缓冲区栈（而不是让flex进行操作）。</p>
@@ -829,7 +829,7 @@
 <p>最后，请注意％array功能不适用于C++扫描程序类，你必须使用％pointer(默认设置)。<br>这是一个简单的C++ scanner的示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">// An example of using the flex C++ scanner class.</span><br><span class="line"></span><br><span class="line">    %&#123;</span><br><span class="line">    #include &lt;iostream&gt;</span><br><span class="line">    using namespace std;</span><br><span class="line">    int mylineno = 0;</span><br><span class="line">    %&#125;</span><br><span class="line"></span><br><span class="line">    %option noyywrap c++</span><br><span class="line"></span><br><span class="line">    string  \&quot;[^\n&quot;]+\&quot;</span><br><span class="line"></span><br><span class="line">    ws      [ \t]+</span><br><span class="line"></span><br><span class="line">    alpha   [A-Za-z]</span><br><span class="line">    dig     [0-9]</span><br><span class="line">    name    (&#123;alpha&#125;|&#123;dig&#125;|\$)(&#123;alpha&#125;|&#123;dig&#125;|[_.\-/$])*</span><br><span class="line">    num1    [-+]?&#123;dig&#125;+\.?([eE][-+]?&#123;dig&#125;+)?</span><br><span class="line">    num2    [-+]?&#123;dig&#125;*\.&#123;dig&#125;+([eE][-+]?&#123;dig&#125;+)?</span><br><span class="line">    number  &#123;num1&#125;|&#123;num2&#125;</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line"></span><br><span class="line">    &#123;ws&#125;    /* skip blanks and tabs */</span><br><span class="line"></span><br><span class="line">    &quot;/*&quot;    &#123;</span><br><span class="line">            int c;</span><br><span class="line"></span><br><span class="line">            while((c = yyinput()) != 0)</span><br><span class="line">                &#123;</span><br><span class="line">                if(c == &apos;\n&apos;)</span><br><span class="line">                    ++mylineno;</span><br><span class="line"></span><br><span class="line">                else if(c == &apos;*&apos;)</span><br><span class="line">                    &#123;</span><br><span class="line">                    if((c = yyinput()) == &apos;/&apos;)</span><br><span class="line">                        break;</span><br><span class="line">                    else</span><br><span class="line">                        unput(c);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    &#123;number&#125;  cout &lt;&lt; &quot;number &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    \n        mylineno++;</span><br><span class="line"></span><br><span class="line">    &#123;name&#125;    cout &lt;&lt; &quot;name &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    &#123;string&#125;  cout &lt;&lt; &quot;string &quot; &lt;&lt; YYText() &lt;&lt; &apos;\n&apos;;</span><br><span class="line"></span><br><span class="line">    %%</span><br><span class="line"></span><br><span class="line">	// This include is required if main() is an another source file.</span><br><span class="line">	//#include &lt;FlexLexer.h&gt;</span><br><span class="line"></span><br><span class="line">    int main( int /* argc */, char** /* argv */ )</span><br><span class="line">    &#123;</span><br><span class="line">        FlexLexer* lexer = new yyFlexLexer;</span><br><span class="line">        while(lexer-&gt;yylex() != 0)</span><br><span class="line">            ;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <p>如果要创建多个(不同)词法分析器类，你可以使用”-P”标志(或者是prefix=选项), 将每个yyFlexLexer重命名为其他一些”xxFlexLexer”。然后你可以将<code>&lt;FlexLexer.h&gt;</code>包含在你的其他每一个词法分析类(lexer class)源码中，首先按以下方式重命名yyFlexLexer：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#undef yyFlexLexer</span><br><span class="line">  #define yyFlexLexer xxFlexLexer</span><br><span class="line">  #include &lt;FlexLexer.h&gt;</span><br><span class="line"></span><br><span class="line">  #undef yyFlexLexer</span><br><span class="line">  #define yyFlexLexer zzFlexLexer</span><br><span class="line">  #include &lt;FlexLexer.h&gt;</span><br></pre></td></tr></table></figure>
-<p>例如，如果你为一台扫描仪使用了％option prefix =”xx”，而另一台则使用％option prefix =”zz”。</p>
+<p>例如，如果你为一台scanner使用了％option prefix =”xx”，而另一台则使用％option prefix =”zz”。</p>
 <h2 id="19-Reentrant-C-Scanners"><a href="#19-Reentrant-C-Scanners" class="headerlink" title="19 Reentrant C Scanners"></a>19 Reentrant C Scanners</h2><p>//todo</p>
 <h2 id="20-Incompatibilities-with-Lex-and-Posix"><a href="#20-Incompatibilities-with-Lex-and-Posix" class="headerlink" title="20 Incompatibilities with Lex and Posix"></a>20 Incompatibilities with Lex and Posix</h2><p>//undo</p>
 <h2 id="21-Memory-Management"><a href="#21-Memory-Management" class="headerlink" title="21 Memory Management"></a>21 Memory Management</h2><p>//todo</p>
