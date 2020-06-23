@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ARM," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="arm汇编Android Native 进程启动流程  ARM传参，R0-R3传递前四个参数 1. Thumb 指令集特点 Thumb 指令集指令长度：16或32，16为为主 Thumb-16 大部分只能访问前8个寄存器 R0-R7（少数可以访问R8-R15） Thumb-32 可以访问所有的ARM core 寄存器 R0-R15  更小、更加灵活  2. ARM指令集特点 指令长度32位，4字节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm汇编学习（一）">
+<meta property="og:url" content="http://eternalsakura13.com/2018/01/18/arm1/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="arm汇编Android Native 进程启动流程  ARM传参，R0-R3传递前四个参数 1. Thumb 指令集特点 Thumb 指令集指令长度：16或32，16为为主 Thumb-16 大部分只能访问前8个寄存器 R0-R7（少数可以访问R8-R15） Thumb-32 可以访问所有的ARM core 寄存器 R0-R15  更小、更加灵活  2. ARM指令集特点 指令长度32位，4字节">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/8ek7b9Jk2K.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/mJkdiFL95I.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/3F7Kh72CcJ.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/HefgcabdgD.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/bDfa164Gm2.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/L44GbeBb0g.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/m6cmAKf7f1.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/42LgAImG8C.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k6BCjcgdHD.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/JGdKAA9LFK.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6BhFchfIi3.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dK8d27jgfb.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/GmCIi75chL.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/fJeKmkHmL6.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/Hl91i5EjJE.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/F9JfJKKKBG.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6llGaFG7k6.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e5bagIfbfD.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/aFcH160afA.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8ecida68KH.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I6IjBIEGhG.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/debffk3A60.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/eAf963eelJ.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/65Ab19GkKH.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/ijeK017DDJ.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/kljAI65kFj.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/DLeG0i8IIb.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dmfLIFbgC6.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/2JFelgFi6a.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I58CbF6A6C.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/jkcGKL7fbH.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7EilLlHJfE.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7dha4ei960.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e64JgLd8gc.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/KKmHecaK8C.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/D69cGmkeCF.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/G319AEKc61.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k7eHK6CLmf.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/4FgIA8aDcm.png?imageslim">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8Fg5394hJj.png?imageslim">
+<meta property="article:published_time" content="2018-01-18T14:05:42.000Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.721Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/8ek7b9Jk2K.png?imageslim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/01/18/arm1/"/>
+
+
+
+
+
+  <title>arm汇编学习（一） | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/01/18/arm1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">arm汇编学习（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T22:05:42+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android%E9%80%86%E5%90%91/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/18/arm1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/18/arm1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="arm汇编"><a href="#arm汇编" class="headerlink" title="arm汇编"></a>arm汇编</h1><h2 id="Android-Native-进程启动流程"><a href="#Android-Native-进程启动流程" class="headerlink" title="Android Native 进程启动流程"></a>Android Native 进程启动流程</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/8ek7b9Jk2K.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/mJkdiFL95I.png?imageslim" alt="mark"></p>
+<p>ARM传参，R0-R3传递前四个参数</p>
+<h3 id="1-Thumb-指令集特点"><a href="#1-Thumb-指令集特点" class="headerlink" title="1. Thumb 指令集特点"></a>1. Thumb 指令集特点</h3><ul>
+<li>Thumb 指令集指令长度：16或32，16为为主</li>
+<li>Thumb-16 大部分只能访问前8个寄存器 R0-R7（少数可以访问R8-R15）</li>
+<li>Thumb-32 可以访问所有的ARM core 寄存器 R0-R15</li>
+</ul>
+<p>更小、更加灵活</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/3F7Kh72CcJ.png?imageslim" alt="mark"></p>
+<h3 id="2-ARM指令集特点"><a href="#2-ARM指令集特点" class="headerlink" title="2. ARM指令集特点"></a>2. ARM指令集特点</h3><ul>
+<li>指令长度32位，4字节对齐</li>
+<li>功能更加完善</li>
+</ul>
+<h4 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h4><table>
+<thead>
+<tr>
+<th>Thumb</th>
+<th>ARM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2字节对齐</td>
+<td>4字节对齐</td>
+</tr>
+<tr>
+<td>占用空间少、密度高</td>
+<td>占用空间较多</td>
+</tr>
+<tr>
+<td>功能不齐全</td>
+<td>功能齐全</td>
+</tr>
+</tbody></table>
+<p>ARM和Thumb指令集各有自己的优点，取长补短往往会得到最好的性能</p>
+<h3 id="3-Opcod-中判断指令集"><a href="#3-Opcod-中判断指令集" class="headerlink" title="3. Opcod 中判断指令集"></a>3. Opcod 中判断指令集</h3><ul>
+<li>Opcode[15:13]== 111 &amp;&amp; Opcode[12:11]!= 00 满足则为32bit 的ARM</li>
+<li>bl #0x80000fbc</li>
+<li>0xed 0xff 0xff 0xeb</li>
+<li><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180115/HefgcabdgD.png?imageslim" alt="mark"></li>
+</ul>
+<h3 id="4-IDA-中识别与切换指令集"><a href="#4-IDA-中识别与切换指令集" class="headerlink" title="4. IDA 中识别与切换指令集"></a>4. IDA 中识别与切换指令集</h3><ul>
+<li>Edit-&gt;segments-&gt;change segment register value(快捷键ALT+G)</li>
+<li>请看操作。</li>
+</ul>
+<p>这有一段指令，判断出目前是thumb指令集的</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/bDfa164Gm2.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/L44GbeBb0g.png?imageslim" alt="mark"></p>
+<p>按下ALT+G,把0x1改成0x0，就是指定为ARM指令集</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/m6cmAKf7f1.png?imageslim" alt="mark"></p>
+<p>然后按下P键定义函数，函数参数就都分析出来了（</p>
+<h3 id="5-ARM切换指令集原理"><a href="#5-ARM切换指令集原理" class="headerlink" title="5. ARM切换指令集原理"></a>5. ARM切换指令集原理</h3><ul>
+<li>处理器无论在ARM还是Thumb状态下都可以通过BX/BLX/LDR/LDM切换不同的指令集。</li>
+<li>状态切换是由寄存器Rn的最低位来指定的，如果操作数寄存器的状态位Bit0=0，则进入ARM状态，如果Bit0=1，则进入Thumb状态。</li>
+</ul>
+<h3 id="ARM-中对于字节、字、双字的定义"><a href="#ARM-中对于字节、字、双字的定义" class="headerlink" title="ARM 中对于字节、字、双字的定义"></a>ARM 中对于字节、字、双字的定义</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/42LgAImG8C.png?imageslim" alt="mark"></p>
+<p>注意和intel汇编的区别，一个word(字)这里是4个字节</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k6BCjcgdHD.png?imageslim" alt="mark"></p>
+<p><strong>但是注意一下，在IDA中依然延续着老的传统，一个DCW(word)代表两个字节</strong></p>
+<ul>
+<li><strong>DCB  定义1字节数据</strong></li>
+<li><strong>DCW  定义2字节数据</strong></li>
+<li><strong>DCD  定义4字节数据</strong></li>
+<li><strong>在IDA中，在上面这些数据定义上按下D键可以切换定义的类型</strong></li>
+<li><strong>Array 定义数组，右键或*号键</strong></li>
+</ul>
+<p>数组最常见的就在数组，</p>
+<h2 id="IDA中的自定义数据类型"><a href="#IDA中的自定义数据类型" class="headerlink" title="IDA中的自定义数据类型"></a>IDA中的自定义数据类型</h2><p><strong>Structures 窗口中可以创建一个自定义结构体。按下I或者Ins键即可创建。</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/JGdKAA9LFK.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6BhFchfIi3.png?imageslim" alt="mark"></p>
+<p>创建了一个名为test的结构体</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dK8d27jgfb.png?imageslim" alt="mark"></p>
+<p>因为没有定义字段，所以现在都还是空的，结构体长度为0（相当于空结构体，没有任何内容）</p>
+<p>所以去定义字段。</p>
+<h3 id="为自定义数据类型添加字段"><a href="#为自定义数据类型添加字段" class="headerlink" title="为自定义数据类型添加字段"></a>为自定义数据类型添加字段</h3><p>创建完结构体后，长这样：</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/GmCIi75chL.png?imageslim" alt="mark"></p>
+<p>在ends处按下D键就可以定义一个字段了，在字段上按D可以改变长度1/2/4</p>
+<p>其他按键：</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/fJeKmkHmL6.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/Hl91i5EjJE.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/F9JfJKKKBG.png?imageslim" alt="mark"></p>
+<p>这样就可以给一个变量转成自己的结构体类型</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/6llGaFG7k6.png?imageslim" alt="mark"></p>
+<h3 id="应用自定义数据类型"><a href="#应用自定义数据类型" class="headerlink" title="应用自定义数据类型"></a>应用自定义数据类型</h3><p><strong>在起始数据处右键-&gt;Structure-&gt;自定义的数据类型</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e5bagIfbfD.png?imageslim" alt="mark"></p>
+<h2 id="ARM汇编中的标志寄存器与条件代码"><a href="#ARM汇编中的标志寄存器与条件代码" class="headerlink" title="ARM汇编中的标志寄存器与条件代码"></a>ARM汇编中的标志寄存器与条件代码</h2><h3 id="跳转指令"><a href="#跳转指令" class="headerlink" title="跳转指令"></a>跳转指令</h3><ul>
+<li><strong>b指令</strong>：跳转</li>
+<li><strong>bl指令</strong>：跳转且保存返回地址</li>
+<li><strong>blx/bx指令</strong>：带x，可以切换指令集</li>
+</ul>
+<p><strong>分支指令例子：</strong></p>
+<p><strong>beq</strong>=b+eq（equal)=b指令+条件助记符（参考下面的cond）</p>
+<p><strong>ben</strong></p>
+<h3 id="条件执行"><a href="#条件执行" class="headerlink" title="条件执行"></a>条件执行</h3><p><strong>ARM中大部分的指令都支持带条件执行。</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/aFcH160afA.png?imageslim" alt="mark"></p>
+<p>cond:前四位保存条件码</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8ecida68KH.png?imageslim" alt="mark"></p>
+<h3 id="比较指令的大用处"><a href="#比较指令的大用处" class="headerlink" title="比较指令的大用处"></a>比较指令的大用处</h3><p><strong>Compare 指令：cmp r0,#1</strong></p>
+<p><strong>完成操作:</strong></p>
+<ol>
+<li>减法运算(不保存结果)</li>
+<li>根据结果更新标志位</li>
+</ol>
+<h3 id="标志寄存器"><a href="#标志寄存器" class="headerlink" title="标志寄存器"></a>标志寄存器</h3><h4 id="APSR-寄存器"><a href="#APSR-寄存器" class="headerlink" title="APSR 寄存器"></a>APSR 寄存器</h4><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I6IjBIEGhG.png?imageslim" alt="mark"></p>
+<p><strong>标志寄存器是条件执行的基础。</strong><br>N、Z、C、V用于条件标志位<br>N - 负数标志位<br>Z - 零标志位<br>C - 进位标志位<br>V - 溢出标志位</p>
+<p>比如，若减法运算之后为负数，则N为1；为0，则Z=1；</p>
+<h5 id="一些会修改标志位的指令"><a href="#一些会修改标志位的指令" class="headerlink" title="一些会修改标志位的指令"></a>一些会修改标志位的指令</h5><p><strong>1. 指令后缀带S的指令，例如(MOVS)</strong></p>
+<p><strong>2. TST(and)、TEQ(or)、CMN(add)、CMP(sub)</strong></p>
+<p>例如MOVS之后的到的值为0，那么Z就被置位（为1）</p>
+<p><strong>完整一点的例子</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/debffk3A60.png?imageslim" alt="完整一点的例子"></p>
+<blockquote>
+<p>这里if有两种可能，一种是a&lt;=10，一种是a&gt;10；</p>
+<p>在汇编中<strong>先cmp a,#10</strong></p>
+<p>然后<strong>选择if括号内相反的选项</strong> bgt next1 (大于则跳转出去)</p>
+<p>然后在这<strong>中间填入if代码块中的内容</strong></p>
+</blockquote>
+<h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><p><strong>打开程序</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/eAf963eelJ.png?imageslim" alt="mark"></p>
+<p><strong>导出表</strong></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/65Ab19GkKH.png?imageslim" alt="mark"></p>
+<p><a href="http://blog.csdn.net/hgy413/article/details/6598043" target="_blank" rel="noopener">http://blog.csdn.net/hgy413/article/details/6598043</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/ijeK017DDJ.png?imageslim" alt="mark"></p>
+<p><strong>libc</strong>init的第三个参数（R2）是main函数的地址</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/kljAI65kFj.png?imageslim" alt="mark"></p>
+<p>跳入main函数之后发现IDA未能把ARM指令集识别正确。需要手动（ALT+G) </p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/DLeG0i8IIb.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/dmfLIFbgC6.png?imageslim" alt="mark"></p>
+<p>随便输入一个不等于0x0的数</p>
+<p>全部改好之后就识别出来了</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/2JFelgFi6a.png?imageslim" alt="mark"></p>
+<p><strong>程序源码</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>,b = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"This is condition statements re test!\nPlease input two number:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;a,&amp;b);</span><br><span class="line">	<span class="keyword">if</span>(a + b == <span class="number">10</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if]a+b=10\b"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(a &gt; b)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else-1]a &gt; b\n"</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(a == b)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else-if] a==b\n"</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"[if-else] a&lt;b \n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(a &gt; <span class="number">10</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(a &lt;= <span class="number">20</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"[nest if]\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"a &gt; 10\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>自己调试一下</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/I58CbF6A6C.png?imageslim" alt="mark"></p>
+<h2 id="生成thumb代码"><a href="#生成thumb代码" class="headerlink" title="生成thumb代码"></a>生成thumb代码</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/jkcGKL7fbH.png?imageslim" alt="mark"><br>BL的下一条指令的地址被保存在LR寄存器中</p>
+<p>调用gcc的内建函数，R0作为参数</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7EilLlHJfE.png?imageslim" alt="mark"></p>
+<p>==R1=LR=57C（待调试）==</p>
+<p>==R1=R1+2=57E（待调试）==</p>
+<p><font color=#ff0000><strong>地址做移位是为了对齐（如这里的R1），而数移位是为了做乘除法（如这里的R0）</strong></font></p>
+<p>LSRS:  R1=R1右移两位</p>
+<p>LSLS：R0=R0左移两位=R0*4</p>
+<p>LSLS：R1=R1左移两位 //<strong>先右移再左移，清除R1原来的最低位，用于对齐，</strong>==得到0x580（待调试）==</p>
+<p>LDR：R0=[R1+R0] =[580+原来的R0<em>4] //假设原来的R0=1，则R0=[580+原来R0</em>4]=[580+4]=[0x584]=<strong>loc_59C-0x580</strong></p>
+<p>ADDS: R0=R0+R1=loc_59C</p>
+<p>MOV: LR=loc_59C</p>
+<p>POP: 恢复寄存器R0，R1</p>
+<p>MOV: PC=loc_59C;函数结束，跳转到case：选中的代码块</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/7dha4ei960.png?imageslim" alt="mark"></p>
+<p>这些不是代码，是长为4字节的数据项，每一项都是偏移值，<strong>这个偏移值+0x580就能找到真正的代码</strong></p>
+<h2 id="生成ARM代码"><a href="#生成ARM代码" class="headerlink" title="生成ARM代码"></a>生成ARM代码</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/e64JgLd8gc.png?imageslim" alt="mark"></p>
+<p>ADDLS：PC=PC+（R3*4）</p>
+<p>PC的PC寄存器指向的不是下条指令，是下下条指令（也就是当前指令地址+8）</p>
+<h6 id="CEMU测试"><a href="#CEMU测试" class="headerlink" title="CEMU测试"></a>CEMU测试</h6><h6 id="bl-funl-把LR设置为BL指令的下一条地址"><a href="#bl-funl-把LR设置为BL指令的下一条地址" class="headerlink" title="bl funl //把LR设置为BL指令的下一条地址"></a>bl funl //把LR设置为BL指令的下一条地址</h6><h6 id="fun1"><a href="#fun1" class="headerlink" title="fun1:"></a>fun1:</h6><h6 id="mov-r0-pc"><a href="#mov-r0-pc" class="headerlink" title="mov r0,pc"></a>mov r0,pc</h6><h6 id="mov-r1-lr"><a href="#mov-r1-lr" class="headerlink" title="mov r1,lr"></a>mov r1,lr</h6><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/KKmHecaK8C.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/D69cGmkeCF.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/G319AEKc61.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/k7eHK6CLmf.png?imageslim" alt="mark"></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/4FgIA8aDcm.png?imageslim" alt="mark"></p>
+<p>差了8个字节</p>
+<h2 id="关于ARM中的寄存器PC"><a href="#关于ARM中的寄存器PC" class="headerlink" title="关于ARM中的寄存器PC"></a>关于ARM中的寄存器PC</h2><p><a href="http://blog.csdn.net/tigerjibo/article/details/6050649" target="_blank" rel="noopener">http://blog.csdn.net/tigerjibo/article/details/6050649</a></p>
+<p><a href="http://blog.csdn.net/lee244868149/article/details/49488575" target="_blank" rel="noopener">http://blog.csdn.net/lee244868149/article/details/49488575</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/180118/8Fg5394hJj.png?imageslim" alt="mark"></p>
+<p>从图中可以看出，一条汇编指令的运行有三个步骤，取指、译码、执行，当第一条汇编指令取指完成后，紧接着就是第二条指令的取指，然后第三条…如此嵌套</p>
+<p>其实很容易看出，第一条指令：</p>
+<p>add r0, r1,$5</p>
+<p>取指完成后，PC就指向了第二条指令，此时PC=PC+4</p>
+<p>当第一条指令译码完成以后，此时PC=PC+8</p>
+<p>所以第一条指令开始执行时，PC值已经加了8</p>
+<p>所以必须记住这个前提，在arm中，每次该指令执行时，其实这时的PC值是PC=PC+8</p>
+<p>而且这个前提也同样适合多级流水线，原因就不解释了</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ARM/" rel="tag"># ARM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/raspberry_quick_start/" rel="next" title="树莓派快速配置指南">
+                <i class="fa fa-chevron-left"></i> 树莓派快速配置指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/19/nexus51/" rel="prev" title="nexus5刷机、root及安装xposed">
+                nexus5刷机、root及安装xposed <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#arm汇编"><span class="nav-number">1.</span> <span class="nav-text">arm汇编</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-Native-进程启动流程"><span class="nav-number">1.1.</span> <span class="nav-text">Android Native 进程启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Thumb-指令集特点"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. Thumb 指令集特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ARM指令集特点"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. ARM指令集特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对比"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">对比</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Opcod-中判断指令集"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. Opcod 中判断指令集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-IDA-中识别与切换指令集"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. IDA 中识别与切换指令集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ARM切换指令集原理"><span class="nav-number">1.1.5.</span> <span class="nav-text">5. ARM切换指令集原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARM-中对于字节、字、双字的定义"><span class="nav-number">1.1.6.</span> <span class="nav-text">ARM 中对于字节、字、双字的定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDA中的自定义数据类型"><span class="nav-number">1.2.</span> <span class="nav-text">IDA中的自定义数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为自定义数据类型添加字段"><span class="nav-number">1.2.1.</span> <span class="nav-text">为自定义数据类型添加字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用自定义数据类型"><span class="nav-number">1.2.2.</span> <span class="nav-text">应用自定义数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM汇编中的标志寄存器与条件代码"><span class="nav-number">1.3.</span> <span class="nav-text">ARM汇编中的标志寄存器与条件代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#跳转指令"><span class="nav-number">1.3.1.</span> <span class="nav-text">跳转指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件执行"><span class="nav-number">1.3.2.</span> <span class="nav-text">条件执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较指令的大用处"><span class="nav-number">1.3.3.</span> <span class="nav-text">比较指令的大用处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标志寄存器"><span class="nav-number">1.3.4.</span> <span class="nav-text">标志寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#APSR-寄存器"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">APSR 寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一些会修改标志位的指令"><span class="nav-number">1.3.4.1.1.</span> <span class="nav-text">一些会修改标志位的指令</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例分析"><span class="nav-number">1.4.</span> <span class="nav-text">实例分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成thumb代码"><span class="nav-number">1.5.</span> <span class="nav-text">生成thumb代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成ARM代码"><span class="nav-number">1.6.</span> <span class="nav-text">生成ARM代码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#CEMU测试"><span class="nav-number">1.6.0.0.0.1.</span> <span class="nav-text">CEMU测试</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#bl-funl-把LR设置为BL指令的下一条地址"><span class="nav-number">1.6.0.0.0.2.</span> <span class="nav-text">bl funl &#x2F;&#x2F;把LR设置为BL指令的下一条地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#fun1"><span class="nav-number">1.6.0.0.0.3.</span> <span class="nav-text">fun1:</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#mov-r0-pc"><span class="nav-number">1.6.0.0.0.4.</span> <span class="nav-text">mov r0,pc</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#mov-r1-lr"><span class="nav-number">1.6.0.0.0.5.</span> <span class="nav-text">mov r1,lr</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于ARM中的寄存器PC"><span class="nav-number">1.7.</span> <span class="nav-text">关于ARM中的寄存器PC</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/01/18/arm1/';
+          this.page.identifier = '2018/01/18/arm1/';
+          this.page.title = 'arm汇编学习（一）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

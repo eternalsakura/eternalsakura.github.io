@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="堆基础," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="CTF pwn的环境主要是linux，一般用到的是堆内存管理机制叫做ptmalloc。因为很久没有做过相关赛题了，已经忘了很多，于是准备把ptmalloc再整理一下。 Linux进程地址空间32位这种布局是 Linux 内核 2.6.7 以前的默认进程内存布局形式，mmap 区域与栈区域相对增 长，这意味着堆只有 1GB 的虚拟地址空间可以使用，继续增长就会进入 mmap 映射区域。0x4000,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ptmalloc">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/27/heap1/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="CTF pwn的环境主要是linux，一般用到的是堆内存管理机制叫做ptmalloc。因为很久没有做过相关赛题了，已经忘了很多，于是准备把ptmalloc再整理一下。 Linux进程地址空间32位这种布局是 Linux 内核 2.6.7 以前的默认进程内存布局形式，mmap 区域与栈区域相对增 长，这意味着堆只有 1GB 的虚拟地址空间可以使用，继续增长就会进入 mmap 映射区域。0x4000,">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-085355.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-085423.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-090021.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-140843.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-141046.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092939.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092947.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092353.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092300.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-120518.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-123923.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-124631.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-131532.png">
+<meta property="article:published_time" content="2018-02-27T08:34:49.706Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.980Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="堆基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-085355.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/27/heap1/"/>
+
+
+
+
+
+  <title>ptmalloc | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/27/heap1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ptmalloc</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T16:34:49+08:00">
+                2018-02-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/%E5%A0%86%E5%88%A9%E7%94%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">堆利用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/27/heap1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/27/heap1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>CTF pwn的环境主要是linux，一般用到的是堆内存管理机制叫做ptmalloc。<br>因为很久没有做过相关赛题了，已经忘了很多，于是准备把ptmalloc再整理一下。</p>
+<h2 id="Linux进程地址空间"><a href="#Linux进程地址空间" class="headerlink" title="Linux进程地址空间"></a>Linux进程地址空间</h2><h3 id="32位"><a href="#32位" class="headerlink" title="32位"></a>32位</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-085355.jpg" alt=""><br>这种布局是 Linux 内核 2.6.7 以前的默认进程内存布局形式，mmap 区域与栈区域相对增 长，这意味着堆只有 1GB 的虚拟地址空间可以使用，继续增长就会进入 mmap 映射区域。<br>0x4000,0000—-&gt;2^30—–&gt;1G</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-085423.jpg" alt=""><br>栈至顶向下扩展，并且栈是有界的。堆至底向上扩展，mmap 映射区域至顶向下扩展，mmap映射区域和堆相对扩展，直至耗尽虚拟地址空间中的剩余区域，这种结构便于c运行时库使用 mmap 映射区域和堆进行内存分配。上图的布局形式是在内核 2.6.7 以后才引入的，这是 32 位模式下进程的默认内存布局形式。 </p>
+<h3 id="64位"><a href="#64位" class="headerlink" title="64位"></a>64位</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-090021.jpg" alt=""></p>
+<h2 id="内存分配背后的系统调用"><a href="#内存分配背后的系统调用" class="headerlink" title="内存分配背后的系统调用"></a>内存分配背后的系统调用</h2><p>无论是 malloc 函数还是 free 函数，我们动态申请和释放内存时，都经常会使用，但是它们并不是真正与系统交互的函数。这些函数背后的系统调用主要是 (s)brk 函数以及 mmap, munmap 函数。<br>如下图所示，我们主要考虑对堆进行申请内存块的操作。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-140843.jpg" alt=""></p>
+<h3 id="s-brk"><a href="#s-brk" class="headerlink" title="(s)brk"></a>(s)brk</h3><p>对于堆的操作，操作系统提供了 brk 函数，glibc 库提供了 sbrk 函数，我们可以通过增加 brk (program break location, the program break is the address of the first location beyond the current end of the data region, <a href="https://en.wikipedia.org/wiki/Sbrk)的大小来向操作系统申请内存。" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Sbrk)的大小来向操作系统申请内存。</a></p>
+<p>初始时，堆的起始地址 start_brk 以及堆的当前末尾 brk 指向同一地址。根据是否开启ASLR，两者的具体位置会有所不同</p>
+<ul>
+<li>不开启 ASLR 保护时，start_brk 以及 brk 会指向 data/bss 段的结尾。</li>
+<li>开启 ASLR 保护时，start_brk 以及 brk 也会指向同一位置，只是这个位置是在 data/bss 段结尾后的随机偏移处。</li>
+</ul>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-141046.jpg" alt=""></p>
+<h3 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h3><p>malloc 会使用 mmap来创建独立的匿名映射段。匿名映射的目的主要是可以申请以0填充的内存，并且这块内存仅被调用进程所使用。</p>
+<h2 id="多线程支持"><a href="#多线程支持" class="headerlink" title="多线程支持"></a>多线程支持</h2><p>在原来的 dlmalloc 实现中，当两个线程同时调用malloc时，只有一个线程可以进入临界区，因为freelist数据结构是在所有可用线程之间共享的。因此，内存分配在多线程应用程序中需要时间，导致性能下降。<br>而在ptmalloc2中，当两个线程同时调用malloc时，会立即分配内存，因为每个线程维护一个单独的堆段，因此维护这些堆的freelist数据结构也是分开的。<br>这种为每个线程维护单独的堆和freelist数据结构的行为称为per thread arena。<br>在新的实现中，所有的线程共享多个堆。</p>
+<p>这里给出一个例子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Per thread arena example. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">threadFunc</span><span class="params">(<span class="keyword">void</span>* arg)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Before malloc in thread 1\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">char</span>* addr = (<span class="keyword">char</span>*) <span class="built_in">malloc</span>(<span class="number">1000</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"After malloc and before free in thread 1\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="built_in">free</span>(addr);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"After free in thread 1\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">pthread_t</span> t1;</span><br><span class="line">        <span class="keyword">void</span>* s;</span><br><span class="line">        <span class="keyword">int</span> ret;</span><br><span class="line">        <span class="keyword">char</span>* addr;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Welcome to per thread arena example::%d\n"</span>,getpid());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Before malloc in main thread\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        addr = (<span class="keyword">char</span>*) <span class="built_in">malloc</span>(<span class="number">1000</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"After malloc and before free in main thread\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        <span class="built_in">free</span>(addr);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"After free in main thread\n"</span>);</span><br><span class="line">        getchar();</span><br><span class="line">        ret = pthread_create(&amp;t1, <span class="literal">NULL</span>, threadFunc, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span>(ret)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Thread creation error\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ret = pthread_join(t1, &amp;s);</span><br><span class="line">        <span class="keyword">if</span>(ret)</span><br><span class="line">        &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Thread join error\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>第一次申请之前， 没有任何任何堆段。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">b7e05000-b7e07000 rw-p 00000000 00:00 0 </span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+<p><strong>第一次申请后， 从下面的输出可以看出，堆段被建立了，并且它就紧邻着数据段</strong>，这说明malloc的背后是用brk函数来实现的。同时，需要注意的是，我们虽然只是申请了1000个字节，但是我们却得到了0x0806c000-0x0804b000=0x21000个字节的堆。这说明虽然程序可能只是向操作系统申请很小的内存，但是为了方便，操作系统会把很大的内存分配给程序。这样的话，就避免了多次内核态与用户态的切换，提高了程序的效率。<strong>我们称这一块连续的内存区域为 arena。此外，我们称由主线程申请的内存为 main_arena。</strong> 后续的申请的内存会一直从这个 arena 中获取，直到空间不足。当 arena 空间不足时，它可以通过增加brk的方式来增加堆的空间。类似地，arena 也可以通过减小 brk 来缩小自己的空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">After malloc and before free in main thread</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;lsploits&#x2F;hof&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804b000-0806c000 rw-p 00000000 00:00 0          [heap]</span><br><span class="line">b7e05000-b7e07000 rw-p 00000000 00:00 0 </span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+<p><strong>在主线程释放内存后</strong>，我们从下面的输出可以看出，其对应的 arena 并没有进行回收，而是交由glibc来进行管理。当后面程序再次申请内存时，在 glibc 中管理的内存充足的情况下，glibc 就会根据堆分配的算法来给程序分配相应的内存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">After malloc and before free in main thread</span><br><span class="line">After free in main thread</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;lsploits&#x2F;hof&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804b000-0806c000 rw-p 00000000 00:00 0          [heap]</span><br><span class="line">b7e05000-b7e07000 rw-p 00000000 00:00 0 </span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+<p><strong>在第一个线程malloc之前</strong>，我们可以看到并没有出现与线程1相关的堆，但是出现了与线程1相关的栈。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">After malloc and before free in main thread</span><br><span class="line">After free in main thread</span><br><span class="line">Before malloc in thread 1</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804b000-0806c000 rw-p 00000000 00:00 0          [heap]</span><br><span class="line">b7604000-b7605000 ---p 00000000 00:00 0 </span><br><span class="line">b7605000-b7e07000 rw-p 00000000 00:00 0          [stack:6594]</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+<p><strong>第一个线程malloc后</strong>， 我们可以从下面输出看出线程1的堆段被建立了。而且它所在的位置为内存映射段区域，同样大小也是132KB(b7500000-b7521000)。因此这表明该线程申请的堆时，背后对应的函数为mmap函数。同时，我们可以看出实际真的分配给程序的内存为1M(b7500000-b7600000)。而且，只有132KB的部分具有可读可写权限，这一块连续的区域成为<strong>thread arena</strong>。</p>
+<p><strong>注意：</strong><br><strong>当用户请求的内存大于128KB时，并且没有任何arena有足够的空间时，那么系统就会执行mmap函数来分配相应的内存空间。这与这个请求来自于主线程还是从线程无关。</strong></p>
+<p><strong>ptmalloc在开始时，若请求的空间小于 mmap 分配阈值(mmap threshold，默认值为 128KB)时，主分配区会调用 sbrk()增加一块大小为 (128 KB + chunk_size) align 4KB 的空间作为 heap。非主分配区会调用 mmap 映射一块大小为 HEAP_MAX_SIZ(E 32位系统上默认为1MB，64位系统上默认为64MB)的空间作为sub-heap。<br>当用户请求内存分配时，首先会在这个区域内找一块合适的chunk给用户。当用户释放了heap 中的chunk时，ptmalloc又会使用fast bins 和 bins 来组织空闲 chunk。以备用户的下一次分配。<br>若需要分配的 chunk 大小小于 mmap 分配阈值，而 heap 空间又不够，则此时主分配区会通过 sbrk()调用来增加 heap 大小，非主分配区会调用mmap映射一块新的sub-heap，也就是增加top chunk的大小，每次heap增加的值都会对齐到4KB。<br>当用户的请求超过mmap 分配阈值，并且主分配区使用sbrk()分配失败的时候，或是非主分配区在 top chunk 中不能分配到需要的内存时，ptmalloc 会尝试使用 mmap()直接映射一 块内存到进程内存空间。使用 mmap()直接映射的 chunk 在释放时直接解除映射，而不再属于进程的内存空间。任何对该内存的访问都会产生段错误。而在 heap 中或是 sub-heap 中分 配的空间则可能会留在进程内存空间内，还可以再次引用(当然是很危险的)。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">After malloc and before free in main thread</span><br><span class="line">After free in main thread</span><br><span class="line">Before malloc in thread 1</span><br><span class="line">After malloc and before free in thread 1</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804b000-0806c000 rw-p 00000000 00:00 0          [heap]</span><br><span class="line">b7500000-b7521000 rw-p 00000000 00:00 0 </span><br><span class="line">b7521000-b7600000 ---p 00000000 00:00 0 </span><br><span class="line">b7604000-b7605000 ---p 00000000 00:00 0 </span><br><span class="line">b7605000-b7e07000 rw-p 00000000 00:00 0          [stack:6594]</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+<p><strong>在第一个线程释放内存后</strong>， 我们可以从下面的输出看到，这样释放内存同样不会把内存重新给系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ .&#x2F;mthread </span><br><span class="line">Welcome to per thread arena example::6501</span><br><span class="line">Before malloc in main thread</span><br><span class="line">After malloc and before free in main thread</span><br><span class="line">After free in main thread</span><br><span class="line">Before malloc in thread 1</span><br><span class="line">After malloc and before free in thread 1</span><br><span class="line">After free in thread 1</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$ cat &#x2F;proc&#x2F;6501&#x2F;maps</span><br><span class="line">08048000-08049000 r-xp 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">08049000-0804a000 r--p 00000000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804a000-0804b000 rw-p 00001000 08:01 539625     &#x2F;home&#x2F;sploitfun&#x2F;ptmalloc.ppt&#x2F;mthread&#x2F;mthread</span><br><span class="line">0804b000-0806c000 rw-p 00000000 00:00 0          [heap]</span><br><span class="line">b7500000-b7521000 rw-p 00000000 00:00 0 </span><br><span class="line">b7521000-b7600000 ---p 00000000 00:00 0 </span><br><span class="line">b7604000-b7605000 ---p 00000000 00:00 0 </span><br><span class="line">b7605000-b7e07000 rw-p 00000000 00:00 0          [stack:6594]</span><br><span class="line">...</span><br><span class="line">sploitfun@sploitfun-VirtualBox:~&#x2F;ptmalloc.ppt&#x2F;mthread$</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Arena"><a href="#Arena" class="headerlink" title="Arena"></a>Arena</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092939.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092947.jpg" alt=""><br>在我们之前介绍的例子中，无论是主线程还是新创建的线程，在第一次申请内存时，都会有独立的arena。那么会不会每个线程都有独立的arena呢？下面我们就具体介绍。</p>
+<h3 id="arena-数量"><a href="#arena-数量" class="headerlink" title="arena 数量"></a>arena 数量</h3><p>对于不同系统，arena数量的约束如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">For 32 bit systems:</span><br><span class="line">     Number of arena &#x3D; 2 * number of cores.</span><br><span class="line">For 64 bit systems:</span><br><span class="line">     Number of arena &#x3D; 8 * number of cores.</span><br></pre></td></tr></table></figure>
+<p>显然，不是每一个线程都会有对应的 arena。至于为什么64位系统，要那么设置，我也没有想明白。此外，因为每个系统的核数是有限的，当线程数大于核数的二倍（超线程技术）时，就必然有线程处于等待状态，所以没有必要为每个线程分配一个arena。</p>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>与 thread 不同的是，main_arena 并不在申请的 heap 中，而是一个<a href="https://github.com/sploitfun/lsploits/blob/master/glibc/malloc/malloc.c#L1740" target="_blank" rel="noopener">全局变量</a>，在 libc.so 的数据段。</p>
+<h3 id="heap-info"><a href="#heap-info" class="headerlink" title="heap_info"></a>heap_info</h3><p>程序刚开始执行时，每个线程是没有 heap 区域的。当其申请内存时，就需要一个结构来记录对应的信息，而heap_info 的作用就是这个。而且当该heap的资源被使用完后，就必须得再次申请内存了。此外，一般申请的heap 是不连续的，因此需要记录不同heap之间的链接结构。</p>
+<p><strong>该数据结构是专门为从 Memory Mapping Segment 处申请的内存准备的，即为非主线程准备的。</strong></p>
+<p>主线程可以通过 sbrk() 函数扩展 program break location 获得（直到触及Memory Mapping Segment），只有一个heap，没有 heap_info 数据结构。</p>
+<h3 id="malloc-state"><a href="#malloc-state" class="headerlink" title="malloc_state"></a>malloc_state</h3><p>该结构用于管理堆，记录每个 arena 当前申请的内存的具体状态，比如说是否有空闲chunk，有什么大小的空闲chunk 等等。无论是 thread arena 还是 main arena，它们都只有一个 malloc state 结构。由于 thread 的 arena 可能有多个，malloc state结构会在最新申请的arena中。</p>
+<p>注意，main arena 的 malloc_state 并不是 heap segment 的一部分，而是一个全局变量，存储在 libc.so 的数据段。</p>
+<h2 id="chunk"><a href="#chunk" class="headerlink" title="chunk"></a>chunk</h2><p>以下结构体代表在内存中的一块特定堆块(chunk)，有些结构体成员对于已分配和未分配的堆块有着不同的意义。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span> &#123;</span></span><br><span class="line">  INTERNAL_SIZE_T      mchunk_prev_size;  <span class="comment">/* Size of previous chunk (if free).  */</span></span><br><span class="line">  INTERNAL_SIZE_T      mchunk_size;       <span class="comment">/* Size in bytes, including overhead. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">fd</span>;</span>                <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">bk</span>;</span></span><br><span class="line">  <span class="comment">/* Only used for large blocks: pointer to next larger size.  */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">fd_nextsize</span>;</span> <span class="comment">/* double links -- used only if free. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">bk_nextsize</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">malloc_chunk</span>* <span class="title">mchunkptr</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Allocated-chunk"><a href="#Allocated-chunk" class="headerlink" title="Allocated chunk"></a>Allocated chunk</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092353.jpg" alt=""><br>一个使用中的chunk(使用中，就是指还没有被free掉)在内存中的样子如图所示。<br>在图中，chunk 指针指向一个 chunk 的开始，一个 chunk 中包含了用户请求的内存区域和相关的控制信息。<br><strong>图中的 mem 指针才是真正返回给用户的内存指针。</strong><br>chunk 的第二个域的最低一位为 P，它表示前一个块是否在使用中，<strong>P 为 0 则表示前一个 chunk 为空闲（并非指链表中的前一个堆块，而是连续内存中的前一块内存），这时 chunk 的第一个域 prev_size 才有效</strong>，prev_size 表示前一个 chunk 的 size，程序可以使用这个值来找到前一个 chunk 的开始地址。<br>当 P 为 1 时，表示前一个 chunk 正在使用中，prev_size无效，程序也就不可以得到前一个 chunk 的大小。不能对前一个 chunk 进行任何操作。ptmalloc 分配的第一个块总是将 P 设为 1，以防止程序引用到不存在的区域。<br>Chunk的第二个域的倒数第二个位为M，他表示当前chunk是从哪个内存区域获得的虚拟内存。M 为 1 表示该 chunk 是从 mmap 映射区域分配的，否则是从 heap 区域分配的。<br>Chunk 的第二个域倒数第三个位为 A，表示该 chunk 属于主分配区或者非主分配区，如果属于非主分配区，将该位置为 1，否则置为 0。 </p>
+<h3 id="Free-chunk"><a href="#Free-chunk" class="headerlink" title="Free chunk"></a>Free chunk</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-092300.jpg" alt=""><br>空闲 chunk 在内存中的结构如图所示。<br>当 chunk 空闲时，其 M 状态不存在，只有 AP 状态。<br>原本是用户数据区的地方存储了四个指针，指针 fd 指向后一个空闲的 chunk，而 bk 指向前一个空闲的 chunk，ptmalloc 通过这两个指针将大小相近的 chunk 连成一个双向链表。<br>对于 large bin 中的空闲 chunk，还有两个指针，fd_nextsize 和 bk_nextsize，这两个指针用于加快在 large bin 中查找最近匹配的空闲 chunk。<br>不同的 chunk 链表又是通过 bins 或者 fastbins 来组织的</p>
+<h3 id="chunk-中的空间复用"><a href="#chunk-中的空间复用" class="headerlink" title="chunk 中的空间复用"></a>chunk 中的空间复用</h3><p>为了使得 chunk 所占用的空间最小，ptmalloc 使用了空间复用，一个 chunk 或者正在被使用，或者已经被 free 掉，所以 chunk 的中的一些域可以在使用状态和空闲状态表示不同的意义，来达到空间复用的效果。<br>以 32 位系统为例，空闲时，一个 chunk 中至少需要 4 个 size_t(4B)大小的空间，用来存储 prev_size，size，fd 和 bk (见上图)，也就是 16B， chunk 的大小要对齐到 8B。<br>当一个 chunk 处于使用状态时，它的下一个 chunk 的 prev_size 域肯定是无效的。所以实际上，这个空间也可以被当前 chunk 使用。<br>这听起来有点不可思议， 但确实是合理空间复用的例子。故而实际上，一个使用中的 chunk 的大小的计算公式应该是: in_use_size = (用户请求大小+ 8 - 4 ) align to 8B，<strong>这里加 8 是因为需要存储 prev_size 和 size， 但又因为向下一个 chunk“借”了 4B，所以要减去 4。</strong><br>最后，因为空闲的 chunk 和使用中的 chunk 使用的是同一块空间。所以肯定要取其中最大者作为实际的分配空间。即最终的分配空间 chunk_size = max(in_use_size, 16)。这就是当用户请求内存分配时，ptmalloc 实际需要分配的内存大小。</p>
+<h2 id="bins"><a href="#bins" class="headerlink" title="bins"></a>bins</h2><p>bin是一个由<strong>空闲</strong>(未分配)堆块组成的(双向或单向)链表。Bins根据所包含的区块大小进行区分：</p>
+<ul>
+<li>Fast bin</li>
+<li>Unsorted bin</li>
+<li>Small bin</li>
+<li>Large bin</li>
+</ul>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-120518.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-123923.jpg" alt=""><br>用户 free 掉的内存并不是都会马上归还给系统，ptmalloc 会统一管理 heap 和 mmap 映射区域中的空闲的 chunk。<br>当用户进行下一次分配请求时，ptmalloc 会首先试图在空闲的 chunk 中挑选一块给用户，这样就避免了频繁的系统调用，降低了内存分配的开销。<br>ptmalloc 将相似大小的 chunk 用双向链表链接起来，这样的一个链表被称为一个 bin。<br>Ptmalloc 一共 维护了 128 个 bin（<strong>实际上bin[0]和bin[127]都不存在，bin[1]是unsorted bins</strong>)，并使用一个数组来存储这些 bin(如下图所示)。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-124631.jpg" alt=""><br>数组中的 bin 依次介绍如下</p>
+<ul>
+<li>第一个为 unsorted bin，字如其面，这里面的 chunk 没有进行排序，存储的 chunk 比较杂。</li>
+<li>索引从 2 到 63 的 bin 称为 small bin，同一个 small bin 链表中的 chunk 的大小相同。两个相邻索引的 small bin 链表中的 chunk 大小相差的字节数为2个机器字长，即32位相差8字节，64位相差16字节。</li>
+<li>small bins 后面的 bin 被称作 large bins。large bins 中的每一个 bin 都包含一定范围内的 chunk，其中的chunk 按 fd 指针的顺序从大到小排列。相同大小的chunk同样按照最近使用顺序排列。</li>
+</ul>
+<p>当空闲的 chunk 被链接到 bin 中的时候，ptmalloc 会把表示该 chunk 是否处于使用中的 标志 P 设为 0(注意，这个标志实际上处在下一个 chunk 中)，同时 ptmalloc 还会检查它前后的 chunk 是否也是空闲的，如果是的话，ptmalloc 会首先把它们合并为一个大的 chunk， 然后将合并后的 chunk 放到 unstored bin中。</p>
+<p>此外，上述这些bin的排布都会遵循一个原则：<strong>任意两个物理相邻的空闲chunk不能在一起。</strong></p>
+<p>需要注意的是，并不是所有的 chunk 被释放后就立即被放到 bin 中。ptmalloc 为了提高分配的速度，会把一些小的 chunk 先放到 fast bins 的容器内。而且，<strong>fastbin 容器中的 chunk 的使用标记总是被置位的，所以不满足上面的原则。</strong></p>
+<ul>
+<li><strong>Fast bins 是小内存块的高速缓存，当一些大小小于等于64 字节的 chunk 被回收时，首先会放入 fast bins 中，在分配小内存时，首先会查看 fast bins 中是否有合适的内存块，如果存在，则直接返回 fast bins 中的内存块，以加快分配速度。</strong></li>
+<li><strong>Usorted bin 只有一个，回收的chunk块必须先放到unsorted bin中，分配内存时会查看unsorted bin中是否有 合适的chunk，如果找到满足条件的chunk，则直接返回给用户，否则将unsorted bin的所有chunk 放入 small bins 或是 large bins 中。</strong></li>
+<li><strong>Small bins 用于存储大小小于512B或1024B固定大小的chunk，共 62 个 bin，最小的 chunk 大小为 16 字节或 32 字节，每个 bin 的大小相差 8 字节或是 16 字节，当分配小内存块时，采用精确匹配的方式从 small bins 中查找合适的 chunk。</strong></li>
+<li><strong>Large bins 用于存储大于等于 512B 或 1024B 的空闲 chunk，这些 chunk 使用双向链表的形式按大小顺序排序，分配内存时按最近匹配方式从 large bins 中分配 chunk。</strong></li>
+</ul>
+<h3 id="Small-bin"><a href="#Small-bin" class="headerlink" title="Small bin"></a>Small bin</h3><p>ptmalloc使用small bins管理空闲小chunk，每个small bin中的chunk的大小与bin的index 有如下关系:<br>Chunk_size=<code>2 * SIZE_SZ * index</code><br>在 SIZE_SZ 为 4B 的平台上，small bins 中的 chunk 大小是以 8B 为公差的等差数列，最大 的 chunk 大小为 504B，最小的 chunk 大小为 16B，所以实际共 62 个 bin。分别为 16B、24B、 32B，……，504B。在SIZE_SZ为8B的平台上，small bins中的chunk大小是以16B为公差 的等差数列，最大的chunk大小为1008B，最小的chunk大小为32B，所以实际共62个bin。 分别为 32B、48B、64B，…… 1008B。<br>ptmalloc 维护了 62 个双向环形链表(每个链表都具有链表头节点，加头节点的最大作用就是便于对链表内节点的统一处理，即简化编程)，每一个链表内的各空闲 chunk 的大小 一致，因此当应用程序需要分配某个字节大小的内存空间时直接在对应的链表内取就可以了，这样既可以很好的满足应用程序的内存空间申请请求而又不会出现太多的内存碎片。我们可以用如下图来表示在 SIZE_SZ 为 4B 的平台上 ptmalloc 对 512B 字节以下的空闲 chunk 组织方式(所谓的分箱机制)。<br><strong>small bins 中每个 bin 对应的链表采用 FIFO 的规则，所以同一个链表中先被释放的 chunk 会先被分配出去。</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-27-131532.png" alt=""></p>
+<h3 id="Large-bins"><a href="#Large-bins" class="headerlink" title="Large bins"></a>Large bins</h3><p>在 SIZE_SZ 为 4B 的平台上，大于等于 512B 的空闲 chunk，或者，在 SIZE_SZ 为 8B 的平 台上，大小大于等于 1024B 的空闲 chunk，由 sorted bins 管理。Large bins 一共包括 63 个 bin， 每个 bin 中的 chunk 大小不是一个固定公差的等差数列，而是分成 6 组 bin，每组 bin 是一个 固定公差的等差数列，每组的 bin 数量依次为 32、16、8、4、2、1，公差依次为 64B、512B、 4096B、32768B、262144B 等。<br>以 SIZE_SZ 为 4B 的平台为例，第一个 large bin 的起始 chunk 大小为 512B，共 32 个 bin， 公差为 64B，等差数列满足如下关系:<br>Chunk_size=512 + 64 * index<br>第二个 large bin 的起始 chunk 大小为第一组 bin 的结束 chunk 大小，满足如下关系: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Chunk_size&#x3D;512 + 64 * 32 + 512 * index</span><br></pre></td></tr></table></figure>
+<p>同理，我们可计算出每个 bin 的起始 chunk 大小和结束 chunk 大小。</p>
+<h3 id="Unsorted-bins"><a href="#Unsorted-bins" class="headerlink" title="Unsorted bins"></a>Unsorted bins</h3><p>Unsorted bin 可以看作是 small bins 和 large bins 的 cache，只有一个 unsorted bin，以双向链表管理空闲 chunk，空闲 chunk 不排序，所有的 chunk 在回收时都要先放到 unsorted bin中。<br>分配时，如果在 unsorted bin 中没有合适的 chunk，就会把 unsorted bin 中的所有 chunk 分别加入到所属的 bin 中，然后再在 bin 中分配合适的 chunk。Bins 数组中的元素 bin[1]用于 存储 unsorted bin 的 chunk 链表头。<br><strong>此外，Unsorted Bin 在使用的过程中，采用的遍历顺序是 FIFO 。</strong></p>
+<h3 id="Fast-bins"><a href="#Fast-bins" class="headerlink" title="Fast bins"></a>Fast bins</h3><p>Fast bins主要是用于高小内存的分配效率，<strong>采用LIFO</strong>，默认情况下，对于SIZE_SZ为4B的平台， 小于 64B 的 chunk 分配请求，对于 SIZE_SZ 为 8B 的平台，小于128B 的 chunk 分配请求，首先会查找fast bins中是否有所需大小的 chunk 存在(精确匹配)，如果存在，就直接返回。<br>Fast bins 可以看着是 small bins 的一小部分 cache，默认情况下，fast bins 只 cache 了 small bins 的前 7 个大小的空闲 chunk，也就是说，对于 SIZE_SZ 为 4B 的平台，fast bins 有 7 个 chunk 空闲链表(bin)，每个 bin 的 chunk 大小依次为 16B，24B，32B，40B，48B，56B，64B;对 于SIZE_SZ为8B的平台，fast bins有7个chunk空闲链表(bin)，每个bin的chunk大小依 次为 32B，48B，64B，80B，96B，112B，128B。<br><strong>默认情况下（32位系统为例）， fastbin 中默认支持最大的 chunk 的数据空间大小为 64 字节。但是其可以支持的chunk的数据空间最大为80字节。除此之外， fastbin 最多可以支持的 bin 的个数为 10 个，从数据空间为8字节开始一直到80字节</strong></p>
+<p><strong>需要特别注意的是，fastbin 范围的 chunk 的 inuse 始终被置为 1。因此它们不会和其它被释放的chunk合并。</strong></p>
+<h2 id="top-chunk"><a href="#top-chunk" class="headerlink" title="top chunk"></a>top chunk</h2><p>程序第一次进行 malloc 的时候，heap 会被分为两块，一块给用户，剩下的那块就是 top chunk。其实，所谓的top chunk 就是处于当前堆的物理地址最高的 chunk。这个 chunk 不属于任何一个 bin，它的作用在于当所有的bin都无法满足用户请求的大小时，如果其大小不小于指定的大小，就进行分配，并将剩下的部分作为新的top chunk。否则，就对heap进行扩展后再进行分配。在main arena中通过sbrk扩展heap，而在thread arena中通过mmap分配新的heap。</p>
+<p><strong>需要注意的是，top chunk 的 prev_inuse 比特位始终为1，否则其前面的chunk就会被合并到top chunk中。</strong></p>
+<p>初始情况下，我们可以将 unsorted chunk 作为 top chunk。</p>
+<h2 id="mmaped-chunk"><a href="#mmaped-chunk" class="headerlink" title="mmaped chunk"></a>mmaped chunk</h2><p>当需要分配的 chunk 足够大，而且 fast bins 和 bins 都不能满足要求，甚至 top chunk 本身也不能满足分配需求时，ptmalloc 会使用 mmap 来直接使用内存映射来将页映射到进程空间。这样分配的 chunk 在被 free 时将直接解除映射，于是就将内存归还给了操作系统，再次对这样的内存区的引用将导致segmentation fault错误。这样的chunk也不会包含在任何bin中。</p>
+<h2 id="Last-remainder"><a href="#Last-remainder" class="headerlink" title="Last remainder"></a>Last remainder</h2><p>Last remainder 是另外一种特殊的 chunk，就像 top chunk 和 mmaped chunk 一样，不会在任何 bins 中找到这种 chunk。当需要分配一个 small chunk，但在small bins 中找不到合适 的 chunk，如果 last remainder chunk 的大小大于所需的 small chunk 大小，last remainder chunk 被分裂成两个 chunk，其中一个 chunk 返回给用户，另一个 chunk 变成新的 last remainder chuk。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%A0%86%E5%9F%BA%E7%A1%80/" rel="tag"># 堆基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/27/lctf1/" rel="next" title="64位rop的一些原理和思路(慢慢更新)">
+                <i class="fa fa-chevron-left"></i> 64位rop的一些原理和思路(慢慢更新)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/28/heap_exp1/" rel="prev" title="堆漏洞">
+                堆漏洞 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux进程地址空间"><span class="nav-number">1.</span> <span class="nav-text">Linux进程地址空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#32位"><span class="nav-number">1.1.</span> <span class="nav-text">32位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#64位"><span class="nav-number">1.2.</span> <span class="nav-text">64位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存分配背后的系统调用"><span class="nav-number">2.</span> <span class="nav-text">内存分配背后的系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#s-brk"><span class="nav-number">2.1.</span> <span class="nav-text">(s)brk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mmap"><span class="nav-number">2.2.</span> <span class="nav-text">mmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程支持"><span class="nav-number">3.</span> <span class="nav-text">多线程支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arena"><span class="nav-number">4.</span> <span class="nav-text">Arena</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arena-数量"><span class="nav-number">4.1.</span> <span class="nav-text">arena 数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区别"><span class="nav-number">4.2.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heap-info"><span class="nav-number">4.3.</span> <span class="nav-text">heap_info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#malloc-state"><span class="nav-number">4.4.</span> <span class="nav-text">malloc_state</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chunk"><span class="nav-number">5.</span> <span class="nav-text">chunk</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Allocated-chunk"><span class="nav-number">5.1.</span> <span class="nav-text">Allocated chunk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Free-chunk"><span class="nav-number">5.2.</span> <span class="nav-text">Free chunk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chunk-中的空间复用"><span class="nav-number">5.3.</span> <span class="nav-text">chunk 中的空间复用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bins"><span class="nav-number">6.</span> <span class="nav-text">bins</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Small-bin"><span class="nav-number">6.1.</span> <span class="nav-text">Small bin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Large-bins"><span class="nav-number">6.2.</span> <span class="nav-text">Large bins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsorted-bins"><span class="nav-number">6.3.</span> <span class="nav-text">Unsorted bins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fast-bins"><span class="nav-number">6.4.</span> <span class="nav-text">Fast bins</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#top-chunk"><span class="nav-number">7.</span> <span class="nav-text">top chunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mmaped-chunk"><span class="nav-number">8.</span> <span class="nav-text">mmaped chunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Last-remainder"><span class="nav-number">9.</span> <span class="nav-text">Last remainder</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/27/heap1/';
+          this.page.identifier = '2018/02/27/heap1/';
+          this.page.title = 'ptmalloc';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

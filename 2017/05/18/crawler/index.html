@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="爬虫," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="书籍推荐：《python核心编程》&#x2F;《python语言及其应用》-&gt;《python cookbook》  《用Python写网络爬虫》 python&#x2F;爬虫实践文章https:&#x2F;&#x2F;juejin.im&#x2F;post&#x2F;58dce2248d6d8100613a4cfb https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;21479334 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python爬虫的入门与进阶">
+<meta property="og:url" content="http://eternalsakura13.com/2017/05/18/crawler/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="书籍推荐：《python核心编程》&#x2F;《python语言及其应用》-&gt;《python cookbook》  《用Python写网络爬虫》 python&#x2F;爬虫实践文章https:&#x2F;&#x2F;juejin.im&#x2F;post&#x2F;58dce2248d6d8100613a4cfb https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;21479334 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171045447.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171146510.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/172146533.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/160246823.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181125978.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181411194.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/194754070.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195002034.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195015479.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/204226753.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/210110160.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/211427350.png">
+<meta property="article:published_time" content="2017-05-18T14:05:42.000Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.721Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171045447.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2017/05/18/crawler/"/>
+
+
+
+
+
+  <title>Python爬虫的入门与进阶 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2017/05/18/crawler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python爬虫的入门与进阶</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-18T22:05:42+08:00">
+                2017-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index">
+                    <span itemprop="name">杂项</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/18/crawler/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/18/crawler/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171045447.jpg" alt="mark"><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/171146510.png" alt="mark"></p>
+<h2 id="书籍推荐："><a href="#书籍推荐：" class="headerlink" title="书籍推荐："></a>书籍推荐：</h2><p>《python核心编程》/《python语言及其应用》-&gt;《python cookbook》 </p>
+<p>《用Python写网络爬虫》</p>
+<h2 id="python-爬虫实践文章"><a href="#python-爬虫实践文章" class="headerlink" title="python/爬虫实践文章"></a>python/爬虫实践文章</h2><p><a href="https://juejin.im/post/58dce2248d6d8100613a4cfb" target="_blank" rel="noopener">https://juejin.im/post/58dce2248d6d8100613a4cfb</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/21479334" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/21479334</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/25633789" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25633789</a></p>
+<p><a href="https://xlzd.me/tag/crawler/" target="_blank" rel="noopener">https://xlzd.me/tag/crawler/</a></p>
+<p><a href="http://dongweiming.github.io/Expert-Python/#1" target="_blank" rel="noopener">http://dongweiming.github.io/Expert-Python/#1</a></p>
+<h2 id="学习建议"><a href="#学习建议" class="headerlink" title="学习建议"></a>学习建议</h2><p>熟悉了python语法之后，写了一两个就入门了。网上有很多爬虫的文章，<strong>但是一定要自己动手去写</strong></p>
+<p><strong>初级文章读一百篇和读一两篇是一样的，除了浪费时间以外。</strong> </p>
+<p>另外，初学者没必要一上来就做很大很有成就感的事情，可以先写个简单的，然后不断给自己正向反馈。</p>
+<p>比如可以先只是将数据在终端打印出来，然后再渐渐将数据规整化了以后保存到本地的数据库或者文件里面，然后再考虑提高效率，还有一些比较高深的技巧，比如研究分布式呀、断点续爬，怎么控制不同的worker。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/172146533.png" alt="mark"></p>
+<h2 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/160246823.png" alt="mark"></p>
+<h2 id="怎么使用这个思维导图？"><a href="#怎么使用这个思维导图？" class="headerlink" title="怎么使用这个思维导图？"></a>怎么使用这个思维导图？</h2><p>先从右上角开始，了解http的内容，然后再学抓取工具。</p>
+<h3 id="关于抓取工具"><a href="#关于抓取工具" class="headerlink" title="关于抓取工具"></a>关于抓取工具</h3><ul>
+<li>Chrome和firebug选其一即可。</li>
+<li>Tamper Data是一个篡改数据、截停请求的调试器。</li>
+<li>fiddler 能记录所有客户端的http和https请求，监视、设置断点，修改输入输出的数据。</li>
+<li>Charles 抓包工具，主要用来抓取手机的包。Web端的抓取策略可能比较复杂和严格，但是在移动端要简单的多。我一般写爬虫就是先看一下有没有开放的API，如果没有的话再看手机端。<br><a href="https://mp.weixin.qq.com/s?__biz=MzA3NDk1NjI0OQ==&mid=2247483927&idx=1&sn=3c7be971f8baf5a3d9e4e55b700aba0f&chksm=9f76aea1a80127b70fe3f777a1cfe2c2c4a54c84e5c99772f528d0bf8d606d472675330558fe#rd" target="_blank" rel="noopener">移动端爬虫的一个栗子</a>    </li>
+</ul>
+<h3 id="关于请求库"><a href="#关于请求库" class="headerlink" title="关于请求库"></a>关于请求库</h3><p>个人最推荐requests而完全不推荐按照urllib或者urllib2的方式来写。因为requests帮你考虑的东西更多，比如标准库里往往是默认不支持gzip压缩的，而requests会自动的压缩，而这往往能减少大量的压缩时间。<br>此外，由于历史原因，标准库的写法冗杂而不优雅，比起高度封装的requests用起来要麻烦的多。</p>
+<p>举个栗子：</p>
+<p>①urllib2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line"><span class="keyword">from</span> cookielib <span class="keyword">import</span> CookieJar</span><br><span class="line"></span><br><span class="line">hb_url = <span class="string">'https://httpbin.org/basic-auth/user/pass'</span></span><br><span class="line"></span><br><span class="line">req = urllib2.Request(hb_url)</span><br><span class="line"></span><br><span class="line">password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()</span><br><span class="line">password_manager.add_password(<span class="literal">None</span>, hb_url, <span class="string">'user'</span>, <span class="string">'pass'</span>)</span><br><span class="line"></span><br><span class="line">auth_manager = urllib2.HTTPBasicAuthHandler(password_manager)</span><br><span class="line"></span><br><span class="line">cj = CookieJar()</span><br><span class="line">cookie_manager = urllib2.HTTPCookieProcessor(cj)</span><br><span class="line"></span><br><span class="line">proxy_handler = urllib2.ProxyHandler(&#123;<span class="string">'http'</span>: <span class="string">'127.0.0.1'</span>&#125;)</span><br><span class="line"></span><br><span class="line">opener = urllib2.build_opener(auth_manager, cookie_manager, proxy_handler)</span><br><span class="line"></span><br><span class="line">urllib2.install_opener(opener)</span><br><span class="line"></span><br><span class="line">handler = urllib2.urlopen(req)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> handler.getcode()</span><br><span class="line"><span class="keyword">print</span> handler.headers.getheader(<span class="string">'content-type'</span>)</span><br><span class="line">data = json.load(handler)</span><br><span class="line"><span class="keyword">print</span> data[<span class="string">'authenticated'</span>]</span><br><span class="line"><span class="comment"># ------</span></span><br><span class="line"><span class="comment"># 200</span></span><br><span class="line"><span class="comment"># 'application/json'</span></span><br><span class="line"><span class="comment"># True</span></span><br></pre></td></tr></table></figure>
+<p>②requests</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">hb_url = <span class="string">'https://httpbin.org/basic-auth/user/pass'</span></span><br><span class="line">proxies = &#123;</span><br><span class="line">    <span class="string">'http'</span>: <span class="string">'http://127.0.0.1'</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">r = requests.get(hb_url, auth=(<span class="string">'user'</span>, <span class="string">'pass'</span>), proxies=proxies)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> r.status_code</span><br><span class="line"><span class="keyword">print</span> r.headers[<span class="string">'content-type'</span>]</span><br><span class="line"><span class="keyword">print</span> r.json()[<span class="string">'authenticated'</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="关于解析库"><a href="#关于解析库" class="headerlink" title="关于解析库"></a>关于解析库</h3><ul>
+<li>beautiful soap: 页面处理更友好，代码直观，但是解析比较慢，对于页面的处理比较绕。</li>
+<li>Xpath+lxml:最推荐，可以直接用一个表达式找到要找的内容，而bs就没这么方便，它要一层一层的去循环。<br><a href="http://www.w3school.com.cn/xhtml/index.asp" target="_blank" rel="noopener">学习xml</a></li>
+<li>re</li>
+</ul>
+<h3 id="关于并发编程"><a href="#关于并发编程" class="headerlink" title="关于并发编程"></a>关于并发编程</h3><ul>
+<li>不推荐twisted;asyncio是未来的趋势，推荐。<a href="https://github.com/dongweiming/weapp-zhihulive" target="_blank" rel="noopener">知乎Live微信小程序 &amp; asyncio爬虫</a></li>
+</ul>
+<h3 id="关于任务调度框架"><a href="#关于任务调度框架" class="headerlink" title="关于任务调度框架"></a>关于任务调度框架</h3><ul>
+<li>celery：分布式任务队列</li>
+<li>huey:推荐小规模的爬虫需求使用，也推荐读一下它的源码。<a href="https://github.com/coleifer/huey" target="_blank" rel="noopener">https://github.com/coleifer/huey</a></li>
+</ul>
+<h2 id="抓取的流程图"><a href="#抓取的流程图" class="headerlink" title="抓取的流程图"></a>抓取的流程图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181125978.png" alt="mark"></p>
+<p><strong>发送网络请求-&gt;下载好数据后解析html-&gt;解析成想要的格式之后存储</strong></p>
+<h2 id="celery的流程图"><a href="#celery的流程图" class="headerlink" title="celery的流程图"></a>celery的流程图</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/181411194.png" alt="mark"></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/194754070.png" alt="mark"></h2><p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live1.mp4</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195002034.png" alt="mark"><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/195015479.png" alt="mark"></p>
+<p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live2.mp4</p>
+<h2 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h2><p>AJAX出现的较早，在分离这上面做的不是很好，大厂都已经迁移到了Fetch上。<br><a href="https://github.com/camsong/blog/issues/2" target="_blank" rel="noopener">https://github.com/camsong/blog/issues/2</a></p>
+<h2 id="动态网页抓取"><a href="#动态网页抓取" class="headerlink" title="动态网页抓取"></a>动态网页抓取</h2><p>关于动态网页的抓取是一件比较困难的事情。有些动态页面可以从接口直接获取数据，但是有一些不行，比如：</p>
+<ul>
+<li>用到了现在比较潮流的框架，比如react；</li>
+<li>有些需要页面交互才能获取到数据，比如点个按钮</li>
+<li>有些是在javascript执行之后生成的。<br>这种时候就必须要了解这个过程中是怎么实现渲染的，我们要考虑一个动态页面的抓取的过程。</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><strong>业界动态网页的抓取，常使用selenium + phantomjs，其实就像是打开浏览器，设定一些操作和事件，来模仿一个真实的用户，再通过它提供的接口找到要爬取的元素，拿到它的值。</strong><br>selenium本来是用来做自动化测试的，还能做鼠标拖动、截屏之类的操作。<br>phantomjs是一个没有web界面的，可脚本编程的webkit浏览器引擎，可以进行CSS、DOM操作等等。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/204226753.png" alt="mark"></p>
+<p>链接：<a href="http://pan.baidu.com/s/1skDyoUT" target="_blank" rel="noopener">http://pan.baidu.com/s/1skDyoUT</a> 密码：3tsi 就是那个live3.mp4</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzA3NDk1NjI0OQ==&mid=2247483737&idx=1&sn=3f44134e630408c9b950f7d513722059&chksm=9f76adefa80124f94d0d0faa8751530636cb9863e9af9d6c56475719b57c105aa611423d5656#rd" target="_blank" rel="noopener">几篇celery的文章（一）</a><br><a href="http://www.bjhee.com/celery.html" target="_blank" rel="noopener">几篇celery的文章（二）</a><br><a href="http://funhacks.net/2016/12/13/celery/" target="_blank" rel="noopener">几篇celery的文章（三）</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/210110160.png" alt="mark"></p>
+<p>很多人会纠结于是用多线程多进程还是asyncio呢，要不要学习twisted呢？其实不需要纠结，先实现功能。</p>
+<p>其实主要的性能瓶颈在于要爬取的网站的网络延时、页面渲染的速度还有反爬虫策略。</p>
+<p>当然爬虫本身性能可优化的地方也很多，这里有一些建议</p>
+<ol>
+<li>并发或者分布式的方式去爬取。</li>
+<li>使用队列减少数据库的访问。</li>
+<li>按需对数据写操作，从单个执行变成批量执行。（通常是先存在某个地方，比如reddis,然后调一个批量任务定期抓取）</li>
+<li>选择合适的数据库建立正确的索引。如果早期对需求不清楚不确定，用Nosql（比如Mongodb）方便很多，即使数据脏了也可以通过程序处理。</li>
+<li>并发效率并不是线性的，并发数高了对网站和数据库还是有负担。<br>……</li>
+</ol>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/blog/20170518/211427350.png" alt="mark"></p>
+<h2 id="对付常用的反爬虫策略"><a href="#对付常用的反爬虫策略" class="headerlink" title="对付常用的反爬虫策略"></a>对付常用的反爬虫策略</h2><h3 id="设置IP的访问频率"><a href="#设置IP的访问频率" class="headerlink" title="设置IP的访问频率"></a>设置IP的访问频率</h3><p>如果超出一定的频率就会出现验证码。处理验证码可以专门写程序处理，也可以使用开源项目。</p>
+<p>*推荐的生成验证码图片的项目 <a href="https://github.com/lepture/captcha" target="_blank" rel="noopener">https://github.com/lepture/captcha</a> *</p>
+<h3 id="伪造User-Agent"><a href="#伪造User-Agent" class="headerlink" title="伪造User Agent"></a>伪造User Agent</h3><p>一直用一个UA会被开发工程师发现。</p>
+<h3 id="建立IP代理池"><a href="#建立IP代理池" class="headerlink" title="建立IP代理池"></a>建立IP代理池</h3><p>*获取大量免费代理ip的项目<a href="https://github.com/awolfly9/IPProxyTool" target="_blank" rel="noopener">https://github.com/awolfly9/IPProxyTool</a>  *</p>
+<h3 id="改变refer值"><a href="#改变refer值" class="headerlink" title="改变refer值"></a>改变refer值</h3><p>不直接访问，伪造refer</p>
+<h3 id="模仿搜索引擎"><a href="#模仿搜索引擎" class="headerlink" title="模仿搜索引擎"></a>模仿搜索引擎</h3><p>有可能被打上好人卡~</p>
+<h3 id="保存cookie，使用cookie免登陆"><a href="#保存cookie，使用cookie免登陆" class="headerlink" title="保存cookie，使用cookie免登陆"></a>保存cookie，使用cookie免登陆</h3><h2 id="关于反反爬虫的项目"><a href="#关于反反爬虫的项目" class="headerlink" title="关于反反爬虫的项目"></a>关于反反爬虫的项目</h2><p><strong>推荐的项目：<a href="https://github.com/luyishisi/Anti-Anti-Spider" target="_blank" rel="noopener">https://github.com/luyishisi/Anti-Anti-Spider</a></strong></p>
+<h2 id="学习典例"><a href="#学习典例" class="headerlink" title="学习典例"></a>学习典例</h2><p>爬虫入门：<br><a href="https://zhuanlan.zhihu.com/p/21479334" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/21479334</a></p>
+<p>知道创宇面试题：<br><a href="http://www.dongwm.com/archives/pa-chong-lian-xi/" target="_blank" rel="noopener">http://www.dongwm.com/archives/pa-chong-lian-xi/</a></p>
+<p>搜狐面试：<br><a href="https://github.com/dongweiming/mtime" target="_blank" rel="noopener">https://github.com/dongweiming/mtime</a></p>
+<p><strong>awesome（个人推荐）：</strong></p>
+<p><a href="https://github.com/BruceDone/awesome-crawler" target="_blank" rel="noopener">https://github.com/BruceDone/awesome-crawler</a></p>
+<p><a href="https://github.com/liinnux/awesome-crawler-cn" target="_blank" rel="noopener">https://github.com/liinnux/awesome-crawler-cn</a></p>
+<p><a href="https://github.com/facert/awesome-spider" target="_blank" rel="noopener">https://github.com/facert/awesome-spider</a></p>
+<p><a href="https://github.com/aosabook/500lines/tree/master/crawler/code" target="_blank" rel="noopener">https://github.com/aosabook/500lines/tree/master/crawler/code</a></p>
+<p>scrapy +redis+mongodb进行分布式爬虫 </p>
+<p><a href="https://github.com/gnemoug/distribute_crawler" target="_blank" rel="noopener">https://github.com/gnemoug/distribute_crawler</a></p>
+<p>技术选型： </p>
+<ul>
+<li>mongodb:存储爬取的结果（因为它不要求字段的数据结构严格一致化，对脏数据的容错性好）</li>
+<li>redis:分布式/消息队列/一级缓存（存储中间数据）</li>
+<li>scrapy:爬虫里最好的一个框架，基于twisted，高度封装。</li>
+</ul>
+<p>scrapy+django拓展</p>
+<p><a href="https://github.com/scrapy-plugins/scrapy-djangoitem" target="_blank" rel="noopener">https://github.com/scrapy-plugins/scrapy-djangoitem</a></p>
+<h2 id="爬虫情景"><a href="#爬虫情景" class="headerlink" title="爬虫情景"></a>爬虫情景</h2><h3 id="对腾讯视频、优酷视频的评论、播放量等的采集"><a href="#对腾讯视频、优酷视频的评论、播放量等的采集" class="headerlink" title="对腾讯视频、优酷视频的评论、播放量等的采集"></a>对腾讯视频、优酷视频的评论、播放量等的采集</h3><p>打开网页，弹一个h5或flash的播放器，会请求后端发送视频资源。 </p>
+<ul>
+<li>页面打开后渲染的第一页就是评论，然后其他页在你翻页或者滚动的时候通过ajax再去加载出来。</li>
+<li>刚开始打开页面的时候，底下就没有评论。在后期通过ajax请求过来。相当于视频加载和评论加载（或者其他）分开进行。</li>
+</ul>
+<p>** 一般是不可能打开页面后全部评论加载出来的 **</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%88%AC%E8%99%AB/" rel="tag"># 爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/" rel="next" title="tiki_wiki（<=15.1）任意文件上传漏洞">
+                <i class="fa fa-chevron-left"></i> tiki_wiki（<=15.1）任意文件上传漏洞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/15/raspberry_quick_start/" rel="prev" title="树莓派快速配置指南">
+                树莓派快速配置指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#书籍推荐："><span class="nav-number">1.</span> <span class="nav-text">书籍推荐：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python-爬虫实践文章"><span class="nav-number">2.</span> <span class="nav-text">python&#x2F;爬虫实践文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习建议"><span class="nav-number">3.</span> <span class="nav-text">学习建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思维导图"><span class="nav-number">4.</span> <span class="nav-text">思维导图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么使用这个思维导图？"><span class="nav-number">5.</span> <span class="nav-text">怎么使用这个思维导图？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于抓取工具"><span class="nav-number">5.1.</span> <span class="nav-text">关于抓取工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于请求库"><span class="nav-number">5.2.</span> <span class="nav-text">关于请求库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于解析库"><span class="nav-number">5.3.</span> <span class="nav-text">关于解析库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于并发编程"><span class="nav-number">5.4.</span> <span class="nav-text">关于并发编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于任务调度框架"><span class="nav-number">5.5.</span> <span class="nav-text">关于任务调度框架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抓取的流程图"><span class="nav-number">6.</span> <span class="nav-text">抓取的流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#celery的流程图"><span class="nav-number">7.</span> <span class="nav-text">celery的流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">8.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AJAX"><span class="nav-number">9.</span> <span class="nav-text">AJAX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态网页抓取"><span class="nav-number">10.</span> <span class="nav-text">动态网页抓取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">11.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对付常用的反爬虫策略"><span class="nav-number">12.</span> <span class="nav-text">对付常用的反爬虫策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置IP的访问频率"><span class="nav-number">12.1.</span> <span class="nav-text">设置IP的访问频率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伪造User-Agent"><span class="nav-number">12.2.</span> <span class="nav-text">伪造User Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立IP代理池"><span class="nav-number">12.3.</span> <span class="nav-text">建立IP代理池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变refer值"><span class="nav-number">12.4.</span> <span class="nav-text">改变refer值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模仿搜索引擎"><span class="nav-number">12.5.</span> <span class="nav-text">模仿搜索引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存cookie，使用cookie免登陆"><span class="nav-number">12.6.</span> <span class="nav-text">保存cookie，使用cookie免登陆</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于反反爬虫的项目"><span class="nav-number">13.</span> <span class="nav-text">关于反反爬虫的项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习典例"><span class="nav-number">14.</span> <span class="nav-text">学习典例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#爬虫情景"><span class="nav-number">15.</span> <span class="nav-text">爬虫情景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对腾讯视频、优酷视频的评论、播放量等的采集"><span class="nav-number">15.1.</span> <span class="nav-text">对腾讯视频、优酷视频的评论、播放量等的采集</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2017/05/18/crawler/';
+          this.page.identifier = '2017/05/18/crawler/';
+          this.page.title = 'Python爬虫的入门与进阶';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

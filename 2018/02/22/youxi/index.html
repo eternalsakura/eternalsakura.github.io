@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1-12章因为我读这本书的初衷是研究native层的注入和hook技术，并不十分关注游戏外挂本身，而且我已经有一定的逆向经验，所以这部分我只是大致看了看外挂的种类和游戏漏洞的风险点。 需要学习的语言在逆向分析中主要掌握的是ARM、c、c++、oc，但是除此之外，android软件经常使用的java以及smali代码，还有U3D主逻辑使用的c#和IL代码，以及某些游戏会使用lua或py脚本来写主逻辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《游戏安全:手游安全技术入门》理论篇">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/22/youxi/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="1-12章因为我读这本书的初衷是研究native层的注入和hook技术，并不十分关注游戏外挂本身，而且我已经有一定的逆向经验，所以这部分我只是大致看了看外挂的种类和游戏漏洞的风险点。 需要学习的语言在逆向分析中主要掌握的是ARM、c、c++、oc，但是除此之外，android软件经常使用的java以及smali代码，还有U3D主逻辑使用的c#和IL代码，以及某些游戏会使用lua或py脚本来写主逻辑">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-22-033620.jpg">
+<meta property="article:published_time" content="2018-02-22T02:42:35.788Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.720Z">
+<meta property="article:author" content="sakura">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-22-033620.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/22/youxi/"/>
+
+
+
+
+
+  <title>《游戏安全:手游安全技术入门》理论篇 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/22/youxi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《游戏安全:手游安全技术入门》理论篇</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-22T10:42:35+08:00">
+                2018-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/22/youxi/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/22/youxi/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-12章"><a href="#1-12章" class="headerlink" title="1-12章"></a>1-12章</h1><p>因为我读这本书的初衷是研究native层的注入和hook技术，并不十分关注游戏外挂本身，而且我已经有一定的逆向经验，所以这部分我只是大致看了看外挂的种类和游戏漏洞的风险点。</p>
+<h2 id="需要学习的语言"><a href="#需要学习的语言" class="headerlink" title="需要学习的语言"></a>需要学习的语言</h2><p>在逆向分析中主要掌握的是ARM、c、c++、oc，但是除此之外，android软件经常使用的java以及smali代码，还有U3D主逻辑使用的c#和IL代码，以及某些游戏会使用lua或py脚本来写主逻辑，遇到这些语言，只需要在遇到他们时能够读懂基本逻辑即可。</p>
+<h2 id="外挂技术——静态修改"><a href="#外挂技术——静态修改" class="headerlink" title="外挂技术——静态修改"></a>外挂技术——静态修改</h2><p>如果已经了解游戏的关键逻辑代码的位置，就可以直接修改，针对不同的语言有不同的修改方式，如针对c#编写的逻辑，用ildasm反编译后，修改IL指令，然后通过ilasm编译成dll文件，替换原安装包中的即可。</p>
+<h2 id="外挂技术——动态修改"><a href="#外挂技术——动态修改" class="headerlink" title="外挂技术——动态修改"></a>外挂技术——动态修改</h2><p>若游戏做了比较严格的完整性校验或签名校验，难以静态绕过，则可以考虑动态。</p>
+<h2 id="漏洞的实现原理"><a href="#漏洞的实现原理" class="headerlink" title="漏洞的实现原理"></a>漏洞的实现原理</h2><ul>
+<li>游戏逻辑漏洞<br>通过修改客户端的游戏来实现外挂功能，游戏逻辑漏洞与游戏网络交互关系密切，如果游戏的绝大部分逻辑在服务端实现，客户端只是同步结果，则这类强联网游戏的安全性较好。</li>
+<li>游戏协议稳定型漏洞<br>协议稳定型漏洞是指构造畸形协议导致协议处理方在处理协议时出现崩溃的漏洞。<br>协议稳定型漏洞的挖掘过程实际上就是畸形协议的构造过程，而畸形协议字段的构造可考虑通过Fuzz工具的思想实现，对各类边缘值的测试。</li>
+<li>游戏服务端校验疏忽型漏洞<br>本质上就是Web漏洞，服务端校验不严格。</li>
+</ul>
+<h2 id="手游的分类和风险点"><a href="#手游的分类和风险点" class="headerlink" title="手游的分类和风险点"></a>手游的分类和风险点</h2><p>99-104页</p>
+<h1 id="13章-注入技术的实现原理"><a href="#13章-注入技术的实现原理" class="headerlink" title="13章 注入技术的实现原理"></a>13章 注入技术的实现原理</h1><h2 id="ptrace注入技术的实现"><a href="#ptrace注入技术的实现" class="headerlink" title="ptrace注入技术的实现"></a>ptrace注入技术的实现</h2><h3 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-02-22-033620.jpg" alt=""></p>
+<h3 id="代码实例"><a href="#代码实例" class="headerlink" title="代码实例"></a>代码实例</h3><p>Android.mk</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH :&#x3D; $(call my-dir)  </span><br><span class="line">  </span><br><span class="line">include $(CLEAR_VARS)  </span><br><span class="line">LOCAL_MODULE :&#x3D; inject   </span><br><span class="line">LOCAL_SRC_FILES :&#x3D; ptraceInject.c InjectModule.c shellcode.s</span><br><span class="line">  </span><br><span class="line">LOCAL_LDLIBS +&#x3D; -L$(SYSROOT)&#x2F;usr&#x2F;lib -llog  </span><br><span class="line">  </span><br><span class="line">include $(BUILD_EXECUTABLE)</span><br></pre></td></tr></table></figure>
+<p>InjectModule.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************************</span></span><br><span class="line"><span class="comment">  FileName: InjectModule.c</span></span><br><span class="line"><span class="comment">  Description:       ptrace注入      </span></span><br><span class="line"><span class="comment">***********************************************************/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/user.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/ptrace.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;elf.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ptraceInject.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/PrintLog.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    通过进程名称定位到进程的PID</span></span><br><span class="line"><span class="comment">  Input:          process_name为要定位的进程名称</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回定位到的进程PID，若为-1，表示定位失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">pid_t</span> <span class="title">FindPidByProcessName</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *process_name)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ProcessDirID = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">pid_t</span> pid = <span class="number">-1</span>;</span><br><span class="line">	FILE *fp = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">char</span> filename[MAX_PATH] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">char</span> cmdline[MAX_PATH] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> * <span class="title">entry</span> = <span class="title">NULL</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( process_name == <span class="literal">NULL</span> )</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">	DIR* dir = opendir( <span class="string">"/proc"</span> );</span><br><span class="line">	<span class="keyword">if</span> ( dir == <span class="literal">NULL</span> )</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>( (entry = readdir(dir)) != <span class="literal">NULL</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		ProcessDirID = atoi( entry-&gt;d_name );</span><br><span class="line">		<span class="keyword">if</span> ( ProcessDirID != <span class="number">0</span> )</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">snprintf</span>(filename, MAX_PATH, <span class="string">"/proc/%d/cmdline"</span>, ProcessDirID);</span><br><span class="line">			fp = fopen( filename, <span class="string">"r"</span> );</span><br><span class="line">			<span class="keyword">if</span> ( fp )</span><br><span class="line">			&#123;</span><br><span class="line">				fgets(cmdline, <span class="keyword">sizeof</span>(cmdline), fp);</span><br><span class="line">				fclose(fp);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">if</span> (<span class="built_in">strncmp</span>(process_name, cmdline, <span class="built_in">strlen</span>(process_name)) == <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					pid = ProcessDirID;</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	closedir(dir);</span><br><span class="line">	<span class="keyword">return</span> pid;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> InjectModuleName[MAX_PATH] = <span class="string">"/data/libInjectModule.so"</span>;    <span class="comment">// 注入模块全路径</span></span><br><span class="line">	<span class="keyword">char</span> RemoteCallFunc[MAX_PATH] = <span class="string">"Inject_entry"</span>;              <span class="comment">// 注入模块后调用模块函数名称</span></span><br><span class="line">	<span class="keyword">char</span> InjectProcessName[MAX_PATH] = <span class="string">"com.yiyou.org.mario.xyhy"</span>;                      <span class="comment">// 注入进程名称</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 当前设备环境判断</span></span><br><span class="line">	<span class="meta">#<span class="meta-keyword">if</span> defined(__i386__)  </span></span><br><span class="line">	LOGD(<span class="string">"Current Environment x86"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">elif</span> defined(__arm__)</span></span><br><span class="line">	LOGD(<span class="string">"Current Environment ARM"</span>);</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">else</span>     </span></span><br><span class="line">	LOGD(<span class="string">"other Environment"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">pid_t</span> pid = FindPidByProcessName(InjectProcessName);</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Get Pid Failed"</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"begin inject process, RemoteProcess pid:%d, InjectModuleName:%s, RemoteCallFunc:%s\n"</span>, pid, InjectModuleName, RemoteCallFunc);</span><br><span class="line">	<span class="keyword">int</span> iRet = inject_remote_process(pid,  InjectModuleName, RemoteCallFunc,  <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="comment">//int iRet = inject_remote_process_shellcode(pid,  InjectModuleName, RemoteCallFunc,  NULL, 0);</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (iRet == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Inject Success\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Inject Failed\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"end inject,%d\n"</span>, pid);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ptraceInject.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************************</span></span><br><span class="line"><span class="comment">  FileName: ptraceInject.h</span></span><br><span class="line"><span class="comment">  Description:       ptrace注入      </span></span><br><span class="line"><span class="comment">***********************************************************/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;       </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;    </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  MAX_PATH 0x100</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inject_remote_process</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">char</span> *LibPath, <span class="keyword">char</span> *FunctionName, <span class="keyword">long</span> *FuncParameter, <span class="keyword">long</span> NumParameter)</span></span>;   <span class="comment">// 通过ptrace远程调用dlopen/dlsym方式注入模块到远程进程</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inject_remote_process_shellcode</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">char</span> *LibPath, <span class="keyword">char</span> *FunctionName, <span class="keyword">long</span> *FuncParameter, <span class="keyword">long</span> NumParameter)</span></span>; <span class="comment">// 通过shellcode方式注入模块到远程进程</span></span><br></pre></td></tr></table></figure>
+<p>ptraceInject.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************************</span></span><br><span class="line"><span class="comment">  FileName: ptraceInject.c</span></span><br><span class="line"><span class="comment">  Description:       ptrace注入      </span></span><br><span class="line"><span class="comment">***********************************************************/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/user.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/ptrace.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;elf.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/PrintLog.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ptraceInject.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CPSR_T_MASK     ( 1u &lt;&lt; 5 )</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REMOTE_ADDR( addr, local_base, remote_base ) ( (uint32_t)(addr) + (uint32_t)(remote_base) - (uint32_t)(local_base) ) </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *libc_path = <span class="string">"/system/lib/libc.so"</span>;    </span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *linker_path = <span class="string">"/system/bin/linker"</span>;   </span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    ptrace使远程进程继续运行</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示continue成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_continue</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (ptrace(PTRACE_CONT, pid, <span class="literal">NULL</span>, <span class="literal">NULL</span>) &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"ptrace cont error, pid:%d"</span>, pid);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace Attach到指定进程</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示attach成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span>  </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_attach</span><span class="params">(<span class="keyword">pid_t</span> pid)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> status = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        LOGD(<span class="string">"attach process error, pid:%d"</span>, pid);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">	</span><br><span class="line"> 	LOGD(<span class="string">"attach process pid:%d"</span>, pid);          </span><br><span class="line">    waitpid(pid, &amp;status , WUNTRACED);       	</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace detach指定进程</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示detach成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span>    </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_detach</span><span class="params">(<span class="keyword">pid_t</span> pid)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_DETACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        LOGD(<span class="string">"detach process error, pid:%d"</span>, pid);     </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">	LOGD(<span class="string">"detach process pid:%d"</span>, pid);  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace获取远程进程的寄存器值</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，regs为pt_regs结构，存储了寄存器值</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示获取寄存器成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_getregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs *regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Get Regs error, pid:%d"</span>, pid);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace设置远程进程的寄存器值</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，regs为pt_regs结构，存储需要修改的寄存器值</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示设置寄存器成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_setregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs *regs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Set Regs error, pid:%d"</span>, pid);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    获取返回值，ARM处理器中返回值存放在ARM_r0寄存器中</span></span><br><span class="line"><span class="comment">  Input:          regs存储远程进程当前的寄存器值</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         在ARM处理器下返回r0寄存器值</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace_getret</span><span class="params">(struct pt_regs * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;       </span><br><span class="line">    <span class="keyword">return</span> regs-&gt;ARM_r0;      </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    获取当前执行代码的地址，ARM处理器下存放在ARM_pc中</span></span><br><span class="line"><span class="comment">  Input:          regs存储远程进程当前的寄存器值</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         在ARM处理器下返回pc寄存器值</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace_getpc</span><span class="params">(struct pt_regs * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;       </span><br><span class="line">    <span class="keyword">return</span> regs-&gt;ARM_pc;    </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace从远程进程内存中读取数据</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，pSrcBuf表示从远程进程读取数据的内存地址</span></span><br><span class="line"><span class="comment">				  pDestBuf表示用于存储读取出数据的地址，size表示读取数据的大小</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示读取数据成功</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_readdata</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint8_t</span> *pSrcBuf, <span class="keyword">uint8_t</span> *pDestBuf, <span class="keyword">uint32_t</span> <span class="built_in">size</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">uint32_t</span> nReadCount = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint32_t</span> nRemainCount = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint8_t</span> *pCurSrcBuf = pSrcBuf;</span><br><span class="line">	<span class="keyword">uint8_t</span> *pCurDestBuf = pDestBuf;</span><br><span class="line">	<span class="keyword">long</span> lTmpBuf = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint32_t</span> i = <span class="number">0</span>;	</span><br><span class="line"> </span><br><span class="line">	nReadCount = <span class="built_in">size</span> / <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">	nRemainCount = <span class="built_in">size</span> % <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nReadCount; i ++ )</span><br><span class="line">	&#123;</span><br><span class="line">		lTmpBuf = ptrace(PTRACE_PEEKTEXT, pid, pCurSrcBuf, <span class="number">0</span>);</span><br><span class="line">		<span class="built_in">memcpy</span>(pCurDestBuf, (<span class="keyword">char</span> *)(&amp;lTmpBuf), <span class="keyword">sizeof</span>(<span class="keyword">long</span>));</span><br><span class="line">		pCurSrcBuf += <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">		pCurDestBuf += <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( nRemainCount &gt; <span class="number">0</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		lTmpBuf = ptrace(PTRACE_PEEKTEXT, pid, pCurSrcBuf, <span class="number">0</span>);</span><br><span class="line">		<span class="built_in">memcpy</span>(pCurDestBuf, (<span class="keyword">char</span> *)(&amp;lTmpBuf), nRemainCount);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace将数据写入到远程进程空间中</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，pWriteAddr表示写入数据到远程进程的内存地址</span></span><br><span class="line"><span class="comment">				  pWriteData用于存储写入数据的地址，size表示写入数据的大小</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示写入数据成功，返回-1表示写入数据失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_writedata</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint8_t</span> *pWriteAddr, <span class="keyword">uint8_t</span> *pWriteData, <span class="keyword">uint32_t</span> <span class="built_in">size</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">uint32_t</span> nWriteCount = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint32_t</span> nRemainCount = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint8_t</span> *pCurSrcBuf = pWriteData;</span><br><span class="line">	<span class="keyword">uint8_t</span> *pCurDestBuf = pWriteAddr;</span><br><span class="line">	<span class="keyword">long</span> lTmpBuf = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint32_t</span> i = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	nWriteCount = <span class="built_in">size</span> / <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">	nRemainCount = <span class="built_in">size</span> % <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 先讲数据以sizeof(long)字节大小为单位写入到远程进程内存空间中</span></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nWriteCount; i ++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">memcpy</span>((<span class="keyword">void</span> *)(&amp;lTmpBuf), pCurSrcBuf, <span class="keyword">sizeof</span>(<span class="keyword">long</span>));</span><br><span class="line">		<span class="keyword">if</span> (ptrace(PTRACE_POKETEXT, pid, pCurDestBuf, lTmpBuf) &lt; <span class="number">0</span>)  <span class="comment">// PTRACE_POKETEXT表示从远程内存空间写入一个sizeof(long)大小的数据</span></span><br><span class="line">		&#123;</span><br><span class="line">			LOGD(<span class="string">"Write Remote Memory error, MemoryAddr:0x%lx"</span>, (<span class="keyword">long</span>)pCurDestBuf);</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		pCurSrcBuf += <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">		pCurDestBuf += <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 将剩下的数据写入到远程进程内存空间中</span></span><br><span class="line">	<span class="keyword">if</span> (nRemainCount &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		lTmpBuf = ptrace(PTRACE_PEEKTEXT, pid, pCurDestBuf, <span class="literal">NULL</span>); <span class="comment">//先取出原内存中的数据，然后将要写入的数据以单字节形式填充到低字节处</span></span><br><span class="line">		<span class="built_in">memcpy</span>((<span class="keyword">void</span> *)(&amp;lTmpBuf), pCurSrcBuf, nRemainCount);</span><br><span class="line">		<span class="keyword">if</span> (ptrace(PTRACE_POKETEXT, pid, pCurDestBuf, lTmpBuf) &lt; <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			LOGD(<span class="string">"Write Remote Memory error, MemoryAddr:0x%lx"</span>, (<span class="keyword">long</span>)pCurDestBuf);</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    使用ptrace远程call函数</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，ExecuteAddr为远程进程函数的地址</span></span><br><span class="line"><span class="comment">                  parameters为函数参数的地址，regs为远程进程call函数前的寄存器环境</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示call函数成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint32_t</span> ExecuteAddr, <span class="keyword">long</span> *parameters, <span class="keyword">long</span> num_params, struct pt_regs* regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// ARM处理器，函数传递参数，将前四个参数放到r0-r3，剩下的参数压入栈中</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_params &amp;&amp; i &lt; <span class="number">4</span>; i ++) &#123;    </span><br><span class="line">        regs-&gt;uregs[i] = parameters[i];    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (i &lt; num_params) &#123;    </span><br><span class="line">        regs-&gt;ARM_sp -= (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) ;    <span class="comment">// 分配栈空间，栈的方向是从高地址到低地址</span></span><br><span class="line">        <span class="keyword">if</span> (ptrace_writedata(pid, (<span class="keyword">void</span> *)regs-&gt;ARM_sp, (<span class="keyword">uint8_t</span> *)&amp;parameters[i], (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>))  == <span class="number">-1</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    regs-&gt;ARM_pc = ExecuteAddr;           <span class="comment">//设置ARM_pc寄存器为需要调用的函数地址</span></span><br><span class="line">    <span class="comment">// 与BX跳转指令类似，判断跳转的地址位[0]是否为1，如果为1，则将CPST寄存器的标志T置位，解释为Thumb代码</span></span><br><span class="line">	<span class="comment">// 若为0，则将CPSR寄存器的标志T复位，解释为ARM代码</span></span><br><span class="line">	<span class="keyword">if</span> (regs-&gt;ARM_pc &amp; <span class="number">1</span>) &#123;    </span><br><span class="line">        <span class="comment">/* thumb */</span>    </span><br><span class="line">        regs-&gt;ARM_pc &amp;= (~<span class="number">1u</span>);    </span><br><span class="line">        regs-&gt;ARM_cpsr |= CPSR_T_MASK;    </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    </span><br><span class="line">        <span class="comment">/* arm */</span>    </span><br><span class="line">        regs-&gt;ARM_cpsr &amp;= ~CPSR_T_MASK;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    regs-&gt;ARM_lr = <span class="number">0</span>;        </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (ptrace_setregs(pid, regs) == <span class="number">-1</span> || ptrace_continue(pid) == <span class="number">-1</span>) &#123;    </span><br><span class="line">        LOGD(<span class="string">"ptrace set regs or continue error, pid:%d"</span>, pid);  </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>;  </span><br><span class="line">	<span class="comment">// 对于使用ptrace_cont运行的子进程，它会在3种情况下进入暂停状态：①下一次系统调用；②子进程退出；③子进程的执行发生错误。</span></span><br><span class="line">	<span class="comment">// 参数WUNTRACED表示当进程进入暂停状态后，立即返回</span></span><br><span class="line">	<span class="comment">// 将ARM_lr（存放返回地址）设置为0，会导致子进程执行发生错误，则子进程进入暂停状态</span></span><br><span class="line">    waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 判断是否成功执行函数</span></span><br><span class="line">    LOGD(<span class="string">"ptrace call ret status is %d\n"</span>, stat); </span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123;  </span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;  </span><br><span class="line">            LOGD(<span class="string">"ptrace call error"</span>);  </span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取远程进程的寄存器值，方便获取返回值</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_getregs(pid, regs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"After call getregs error"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;    </span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    在指定进程中搜索对应模块的基址</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，若为-1表示自身进程，ModuleName表示要搜索的模块的名称</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示获取模块基址失败，返回非0为要搜索的模块基址</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">GetModuleBaseAddr</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">const</span> <span class="keyword">char</span>* ModuleName)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fp = <span class="literal">NULL</span>;    </span><br><span class="line">    <span class="keyword">long</span> ModuleBaseAddr = <span class="number">0</span>; 	</span><br><span class="line">	<span class="keyword">char</span> *ModulePath, *MapFileLineItem;</span><br><span class="line">    <span class="keyword">char</span> szFileName[<span class="number">50</span>] = &#123;<span class="number">0</span>&#125;;    </span><br><span class="line">    <span class="keyword">char</span> szMapFileLine[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">char</span> szProcessInfo[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 读取"/proc/pid/maps"可以获得该进程加载的模块</span></span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        <span class="comment">//  枚举自身进程模块 </span></span><br><span class="line">        <span class="built_in">snprintf</span>(szFileName, <span class="keyword">sizeof</span>(szFileName), <span class="string">"/proc/self/maps"</span>);    </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    </span><br><span class="line">        <span class="built_in">snprintf</span>(szFileName, <span class="keyword">sizeof</span>(szFileName), <span class="string">"/proc/%d/maps"</span>, pid);    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    fp = fopen(szFileName, <span class="string">"r"</span>);    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (fp != <span class="literal">NULL</span>) </span><br><span class="line">	&#123;    </span><br><span class="line">        <span class="keyword">while</span> (fgets(szMapFileLine, <span class="keyword">sizeof</span>(szMapFileLine), fp)) &#123;</span><br><span class="line">			<span class="keyword">if</span> (<span class="built_in">strstr</span>(szMapFileLine, ModuleName))</span><br><span class="line">			&#123;</span><br><span class="line">				MapFileLineItem = strtok(szMapFileLine, <span class="string">" \t"</span>); <span class="comment">// 基址信息</span></span><br><span class="line">                <span class="keyword">char</span> *Addr = strtok(szMapFileLine, <span class="string">"-"</span>);    </span><br><span class="line">                ModuleBaseAddr = strtoul(Addr, <span class="literal">NULL</span>, <span class="number">16</span> );    </span><br><span class="line">    </span><br><span class="line">                <span class="keyword">if</span> (ModuleBaseAddr == <span class="number">0x8000</span>)    </span><br><span class="line">                    ModuleBaseAddr = <span class="number">0</span>;    </span><br><span class="line">    </span><br><span class="line">                <span class="keyword">break</span>;   				</span><br><span class="line">			&#125;</span><br><span class="line">        &#125;    </span><br><span class="line">    </span><br><span class="line">        fclose(fp) ;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)ModuleBaseAddr;       </span><br><span class="line">&#125;    </span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    获取远程进程与本进程都加载的模块中函数的地址</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，ModuleName表示模块名称，LocalFuncAddr表示本地进程中该函数的地址</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回远程进程中对应函数的地址</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">GetRemoteFuncAddr</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">const</span> <span class="keyword">char</span> *ModuleName, <span class="keyword">void</span> *LocalFuncAddr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">void</span> *LocalModuleAddr, *RemoteModuleAddr, *RemoteFuncAddr;</span><br><span class="line">	</span><br><span class="line">	LocalModuleAddr = GetModuleBaseAddr(<span class="number">-1</span>, ModuleName);</span><br><span class="line">	RemoteModuleAddr = GetModuleBaseAddr(pid, ModuleName);</span><br><span class="line">	</span><br><span class="line">	RemoteFuncAddr = (<span class="keyword">void</span> *)((<span class="keyword">long</span>)LocalFuncAddr - (<span class="keyword">long</span>)LocalModuleAddr + (<span class="keyword">long</span>)RemoteModuleAddr);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> RemoteFuncAddr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    通过远程直接调用dlopen\dlsym的方法ptrace注入so模块到远程进程中</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，LibPath为被远程注入的so模块路径，FunctionName为远程注入的模块后调用的函数</span></span><br><span class="line"><span class="comment">				  FuncParameter指向被远程调用函数的参数（若传递字符串，需要先将字符串写入到远程进程空间中），NumParameter为参数的个数</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示注入成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inject_remote_process</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">char</span> *LibPath, <span class="keyword">char</span> *FunctionName, <span class="keyword">long</span> *FuncParameter, <span class="keyword">long</span> NumParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> iRet = <span class="number">-1</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">CurrentRegs</span>, <span class="title">OriginalRegs</span>;</span>  <span class="comment">// CurrentRegs表示远程进程中当前的寄存器值，OriginalRegs存储注入前的寄存器值，方便恢复</span></span><br><span class="line">	<span class="keyword">void</span> *mmap_addr, *dlopen_addr, *dlsym_addr, *dlclose_addr, *dlerror_addr;   <span class="comment">// 远程进程中需要调用函数的地址</span></span><br><span class="line">	<span class="keyword">void</span> *RemoteMapMemoryAddr, *RemoteModuleAddr, *RemoteModuleFuncAddr; <span class="comment">// RemoteMapMemoryAddr为远程进程空间中映射的内存基址，RemoteModuleAddr为远程注入的so模块加载基址，RemoteModuleFuncAddr为注入模块中需要调用的函数地址</span></span><br><span class="line">	<span class="keyword">long</span> parameters[<span class="number">6</span>];  </span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Attach远程进程</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_attach(pid) == <span class="number">-1</span>)</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取远程进程的寄存器值</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_getregs(pid, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	LOGD(<span class="string">"ARM_r0:0x%lx, ARM_r1:0x%lx, ARM_r2:0x%lx, ARM_r3:0x%lx, ARM_r4:0x%lx, ARM_r5:0x%lx, ARM_r6:0x%lx, ARM_r7:0x%lx, ARM_r8:0x%lx, ARM_r9:0x%lx, ARM_r10:0x%lx, ARM_ip:0x%lx, ARM_sp:0x%lx, ARM_lr:0x%lx, ARM_pc:0x%lx"</span>, \</span><br><span class="line">		CurrentRegs.ARM_r0, CurrentRegs.ARM_r1, CurrentRegs.ARM_r2, CurrentRegs.ARM_r3, CurrentRegs.ARM_r4, CurrentRegs.ARM_r5, CurrentRegs.ARM_r6, CurrentRegs.ARM_r7, CurrentRegs.ARM_r8, CurrentRegs.ARM_r9, CurrentRegs.ARM_r10, CurrentRegs.ARM_ip, CurrentRegs.ARM_sp, CurrentRegs.ARM_lr, CurrentRegs.ARM_pc);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 保存远程进程空间中当前的上下文寄存器环境</span></span><br><span class="line">	<span class="built_in">memcpy</span>(&amp;OriginalRegs, &amp;CurrentRegs, <span class="keyword">sizeof</span>(CurrentRegs)); </span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取mmap函数在远程进程中的地址</span></span><br><span class="line">	mmap_addr = GetRemoteFuncAddr(pid, libc_path, (<span class="keyword">void</span> *)mmap);</span><br><span class="line">	LOGD(<span class="string">"mmap RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)mmap_addr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 设置mmap的参数</span></span><br><span class="line">	<span class="comment">// void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offsize);</span></span><br><span class="line">    parameters[<span class="number">0</span>] = <span class="number">0</span>;  <span class="comment">// 设置为NULL表示让系统自动选择分配内存的地址    </span></span><br><span class="line">    parameters[<span class="number">1</span>] = <span class="number">0x1000</span>; <span class="comment">// 映射内存的大小    </span></span><br><span class="line">    parameters[<span class="number">2</span>] = PROT_READ | PROT_WRITE | PROT_EXEC;  <span class="comment">// 表示映射内存区域可读可写可执行   </span></span><br><span class="line">    parameters[<span class="number">3</span>] =  MAP_ANONYMOUS | MAP_PRIVATE; <span class="comment">// 建立匿名映射    </span></span><br><span class="line">    parameters[<span class="number">4</span>] = <span class="number">0</span>; <span class="comment">//  若需要映射文件到内存中，则为文件的fd  </span></span><br><span class="line">    parameters[<span class="number">5</span>] = <span class="number">0</span>; <span class="comment">//文件映射偏移量 	</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 调用远程进程的mmap函数，建立远程进程的内存映射</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)mmap_addr, parameters, <span class="number">6</span>, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Call Remote mmap Func Failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取mmap函数执行后的返回值，也就是内存映射的起始地址</span></span><br><span class="line">	RemoteMapMemoryAddr = (<span class="keyword">void</span> *)ptrace_getret(&amp;CurrentRegs);</span><br><span class="line">	LOGD(<span class="string">"Remote Process Map Memory Addr:0x%lx"</span>, (<span class="keyword">long</span>)RemoteMapMemoryAddr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 分别获取dlopen、dlsym、dlclose等函数的地址</span></span><br><span class="line">	dlopen_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlopen);</span><br><span class="line">	dlsym_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlsym);</span><br><span class="line">	dlclose_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlclose);</span><br><span class="line">	dlerror_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlerror);</span><br><span class="line">	</span><br><span class="line">	LOGD(<span class="string">"dlopen RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlopen_addr);</span><br><span class="line">	LOGD(<span class="string">"dlsym RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlsym_addr);</span><br><span class="line">	LOGD(<span class="string">"dlclose RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlclose_addr);</span><br><span class="line">	LOGD(<span class="string">"dlerror RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlerror_addr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 将要加载的so库路径写入到远程进程内存空间中</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_writedata(pid, RemoteMapMemoryAddr, LibPath, <span class="built_in">strlen</span>(LibPath) + <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Write LibPath:%s to RemoteProcess error"</span>, LibPath);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 设置dlopen的参数,返回值为模块加载的地址</span></span><br><span class="line">	<span class="comment">// void *dlopen(const char *filename, int flag);</span></span><br><span class="line">	parameters[<span class="number">0</span>] = (<span class="keyword">long</span>)RemoteMapMemoryAddr;</span><br><span class="line">	parameters[<span class="number">1</span>] = RTLD_NOW| RTLD_GLOBAL;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)dlopen_addr, parameters, <span class="number">2</span>, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Call Remote dlopen Func Failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// RemoteModuleAddr为远程进程加载注入模块的地址</span></span><br><span class="line">	RemoteModuleAddr = (<span class="keyword">void</span> *)ptrace_getret(&amp;CurrentRegs);</span><br><span class="line">	LOGD(<span class="string">"Remote Process load module Addr:0x%lx"</span>, (<span class="keyword">long</span>)RemoteModuleAddr);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> ((<span class="keyword">long</span>)RemoteModuleAddr == <span class="number">0x0</span>)   <span class="comment">// dlopen 错误</span></span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"dlopen error"</span>);</span><br><span class="line">		<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)dlerror_addr, parameters, <span class="number">0</span>, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			LOGD(<span class="string">"Call Remote dlerror Func Failed"</span>);</span><br><span class="line">			ptrace_detach(pid);</span><br><span class="line">			<span class="keyword">return</span> iRet;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">char</span> *Error = (<span class="keyword">void</span> *)ptrace_getret(&amp;CurrentRegs);</span><br><span class="line">		<span class="keyword">char</span> LocalErrorInfo[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">		ptrace_readdata(pid, Error, LocalErrorInfo, <span class="number">1024</span>);</span><br><span class="line">		LOGD(<span class="string">"dlopen error:%s"</span>, LocalErrorInfo);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 将so库中需要调用的函数名称写入到远程进程内存空间中</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_writedata(pid, RemoteMapMemoryAddr + <span class="built_in">strlen</span>(LibPath) + <span class="number">2</span>, FunctionName, <span class="built_in">strlen</span>(FunctionName) + <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Write FunctionName:%s to RemoteProcess error"</span>, FunctionName);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 设置dlsym的参数，返回值为远程进程内函数的地址</span></span><br><span class="line">	<span class="comment">// void *dlsym(void *handle, const char *symbol);</span></span><br><span class="line">	parameters[<span class="number">0</span>] = (<span class="keyword">long</span>)RemoteModuleAddr;</span><br><span class="line">	parameters[<span class="number">1</span>] = (<span class="keyword">long</span>)(RemoteMapMemoryAddr + <span class="built_in">strlen</span>(LibPath) + <span class="number">2</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)dlsym_addr, parameters, <span class="number">2</span>, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Call Remote dlsym Func Failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// RemoteModuleFuncAddr为远程进程空间内获取的函数地址</span></span><br><span class="line">	RemoteModuleFuncAddr = (<span class="keyword">void</span> *)ptrace_getret(&amp;CurrentRegs);</span><br><span class="line">	LOGD(<span class="string">"Remote Process ModuleFunc Addr:0x%lx"</span>, (<span class="keyword">long</span>)RemoteModuleFuncAddr);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)RemoteModuleFuncAddr, FuncParameter, NumParameter, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Call Remote injected Func Failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ptrace_setregs(pid, &amp;OriginalRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Recover reges failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;		</span><br><span class="line">	&#125;</span><br><span class="line">	LOGD(<span class="string">"Recover Regs Success"</span>);</span><br><span class="line">	ptrace_getregs(pid, &amp;CurrentRegs);</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">memcmp</span>(&amp;OriginalRegs, &amp;CurrentRegs, <span class="keyword">sizeof</span>(CurrentRegs)) != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Set Regs Error"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Detach</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_detach(pid) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"ptrace detach failed"</span>);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************************************************</span></span><br><span class="line"><span class="comment">  Description:    通过shellcode方式ptrace注入so模块到远程进程中</span></span><br><span class="line"><span class="comment">  Input:          pid表示远程进程的ID，LibPath为被远程注入的so模块路径，FunctionName为远程注入的模块后调用的函数</span></span><br><span class="line"><span class="comment">				  FuncParameter指向被远程调用函数的参数（若传递字符串，需要先将字符串写入到远程进程空间中），NumParameter为参数的个数</span></span><br><span class="line"><span class="comment">  Output:         无</span></span><br><span class="line"><span class="comment">  Return:         返回0表示注入成功，返回-1表示失败</span></span><br><span class="line"><span class="comment">  Others:         无</span></span><br><span class="line"><span class="comment">*************************************************/</span> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inject_remote_process_shellcode</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">char</span> *LibPath, <span class="keyword">char</span> *FunctionName, <span class="keyword">long</span> *FuncParameter, <span class="keyword">long</span> NumParameter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> iRet = <span class="number">-1</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pt_regs</span> <span class="title">CurrentRegs</span>, <span class="title">OriginalRegs</span>;</span>  <span class="comment">// CurrentRegs表示远程进程中当前的寄存器值，OriginalRegs存储注入前的寄存器值，方便恢复</span></span><br><span class="line">	<span class="keyword">void</span> *mmap_addr, *dlopen_addr, *dlsym_addr, *dlclose_addr, *dlerror_addr;   <span class="comment">// 远程进程中需要调用函数的地址</span></span><br><span class="line">	<span class="keyword">void</span> *RemoteMapMemoryAddr, *RemoteModuleAddr, *RemoteModuleFuncAddr; <span class="comment">// RemoteMapMemoryAddr为远程进程空间中映射的内存基址，RemoteModuleAddr为远程注入的so模块加载基址，RemoteModuleFuncAddr为注入模块中需要调用的函数地址</span></span><br><span class="line">	<span class="keyword">long</span> parameters[<span class="number">10</span>];  </span><br><span class="line">	</span><br><span class="line">	<span class="keyword">uint8_t</span> *dlopen_param1_ptr, *dlsym_param2_ptr, *saved_r0_pc_ptr, *inject_param_ptr, *remote_code_start_ptr, *local_code_start_ptr, *local_code_end_ptr;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">extern</span> <span class="keyword">uint32_t</span> _dlopen_addr_s, _dlopen_param1_s, _dlopen_param2_s, _dlsym_addr_s, \</span><br><span class="line">			_dlsym_param2_s, _dlclose_addr_s, _inject_start_s, _inject_end_s, _inject_function_param_s, \</span><br><span class="line">			_saved_cpsr_s, _saved_r0_pc_s;	</span><br><span class="line">			</span><br><span class="line">	<span class="keyword">uint32_t</span> code_length;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Attach远程进程</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_attach(pid) == <span class="number">-1</span>)</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取远程进程的寄存器值</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_getregs(pid, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	LOGD(<span class="string">"ARM_r0:0x%lx, ARM_r1:0x%lx, ARM_r2:0x%lx, ARM_r3:0x%lx, ARM_r4:0x%lx, ARM_r5:0x%lx, ARM_r6:0x%lx, ARM_r7:0x%lx, ARM_r8:0x%lx, ARM_r9:0x%lx, ARM_r10:0x%lx, ARM_ip:0x%lx, ARM_sp:0x%lx, ARM_lr:0x%lx, ARM_pc:0x%lx"</span>, \</span><br><span class="line">		CurrentRegs.ARM_r0, CurrentRegs.ARM_r1, CurrentRegs.ARM_r2, CurrentRegs.ARM_r3, CurrentRegs.ARM_r4, CurrentRegs.ARM_r5, CurrentRegs.ARM_r6, CurrentRegs.ARM_r7, CurrentRegs.ARM_r8, CurrentRegs.ARM_r9, CurrentRegs.ARM_r10, CurrentRegs.ARM_ip, CurrentRegs.ARM_sp, CurrentRegs.ARM_lr, CurrentRegs.ARM_pc);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 保存远程进程空间中当前的上下文寄存器环境</span></span><br><span class="line">	<span class="built_in">memcpy</span>(&amp;OriginalRegs, &amp;CurrentRegs, <span class="keyword">sizeof</span>(CurrentRegs)); </span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取mmap函数在远程进程中的地址</span></span><br><span class="line">	mmap_addr = GetRemoteFuncAddr(pid, libc_path, (<span class="keyword">void</span> *)mmap);</span><br><span class="line">	LOGD(<span class="string">"mmap RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)mmap_addr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 设置mmap的参数</span></span><br><span class="line">	<span class="comment">// void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offsize);</span></span><br><span class="line">    parameters[<span class="number">0</span>] = <span class="number">0</span>;  <span class="comment">// 设置为NULL表示让系统自动选择分配内存的地址    </span></span><br><span class="line">    parameters[<span class="number">1</span>] = <span class="number">0x4000</span>; <span class="comment">// 映射内存的大小    </span></span><br><span class="line">    parameters[<span class="number">2</span>] = PROT_READ | PROT_WRITE | PROT_EXEC;  <span class="comment">// 表示映射内存区域可读可写可执行   </span></span><br><span class="line">    parameters[<span class="number">3</span>] =  MAP_ANONYMOUS | MAP_PRIVATE; <span class="comment">// 建立匿名映射    </span></span><br><span class="line">    parameters[<span class="number">4</span>] = <span class="number">0</span>; <span class="comment">//  若需要映射文件到内存中，则为文件的fd  </span></span><br><span class="line">    parameters[<span class="number">5</span>] = <span class="number">0</span>; <span class="comment">//文件映射偏移量 	</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 调用远程进程的mmap函数，建立远程进程的内存映射</span></span><br><span class="line">	<span class="keyword">if</span> (ptrace_call(pid, (<span class="keyword">long</span>)mmap_addr, parameters, <span class="number">6</span>, &amp;CurrentRegs) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		LOGD(<span class="string">"Call Remote mmap Func Failed"</span>);</span><br><span class="line">		ptrace_detach(pid);</span><br><span class="line">		<span class="keyword">return</span> iRet;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取mmap函数执行后的返回值，也就是内存映射的起始地址</span></span><br><span class="line">	RemoteMapMemoryAddr = (<span class="keyword">void</span> *)ptrace_getret(&amp;CurrentRegs);</span><br><span class="line">	LOGD(<span class="string">"Remote Process Map Memory Addr:0x%lx"</span>, (<span class="keyword">long</span>)RemoteMapMemoryAddr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 分别获取dlopen、dlsym、dlclose等函数的地址</span></span><br><span class="line">	dlopen_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlopen);</span><br><span class="line">	dlsym_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlsym);</span><br><span class="line">	dlclose_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlclose);</span><br><span class="line">	dlerror_addr = GetRemoteFuncAddr(pid, linker_path, (<span class="keyword">void</span> *)dlerror);</span><br><span class="line">	</span><br><span class="line">	LOGD(<span class="string">"dlopen RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlopen_addr);</span><br><span class="line">	LOGD(<span class="string">"dlsym RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlsym_addr);</span><br><span class="line">	LOGD(<span class="string">"dlclose RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlclose_addr);</span><br><span class="line">	LOGD(<span class="string">"dlerror RemoteFuncAddr:0x%lx"</span>, (<span class="keyword">long</span>)dlerror_addr);	</span><br><span class="line"></span><br><span class="line">	remote_code_start_ptr = RemoteMapMemoryAddr + <span class="number">0x3C00</span>;    <span class="comment">// 远程进程中存放shellcode代码的起始地址</span></span><br><span class="line">	local_code_start_ptr = (<span class="keyword">uint8_t</span> *)&amp;_inject_start_s;     <span class="comment">// 本地进程中shellcode的起始地址</span></span><br><span class="line">	local_code_end_ptr = (<span class="keyword">uint8_t</span> *)&amp;_inject_end_s;          <span class="comment">// 本地进程中shellcode的结束地址</span></span><br><span class="line"></span><br><span class="line">	_dlopen_addr_s = (<span class="keyword">uint32_t</span>)dlopen_addr;</span><br><span class="line">	_dlsym_addr_s = (<span class="keyword">uint32_t</span>)dlsym_addr;</span><br><span class="line">	_dlclose_addr_s = (<span class="keyword">uint32_t</span>)dlclose_addr;</span><br><span class="line"></span><br><span class="line">	LOGD(<span class="string">"Inject Code Start:0x%x, end:0x%x"</span>, (<span class="keyword">int</span>)local_code_start_ptr, (<span class="keyword">int</span>)local_code_end_ptr);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 计算shellcode中一些变量的存放起始地址</span></span><br><span class="line">	code_length = (<span class="keyword">uint32_t</span>)&amp;_inject_end_s - (<span class="keyword">uint32_t</span>)&amp;_inject_start_s;</span><br><span class="line">	dlopen_param1_ptr = local_code_start_ptr + code_length + <span class="number">0x20</span>;</span><br><span class="line">	dlsym_param2_ptr = dlopen_param1_ptr + MAX_PATH;</span><br><span class="line">	saved_r0_pc_ptr = dlsym_param2_ptr + MAX_PATH;</span><br><span class="line">	inject_param_ptr = saved_r0_pc_ptr + MAX_PATH;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 写入dlopen的参数LibPath</span></span><br><span class="line">	<span class="built_in">strcpy</span>( dlopen_param1_ptr, LibPath );</span><br><span class="line">	_dlopen_param1_s = REMOTE_ADDR( dlopen_param1_ptr, local_code_start_ptr, remote_code_start_ptr );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 写入dlsym的第二个参数，需要调用的函数名称</span></span><br><span class="line">	<span class="built_in">strcpy</span>( dlsym_param2_ptr, FunctionName );</span><br><span class="line">	_dlsym_param2_s = REMOTE_ADDR( dlsym_param2_ptr, local_code_start_ptr, remote_code_start_ptr );</span><br><span class="line"></span><br><span class="line">	<span class="comment">//保存cpsr寄存器</span></span><br><span class="line">	_saved_cpsr_s = OriginalRegs.ARM_cpsr;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//保存r0-pc寄存器</span></span><br><span class="line">	<span class="built_in">memcpy</span>( saved_r0_pc_ptr, &amp;(OriginalRegs.ARM_r0), <span class="number">16</span> * <span class="number">4</span> ); <span class="comment">// r0 ~ r15</span></span><br><span class="line">	_saved_r0_pc_s = REMOTE_ADDR( saved_r0_pc_ptr, local_code_start_ptr, remote_code_start_ptr );</span><br><span class="line"></span><br><span class="line">	<span class="built_in">memcpy</span>( inject_param_ptr, FuncParameter, NumParameter );</span><br><span class="line">	_inject_function_param_s = REMOTE_ADDR( inject_param_ptr, local_code_start_ptr, remote_code_start_ptr );</span><br><span class="line"></span><br><span class="line">	ptrace_writedata( pid, remote_code_start_ptr, local_code_start_ptr, <span class="number">0x400</span> );</span><br><span class="line"></span><br><span class="line">	<span class="built_in">memcpy</span>( &amp;CurrentRegs, &amp;OriginalRegs, <span class="keyword">sizeof</span>(CurrentRegs) );</span><br><span class="line">	CurrentRegs.ARM_sp = (<span class="keyword">long</span>)remote_code_start_ptr;</span><br><span class="line">	CurrentRegs.ARM_pc = (<span class="keyword">long</span>)remote_code_start_ptr;</span><br><span class="line">	ptrace_setregs( pid, &amp;CurrentRegs );</span><br><span class="line">	ptrace_detach( pid );</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Zygote注入技术的实现"><a href="#Zygote注入技术的实现" class="headerlink" title="Zygote注入技术的实现"></a>Zygote注入技术的实现</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/14/shouji/" rel="next" title="sakuraのLibrary">
+                <i class="fa fa-chevron-left"></i> sakuraのLibrary
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/23/android1/" rel="prev" title="Android漏洞分析">
+                Android漏洞分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-12章"><span class="nav-number">1.</span> <span class="nav-text">1-12章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需要学习的语言"><span class="nav-number">1.1.</span> <span class="nav-text">需要学习的语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外挂技术——静态修改"><span class="nav-number">1.2.</span> <span class="nav-text">外挂技术——静态修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外挂技术——动态修改"><span class="nav-number">1.3.</span> <span class="nav-text">外挂技术——动态修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞的实现原理"><span class="nav-number">1.4.</span> <span class="nav-text">漏洞的实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手游的分类和风险点"><span class="nav-number">1.5.</span> <span class="nav-text">手游的分类和风险点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#13章-注入技术的实现原理"><span class="nav-number">2.</span> <span class="nav-text">13章 注入技术的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ptrace注入技术的实现"><span class="nav-number">2.1.</span> <span class="nav-text">ptrace注入技术的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体流程"><span class="nav-number">2.1.1.</span> <span class="nav-text">整体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实例"><span class="nav-number">2.1.2.</span> <span class="nav-text">代码实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zygote注入技术的实现"><span class="nav-number">2.2.</span> <span class="nav-text">Zygote注入技术的实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/22/youxi/';
+          this.page.identifier = '2018/02/22/youxi/';
+          this.page.title = '《游戏安全:手游安全技术入门》理论篇';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

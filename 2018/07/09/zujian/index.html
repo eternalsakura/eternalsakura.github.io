@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="v8," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="v8代码组成目录结构概要123456789101112131415161718192021222324252627282930313233343536373839404142434445464748src ---+       |       +---arm       +---arm64       +---mips       +---mips64A      +---ia32       +">
+<meta property="og:type" content="article">
+<meta property="og:title" content="V8 javascript engine代码阅读">
+<meta property="og:url" content="http://eternalsakura13.com/2018/07/09/zujian/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="v8代码组成目录结构概要123456789101112131415161718192021222324252627282930313233343536373839404142434445464748src ---+       |       +---arm       +---arm64       +---mips       +---mips64A      +---ia32       +">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-05-10-124518.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-102213.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-163310.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-172242.png">
+<meta property="article:published_time" content="2018-07-09T09:25:34.699Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.729Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="v8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-05-10-124518.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/07/09/zujian/"/>
+
+
+
+
+
+  <title>V8 javascript engine代码阅读 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/07/09/zujian/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">V8 javascript engine代码阅读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-09T17:25:34+08:00">
+                2018-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/09/zujian/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/07/09/zujian/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="v8代码组成"><a href="#v8代码组成" class="headerlink" title="v8代码组成"></a>v8代码组成</h2><h3 id="目录结构概要"><a href="#目录结构概要" class="headerlink" title="目录结构概要"></a>目录结构概要</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">src ---+</span><br><span class="line">       |</span><br><span class="line">       +---arm</span><br><span class="line">       +---arm64</span><br><span class="line">       +---mips</span><br><span class="line">       +---mips64</span><br><span class="line">A      +---ia32</span><br><span class="line">       +---x64</span><br><span class="line">       +---ppc</span><br><span class="line">       +---s390</span><br><span class="line">       +---wasm</span><br><span class="line">       +---asmjs</span><br><span class="line">       |</span><br><span class="line">       +---ast</span><br><span class="line">       +---compiler</span><br><span class="line">B      +---compiler-dispatcher</span><br><span class="line">       +---interpreter</span><br><span class="line">       +---parsing</span><br><span class="line">       |</span><br><span class="line">       +---js</span><br><span class="line">       +---builtins</span><br><span class="line">C      +---runtime</span><br><span class="line">       +---snapshot</span><br><span class="line">       +---regexp</span><br><span class="line">       +---profiler</span><br><span class="line">       |</span><br><span class="line">D      +---ic</span><br><span class="line">       |</span><br><span class="line">       +---heap</span><br><span class="line">E      +---heap-symbols.h</span><br><span class="line">       +---zone</span><br><span class="line">       +---objects</span><br><span class="line">       |</span><br><span class="line">F      +---inspector</span><br><span class="line">       |</span><br><span class="line">       +---base</span><br><span class="line">       +---debug</span><br><span class="line">       +---tracing</span><br><span class="line">       +---extensions</span><br><span class="line">G      +---libplatform</span><br><span class="line">       +---libsampler</span><br><span class="line">       +---third_party</span><br><span class="line">       +---trap-handler</span><br><span class="line">       |</span><br><span class="line">       +---*.cc<span class="comment">/*.h</span></span><br><span class="line"><span class="comment">       .</span></span><br><span class="line"><span class="comment">       .</span></span><br><span class="line"><span class="comment">       .</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>A:存储汇编代码，反汇编程序，宏汇编程序，模拟器等，对于不同CPU不同。</li>
+<li>B:code generation系统，例如parse, compile, interpreter, etc.</li>
+<li>C:JS built-in function和runtime helper function</li>
+<li>D:Inline Cache code </li>
+<li>E:object model(对象模型)和memory(内存)相关代码</li>
+<li>F:Inspector</li>
+<li>G:Debugging and platform abstraction layer codes are stored.</li>
+</ul>
+<h3 id="必读代码"><a href="#必读代码" class="headerlink" title="必读代码"></a>必读代码</h3><ul>
+<li>api.h/api.cc<br>An API for Embedder is defined.</li>
+<li>objects.h/objects.cc<br>定义了v8的所有对象模型</li>
+<li>compiler/compiler.cc<br>编译的入口点</li>
+<li>compiler/pipeline.cc<br>和compiler.cc关联，放置TurboFan</li>
+<li>runtime/runtime-*.cc<br>A runtime function is defined.</li>
+<li>builtins/builtin-*.cc<br>A faster runtime function group. It is described in CodeStubAssembler (commentary) or Assembler.</li>
+<li>interpreter/*.cc<br>Ignition解释器</li>
+<li>ic/*.cc<br>Inline Caching的实现<br>存储Runtime(?)</li>
+</ul>
+<h2 id="v8的内部实现"><a href="#v8的内部实现" class="headerlink" title="v8的内部实现"></a>v8的内部实现</h2><h3 id="公开API"><a href="#公开API" class="headerlink" title="公开API"></a>公开API</h3><ul>
+<li>v8::HandleScope<br>生成一个虚拟的作用域，监视（绑定）从v8的GC分配的对象</li>
+<li>v8::Local<br>v8有GC，但c++没有GC<br>相反，它通过<a href="https://zh.wikipedia.org/wiki/RAII" target="_blank" rel="noopener">RAII</a> (Resource Acquisition Is Initialization)分配和释放资源<br>在C++中有一个称为析构函数的函数，当分配到stack上的类超出作用域并被丢弃时，该函数被调用。<br>通过v8::Local，当超出了类的作用域时，会自动调用析构函数，析构函数会自动释放资源，实现一种所谓的<a href="http://www.cnblogs.com/TenosDoIt/p/3456704.html" target="_blank" rel="noopener">智能指针</a>功能。<br>v8::Local是一个包装类，用于监视在c++中分配给堆的对象，并在调用析构函数时与当前的HandleScope一起删除。<br>例如：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  v8::Isolate* isolate = v8::Isolate::GetCurrent();</span><br><span class="line">  v8::HandleScope handle_scope;</span><br><span class="line"></span><br><span class="line">  v8::Local&lt;v8::Array&gt; <span class="built_in">array</span> = v8::Array::New(isolate, <span class="number">3</span>);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+创建v8::HandleScope后，所有v8::Local都将分配给该v8::HandleScope。<br>因此，当在测试函数结束时调用handle_scope析构函数时，也会删除与v8 :: HandleScope相关的所有v8::Local。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-05-10-124518.png" alt=""></li>
+<li>v8::Handle<br>被v8::Local包装的类，但实际上链接到v8::HandleScope。<br>有些api会返回这个v8::Handle，但基本上它就像v8::Local一样使用。</li>
+<li>v8::Isolate<br>v8::Isolate是v8代码库底层部分的一个非常特殊的部分。<br>最初v8有很多静态方法，对多线程没有太多考虑。<br>嗯，这是有问题的，因为Chromium必须分离进程并启动v8。<br>顺便说一句，事实证明，在Embedder端尝试多线程会导致相当大的问题。<br>出于这个原因，构建了v8::Isolate机制。<br>v8::Isolate是一个存储在<a href="https://blog.csdn.net/linyt/article/details/51931737" target="_blank" rel="noopener">线程本地存储（TLS）</a>中的巨大对象<br>几乎存储了与执行上下文链接的所有全局信息。<br>由于它存储在Tls中，因此可以透明地为每个线程提供不同的v8::Isolate，因此Embedder端可以在对其他线程不了解的情况下编写代码。</li>
+</ul>
+<p><strong>内部使用的各种对象（FixedArray）和表示隐藏类等的Map类也是从这个v8::Isolate生成的</strong>。<br>几乎所有地方都传递了这个类，没有v8::Isolate就很难编写代码。<br>再次使用上面的示例代码<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-102213.jpg" alt=""></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  v8::Isolate* isolate = v8::Isolate::GetCurrent();</span><br><span class="line">  v8::HandleScope handle_scope;</span><br><span class="line"></span><br><span class="line">  v8::Local&lt;v8::Array&gt; <span class="built_in">array</span> = v8::Array::New(isolate, <span class="number">3</span>);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你还可以看到此函数也传递了v8::Isolate。<br>它是v8::Array::New等等，但是v8::Isoalte实际上生成了这个数组。<br>因此，在v8中，没有太多需要考虑线程冲突，所以这是一个相当方便的机制。</p>
+<h3 id="v8-internal"><a href="#v8-internal" class="headerlink" title="v8::internal"></a>v8::internal</h3><p>除了外部公共API之外的所有类，都在v8::internal命名空间中定义。</p>
+<h3 id="对象模型"><a href="#对象模型" class="headerlink" title="对象模型"></a>对象模型</h3><p>v8非常特殊，它在C++中创建自己的对象模型。<br>该对象模型在src/objects.h的开头注释中描述，<br>当它被简化和提取时，就会变成这样。</p>
+<ul>
+<li>Object<ul>
+<li>Smi (immediate small integer)</li>
+<li>HeapObject (superclass for everything allocated in the heap)<ul>
+<li>JSReceiver (suitable for property access)<ul>
+<li>JSObject</li>
+<li>JSProxy</li>
+</ul>
+</li>
+<li>FixedArrayBase<ul>
+<li>ByteArray</li>
+<li>BytecodeArray</li>
+<li>FixedArray</li>
+<li>FixedDoubleArray</li>
+</ul>
+</li>
+<li>Name<ul>
+<li>String</li>
+<li>Symbol</li>
+</ul>
+</li>
+<li>HeapNumber</li>
+<li>BigInt</li>
+<li>Cell</li>
+<li>PropertyCell</li>
+<li>PropertyArray</li>
+<li>Code</li>
+<li>AbstractCode, a wrapper around Code or BytecodeArray</li>
+<li>Map</li>
+<li>Oddball</li>
+<li>Foreign</li>
+<li>SmallOrderedHashTable</li>
+<li>SharedFunctionInfo</li>
+<li>Struct</li>
+<li>WeakCell</li>
+<li>FeedbackVector</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>我们创建了一个以v8::i::Object为基类的对象树。<br>几乎所有在v8中使用的类都继承自v8::i::Object，这看起来像java。<br>v8不遵循c++方式使这个对象模型运行良好。<br>由于某些原因，这些类不通过c++类来创建字段。<br>这些类仅用于表示c++中的内存布局，并且所有字段都是通过直接为此指针指定偏移量来获得的。<br>换句话说，忽略c++对象布局，我们自己完全控制内存布局。<br>当以伪代码表示时，看起来像这样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Class SomeObject &#123;</span><br><span class="line">  <span class="function">Value* <span class="title">get_field1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* self = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">char</span>*&gt;(<span class="keyword">this</span>);</span><br><span class="line">    self += header_offset;</span><br><span class="line">    <span class="keyword">return</span> Value::Cast(self);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Initialize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* self = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">char</span>*&gt;(<span class="keyword">this</span>);</span><br><span class="line">    self += header_offset;</span><br><span class="line">    *self = Smi::Cast(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">size_t</span> OBJECT_SIZE = <span class="keyword">sizeof</span>(<span class="keyword">char</span>) * <span class="number">32</span>;</span><br><span class="line">SomeObject* object = <span class="keyword">reinterpret_cast</span>&lt;SomeObject*&gt;(<span class="built_in">malloc</span>(OBJECT_SIZE));</span><br><span class="line">object-&gt;Initialize();</span><br><span class="line">object-&gt;get_filed1(); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<p>通过这种方式，你可以自己控制字段的偏移。<br>让我们了解一下层次结构顶端的两个分支：</p>
+<h3 id="HeapObject"><a href="#HeapObject" class="headerlink" title="HeapObject"></a>HeapObject</h3><p>首先是v8::i::HeapObject。<br>由于v8::i::Object建立了如上所述的直接通过偏移的内存布局<br>在访问字段时，继承HeapObject的对象使用以下宏。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIELD_ADDR(p, offset) \</span></span><br><span class="line">  (<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">byte</span>*&gt;(p) + offset - kHeapObjectTag)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> READ_FIELD(p, offset) \</span></span><br><span class="line">  (*<span class="keyword">reinterpret_cast</span>&lt;Object* <span class="keyword">const</span>*&gt;(FIELD_ADDR_CONST(p, offset)))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是在GC并发标记为ON时以原子方式更新字段</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> v8_CONCURRENT_MARKING</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WRITE_FIELD(p, offset, value)                             \</span></span><br><span class="line">  base::Relaxed_Store(                                            \</span><br><span class="line">      <span class="keyword">reinterpret_cast</span>&lt;base::AtomicWord*&gt;(FIELD_ADDR(p, offset)), \</span><br><span class="line">      <span class="keyword">reinterpret_cast</span>&lt;base::AtomicWord&gt;(value));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WRITE_FIELD(p, offset, value) \</span></span><br><span class="line">  (*<span class="keyword">reinterpret_cast</span>&lt;Object**&gt;(FIELD_ADDR(p, offset)) = value)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">SMI_ACCESSORS(FixedArrayBase, length, kLengthOffset)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SMI_ACCESSORS_CHECKED(holder, name, offset, condition) \</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">holder::name</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;                                   \</span><br><span class="line">    DCHECK(condition);                                         \</span><br><span class="line">    Object* value = READ_FIELD(<span class="keyword">this</span>, offset);                  \</span><br><span class="line">    <span class="keyword">return</span> Smi::ToInt(value);                                  \</span><br><span class="line">  &#125;                                                            \</span><br><span class="line">  <span class="keyword">void</span> holder::set_#<span class="meta">#name(int value) &#123;                         \</span></span><br><span class="line">    DCHECK(condition);                                         \</span><br><span class="line">    WRITE_FIELD(<span class="keyword">this</span>, offset, Smi::FromInt(value));            \</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实际上它扩展如下。</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FixedArrayBase::length</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">  DCHECK(condition);</span><br><span class="line">  Object* value = (*<span class="keyword">reinterpret_cast</span>&lt;Object* <span class="keyword">const</span>*&gt;(</span><br><span class="line">  <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">byte</span>*&gt;(<span class="keyword">this</span>) + kLengthOffset - kHeapObjectTag)</span><br><span class="line">  <span class="keyword">return</span> Smi::ToInt(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> FixedArrayBase::set_length(<span class="keyword">int</span> value) <span class="keyword">const</span> &#123;</span><br><span class="line">  DCHECK(condition);</span><br><span class="line">  base::Relaxed_Store(</span><br><span class="line">      <span class="keyword">reinterpret_cast</span>&lt;base::AtomicWord*&gt;(</span><br><span class="line">          <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">byte</span>*&gt;(<span class="keyword">this</span>) + kLengthOffset - kHeapObjectTag);</span><br><span class="line">      <span class="keyword">reinterpret_cast</span>&lt;base::AtomicWord&gt;(Smi::FromInt(value)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重要的是<br><code>reinterpret_cast&lt;const byte*&gt;(this) + kLengthOffset - kHeapObjectTag</code><br>在这部分中，我们看到在将特定字段的偏移量添加到此指针后减去kHeapObjectTag。<br>顺便说一句，kHeapObjectTag的定义如下。<br><code>const int kHeapObjectTag = 1</code><br>只有1，也就是说，只需在指针地址的末尾设置1即可。</p>
+<p>以下是示例代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">include &lt;stdio.h&gt;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kHeapObjectTag = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kHeapObjectTagSize = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">intptr_t</span> kHeapObjectTagMask = (<span class="number">1</span> &lt;&lt; kHeapObjectTagSize) - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">HasHeapObjectTag</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* value)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ((<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(value) &amp; kHeapObjectTagMask) ==</span><br><span class="line">          kHeapObjectTag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> allocated = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">char</span>*&gt;(</span><br><span class="line">      <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">char</span>) * (<span class="number">2</span> + kHeapObjectTag)));</span><br><span class="line">  <span class="keyword">auto</span> heap_object = allocated + kHeapObjectTag;</span><br><span class="line">  heap_object[<span class="number">0</span>] = <span class="string">'m'</span>;</span><br><span class="line">  heap_object[<span class="number">1</span>] = <span class="string">'v'</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%ld %ld %p %p %d\n"</span>, <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(allocated),</span><br><span class="line">         <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(heap_object), allocated, heap_object,</span><br><span class="line">         HasHeapObjectTag(heap_object));</span><br><span class="line">  <span class="built_in">free</span>(allocated);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：<br><code>140289524108464 140289524108465 0x7f97b3400cb0 0x7f97b3400cb1 1</code><br>地址以1结尾。<br>另外，v8::i::HeapObject在开头有一个v8::Map对象来表示隐藏类，以便识别它自己的类型。<br>所以v8::i::HeapObject的内存布局如下。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-163310.png" alt=""><br>由于我们总是有一个表示类型的v8::Map，我们可以通过查看它来看到v8::i ::HeapObject的类型。<br>此外，写为Derived Object Header的部分根据继承的对象而不同（如果它是v8::i::FixedArray则是长度字段）。<br>下面是Map和JSObject C ++代码的简化表示</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kHeapObjectTag = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kHeapObjectTagSize = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">intptr_t</span> kHeapObjectTagMask = (<span class="number">1</span> &lt;&lt; kHeapObjectTagSize) - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">HasHeapObjectTag</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* value)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ((<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(value) &amp; kHeapObjectTagMask) ==</span><br><span class="line">          kHeapObjectTag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Map</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">enum</span> InstanceType &#123;</span><br><span class="line">    JS_OBJECT,</span><br><span class="line">    JS_ARRAY,</span><br><span class="line">    JS_STRING</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">set_instance_type</span><span class="params">(InstanceType instance_type)</span> </span>&#123;</span><br><span class="line">    instance_type_ = instance_type;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">InstanceType <span class="title">instance_type</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> instance_type_;</span><br><span class="line">  &#125;</span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  InstanceType instance_type_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kHeaderSize = <span class="keyword">sizeof</span>(Map);</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> <span class="keyword">byte</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span>* Address;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeapObject</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">char</span> <span class="title">value</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;Address&gt;(<span class="keyword">this</span>)[<span class="number">0</span>];&#125;</span><br><span class="line">  <span class="function">Map::InstanceType <span class="title">instance_type</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;Map*&gt;(</span><br><span class="line">        <span class="keyword">reinterpret_cast</span>&lt;Address&gt;(<span class="keyword">this</span>) - kHeaderSize)-&gt;instance_type();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Free</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> top = <span class="keyword">reinterpret_cast</span>&lt;Address&gt;(<span class="keyword">this</span>) - kHeaderSize - kHeapObjectTag;</span><br><span class="line">    <span class="built_in">free</span>(top);</span><br><span class="line">  &#125;</span><br><span class="line"> <span class="keyword">protected</span>:</span><br><span class="line">  <span class="function"><span class="keyword">static</span> Address <span class="title">NewType</span><span class="params">(Map::InstanceType instance_type, <span class="keyword">size_t</span> <span class="built_in">size</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> allocated = <span class="keyword">reinterpret_cast</span>&lt;Address&gt;(</span><br><span class="line">        <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">byte</span>) * (<span class="built_in">size</span> + kHeaderSize + kHeapObjectTag)));</span><br><span class="line">    <span class="keyword">auto</span> <span class="built_in">map</span> = <span class="keyword">reinterpret_cast</span>&lt;Map*&gt;(allocated);</span><br><span class="line">    <span class="built_in">map</span>-&gt;set_instance_type(instance_type);</span><br><span class="line">    <span class="keyword">return</span> allocated + kHeaderSize + kHeapObjectTag;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSObject</span>:</span> <span class="keyword">public</span> HeapObject &#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">static</span> JSObject* <span class="title">New</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> a = NewType(Map::JS_OBJECT, <span class="number">1</span>);</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">'o'</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;JSObject*&gt;(a);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSArray</span>:</span> <span class="keyword">public</span> JSObject &#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">static</span> JSArray* <span class="title">New</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> a = NewType(Map::JS_ARRAY, <span class="number">1</span>);</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;JSArray*&gt;(a);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSString</span>:</span> <span class="keyword">public</span> JSObject &#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">static</span> JSString* <span class="title">New</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> a = NewType(Map::JS_STRING, <span class="number">1</span>);</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">'s'</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;JSString*&gt;(a);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  JSObject* objects[] = &#123;</span><br><span class="line">    JSObject::New(),</span><br><span class="line">    JSArray::New(),</span><br><span class="line">    JSString::New()</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">auto</span> o = objects[i];</span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;instance_type()) &#123;</span><br><span class="line">      <span class="keyword">case</span> Map::JS_OBJECT:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"JSObject =&gt; %c\n"</span>, o-&gt;value());</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> Map::JS_ARRAY:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"JSArray =&gt; %c\n"</span>, o-&gt;value());</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> Map::JS_STRING:</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"JSString =&gt; %c\n"</span>, o-&gt;value());</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">    objects[i]-&gt;Free();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行时，输出JSObject =&gt; o，JSArray =&gt; a，JSString =&gt; s。<br>我认为这个例子有点长，但我认为你可以看到：你可以正确地分配分配给堆的对象类型。<br>让我们解释一下Smi正在做些什么。</p>
+<h3 id="Smi"><a href="#Smi" class="headerlink" title="Smi"></a>Smi</h3><p>Smi是Small Integer的缩写，可以直接在指针区域中保存最多31位的整数。<br>似乎Ruby中也采用了相同的方法。<br>对于普通指针，32位CPU使用4个字节,64位CPU使用8个字节。<br>换句话说，如果它是一个高达31位的整数，则可以存储它而不是使用指针。<br>以这种方式，通过将其固定在指针区域中而不使用堆，实现了存储器节省和加速。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Smi</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">static</span> Smi* <span class="title">FromInt</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;Smi*&gt;(value);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Smi* <span class="title">NewSmi</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> Smi::FromInt(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%d %d\n"</span>, NewSmi(<span class="number">120</span>)-&gt;value(), NewSmi(<span class="number">110</span>)-&gt;value());</span><br><span class="line">  <span class="comment">// out 120 110</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，在v8::i::HeapObject的情况下，设置低位为1，但在Smi的情况下，结尾用0作标记，<br>通过cast可以直接进行数值计算。 因此，没有开销。<br>在64位CPU的情况下，由于指针是64位，因此可以存储更大的整数，但是为了与32位兼容，仅使用31位区域。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-09-172242.png" alt=""></p>
+<h3 id="JSReceiver"><a href="#JSReceiver" class="headerlink" title="JSReceiver"></a>JSReceiver</h3><ul>
+<li>JSArray</li>
+<li>JSArrayBuffer</li>
+<li>JSArrayBufferView<ul>
+<li>JSTypedArray</li>
+<li>JSDataView</li>
+</ul>
+</li>
+<li>JSBoundFunction</li>
+<li>JSCollection<ul>
+<li>JSSet</li>
+<li>JSMap</li>
+</ul>
+</li>
+<li>JSStringIterator</li>
+<li>JSSetIterator</li>
+<li>JSMapIterator</li>
+<li>JSWeakCollection<ul>
+<li>JSWeakMap</li>
+<li>JSWeakSet</li>
+</ul>
+</li>
+<li>JSRegExp</li>
+<li>JSFunction</li>
+<li>JSGeneratorObject</li>
+<li>JSGlobalObject</li>
+<li>JSGlobalProxy</li>
+<li>JSValue<ul>
+<li>JSDate</li>
+</ul>
+</li>
+<li>JSMessageObject</li>
+<li>JSModuleNamespace</li>
+<li>WasmInstanceObject</li>
+<li>WasmMemoryObject</li>
+<li>WasmModuleObject</li>
+<li>WasmTableObject</li>
+</ul>
+<p>这些v8::i::JS<del>类是类的真实形式，例如v8::String和v8::Array通过API使用它们。<br>诸如v8::String之类的类只是wrapper类。<br>所有实际的实现都是v8::i::JS</del>类。</p>
+<h3 id="FixedArrayBase"><a href="#FixedArrayBase" class="headerlink" title="FixedArrayBase"></a>FixedArrayBase</h3><p>v8::i::FixedArray的基本实现，它是v8中的常用类。<br>v8在里面到处都在使用这个固定长度的数组，v8::i::FixedArray有以下层次结构。</p>
+<ul>
+<li>DescriptorArray</li>
+<li>FrameArray</li>
+<li>HashTable<ul>
+<li>Dictionary</li>
+<li>StringTable</li>
+<li>StringSet</li>
+<li>CompilationCacheTable</li>
+<li>MapCache</li>
+</ul>
+</li>
+<li>OrderedHashTable<ul>
+<li>OrderedHashSet</li>
+<li>OrderedHashMap</li>
+</ul>
+</li>
+<li>Context</li>
+<li>FeedbackMetadata</li>
+<li>TemplateList</li>
+<li>TransitionArray</li>
+<li>ScopeInfo</li>
+<li>ModuleInfo</li>
+<li>ScriptContextTable</li>
+<li>WeakFixedArray</li>
+<li>WasmSharedModuleData</li>
+<li>WasmCompiledModule</li>
+</ul>
+<p>特别的，v8::i::DescriptorArray是一个存储属性描述符的数组。</p>
+<h3 id="CodeStubAssembler-CSA"><a href="#CodeStubAssembler-CSA" class="headerlink" title="CodeStubAssembler (CSA)"></a>CodeStubAssembler (CSA)</h3><p>在v8中使用的DSL语言。<br>实际上，在v8中，编写汇编语言并不是什么新鲜事。<br>相反，通过描述可以输出汇编的CSA，可以输出具有更高<strong>可维护性</strong>的<strong>高速</strong>代码。<br>CSA的一个例子如下所示。<br>计算Fibonacci数,并将其存储在数组中.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>, b = <span class="number">0</span>, temp;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (num &gt;= <span class="number">0</span>)&#123;</span><br><span class="line">    result.push(a);</span><br><span class="line">    temp = a;</span><br><span class="line">    a = a + b;</span><br><span class="line">    b = temp;</span><br><span class="line">    num--;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将javascript函数转换为CSA时，它将成为以下代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TNode&lt;JSArray&gt; <span class="title">Fibonacci</span><span class="params">(TNode&lt;Context&gt; context)</span> </span>&#123;</span><br><span class="line">  TVARIABLE(var_a, MachineType::PointerRepresentation(), IntPtrConstant(<span class="number">0</span>));</span><br><span class="line">  TVARIABLE(var_b, MachineType::PointerRepresentation(), IntPtrConstant(<span class="number">1</span>));</span><br><span class="line">  TVARIABLE(var_temp, MachineType::PointerRepresentation());</span><br><span class="line">  TVARIABLE(var_index, MachineType::PointerRepresentation());</span><br><span class="line"></span><br><span class="line">  Node* fixed_array = AllocateFixedArray(PACKED_ELEMENTS, IntPtrConstant(<span class="number">11</span>),</span><br><span class="line">                           INTPTR_PARAMETERS, kAllowLargeObjectAllocation)</span><br><span class="line"></span><br><span class="line">  Label loop(<span class="keyword">this</span>), after_loop(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  Branch(IntPtrGreaterThan(IntPtrConstant(<span class="number">100</span>), var_index), &amp;loop, &amp;after_loop);</span><br><span class="line">  BIND(&amp;loop);</span><br><span class="line">  &#123;</span><br><span class="line">    StoreFixedArrayElement(fixed_array, SmiTag(var_index), var_a,</span><br><span class="line">                           SKIP_WRITE_BARRIER);</span><br><span class="line">    var_temp.Bind(var_a);</span><br><span class="line">    var_a.Bind(IntPtrAdd(var_a, var_b));</span><br><span class="line">    var_b.Bind(var_temp);</span><br><span class="line">    Increment(&amp;var_index, <span class="number">1</span>);</span><br><span class="line">    Branch(IntPtrGreaterThan(IntPtrConstant(<span class="number">100</span>), var_index),</span><br><span class="line">           &amp;loop, &amp;after_loop);</span><br><span class="line">  &#125;</span><br><span class="line">  BIND(&amp;after_loop);</span><br><span class="line">  Node* native_context = LoadNativeContext(context);</span><br><span class="line">  Node* array_map = LoadJSArrayElementsMap(PACKED_ELEMENTS, native_context);</span><br><span class="line">  Node* <span class="built_in">array</span> = AllocateUninitializedJSArrayWithoutElements(</span><br><span class="line">      array_map, SmiConstant(<span class="number">12</span>), <span class="literal">nullptr</span>);</span><br><span class="line">  StoreObjectField(<span class="built_in">array</span>, JSArray::kElementsOffset, fixed_array);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">array</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>尽管它在某种程度上是抽象的，并且有很多冗余代码，但是它不是比汇编更容易阅读吗？</p>
+<h2 id="阅读代码"><a href="#阅读代码" class="headerlink" title="阅读代码"></a>阅读代码</h2><p>阅读v8代码非常麻烦，但有几种方法。</p>
+<p>首先，使用每个IDE的代码跳转。<br>但是，由于v8使用了大量的宏，甚至即使是类的函数定义也可能由宏执行，因此最好在找不到时使用find | grep。</p>
+<p>即使您阅读了代码，您可能也不知道执行时的状态，或者您可能不知道调用的层次结构，因此您应该在调试时按以下方式检查它。</p>
+<ul>
+<li>c++<br>由于src/base/debug/stack_trace.h中有一个StackTrace类，所以最好在要的点调用StackTrace st; st.Print()。<br>此外，由于继承v8::Object类的对象始终具有Print方法，因此可以通过调用 -&gt;Print()来查看内容。</li>
+<li>CSA<br>由于Print()函数是在CodeStubAssembler中定义的，我们在那里传递Node *并输出执行a-&gt; Print()的代码。<br>但是，要小心，因为传递IntPtrT会失败。 在这种情况下，你可以做SmiTag。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/05/p2o_2013/" rel="next" title="case study:Mobile PWN2OWN Autumn 2013 - Chrome on Android - Exploit Writeup">
+                <i class="fa fa-chevron-left"></i> case study:Mobile PWN2OWN Autumn 2013 - Chrome on Android - Exploit Writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/20/v8_xcode/" rel="prev" title="在mac上使用xcode调试v8">
+                在mac上使用xcode调试v8 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8代码组成"><span class="nav-number">1.</span> <span class="nav-text">v8代码组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目录结构概要"><span class="nav-number">1.1.</span> <span class="nav-text">目录结构概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#必读代码"><span class="nav-number">1.2.</span> <span class="nav-text">必读代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8的内部实现"><span class="nav-number">2.</span> <span class="nav-text">v8的内部实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#公开API"><span class="nav-number">2.1.</span> <span class="nav-text">公开API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v8-internal"><span class="nav-number">2.2.</span> <span class="nav-text">v8::internal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象模型"><span class="nav-number">2.3.</span> <span class="nav-text">对象模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HeapObject"><span class="nav-number">2.4.</span> <span class="nav-text">HeapObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Smi"><span class="nav-number">2.5.</span> <span class="nav-text">Smi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSReceiver"><span class="nav-number">2.6.</span> <span class="nav-text">JSReceiver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FixedArrayBase"><span class="nav-number">2.7.</span> <span class="nav-text">FixedArrayBase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CodeStubAssembler-CSA"><span class="nav-number">2.8.</span> <span class="nav-text">CodeStubAssembler (CSA)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读代码"><span class="nav-number">3.</span> <span class="nav-text">阅读代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/07/09/zujian/';
+          this.page.identifier = '2018/07/09/zujian/';
+          this.page.title = 'V8 javascript engine代码阅读';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

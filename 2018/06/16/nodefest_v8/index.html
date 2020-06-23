@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="v8," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="What is V8?v8是Google的Javascript引擎，它被采用作为Google Chrome&#x2F;Node.js的Javascript引擎。 Execution flow ParsingBasic parsingv8解析源代码并将其转换为AST抽象语法树 Split parsing phase首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。为了延迟解析，将p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Source to Binary Jounrney of V8 javascript engine">
+<meta property="og:url" content="http://eternalsakura13.com/2018/06/16/nodefest_v8/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="What is V8?v8是Google的Javascript引擎，它被采用作为Google Chrome&#x2F;Node.js的Javascript引擎。 Execution flow ParsingBasic parsingv8解析源代码并将其转换为AST抽象语法树 Split parsing phase首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。为了延迟解析，将p">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-132557.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133048.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133133.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133801.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-134324.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-140018.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141224.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141230.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141136.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141208.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-144250.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-141853.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-145533.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-150607.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-180848.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-143547.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-181353.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-181738.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-144042.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-144522.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145001.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145015.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145029.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145221.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-192301.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-150302.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191809.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191437.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191514.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191552.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191842.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192442.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192512.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192553.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-063748.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-064529.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-183524.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-184051.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065216.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065239.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065540.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065647.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065711.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-071141.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-071419.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-080927.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-081254.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-184155.png">
+<meta property="article:published_time" content="2018-06-16T13:15:20.453Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.722Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="v8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-132557.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/06/16/nodefest_v8/"/>
+
+
+
+
+
+  <title>Source to Binary Jounrney of V8 javascript engine | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/06/16/nodefest_v8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Source to Binary Jounrney of V8 javascript engine</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-16T21:15:20+08:00">
+                2018-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/16/nodefest_v8/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/16/nodefest_v8/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="What-is-V8"><a href="#What-is-V8" class="headerlink" title="What is V8?"></a>What is V8?</h2><p>v8是Google的Javascript引擎，它被采用作为Google Chrome/Node.js的Javascript引擎。</p>
+<h2 id="Execution-flow"><a href="#Execution-flow" class="headerlink" title="Execution flow"></a>Execution flow</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-132557.png" alt=""></p>
+<h2 id="Parsing"><a href="#Parsing" class="headerlink" title="Parsing"></a>Parsing</h2><h3 id="Basic-parsing"><a href="#Basic-parsing" class="headerlink" title="Basic parsing"></a>Basic parsing</h3><p>v8解析源代码并将其转换为AST抽象语法树<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133048.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133133.png" alt=""></p>
+<h3 id="Split-parsing-phase"><a href="#Split-parsing-phase" class="headerlink" title="Split parsing phase"></a>Split parsing phase</h3><p>首先，直接解析所有的代码并不是很好，如果解析的代码没有被执行，这是没有意义的。<br>为了延迟解析，将parse分为两个阶段。</p>
+<h4 id="PreParsing"><a href="#PreParsing" class="headerlink" title="PreParsing"></a>PreParsing</h4><p>事先解析所有函数的布局。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-133801.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-134324.png" alt=""><br>v8::internal::PreParser Class一次解析函数的轮廓。<br>由此得到</p>
+<ul>
+<li>初步的语法错误检查</li>
+<li>函数的范围生成<h4 id="Lazy-Parsing"><a href="#Lazy-Parsing" class="headerlink" title="Lazy Parsing"></a>Lazy Parsing</h4>v8仅在调用延迟解析的函数时才进行解析。<br>更多的可参考：</li>
+<li><a href="https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p" target="_blank" rel="noopener">https://docs.google.com/presentation/d/1b-ALt6W01nIxutFVFmXMOyd_6ou_6qqP6S0Prmb1iDs/present?%20slide=id.p&amp;slide=id.p</a></li>
+<li><a href="https://www.youtube.com/watch?v=Fg7niTmNNLg" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Fg7niTmNNLg</a></li>
+</ul>
+<h2 id="Abstract-Syntax-Tree"><a href="#Abstract-Syntax-Tree" class="headerlink" title="Abstract Syntax Tree"></a>Abstract Syntax Tree</h2><p>V8自己实现的解析器，不使用编译器编译器，如yacc或lex。使用递归下降语法分析进行解析。</p>
+<h3 id="Subsclass-constructor-return"><a href="#Subsclass-constructor-return" class="headerlink" title="Subsclass constructor return"></a>Subsclass constructor return</h3><p>修改继承类中的构造函数<br>在派生类的构造函数中返回表达式<br>转换为三元运算符<br>如果表达式的结果未定义，则返回该值。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-140018.png" alt=""></p>
+<h3 id="for-let-const-var-in-of-e"><a href="#for-let-const-var-in-of-e" class="headerlink" title="for(let/const/var in/of e)"></a>for(let/const/var in/of e)</h3><p>为了在for-in/of的初始化中使用const/let<br>通过将其封闭在一个块中，来声明一个变量<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141224.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141230.png" alt=""></p>
+<h3 id="Spread-operator"><a href="#Spread-operator" class="headerlink" title="Spread operator"></a>Spread operator</h3><p>在JavaScript的语法中，有一个名为Spread运算符的语法。<br>var x = [1，2，3];<br>var y = [… x];<br>V8会将此语法重写为完全不同的语法，如Altus的Transpiler。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141136.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-141208.png" alt=""><br>通过这种方式，我们将其重写为等效的do和for of语法</p>
+<h3 id="Ecmascript-–-Binary-AST"><a href="#Ecmascript-–-Binary-AST" class="headerlink" title="Ecmascript? – Binary AST"></a>Ecmascript? – Binary AST</h3><p>正如我们所看到的，AST的大小非常大，所以我们建议压缩它。</p>
+<h2 id="Ignition"><a href="#Ignition" class="headerlink" title="Ignition"></a>Ignition</h2><h3 id="Bytecode-Interpreter"><a href="#Bytecode-Interpreter" class="headerlink" title="Bytecode Interpreter"></a>Bytecode Interpreter</h3><p>v8在执行之前将生成的AST转换成1到4字节的bytecode</p>
+<h3 id="How-does-it-work"><a href="#How-does-it-work" class="headerlink" title="How does it work?"></a>How does it work?</h3><p>Ignition是一种基于寄存器的字节码解释器，它实际上将值分配给CPU的寄存器，并执行它们。<br>在Ignition中，预先生成一个名为BytecodeHandler的字节码处理函数，从字节码中获得一个数组索引。<br>将生成的汇编代码分配给该索引，一个接一个地调用Bytecode数组，调用相应索引的汇编程序并执行代码。</p>
+<h3 id="Pseudo-javascript-code"><a href="#Pseudo-javascript-code" class="headerlink" title="Pseudo javascript code"></a>Pseudo javascript code</h3><p>用Javascript来模拟这个结构，看起来像这样。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-144250.png" alt=""></p>
+<h3 id="How-to-create-bytecode"><a href="#How-to-create-bytecode" class="headerlink" title="How to create bytecode?"></a>How to create bytecode?</h3><p>V8准备一个称为v8::internal::AstVisitor<Subclass>的基类，简称AstVisitor，从AST生成bytecode。<br>AstVisitor是一个使用Vistor模式的类。<br>在深度优先搜索AST时调用相应的回调函数。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-141853.png" alt=""></p>
+<h3 id="BytecodeArray"><a href="#BytecodeArray" class="headerlink" title="BytecodeArray"></a>BytecodeArray</h3><p>生成的bytecode存储在BytecodeArray中。<br>BytecodeArray在函数基础上存在。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-145533.png" alt=""></p>
+<h3 id="InterpreterEntryTrampoline"><a href="#InterpreterEntryTrampoline" class="headerlink" title="InterpreterEntryTrampoline"></a>InterpreterEntryTrampoline</h3><p>最终生成的字节码是从被称为InterpreterEntryTrampoline的Builtin代码执行的。<br>InterpreterEntryTrampoline被编译成Assembly，并且被当成普通的C函数调用。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-150607.png" alt=""></p>
+<h3 id="Ignition-Handler"><a href="#Ignition-Handler" class="headerlink" title="Ignition Handler"></a>Ignition Handler</h3><p>前面伪代码中显示的BytecodeHandlers是V8<br>它被称为Ignition Handler<br>DSL中描述的Ignition Handler被称为CodeStubAssembler</p>
+<h2 id="Code-Generator"><a href="#Code-Generator" class="headerlink" title="Code Generator"></a>Code Generator</h2><p>v8中有几个汇编生成点，如下</p>
+<ul>
+<li>CodeStub</li>
+<li>Builtins</li>
+<li>Runtime</li>
+<li>BytecodeHandler<br>我明白是从Bytecode运行汇编程序，但是相应的汇编程序如何从Bytecode生成？什么是BytecodeHandler?</li>
+</ul>
+<h2 id="CodeStubAssember"><a href="#CodeStubAssember" class="headerlink" title="CodeStubAssember"></a>CodeStubAssember</h2><h3 id="What-is-CodeStubAssmber"><a href="#What-is-CodeStubAssmber" class="headerlink" title="What is CodeStubAssmber?"></a>What is CodeStubAssmber?</h3><p>CodeStubAssembler(CSA)将抽象代码生成为v8内部的graph generation DSL。<br>CodeGenerator只需组装预定的执行节点，即可为每个架构生成代码，因此您不必每次都编写汇编代码。</p>
+<h3 id="Graph-based-DSL"><a href="#Graph-based-DSL" class="headerlink" title="Graph based DSL"></a>Graph based DSL</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-180848.png" alt=""><br>这个代码可以创建一个Graph,在执行时去使用它生成汇编。<br>Graph是使用DSL语言实现的，与c++代码的实际流程不同。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-143547.png" alt=""></p>
+<p>由于使用了CodeStubAssembler，即使您不熟悉实际体系结构的汇编程序，也可以轻松的添加新代码。<br>而且可读性也非常高。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-181353.png" alt=""></p>
+<h3 id="Assembler"><a href="#Assembler" class="headerlink" title="Assembler"></a>Assembler</h3><p>让我们来看看为每个架构实际输出代码的x64的jmp助记符<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-181738.png" alt=""></p>
+<h3 id="Where-is-actually-outputting-the-assembler-in-Code-Generation"><a href="#Where-is-actually-outputting-the-assembler-in-Code-Generation" class="headerlink" title="Where is actually outputting the assembler in Code Generation"></a>Where is actually outputting the assembler in Code Generation</h3><p>名为MacroAssembler的类扮演着其角色。<br>虽然MacroAssembler的接口与体系结构无关，但在其内部调用的Assembler类会输出特定于每个体系结构的代码。<br>在V8中，MacroAssembler经常以属性名称masm频繁出现<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-144042.png" alt=""><br>最后，GraphResolver遍历Graph，通过MacroAssembler调用Assembler并输出汇编程序。</p>
+<p>但是，MacroAssembler是进行最终的代码输出，底层抽象opcode嵌入在Graph中。<br>通过下面的层次结构，生成一个architecture-specific Graph。</p>
+<ul>
+<li>CodeStubAssembler</li>
+<li>CodeAssembler</li>
+<li>RawMachineAssembler</li>
+<li>MachineOperatorBuilder<br>你越往下走，就越具体。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-144522.png" alt=""></li>
+</ul>
+<h3 id="Where-to-use"><a href="#Where-to-use" class="headerlink" title="Where to use"></a>Where to use</h3><p>Builtins使用Assembler class为不同架构生成Stub<br>一些部分使用CSA（*.gen.cc)<br>几乎所有的ignition handlers在CSA中有描述。</p>
+<h2 id="Builtins-amp-Runtime"><a href="#Builtins-amp-Runtime" class="headerlink" title="Builtins &amp; Runtime"></a>Builtins &amp; Runtime</h2><h3 id="Builtins"><a href="#Builtins" class="headerlink" title="Builtins"></a>Builtins</h3><p>Builtins是在v8启动时被编译好的asm code fragment<br>Call Builtin就像call一个函数<br>也被称为Stub<br>没有进行runtime优化</p>
+<h3 id="Runtime"><a href="#Runtime" class="headerlink" title="Runtime"></a>Runtime</h3><p>Runtime是可以从Builtins和其他汇编代码中调用的c++代码<br>连接javascript和c++<br>也没有runtime优化</p>
+<h2 id="Inline-Caching"><a href="#Inline-Caching" class="headerlink" title="Inline Caching"></a>Inline Caching</h2><h3 id="What-is-Inline-Caching"><a href="#What-is-Inline-Caching" class="headerlink" title="What is Inline Caching"></a>What is Inline Caching</h3><p>缓存之前的访问去加速property访问速度<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145001.png" alt=""></p>
+<ul>
+<li>第一次访问<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145015.png" alt=""></li>
+<li>第二次以后的访问<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145029.png" alt=""><h3 id="Search-Property"><a href="#Search-Property" class="headerlink" title="Search Property"></a>Search Property</h3><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-145221.png" alt=""><br>为了从对象中找到property<br>从HashMap或者FixedArray加载属性<br>但每次都很慢<h3 id="Reduce-Property-Access"><a href="#Reduce-Property-Access" class="headerlink" title="Reduce Property Access"></a>Reduce Property Access</h3>在这个例子中，对具有相同Map的对象多次执行对y的访问。<br>由于obj已经知道Map(x,y)…<br>当然我们也知道内存布局，所以通过直接指定偏移量来访问会更快。<h3 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h3>所以存储特定map的访问<br>当访问你一个property的时候，Map object被记录<br>这样做之后，第二次和随后的property访问被加速<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-192301.png" alt=""><h3 id="Cache-Miss"><a href="#Cache-Miss" class="headerlink" title="Cache Miss"></a>Cache Miss</h3>但是当Map更改的时候，自然会发生Cache miss，因此需要重新加载该属性并在此记住它。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-150302.png" alt=""><br>Load IC-Miss and StoreIC_Miss被调用，或者通过C++ runtime得到对象的属性。</li>
+</ul>
+<h3 id="Cahce-State"><a href="#Cahce-State" class="headerlink" title="Cahce State"></a>Cahce State</h3><p>Cahce State状态转变如下：<br>PreMonomorphic<br>Monomorphic<br>Polymorphic<br>Megamorphic<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191809.png" alt=""></p>
+<h4 id="Pre-Monomorphic"><a href="#Pre-Monomorphic" class="headerlink" title="Pre Monomorphic"></a>Pre Monomorphic</h4><p>Uninitialized state-&gt;搜寻所用的隐藏类，以及获取位移。（参考上图第一次访问）<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191437.png" alt=""></p>
+<h4 id="Monomorphic"><a href="#Monomorphic" class="headerlink" title="Monomorphic"></a>Monomorphic</h4><p>Monomorphic是Receiver的类型不变时的IC，即这是在只访问single Map的理想情况<br>在这种情况下，一个缓存就足够了，所以它将是最快的情况。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191514.png" alt=""></p>
+<h4 id="Polymorphic"><a href="#Polymorphic" class="headerlink" title="Polymorphic"></a>Polymorphic</h4><p>Polymorphic是在两种或更多类型的Receiver类型存在时被设置。<br>由于Polymorphic是循环搜索缓存的Map，找到应该使用的那个，所以它比Monomorphic慢，但比没有IC快得多。<br><strong>（Map存储在FixedArray中，从多个Map搜索并执行属性访问的缓存）</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191552.png" alt=""></p>
+<h4 id="Megamorphic"><a href="#Megamorphic" class="headerlink" title="Megamorphic"></a>Megamorphic</h4><p>由于Miss太多，停止进行Map记录的状态。<br>通过从Stub调用GetProperty，来从哈希表中搜索，是获取properties最慢的状态。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-191842.png" alt=""></p>
+<h3 id="Access-inherited-properties"><a href="#Access-inherited-properties" class="headerlink" title="Access inherited properties"></a>Access inherited properties</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192442.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192512.png" alt=""></p>
+<h3 id="summary"><a href="#summary" class="headerlink" title="summary"></a>summary</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-192553.png" alt=""></p>
+<h2 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h2><h3 id="Hot-or-Small"><a href="#Hot-or-Small" class="headerlink" title="Hot or Small"></a>Hot or Small</h3><p>对满足以下条件的代码优化<br>（function字节码长度/1200）+ function被调用2次<br>函数很小（字节码长度小于90）</p>
+<h3 id="Optimization-Budget"><a href="#Optimization-Budget" class="headerlink" title="Optimization Budget"></a>Optimization Budget</h3><p>Optimization Budget(优化预算）在字节码执行期间被分配给每个函数，当其值低于0时，成为候选优化代码。</p>
+<h3 id="For-loop"><a href="#For-loop" class="headerlink" title="For loop"></a>For loop</h3><p>优化For循环<br>在循环中，输出称为JumpLoop的字节码<br>通过这个JumpLoop，返回终点的地址的值的偏移量被加权<br>从之前的Budget(预算)中扣除一个值，当它变成0的时候，对loop的优化将发生。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-063748.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-064529.png" alt=""></p>
+<h3 id="OSR-OnStackReplacement"><a href="#OSR-OnStackReplacement" class="headerlink" title="OSR - OnStackReplacement"></a>OSR - OnStackReplacement</h3><p>在代码被编译和从bytecode到machine language之后，jump终点被改变，循环代码被切换到优化编译好的机器码。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-183524.png" alt=""></p>
+<h3 id="For-function"><a href="#For-function" class="headerlink" title="For function"></a>For function</h3><p>在函数调用的情况下，计算被Ignition生成的Return Bytecode在BytecodeHandler中的调用次数，如果超过一个阈值，就执行中断，并编译bytecode，替换原来的函数体。<br><strong>（如果是函数，会生成一个Return bytecode,在此处中断并进行budget检查）</strong><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-184051.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065216.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065239.png" alt=""></p>
+<h3 id="Concurrent-Compilation"><a href="#Concurrent-Compilation" class="headerlink" title="Concurrent Compilation"></a>Concurrent Compilation</h3><p>并行编译在对函数进行优化时是异步完成的，因此它不一定会针对后续函数调用进行优化<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065540.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065647.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-065711.png" alt=""></p>
+<h3 id="Budget-for-function"><a href="#Budget-for-function" class="headerlink" title="Budget for function"></a>Budget for function</h3><p>即使loop被分割，整个预算也会被计算出来，即使是Return也是如此，所以优化没有问题。</p>
+<h2 id="TurboFan"><a href="#TurboFan" class="headerlink" title="TurboFan"></a>TurboFan</h2><h3 id="What-is-TurboFan"><a href="#What-is-TurboFan" class="headerlink" title="What is TurboFan?"></a>What is TurboFan?</h3><p>TurboFan是V8的编译优化组件<br>在V8中，当bytecode的优化编译发生，它生成一个IR<br>TurboFan进行Graph generation和优化<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-071141.png" alt=""></p>
+<h3 id="IR"><a href="#IR" class="headerlink" title="IR"></a>IR</h3><p>抽象执行块<br>Control Flow Graph<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-071419.png" alt=""></p>
+<h3 id="Optimization-1"><a href="#Optimization-1" class="headerlink" title="Optimization"></a>Optimization</h3><p>TurboFan优化graph</p>
+<ul>
+<li>inline<br>内联函数调用</li>
+<li>trimming<br>未到达节点删除</li>
+<li>type<br>类型推断</li>
+<li>typed-lowering<br>根据类型将表达式和指令替换为更简单的处理</li>
+<li>loop-peeling<br>取出循环内的处理。</li>
+<li>loop-exit-elimination<br>删除Loop Exit</li>
+<li>load-elimination<br>删除不必要的读取和检查</li>
+<li>simplified-lowering<br>用更具体的值来进行指令的简单转换</li>
+<li>generic-lowering<br>将JS前缀指令转换为更简单的调用和stub调用</li>
+<li>dead-code-elimination<br>删除无法访问的代码</li>
+</ul>
+<h3 id="Code-generation"><a href="#Code-generation" class="headerlink" title="Code generation"></a>Code generation</h3><p>最终，Class InstructionSelector分配寄存器<br>根据Graph，CodeGenerator生成机器码<br>将汇编代码写入PC（ProgramCounter）</p>
+<h2 id="Deoptimization"><a href="#Deoptimization" class="headerlink" title="Deoptimization"></a>Deoptimization</h2><h3 id="What-is-Deoptimization"><a href="#What-is-Deoptimization" class="headerlink" title="What is Deoptimization?"></a>What is Deoptimization?</h3><p>Deoptimization在有意料之外的值被传递到优化后的Assembly code时，对函数重新进行编译。<br>让我们看一个Deoptimization发生的例子</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-080927.png" alt=""></p>
+<h3 id="Wrong-Map"><a href="#Wrong-Map" class="headerlink" title="Wrong Map"></a>Wrong Map</h3><p>在这个例子中，我们为第一个Map{(x)}输出一个优化的Assembly，<br>但是由于第二次调用的是{(x，y)}Map，因此它被强制重新编译<br>让我们看一下汇编<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-081254.png" alt=""></p>
+<h3 id="Bailout"><a href="#Bailout" class="headerlink" title="Bailout"></a>Bailout</h3><p>检查map是否正确<br>当Deoptimization完成后，代码返回到字节码执行</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-17-184155.png" alt=""><br>以上是V8执行JS的过程<br>为了节省，省略了GC<br>（下载的pdf不能复制粘贴，大部分翻译是谷歌翻译相机拍下来然后识别翻译的，我尽量把我能理解的部分都纠正了）</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/31/shudan/" rel="next" title="ctf re/pwn入门书单">
+                <i class="fa fa-chevron-left"></i> ctf re/pwn入门书单
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/18/v8_ppt/" rel="prev" title="v8 slide collection">
+                v8 slide collection <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-V8"><span class="nav-number">1.</span> <span class="nav-text">What is V8?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Execution-flow"><span class="nav-number">2.</span> <span class="nav-text">Execution flow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parsing"><span class="nav-number">3.</span> <span class="nav-text">Parsing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-parsing"><span class="nav-number">3.1.</span> <span class="nav-text">Basic parsing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Split-parsing-phase"><span class="nav-number">3.2.</span> <span class="nav-text">Split parsing phase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PreParsing"><span class="nav-number">3.2.1.</span> <span class="nav-text">PreParsing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lazy-Parsing"><span class="nav-number">3.2.2.</span> <span class="nav-text">Lazy Parsing</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract-Syntax-Tree"><span class="nav-number">4.</span> <span class="nav-text">Abstract Syntax Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Subsclass-constructor-return"><span class="nav-number">4.1.</span> <span class="nav-text">Subsclass constructor return</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-let-const-var-in-of-e"><span class="nav-number">4.2.</span> <span class="nav-text">for(let&#x2F;const&#x2F;var in&#x2F;of e)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spread-operator"><span class="nav-number">4.3.</span> <span class="nav-text">Spread operator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ecmascript-–-Binary-AST"><span class="nav-number">4.4.</span> <span class="nav-text">Ecmascript? – Binary AST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ignition"><span class="nav-number">5.</span> <span class="nav-text">Ignition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bytecode-Interpreter"><span class="nav-number">5.1.</span> <span class="nav-text">Bytecode Interpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-does-it-work"><span class="nav-number">5.2.</span> <span class="nav-text">How does it work?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pseudo-javascript-code"><span class="nav-number">5.3.</span> <span class="nav-text">Pseudo javascript code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-create-bytecode"><span class="nav-number">5.4.</span> <span class="nav-text">How to create bytecode?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BytecodeArray"><span class="nav-number">5.5.</span> <span class="nav-text">BytecodeArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InterpreterEntryTrampoline"><span class="nav-number">5.6.</span> <span class="nav-text">InterpreterEntryTrampoline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ignition-Handler"><span class="nav-number">5.7.</span> <span class="nav-text">Ignition Handler</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Generator"><span class="nav-number">6.</span> <span class="nav-text">Code Generator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CodeStubAssember"><span class="nav-number">7.</span> <span class="nav-text">CodeStubAssember</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-CodeStubAssmber"><span class="nav-number">7.1.</span> <span class="nav-text">What is CodeStubAssmber?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Graph-based-DSL"><span class="nav-number">7.2.</span> <span class="nav-text">Graph based DSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Assembler"><span class="nav-number">7.3.</span> <span class="nav-text">Assembler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Where-is-actually-outputting-the-assembler-in-Code-Generation"><span class="nav-number">7.4.</span> <span class="nav-text">Where is actually outputting the assembler in Code Generation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Where-to-use"><span class="nav-number">7.5.</span> <span class="nav-text">Where to use</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Builtins-amp-Runtime"><span class="nav-number">8.</span> <span class="nav-text">Builtins &amp; Runtime</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Builtins"><span class="nav-number">8.1.</span> <span class="nav-text">Builtins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Runtime"><span class="nav-number">8.2.</span> <span class="nav-text">Runtime</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inline-Caching"><span class="nav-number">9.</span> <span class="nav-text">Inline Caching</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-Inline-Caching"><span class="nav-number">9.1.</span> <span class="nav-text">What is Inline Caching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Search-Property"><span class="nav-number">9.2.</span> <span class="nav-text">Search Property</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reduce-Property-Access"><span class="nav-number">9.3.</span> <span class="nav-text">Reduce Property Access</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache"><span class="nav-number">9.4.</span> <span class="nav-text">Cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Miss"><span class="nav-number">9.5.</span> <span class="nav-text">Cache Miss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cahce-State"><span class="nav-number">9.6.</span> <span class="nav-text">Cahce State</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pre-Monomorphic"><span class="nav-number">9.6.1.</span> <span class="nav-text">Pre Monomorphic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Monomorphic"><span class="nav-number">9.6.2.</span> <span class="nav-text">Monomorphic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Polymorphic"><span class="nav-number">9.6.3.</span> <span class="nav-text">Polymorphic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Megamorphic"><span class="nav-number">9.6.4.</span> <span class="nav-text">Megamorphic</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Access-inherited-properties"><span class="nav-number">9.7.</span> <span class="nav-text">Access inherited properties</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">9.8.</span> <span class="nav-text">summary</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimization"><span class="nav-number">10.</span> <span class="nav-text">Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hot-or-Small"><span class="nav-number">10.1.</span> <span class="nav-text">Hot or Small</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Optimization-Budget"><span class="nav-number">10.2.</span> <span class="nav-text">Optimization Budget</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#For-loop"><span class="nav-number">10.3.</span> <span class="nav-text">For loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSR-OnStackReplacement"><span class="nav-number">10.4.</span> <span class="nav-text">OSR - OnStackReplacement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#For-function"><span class="nav-number">10.5.</span> <span class="nav-text">For function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Concurrent-Compilation"><span class="nav-number">10.6.</span> <span class="nav-text">Concurrent Compilation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Budget-for-function"><span class="nav-number">10.7.</span> <span class="nav-text">Budget for function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TurboFan"><span class="nav-number">11.</span> <span class="nav-text">TurboFan</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-TurboFan"><span class="nav-number">11.1.</span> <span class="nav-text">What is TurboFan?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR"><span class="nav-number">11.2.</span> <span class="nav-text">IR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Optimization-1"><span class="nav-number">11.3.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Code-generation"><span class="nav-number">11.4.</span> <span class="nav-text">Code generation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deoptimization"><span class="nav-number">12.</span> <span class="nav-text">Deoptimization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-Deoptimization"><span class="nav-number">12.1.</span> <span class="nav-text">What is Deoptimization?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wrong-Map"><span class="nav-number">12.2.</span> <span class="nav-text">Wrong Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bailout"><span class="nav-number">12.3.</span> <span class="nav-text">Bailout</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">13.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/06/16/nodefest_v8/';
+          this.page.identifier = '2018/06/16/nodefest_v8/';
+          this.page.title = 'Source to Binary Jounrney of V8 javascript engine';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

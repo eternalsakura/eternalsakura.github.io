@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="v8," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="总览12345678910111213141516v8::internal::GeneratedCode    -&gt; RUNTIME_FUNCTION(Runtime_CompileOptimized_NotConcurrent)        -&gt; Compiler::CompileOptimized            -&gt; GetOptimizedCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="v8 pipeline">
+<meta property="og:url" content="http://eternalsakura13.com/2018/09/05/pipeline/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="总览12345678910111213141516v8::internal::GeneratedCode    -&gt; RUNTIME_FUNCTION(Runtime_CompileOptimized_NotConcurrent)        -&gt; Compiler::CompileOptimized            -&gt; GetOptimizedCode">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-05-122857.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-06-090746.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-06-090832.jpg">
+<meta property="article:published_time" content="2018-09-05T03:33:05.350Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.720Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="v8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-05-122857.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/09/05/pipeline/"/>
+
+
+
+
+
+  <title>v8 pipeline | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/09/05/pipeline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">v8 pipeline</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-05T11:33:05+08:00">
+                2018-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/05/pipeline/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/09/05/pipeline/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">v8::internal::GeneratedCode</span><br><span class="line">    -&gt; RUNTIME_FUNCTION(Runtime_CompileOptimized_NotConcurrent)</span><br><span class="line">        -&gt; Compiler::CompileOptimized</span><br><span class="line">            -&gt; GetOptimizedCode</span><br><span class="line">                -&gt; GetOptimizedCodeNow</span><br><span class="line">                    -&gt; OptimizedCompilationJob::PrepareJob</span><br><span class="line">                        -&gt; PipelineCompilationJob::Status PipelineCompilationJob::PrepareJobImpl</span><br><span class="line">                            -&gt; PipelineImpl::CreateGraph()</span><br><span class="line">                                -&gt; BytecodeGraphBuilder::CreateGraph()</span><br><span class="line">                                ...</span><br><span class="line">                                  -&gt; SetStart</span><br><span class="line">                                    -&gt; NewNodeUnchecked</span><br><span class="line">                                      -&gt; Node::New</span><br><span class="line">                                ...</span><br><span class="line">                                  -&gt; env</span><br><span class="line">                                  -&gt; VisitBytecodes</span><br></pre></td></tr></table></figure>
+<h3 id="Compiler-CompileOptimized-function-ConcurrencyMode-kNotConcurrent"><a href="#Compiler-CompileOptimized-function-ConcurrencyMode-kNotConcurrent" class="headerlink" title="Compiler::CompileOptimized(function, ConcurrencyMode::kNotConcurrent)"></a>Compiler::CompileOptimized(function, ConcurrencyMode::kNotConcurrent)</h3><p>参数1是要compile的function，参数2是一个标志,应该是和线程相关，表示function不在“正在编译的函数的队列”里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">if (mode &#x3D;&#x3D; ConcurrencyMode::kConcurrent) &#123;</span><br><span class="line">  if (GetOptimizedCodeLater(job.get(), isolate)) &#123;</span><br><span class="line">    job.release();  &#x2F;&#x2F; The background recompile job owns this now.</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Set the optimization marker and return a code object which checks it.</span><br><span class="line">    function-&gt;SetOptimizationMarker(OptimizationMarker::kInOptimizationQueue);</span><br><span class="line">    DCHECK(function-&gt;IsInterpreted() ||</span><br><span class="line">           (!function-&gt;is_compiled() &amp;&amp; function-&gt;shared()-&gt;IsInterpreted()));</span><br><span class="line">    DCHECK(function-&gt;shared()-&gt;HasBytecodeArray());</span><br><span class="line">    return BUILTIN_CODE(isolate, InterpreterEntryTrampoline);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在这个函数中进行编译，这个函数首先检查function是否已经被编译过了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (function-&gt;IsOptimized()) return true;</span><br></pre></td></tr></table></figure>
+<p>然后进行编译优化，如果编译优化成功则以后在js中调用函数都执行编译后的code</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (!GetOptimizedCode(function, mode).ToHandle(&amp;code)) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#x2F;&#x2F; Install code on closure.</span><br><span class="line">function-&gt;set_code(*code);</span><br></pre></td></tr></table></figure>
+<p>如果失败，则回到解释帧InterpreterEntryTrampoline执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code &#x3D; BUILTIN_CODE(isolate, InterpreterEntryTrampoline);</span><br></pre></td></tr></table></figure>
+<h3 id="bool-GetOptimizedCodeNow-OptimizedCompilationJob-job-Isolate-isolate"><a href="#bool-GetOptimizedCodeNow-OptimizedCompilationJob-job-Isolate-isolate" class="headerlink" title="bool GetOptimizedCodeNow(OptimizedCompilationJob* job, Isolate* isolate)"></a>bool GetOptimizedCodeNow(OptimizedCompilationJob* job, Isolate* isolate)</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (job-&gt;PrepareJob(isolate) != CompilationJob::SUCCEEDED ||</span><br><span class="line">    job-&gt;ExecuteJob() != CompilationJob::SUCCEEDED ||</span><br><span class="line">    job-&gt;FinalizeJob(isolate) != CompilationJob::SUCCEEDED) &#123;</span><br></pre></td></tr></table></figure>
+<h3 id="CompilationJob-Status-OptimizedCompilationJob-PrepareJob"><a href="#CompilationJob-Status-OptimizedCompilationJob-PrepareJob" class="headerlink" title="CompilationJob::Status OptimizedCompilationJob::PrepareJob"></a>CompilationJob::Status OptimizedCompilationJob::PrepareJob</h3><p>v8里有非常多的status，很有意思。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DEFINE_BOOL(trace_opt, <span class="literal">false</span>, <span class="string">"trace lazy optimization"</span>)</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (FLAG_trace_opt &amp;&amp; compilation_info()-&gt;IsOptimizing()) &#123;</span><br><span class="line">    <span class="function">OFStream <span class="title">os</span><span class="params">(<span class="built_in">stdout</span>)</span></span>;</span><br><span class="line">    os &lt;&lt; <span class="string">"[compiling method "</span> &lt;&lt; Brief(*compilation_info()-&gt;closure())</span><br><span class="line">       &lt;&lt; <span class="string">" using "</span> &lt;&lt; compiler_name_;</span><br><span class="line">    <span class="keyword">if</span> (compilation_info()-&gt;is_osr()) os &lt;&lt; <span class="string">" OSR"</span>;</span><br><span class="line">    os &lt;&lt; <span class="string">"]"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数就是调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return UpdateState(PrepareJobImpl(isolate), State::kReadyToExecute);</span><br></pre></td></tr></table></figure>
+<h3 id="PipelineCompilationJob-Status-PipelineCompilationJob-PrepareJobImpl"><a href="#PipelineCompilationJob-Status-PipelineCompilationJob-PrepareJobImpl" class="headerlink" title="PipelineCompilationJob::Status PipelineCompilationJob::PrepareJobImpl"></a>PipelineCompilationJob::Status PipelineCompilationJob::PrepareJobImpl</h3><p>前面根据一些标志位进行设置，包括下面这些等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; OptimizedCompilationInfo encapsulates the information needed to compile</span><br><span class="line">&#x2F;&#x2F; optimized code for a given function, and the results of the optimized</span><br><span class="line">&#x2F;&#x2F; compilation.</span><br><span class="line">class V8_EXPORT_PRIVATE OptimizedCompilationInfo final &#123;</span><br><span class="line"> public:</span><br><span class="line">  &#x2F;&#x2F; Various configuration flags for a compilation, as well as some properties</span><br><span class="line">  &#x2F;&#x2F; of the compiled code produced by a compilation.</span><br><span class="line">  enum Flag &#123;</span><br><span class="line">    kAccessorInliningEnabled &#x3D; 1 &lt;&lt; 0,</span><br><span class="line">    kFunctionContextSpecializing &#x3D; 1 &lt;&lt; 1,</span><br><span class="line">    kInliningEnabled &#x3D; 1 &lt;&lt; 2,</span><br><span class="line">    kDisableFutureOptimization &#x3D; 1 &lt;&lt; 3,</span><br><span class="line">    kSplittingEnabled &#x3D; 1 &lt;&lt; 4,</span><br><span class="line">    kSourcePositionsEnabled &#x3D; 1 &lt;&lt; 5,</span><br><span class="line">    kBailoutOnUninitialized &#x3D; 1 &lt;&lt; 6,</span><br><span class="line">    kLoopPeelingEnabled &#x3D; 1 &lt;&lt; 7,</span><br><span class="line">    kUntrustedCodeMitigations &#x3D; 1 &lt;&lt; 8,</span><br><span class="line">    kSwitchJumpTableEnabled &#x3D; 1 &lt;&lt; 9,</span><br><span class="line">    kCalledWithCodeStartRegister &#x3D; 1 &lt;&lt; 10,</span><br><span class="line">    kPoisonRegisterArguments &#x3D; 1 &lt;&lt; 11,</span><br><span class="line">    kAllocationFoldingEnabled &#x3D; 1 &lt;&lt; 12,</span><br><span class="line">    kAnalyzeEnvironmentLiveness &#x3D; 1 &lt;&lt; 13,</span><br><span class="line">    kTraceTurboJson &#x3D; 1 &lt;&lt; 14,</span><br><span class="line">    kTraceTurboGraph &#x3D; 1 &lt;&lt; 15,</span><br><span class="line">    kTraceTurboScheduled &#x3D; 1 &lt;&lt; 16,</span><br><span class="line">  &#125;;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">FLAG_always_opt</span><br><span class="line">FLAG_turbo_loop_peeling</span><br><span class="line">FLAG_turbo_inlining</span><br><span class="line">FLAG_inline_accessors</span><br><span class="line">FLAG_turbo_allocation_folding</span><br></pre></td></tr></table></figure>
+<p>然后开始创建Graph</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!pipeline_.CreateGraph()) &#123;</span><br><span class="line">  <span class="keyword">if</span> (isolate-&gt;has_pending_exception()) <span class="keyword">return</span> FAILED;  <span class="comment">// Stack overflowed.</span></span><br><span class="line">  <span class="keyword">return</span> AbortOptimization(BailoutReason::kGraphBuildingFailed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PipelineImpl-CreateGraph"><a href="#PipelineImpl-CreateGraph" class="headerlink" title="PipelineImpl::CreateGraph()"></a>PipelineImpl::CreateGraph()</h3><p>检查trace标志位并做相应操作,主要是做记录。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (info()-&gt;trace_turbo_json_enabled() ||</span><br><span class="line">    info()-&gt;trace_turbo_graph_enabled()) &#123;</span><br></pre></td></tr></table></figure>
+<p>通过添加修饰器来记录源码位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data-&gt;source_positions()-&gt;AddDecorator();</span><br></pre></td></tr></table></figure>
+<p>然后</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">  Run&lt;GraphBuilderPhase&gt;();</span><br><span class="line">  RunPrintAndVerify(<span class="string">"Initial untyped"</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Perform function context specialization and inlining (if enabled).</span></span><br><span class="line">  Run&lt;InliningPhase&gt;();</span><br><span class="line">  RunPrintAndVerify(<span class="string">"Inlined"</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Remove dead-&gt;live edges from the graph.</span></span><br><span class="line">  Run&lt;EarlyGraphTrimmingPhase&gt;();</span><br><span class="line">  RunPrintAndVerify(<span class="string">"Early trimmed"</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Run the type-sensitive lowerings and optimizations on the graph.</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// Determine the Typer operation flags.</span></span><br><span class="line">    Typer::Flags flags = Typer::kNoFlags;</span><br><span class="line">    <span class="keyword">if</span> (is_sloppy(info()-&gt;shared_info()-&gt;language_mode()) &amp;&amp;</span><br><span class="line">        info()-&gt;shared_info()-&gt;IsUserJavaScript()) &#123;</span><br><span class="line">      <span class="comment">// Sloppy mode functions always have an Object for this.</span></span><br><span class="line">      flags |= Typer::kThisIsReceiver;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (IsClassConstructor(info()-&gt;shared_info()-&gt;kind())) &#123;</span><br><span class="line">      <span class="comment">// Class constructors cannot be [[Call]]ed.</span></span><br><span class="line">      flags |= Typer::kNewTargetIsReceiver;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Type the graph and keep the Typer running on newly created nodes within</span></span><br><span class="line">    <span class="comment">// this scope; the Typer is automatically unlinked from the Graph once we</span></span><br><span class="line">    <span class="comment">// leave this scope below.</span></span><br><span class="line">    <span class="function">Typer <span class="title">typer</span><span class="params">(isolate(), flags, data-&gt;graph())</span></span>;</span><br><span class="line">    Run&lt;TyperPhase&gt;(&amp;typer);</span><br><span class="line">    RunPrintAndVerify(<span class="string">"Typed"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Lower JSOperators where we can determine types.</span></span><br><span class="line">    Run&lt;TypedLoweringPhase&gt;();</span><br><span class="line">    RunPrintAndVerify(<span class="string">"Lowered typed"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Do some hacky things to prepare for the optimization phase.</span></span><br><span class="line">  <span class="comment">// (caching handles, etc.).</span></span><br><span class="line">  Run&lt;ConcurrentOptimizationPrepPhase&gt;();</span><br><span class="line"></span><br><span class="line">  data-&gt;EndPhaseKind();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="BytecodeGraphBuilder-CreateGraph"><a href="#BytecodeGraphBuilder-CreateGraph" class="headerlink" title="BytecodeGraphBuilder::CreateGraph()"></a>BytecodeGraphBuilder::CreateGraph()</h3><p>设置图的基本结构。<br>{Start}的输出是形参（包括receiver）加上new target, arguments数目,context和closure</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> actual_parameter_count = bytecode_array()-&gt;parameter_count() + <span class="number">4</span>;</span><br><span class="line">graph()-&gt;SetStart(graph()-&gt;NewNode(common()-&gt;Start(actual_parameter_count)));</span><br></pre></td></tr></table></figure>
+<p>NewNode是用于创建新node的帮助函数。<br>common()返回CommonOperatorBuilder*的common_,差不多是一个op的集合了，然后从中选择Start</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function">CommonOperatorBuilder* <span class="title">common</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> common_; &#125;</span><br><span class="line">  ...</span><br><span class="line">    <span class="function"><span class="keyword">const</span> Operator* <span class="title">Start</span><span class="params">(<span class="keyword">int</span> value_output_count)</span></span>;</span><br><span class="line">  ...</span><br><span class="line">  <span class="function"><span class="keyword">const</span> Operator* <span class="title">CommonOperatorBuilder::Start</span><span class="params">(<span class="keyword">int</span> value_output_count)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> (zone()) Operator(                                    <span class="comment">// --</span></span><br><span class="line">      IrOpcode::kStart, Operator::kFoldable | Operator::kNoThrow,  <span class="comment">// opcode</span></span><br><span class="line">      <span class="string">"Start"</span>,                                                     <span class="comment">// name</span></span><br><span class="line">      <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, value_output_count, <span class="number">1</span>, <span class="number">1</span>);                          <span class="comment">// counts</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>这个文件还是比较有用的，common-operator.cc，因为NewNode的opcode参数从这里初始化。</strong><br>回到NewNode看一下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">// Factory template for nodes with static input counts.</span></span><br><span class="line">  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Nodes&gt;</span><br><span class="line">  <span class="function">Node* <span class="title">NewNode</span><span class="params">(<span class="keyword">const</span> Operator* op, Nodes*... nodes)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">array</span>&lt;Node*, <span class="keyword">sizeof</span>...(nodes)&gt; nodes_arr&#123;&#123;nodes...&#125;&#125;;</span><br><span class="line">    <span class="keyword">return</span> NewNode(op, nodes_arr.<span class="built_in">size</span>(), nodes_arr.data());</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line"> <span class="function">Node* <span class="title">Graph::NewNode</span><span class="params">(<span class="keyword">const</span> Operator* op, <span class="keyword">int</span> input_count, Node* <span class="keyword">const</span>* inputs,</span></span></span><br><span class="line"><span class="function"><span class="params">                     <span class="keyword">bool</span> incomplete)</span> </span>&#123;</span><br><span class="line">  Node* node = NewNodeUnchecked(op, input_count, inputs, incomplete);</span><br><span class="line">  Verifier::VerifyNode(node);</span><br><span class="line">  <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"><span class="function">Node* <span class="title">Graph::NewNodeUnchecked</span><span class="params">(<span class="keyword">const</span> Operator* op, <span class="keyword">int</span> input_count,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Node* <span class="keyword">const</span>* inputs, <span class="keyword">bool</span> incomplete)</span> </span>&#123;</span><br><span class="line">  Node* <span class="keyword">const</span> node =</span><br><span class="line">      Node::New(zone(), NextNodeId(), op, input_count, inputs, incomplete);</span><br><span class="line">  Decorate(node);</span><br><span class="line">  <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后是执行到了这里,于是我们来分析一下这个函数。</p>
+<h4 id="Node-New"><a href="#Node-New" class="headerlink" title="Node::New"></a>Node::New</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Node* <span class="title">Node::New</span><span class="params">(Zone* zone, NodeId id, <span class="keyword">const</span> Operator* op, <span class="keyword">int</span> input_count,</span></span></span><br><span class="line"><span class="function"><span class="params">                Node* <span class="keyword">const</span>* inputs, <span class="keyword">bool</span> has_extensible_inputs)</span> </span>&#123;</span><br><span class="line">  Node** input_ptr;</span><br><span class="line">  Use* use_ptr;</span><br><span class="line">  Node* node;</span><br><span class="line">  <span class="keyword">bool</span> is_inline;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (input_count &gt; kMaxInlineCapacity) &#123;</span><br><span class="line">    <span class="comment">// Allocate out-of-line inputs.</span></span><br><span class="line">    <span class="keyword">int</span> capacity =</span><br><span class="line">        has_extensible_inputs ? input_count + kMaxInlineCapacity : input_count;</span><br><span class="line">    OutOfLineInputs* outline = OutOfLineInputs::New(zone, capacity);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allocate node.</span></span><br><span class="line">    <span class="keyword">void</span>* node_buffer = zone-&gt;New(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    node = <span class="keyword">new</span> (node_buffer) Node(id, op, kOutlineMarker, <span class="number">0</span>);</span><br><span class="line">    node-&gt;inputs_.outline_ = outline;</span><br><span class="line"></span><br><span class="line">    outline-&gt;node_ = node;</span><br><span class="line">    outline-&gt;count_ = input_count;</span><br><span class="line"></span><br><span class="line">    input_ptr = outline-&gt;inputs_;</span><br><span class="line">    use_ptr = <span class="keyword">reinterpret_cast</span>&lt;Use*&gt;(outline);</span><br><span class="line">    is_inline = <span class="literal">false</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Allocate node with inline inputs.</span></span><br><span class="line">    <span class="keyword">int</span> capacity = input_count;</span><br><span class="line">    <span class="keyword">if</span> (has_extensible_inputs) &#123;</span><br><span class="line">      <span class="keyword">const</span> <span class="keyword">int</span> <span class="built_in">max</span> = kMaxInlineCapacity;</span><br><span class="line">      capacity = <span class="built_in">std</span>::<span class="built_in">min</span>(input_count + <span class="number">3</span>, <span class="built_in">max</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">size</span> = <span class="keyword">sizeof</span>(Node) + capacity * (<span class="keyword">sizeof</span>(Node*) + <span class="keyword">sizeof</span>(Use));</span><br><span class="line">    <span class="keyword">intptr_t</span> raw_buffer = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(zone-&gt;New(<span class="built_in">size</span>));</span><br><span class="line">    <span class="keyword">void</span>* node_buffer =</span><br><span class="line">        <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>*&gt;(raw_buffer + capacity * <span class="keyword">sizeof</span>(Use));</span><br><span class="line"></span><br><span class="line">    node = <span class="keyword">new</span> (node_buffer) Node(id, op, input_count, capacity);</span><br><span class="line">    input_ptr = node-&gt;inputs_.inline_;</span><br><span class="line">    use_ptr = <span class="keyword">reinterpret_cast</span>&lt;Use*&gt;(node);</span><br><span class="line">    is_inline = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Initialize the input pointers and the uses.</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> current = <span class="number">0</span>; current &lt; input_count; ++current) &#123;</span><br><span class="line">    Node* to = *inputs++;</span><br><span class="line">    input_ptr[current] = to;</span><br><span class="line">    Use* use = use_ptr - <span class="number">1</span> - current;</span><br><span class="line">    use-&gt;bit_field_ = Use::InputIndexField::encode(current) |</span><br><span class="line">                      Use::InlineField::encode(is_inline);</span><br><span class="line">    to-&gt;AppendUse(use);</span><br><span class="line">  &#125;</span><br><span class="line">  node-&gt;Verify();</span><br><span class="line">  <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先定义了几个局部变量</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Node** input_ptr;</span><br><span class="line">Use* use_ptr;</span><br><span class="line">Node* node;</span><br><span class="line"><span class="keyword">bool</span> is_inline;</span><br></pre></td></tr></table></figure>
+<p><strong>然后判断input_count是否大于kMaxInineCapacity</strong><br>注意这里的input_count来自这里的nodes_arr.size()，此处对于start的情况，<code>NewNode(common()-&gt;Start(actual_parameter_count)));</code>，可以看出这个结果是0。<br>这是个比较特殊的情况，后面我们再分析几个node的生成看一下这个逻辑。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Node* <span class="title">NewNode</span><span class="params">(<span class="keyword">const</span> Operator* op, Nodes*... nodes)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">array</span>&lt;Node*, <span class="keyword">sizeof</span>...(nodes)&gt; nodes_arr&#123;&#123;nodes...&#125;&#125;;</span><br><span class="line">  <span class="keyword">return</span> NewNode(op, nodes_arr.<span class="built_in">size</span>(), nodes_arr.data());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么这里有这样的一个比较呢？是因为v8对node的存储决定的<br>从注释里可以找到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#x2F;&#x2F;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">&#x2F;&#x2F;&#x3D;&#x3D; Memory layout &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">&#x2F;&#x2F;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">&#x2F;&#x2F; Saving space for big graphs is important. We use a memory layout trick to</span><br><span class="line">&#x2F;&#x2F; be able to map &#123;Node&#125; objects to &#123;Use&#125; objects and vice-versa in a</span><br><span class="line">&#x2F;&#x2F; space-efficient manner.</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; &#123;Use&#125; links are laid out in memory directly before a &#123;Node&#125;, followed by</span><br><span class="line">&#x2F;&#x2F; direct pointers to input &#123;Nodes&#125;.</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; inline case:</span><br><span class="line">&#x2F;&#x2F; |Use #N  |Use #N-1|...|Use #1  |Use #0  |Node xxxx |I#0|I#1|...|I#N-1|I#N|</span><br><span class="line">&#x2F;&#x2F;          ^                              ^                  ^</span><br><span class="line">&#x2F;&#x2F;          + Use                          + Node             + Input</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; Since every &#123;Use&#125; instance records its &#123;input_index&#125;, pointer arithmetic</span><br><span class="line">&#x2F;&#x2F; can compute the &#123;Node&#125;.</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; out-of-line case:</span><br><span class="line">&#x2F;&#x2F;     |Node xxxx |</span><br><span class="line">&#x2F;&#x2F;     ^       + outline ------------------+</span><br><span class="line">&#x2F;&#x2F;     +----------------------------------------+</span><br><span class="line">&#x2F;&#x2F;                                         |    |</span><br><span class="line">&#x2F;&#x2F;                                         v    | node</span><br><span class="line">&#x2F;&#x2F; |Use #N  |Use #N-1|...|Use #1  |Use #0  |OOL xxxxx |I#0|I#1|...|I#N-1|I#N|</span><br><span class="line">&#x2F;&#x2F;          ^                                                 ^</span><br><span class="line">&#x2F;&#x2F;          + Use                                             + Input</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; Out-of-line storage of input lists is needed if appending an input to</span><br><span class="line">&#x2F;&#x2F; a node exceeds the maximum inline capacity.</span><br></pre></td></tr></table></figure>
+<p>如果是小于kMaxInineCapacity，则可以直接将inputs内联在node中。<br>这里的计算方法是，首先计算capacity，默认应该是等于input_count，如果有<code>has_extensible_inputs</code>，则在input_count + 3和kMaxInlineCapacity选取一个最小值。<br><em>这个has_extensible_inputs我还不是很懂，后面看看吧</em></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> capacity = input_count;</span><br><span class="line">    <span class="keyword">if</span> (has_extensible_inputs) &#123;</span><br><span class="line">      <span class="keyword">const</span> <span class="keyword">int</span> <span class="built_in">max</span> = kMaxInlineCapacity;</span><br><span class="line">      capacity = <span class="built_in">std</span>::<span class="built_in">min</span>(input_count + <span class="number">3</span>, <span class="built_in">max</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>然后计算size大小，并为node和它的use/input分配内存。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> <span class="built_in">size</span> = <span class="keyword">sizeof</span>(Node) + capacity * (<span class="keyword">sizeof</span>(Node*) + <span class="keyword">sizeof</span>(Use));</span><br><span class="line"><span class="keyword">intptr_t</span> raw_buffer = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">intptr_t</span>&gt;(zone-&gt;New(<span class="built_in">size</span>));</span><br><span class="line"><span class="keyword">void</span>* node_buffer =</span><br><span class="line">        <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>*&gt;(raw_buffer + capacity * <span class="keyword">sizeof</span>(Use));</span><br></pre></td></tr></table></figure>
+<p>顺便说一下，一个Use大小是24字节，一个Node是40字节</p>
+<p>计算好size之后进入这个函数，在这生成新的node。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Node::Node(NodeId id, <span class="keyword">const</span> Operator* op, <span class="keyword">int</span> inline_count, <span class="keyword">int</span> inline_capacity)</span><br><span class="line">    : op_(op),</span><br><span class="line">      mark_(<span class="number">0</span>),</span><br><span class="line">      bit_field_(IdField::encode(id) | InlineCountField::encode(inline_count) |</span><br><span class="line">                 InlineCapacityField::encode(inline_capacity)),</span><br><span class="line">      first_use_(<span class="literal">nullptr</span>) &#123;</span><br><span class="line">  <span class="comment">// Inputs must either be out of line or within the inline capacity.</span></span><br><span class="line">  DCHECK_GE(kMaxInlineCapacity, inline_capacity);</span><br><span class="line">  DCHECK(inline_count == kOutlineMarker || inline_count &lt;= inline_capacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后需要为这个node建立input/use关系,这里的逻辑就是，首先根据当前node的input_count数。<br>依次设置to为input节点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> current = <span class="number">0</span>; current &lt; input_count; ++current) &#123;</span><br><span class="line">  Node* to = *inputs++;</span><br></pre></td></tr></table></figure>
+<p>然后由于input_ptr指向node的inputs区域，在node的inputs区域记录它的input节点的地址。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">input_ptr = node-&gt;inputs_.inline_;</span><br><span class="line">...</span><br><span class="line">input_ptr[current] = to;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式就将节点的input关系建立好了。<br>然后需要考虑一下use关系，现在我们可以看到use_ptr指向的是当前node的地址。<br>通过use_ptr和{input_index}来计算出use，然后在use里记录当前{input_index}的值，于是我们可以通过这个值来做简单的算数计算来找到node。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Use* use = use_ptr - <span class="number">1</span> - current;</span><br><span class="line">use-&gt;bit_field_ = Use::InputIndexField::encode(current) |</span><br><span class="line">                      Use::InlineField::encode(is_inline);</span><br></pre></td></tr></table></figure>
+<p>然后</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">to-&gt;AppendUse(use);</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Node::AppendUse</span><span class="params">(Use* use)</span> </span>&#123;</span><br><span class="line">  DCHECK(first_use_ == <span class="literal">nullptr</span> || first_use_-&gt;prev == <span class="literal">nullptr</span>);</span><br><span class="line">  DCHECK_EQ(<span class="keyword">this</span>, *use-&gt;input_ptr());</span><br><span class="line">  use-&gt;next = first_use_;</span><br><span class="line">  use-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">  <span class="keyword">if</span> (first_use_) first_use_-&gt;prev = use;</span><br><span class="line">  first_use_ = use;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>于是从当前节点的input节点到当前节点，这样的一个{input}-&gt;{node}的use关系就建立起来了。<br>注意first_use是Node结构的一个成员变量。</p>
+<p>或许这么说还是有点难懂，其实就是假设有一个节点A，它有0，1，2，3这么几个input节点，0，1，2，3代表的也是input_index。<br>然后对于每一个它的input节点，都要从它的Use部分取一个分配给它的input，如图。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-05-122857.png" alt=""><br>然后因为分配出去的Use里面有记录这个input节点对应的input index，于是很容易就可以计算出来Node的地址。<br>这样，一个{input}-&gt;{node}的{Use #index}的关系就建立好了，而且很容易就可以通过#index来进行算数运算，得到真正的{input}-&gt;{node}，这样的use关系。</p>
+<p><em>之所以需要这么麻烦，可能也是为了让graph IR有SSA的性质……</em></p>
+<p>Node::New结束之后，此时Start节点已经被构建好了，请记住Node::New做的事情，因为后面建立新的node也是通过这个函数来完成的。</p>
+<h4 id="BytecodeGraphBuilder-Environment"><a href="#BytecodeGraphBuilder-Environment" class="headerlink" title="BytecodeGraphBuilder::Environment"></a>BytecodeGraphBuilder::Environment</h4><p>回到<code>BytecodeGraphBuilder::CreateGraph()</code>来看一下，在Start创建之后，初始化env并切换到它。<br>在看env的初始化之前，先看一个重要的class</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The abstract execution environment simulates the content of the interpreter</span></span><br><span class="line"><span class="comment">// register file. The environment performs SSA-renaming of all tracked nodes at</span></span><br><span class="line"><span class="comment">// split and merge points in the control flow.</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BytecodeGraphBuilder</span>:</span>:Environment : <span class="keyword">public</span> ZoneObject &#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  Environment(BytecodeGraphBuilder* builder, <span class="keyword">int</span> register_count,</span><br><span class="line">              <span class="keyword">int</span> parameter_count,</span><br><span class="line">              interpreter::Register incoming_new_target_or_generator,</span><br><span class="line">              Node* control_dependency);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Specifies whether environment binding methods should attach frame state</span></span><br><span class="line">  <span class="comment">// inputs to nodes representing the value being bound. This is done because</span></span><br><span class="line">  <span class="comment">// the &#123;OutputFrameStateCombine&#125; is closely related to the binding method.</span></span><br><span class="line">  <span class="keyword">enum</span> FrameStateAttachmentMode &#123; kAttachFrameState, kDontAttachFrameState &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">parameter_count</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> parameter_count_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">register_count</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> register_count_; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">Node* <span class="title">LookupAccumulator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function">Node* <span class="title">LookupRegister</span><span class="params">(interpreter::Register the_register)</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function">Node* <span class="title">LookupGeneratorState</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">BindAccumulator</span><span class="params">(Node* node,</span></span></span><br><span class="line"><span class="function"><span class="params">                       FrameStateAttachmentMode mode = kDontAttachFrameState)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">BindRegister</span><span class="params">(interpreter::Register the_register, Node* node,</span></span></span><br><span class="line"><span class="function"><span class="params">                    FrameStateAttachmentMode mode = kDontAttachFrameState)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">BindRegistersToProjections</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      interpreter::Register first_reg, Node* node,</span></span></span><br><span class="line"><span class="function"><span class="params">      FrameStateAttachmentMode mode = kDontAttachFrameState)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">BindGeneratorState</span><span class="params">(Node* node)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">RecordAfterState</span><span class="params">(Node* node,</span></span></span><br><span class="line"><span class="function"><span class="params">                        FrameStateAttachmentMode mode = kDontAttachFrameState)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Effect dependency tracked by this environment.</span></span><br><span class="line">  <span class="function">Node* <span class="title">GetEffectDependency</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> effect_dependency_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">UpdateEffectDependency</span><span class="params">(Node* dependency)</span> </span>&#123;</span><br><span class="line">    effect_dependency_ = dependency;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Preserve a checkpoint of the environment for the IR graph. Any</span></span><br><span class="line">  <span class="comment">// further mutation of the environment will not affect checkpoints.</span></span><br><span class="line">  <span class="function">Node* <span class="title">Checkpoint</span><span class="params">(BailoutId bytecode_offset, OutputFrameStateCombine combine,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">const</span> BytecodeLivenessState* liveness)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Control dependency tracked by this environment.</span></span><br><span class="line">  <span class="function">Node* <span class="title">GetControlDependency</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> control_dependency_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">UpdateControlDependency</span><span class="params">(Node* dependency)</span> </span>&#123;</span><br><span class="line">    control_dependency_ = dependency;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">Node* <span class="title">Context</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> context_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">SetContext</span><span class="params">(Node* new_context)</span> </span>&#123; context_ = new_context; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function">Environment* <span class="title">Copy</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Merge</span><span class="params">(Environment* other, <span class="keyword">const</span> BytecodeLivenessState* liveness)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">FillWithOsrValues</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">PrepareForLoop</span><span class="params">(<span class="keyword">const</span> BytecodeLoopAssignments&amp; assignments,</span></span></span><br><span class="line"><span class="function"><span class="params">                      <span class="keyword">const</span> BytecodeLivenessState* liveness)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">PrepareForLoopExit</span><span class="params">(Node* loop,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">const</span> BytecodeLoopAssignments&amp; assignments,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">const</span> BytecodeLivenessState* liveness)</span></span>;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">Environment</span><span class="params">(<span class="keyword">const</span> Environment* copy)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">StateValuesRequireUpdate</span><span class="params">(Node** state_values, Node** values, <span class="keyword">int</span> count)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">UpdateStateValues</span><span class="params">(Node** state_values, Node** values, <span class="keyword">int</span> count)</span></span>;</span><br><span class="line">  <span class="function">Node* <span class="title">GetStateValuesFromCache</span><span class="params">(Node** values, <span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">const</span> BitVector* liveness, <span class="keyword">int</span> liveness_offset)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">RegisterToValuesIndex</span><span class="params">(interpreter::Register the_register)</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Zone* <span class="title">zone</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> builder_-&gt;local_zone(); &#125;</span><br><span class="line">  <span class="function">Graph* <span class="title">graph</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> builder_-&gt;graph(); &#125;</span><br><span class="line">  <span class="function">CommonOperatorBuilder* <span class="title">common</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> builder_-&gt;common(); &#125;</span><br><span class="line">  <span class="function">BytecodeGraphBuilder* <span class="title">builder</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> builder_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">const</span> NodeVector* <span class="title">values</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> &amp;values_; &#125;</span><br><span class="line">  <span class="function">NodeVector* <span class="title">values</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> &amp;values_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">register_base</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> register_base_; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">accumulator_base</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> accumulator_base_; &#125;</span><br><span class="line"></span><br><span class="line">  BytecodeGraphBuilder* builder_;</span><br><span class="line">  <span class="keyword">int</span> register_count_;</span><br><span class="line">  <span class="keyword">int</span> parameter_count_;</span><br><span class="line">  Node* context_;</span><br><span class="line">  Node* control_dependency_;</span><br><span class="line">  Node* effect_dependency_;</span><br><span class="line">  NodeVector values_;</span><br><span class="line">  Node* parameters_state_values_;</span><br><span class="line">  Node* generator_state_;</span><br><span class="line">  <span class="keyword">int</span> register_base_;</span><br><span class="line">  <span class="keyword">int</span> accumulator_base_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>从上面可知，values()返回一个NodeVector values_。<br>然后继续看env的初始化</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function">Environment <span class="title">env</span><span class="params">(<span class="keyword">this</span>, bytecode_array()-&gt;register_count(),</span></span></span><br><span class="line"><span class="function"><span class="params">                  bytecode_array()-&gt;parameter_count(),</span></span></span><br><span class="line"><span class="function"><span class="params">                  bytecode_array()-&gt;incoming_new_target_or_generator_register(),</span></span></span><br><span class="line"><span class="function"><span class="params">                  graph()-&gt;start())</span></span>;</span><br><span class="line">  set_environment(&amp;env);</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  BytecodeGraphBuilder::Environment::Environment(</span><br><span class="line">    BytecodeGraphBuilder* builder, <span class="keyword">int</span> register_count, <span class="keyword">int</span> parameter_count,</span><br><span class="line">    interpreter::Register incoming_new_target_or_generator,</span><br><span class="line">    Node* control_dependency)</span><br><span class="line">    : builder_(builder),</span><br><span class="line">      register_count_(register_count),</span><br><span class="line">      parameter_count_(parameter_count),</span><br><span class="line">      control_dependency_(control_dependency),</span><br><span class="line">      effect_dependency_(control_dependency),</span><br><span class="line">      values_(builder-&gt;local_zone()),</span><br><span class="line">      parameters_state_values_(<span class="literal">nullptr</span>),</span><br><span class="line">      generator_state_(<span class="literal">nullptr</span>) &#123;</span><br><span class="line">  <span class="comment">// The layout of values_ is:</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// [receiver] [parameters] [registers] [accumulator]</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// parameter[0] is the receiver (this), parameters 1..N are the</span></span><br><span class="line">  <span class="comment">// parameters supplied to the method (arg0..argN-1). The accumulator</span></span><br><span class="line">  <span class="comment">// is stored separately.</span></span><br><span class="line">  <span class="comment">// Parameters including the receiver</span></span><br><span class="line">....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意这句话</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">parameter[0] is the receiver (this), parameters 1..N are the</span><br><span class="line">Parameters including the receiver</span><br></pre></td></tr></table></figure>
+<p>首先创建parameter节点，Start作为parameter的input节点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; parameter_count; i++) &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">const</span> Operator* op = common()-&gt;Parameter(i, debug_name);</span><br><span class="line">  Node* parameter = builder-&gt;graph()-&gt;NewNode(op, graph()-&gt;start());</span><br><span class="line">  values()-&gt;push_back(parameter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后向values_这个NodeVector的end之前，插入register_count个值为undefined_constant的Node节点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Registers</span></span><br><span class="line">  register_base_ = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(values()-&gt;<span class="built_in">size</span>());</span><br><span class="line">  Node* undefined_constant = builder-&gt;jsgraph()-&gt;UndefinedConstant();</span><br><span class="line">  values()-&gt;insert(values()-&gt;<span class="built_in">end</span>(), register_count, undefined_constant);</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">DEFINE_GETTER(UndefinedConstant, HeapConstant(factory()-&gt;undefined_value()))</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="comment">// value	v8::internal::Handle&lt;v8::internal::HeapObject&gt;	</span></span><br><span class="line"><span class="function">Node* <span class="title">JSGraph::HeapConstant</span><span class="params">(Handle&lt;HeapObject&gt; value)</span> </span>&#123;</span><br><span class="line">  Node** loc = cache_.FindHeapConstant(value);</span><br><span class="line">  <span class="keyword">if</span> (*loc == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    *loc = graph()-&gt;NewNode(common()-&gt;HeapConstant(value));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> *loc;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">const</span> Operator* <span class="title">CommonOperatorBuilder::HeapConstant</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> Handle&lt;HeapObject&gt;&amp; value)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> (zone()) Operator1&lt;Handle&lt;HeapObject&gt;&gt;(  <span class="comment">// --</span></span><br><span class="line">      IrOpcode::kHeapConstant, Operator::kPure,       <span class="comment">// opcode</span></span><br><span class="line">      <span class="string">"HeapConstant"</span>,                                 <span class="comment">// name</span></span><br><span class="line">      <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,                               <span class="comment">// counts</span></span><br><span class="line">      value);                                         <span class="comment">// parameter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先从cache中检查是否已经有HeapConstant,如果没有就新建再返回，如果有就直接返回cache里的。</p>
+<p>然后再向value_的最后插入一个undefined_constant节点作为Accumulator。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Accumulator</span></span><br><span class="line">accumulator_base_ = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(values()-&gt;<span class="built_in">size</span>());</span><br><span class="line">values()-&gt;push_back(undefined_constant);</span><br></pre></td></tr></table></figure>
+
+<p>然后设置Context</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">// Context</span></span><br><span class="line">  <span class="keyword">int</span> context_index = Linkage::GetJSCallContextParamIndex(parameter_count);</span><br><span class="line">  <span class="keyword">const</span> Operator* op = common()-&gt;Parameter(context_index, <span class="string">"%context"</span>);</span><br><span class="line">  context_ = builder-&gt;graph()-&gt;NewNode(op, graph()-&gt;start());</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">    <span class="comment">// A special &#123;Parameter&#125; index for JSCalls that represents the context.</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">GetJSCallContextParamIndex</span><span class="params">(<span class="keyword">int</span> parameter_count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> parameter_count + <span class="number">2</span>;  <span class="comment">// Parameter (arity + 2) is special.</span></span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  <span class="function"><span class="keyword">const</span> Operator* <span class="title">CommonOperatorBuilder::Parameter</span><span class="params">(<span class="keyword">int</span> index,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                 <span class="keyword">const</span> <span class="keyword">char</span>* debug_name)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!debug_name) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (index) &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CACHED_PARAMETER(index) \</span></span><br><span class="line">  <span class="keyword">case</span> index:                   \</span><br><span class="line">    <span class="keyword">return</span> &amp;cache_.kParameter##index##Operator;</span><br><span class="line">      CACHED_PARAMETER_LIST(CACHED_PARAMETER)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">undef</span> CACHED_PARAMETER</span></span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// Uncached.</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> (zone()) Operator1&lt;ParameterInfo&gt;(  <span class="comment">// --</span></span><br><span class="line">      IrOpcode::kParameter, Operator::kPure,     <span class="comment">// opcode</span></span><br><span class="line">      <span class="string">"Parameter"</span>,                               <span class="comment">// name</span></span><br><span class="line">      <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,                          <span class="comment">// counts</span></span><br><span class="line">      ParameterInfo(index, debug_name));         <span class="comment">// parameter info</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>context也创建了一个parameter的node，用来做什么的我还没看懂，可能需要好好看看log或者compiler/linkage.h这个文件</em></p>
+<h4 id="VisitBytecodes"><a href="#VisitBytecodes" class="headerlink" title="VisitBytecodes"></a>VisitBytecodes</h4><p>V8准备一个称为v8::internal::AstVisitor的基类，简称AstVisitor，从AST生成bytecode。<br>AstVisitor是一个使用Vistor模式的类。<br>在深度优先搜索AST时调用相应的回调函数。<br>生成的bytecode存放在bytecode数组当中，用Javascript来模拟这个结构，看起来像这样。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-06-090746.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-09-06-090832.jpg" alt=""><br>当然这个并不重要，回顾一下而已。</p>
+<p>VisitBytecodes首先进行bytecode_analysis，在这里面进行包括liveness分析等。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BytecodeAnalysis <span class="title">bytecode_analysis</span><span class="params">(bytecode_array(), local_zone(),</span></span></span><br><span class="line"><span class="function"><span class="params">                                   analyze_environment_liveness())</span></span>;</span><br><span class="line">bytecode_analysis.Analyze(osr_offset_);</span><br><span class="line">set_bytecode_analysis(&amp;bytecode_analysis);</span><br><span class="line"></span><br><span class="line"><span class="function">interpreter::BytecodeArrayIterator <span class="title">iterator</span><span class="params">(bytecode_array())</span></span>;</span><br><span class="line">set_bytecode_iterator(&amp;iterator);</span><br><span class="line"><span class="function">SourcePositionTableIterator <span class="title">source_position_iterator</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    handle(bytecode_array()-&gt;SourcePositionTable()))</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (analyze_environment_liveness() &amp;&amp; FLAG_trace_environment_liveness) &#123;</span><br><span class="line">  <span class="function">OFStream <span class="title">of</span><span class="params">(<span class="built_in">stdout</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">  bytecode_analysis.PrintLivenessTo(of);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果想观察liveness过程，可以启用这个flag<br><code>DEFINE_BOOL(trace_environment_liveness, false,
+            &quot;trace liveness of local variable slots&quot;)</code></p>
+<p>bytecode_array被设置迭代，然后通过VisitSingleBytecode一个个处理。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (; !iterator.done(); iterator.Advance()) &#123;</span><br><span class="line">  VisitSingleBytecode(&amp;source_position_iterator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数前面就是一些获取bytecode并偏移寻找下一个还有一些其他判断，主要的内容其实是这个大的switch case，对不同bytecode进行不同处理。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">switch</span> (iterator.current_bytecode()) &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTECODE_CASE(name, ...)       \</span></span><br><span class="line">  <span class="keyword">case</span> interpreter::Bytecode::k#<span class="meta">#name: \</span></span><br><span class="line">    Visit#<span class="meta">#name();                     \</span></span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">      BYTECODE_LIST(BYTECODE_CASE)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">undef</span> BYTECODE_CODE</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>BYTECODE_LIST在bytecode.h里，太长了就不列了。</p>
+<p>VisitSingleBytecode里有很多分支，我捡一些写一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[generated bytecode for function: foo]</span><br><span class="line">Parameter count 2</span><br><span class="line">Frame size 24</span><br><span class="line">   80 E&gt; 0x186d973a4f8a @    0 : a0                StackCheck</span><br><span class="line">   97 S&gt; 0x186d973a4f8b @    1 : 28 02 00 00       LdaNamedProperty a0, [0], [0]</span><br><span class="line">         0x186d973a4f8f @    5 : 26 fb             Star r0</span><br><span class="line">         0x186d973a4f91 @    7 : 0c 64             LdaSmi [100]</span><br><span class="line">         0x186d973a4f93 @    9 : 26 f9             Star r2</span><br><span class="line">   97 E&gt; 0x186d973a4f95 @   11 : 57 fb 02 f9 02    CallProperty1 r0, a0, r2, [2]</span><br><span class="line">  110 S&gt; 0x186d973a4f9a @   16 : a4                Return</span><br><span class="line">Constant pool (size &#x3D; 1)</span><br><span class="line">0x186d973a4f19: [FixedArray] in OldSpace</span><br><span class="line"> - map: 0x186d90c023c1 &lt;Map&gt;</span><br><span class="line"> - length: 1</span><br><span class="line">           0: 0x186dc2812029 &lt;String[7]: indexOf&gt;</span><br><span class="line">Handler Table (size &#x3D; 0)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>VisitStackCheck<br>在为StackCheck构建node之前，如果没有一个能够支配（effect-dom)它的checkpoint节点，那么会先创建一个精确的checkpoint节点。<br>于是在PrepareEagerCheckpoint调用<code>Node* node = NewNode(common()-&gt;Checkpoint());</code><br>即使我们在某种情况下跳过了checkpoint的创建，依然会染着Effect边为StackCheck寻找一个能够支配（effect-dom)它的Checkpoint。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">V(Checkpoint, Operator::kKontrol, 0, 1, 1, 0, 1, 0)</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BytecodeGraphBuilder::VisitStackCheck</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  PrepareEagerCheckpoint();</span><br><span class="line">  Node* node = NewNode(javascript()-&gt;StackCheck());</span><br><span class="line">  environment()-&gt;RecordAfterState(node, Environment::kAttachFrameState);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BytecodeGraphBuilder::PrepareEagerCheckpoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (needs_eager_checkpoint()) &#123;</span><br><span class="line">    <span class="comment">// Create an explicit checkpoint node for before the operation. This only</span></span><br><span class="line">    <span class="comment">// needs to happen if we aren't effect-dominated by a &#123;Checkpoint&#125; already.</span></span><br><span class="line">    mark_as_needing_eager_checkpoint(<span class="literal">false</span>);</span><br><span class="line">    Node* node = NewNode(common()-&gt;Checkpoint());</span><br><span class="line">    DCHECK_EQ(<span class="number">1</span>, OperatorProperties::GetFrameStateInputCount(node-&gt;op()));</span><br><span class="line">    DCHECK_EQ(IrOpcode::kDead,</span><br><span class="line">              NodeProperties::GetFrameStateInput(node)-&gt;opcode());</span><br><span class="line">    <span class="function">BailoutId <span class="title">bailout_id</span><span class="params">(bytecode_iterator().current_offset())</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> BytecodeLivenessState* liveness_before =</span><br><span class="line">        bytecode_analysis()-&gt;GetInLivenessFor(</span><br><span class="line">            bytecode_iterator().current_offset());</span><br><span class="line"></span><br><span class="line">    Node* frame_state_before = environment()-&gt;Checkpoint(</span><br><span class="line">        bailout_id, OutputFrameStateCombine::Ignore(), liveness_before);</span><br><span class="line">    NodeProperties::ReplaceFrameStateInput(node, frame_state_before);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> DEBUG</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// In case we skipped checkpoint creation above, we must be able to find an</span></span><br><span class="line">    <span class="comment">// existing checkpoint that effect-dominates the nodes about to be created.</span></span><br><span class="line">    <span class="comment">// Starting a search from the current effect-dependency has to succeed.</span></span><br><span class="line">    Node* effect = environment()-&gt;GetEffectDependency();</span><br><span class="line">    <span class="keyword">while</span> (effect-&gt;opcode() != IrOpcode::kCheckpoint) &#123;</span><br><span class="line">      DCHECK(effect-&gt;op()-&gt;HasProperty(Operator::kNoWrite));</span><br><span class="line">      DCHECK_EQ(<span class="number">1</span>, effect-&gt;op()-&gt;EffectInputCount());</span><br><span class="line">      effect = NodeProperties::GetEffectInput(effect);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li>VisitLdaNamedProperty<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> Operator* <span class="title">JSOperatorBuilder::LoadNamed</span><span class="params">(Handle&lt;Name&gt; name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">const</span> VectorSlotPair&amp; feedback)</span> </span>&#123;</span><br><span class="line">  <span class="function">NamedAccess <span class="title">access</span><span class="params">(LanguageMode::kSloppy, name, feedback)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> (zone()) Operator1&lt;NamedAccess&gt;(           <span class="comment">// --</span></span><br><span class="line">      IrOpcode::kJSLoadNamed, Operator::kNoProperties,  <span class="comment">// opcode</span></span><br><span class="line">      <span class="string">"JSLoadNamed"</span>,                                    <span class="comment">// name</span></span><br><span class="line">      <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>,                                 <span class="comment">// counts</span></span><br><span class="line">      access);                                          <span class="comment">// parameter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>VisitStar</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BytecodeGraphBuilder::BuildCall</span><span class="params">(ConvertReceiverMode receiver_mode,</span></span></span><br><span class="line"><span class="function"><span class="params">                                     Node* <span class="keyword">const</span>* args, <span class="keyword">size_t</span> arg_count,</span></span></span><br><span class="line"><span class="function"><span class="params">                                     <span class="keyword">int</span> slot_id)</span> </span>&#123;</span><br><span class="line">  DCHECK_EQ(interpreter::Bytecodes::GetReceiverMode(</span><br><span class="line">                bytecode_iterator().current_bytecode()),</span><br><span class="line">            receiver_mode);</span><br><span class="line">  PrepareEagerCheckpoint();</span><br><span class="line"></span><br><span class="line">  VectorSlotPair feedback = CreateVectorSlotPair(slot_id);</span><br><span class="line"></span><br><span class="line">  CallFrequency frequency = ComputeCallFrequency(slot_id);</span><br><span class="line">  <span class="keyword">const</span> Operator* op =</span><br><span class="line">      javascript()-&gt;Call(arg_count, frequency, feedback, receiver_mode,</span><br><span class="line">                         GetSpeculationMode(slot_id));</span><br><span class="line">  JSTypeHintLowering::LoweringResult lowering = TryBuildSimplifiedCall(</span><br><span class="line">      op, args, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(arg_count), feedback.slot());</span><br><span class="line">  <span class="keyword">if</span> (lowering.IsExit()) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  Node* node = <span class="literal">nullptr</span>;</span><br><span class="line">  <span class="keyword">if</span> (lowering.IsSideEffectFree()) &#123;</span><br><span class="line">    node = lowering.value();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    DCHECK(!lowering.Changed());</span><br><span class="line">    node = ProcessCallArguments(op, args, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(arg_count));</span><br><span class="line">  &#125;</span><br><span class="line">  environment()-&gt;BindAccumulator(node, Environment::kAttachFrameState);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">const</span> Operator* <span class="title">JSOperatorBuilder::Call</span><span class="params">(<span class="keyword">size_t</span> arity, CallFrequency frequency,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        VectorSlotPair <span class="keyword">const</span>&amp; feedback,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        ConvertReceiverMode convert_mode,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        SpeculationMode speculation_mode)</span> </span>&#123;</span><br><span class="line">  DCHECK_IMPLIES(speculation_mode == SpeculationMode::kAllowSpeculation,</span><br><span class="line">                 feedback.IsValid());</span><br><span class="line">  <span class="function">CallParameters <span class="title">parameters</span><span class="params">(arity, frequency, feedback, convert_mode,</span></span></span><br><span class="line"><span class="function"><span class="params">                            speculation_mode)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> (zone()) Operator1&lt;CallParameters&gt;(   <span class="comment">// --</span></span><br><span class="line">      IrOpcode::kJSCall, Operator::kNoProperties,  <span class="comment">// opcode</span></span><br><span class="line">      <span class="string">"JSCall"</span>,                                    <span class="comment">// name</span></span><br><span class="line">      parameters.arity(), <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>,           <span class="comment">// inputs/outputs</span></span><br><span class="line">      parameters);                                 <span class="comment">// parameter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/02/ssa/" rel="next" title="Building SSA Form">
+                <i class="fa fa-chevron-left"></i> Building SSA Form
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/19/justintime/" rel="prev" title="Google CTF justintime exploit">
+                Google CTF justintime exploit <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总览"><span class="nav-number">1.</span> <span class="nav-text">总览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Compiler-CompileOptimized-function-ConcurrencyMode-kNotConcurrent"><span class="nav-number">1.1.</span> <span class="nav-text">Compiler::CompileOptimized(function, ConcurrencyMode::kNotConcurrent)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bool-GetOptimizedCodeNow-OptimizedCompilationJob-job-Isolate-isolate"><span class="nav-number">1.2.</span> <span class="nav-text">bool GetOptimizedCodeNow(OptimizedCompilationJob* job, Isolate* isolate)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CompilationJob-Status-OptimizedCompilationJob-PrepareJob"><span class="nav-number">1.3.</span> <span class="nav-text">CompilationJob::Status OptimizedCompilationJob::PrepareJob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PipelineCompilationJob-Status-PipelineCompilationJob-PrepareJobImpl"><span class="nav-number">1.4.</span> <span class="nav-text">PipelineCompilationJob::Status PipelineCompilationJob::PrepareJobImpl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PipelineImpl-CreateGraph"><span class="nav-number">1.5.</span> <span class="nav-text">PipelineImpl::CreateGraph()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BytecodeGraphBuilder-CreateGraph"><span class="nav-number">1.6.</span> <span class="nav-text">BytecodeGraphBuilder::CreateGraph()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Node-New"><span class="nav-number">1.6.1.</span> <span class="nav-text">Node::New</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BytecodeGraphBuilder-Environment"><span class="nav-number">1.6.2.</span> <span class="nav-text">BytecodeGraphBuilder::Environment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VisitBytecodes"><span class="nav-number">1.6.3.</span> <span class="nav-text">VisitBytecodes</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/09/05/pipeline/';
+          this.page.identifier = '2018/09/05/pipeline/';
+          this.page.title = 'v8 pipeline';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

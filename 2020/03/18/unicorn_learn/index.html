@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="fuzz," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="sakuraのall fuzz:afl-unicorn我一直以来都work在语法类fuzz上，产出了很多高质量的漏洞，但事实上我对其他fuzz所知甚少，这个系列权做对各类fuzz的思考和学习记录。 unicorn学习主要是unicorn-engine-tutorial这篇文章的学习和一些思考。 task1hxp CTF 2017 Fibonacci因为想折腾新玩意，所以顺便安装了一个ghrida，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sakuraのall fuzz:afl-unicorn">
+<meta property="og:url" content="http://eternalsakura13.com/2020/03/18/unicorn_learn/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="sakuraのall fuzz:afl-unicorn我一直以来都work在语法类fuzz上，产出了很多高质量的漏洞，但事实上我对其他fuzz所知甚少，这个系列权做对各类fuzz的思考和学习记录。 unicorn学习主要是unicorn-engine-tutorial这篇文章的学习和一些思考。 task1hxp CTF 2017 Fibonacci因为想折腾新玩意，所以顺便安装了一个ghrida，">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-18-160723.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082326.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-120401.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-120658.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-121124.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082923.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082942.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-130050.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-130103.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-132019.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-134056.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-143523.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-152242.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-135948.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-140207.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-151947.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-152457.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-023839.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-064150.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-095657.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-100802.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-124208.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-125011.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130132.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-125907.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130219.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130256.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-132201.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-012549.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-013757.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-013900.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-014953.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015510.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015151.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015604.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015730.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015909.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-020057.png">
+<meta property="article:published_time" content="2020-03-18T14:40:38.493Z">
+<meta property="article:modified_time" content="2020-04-06T03:09:12.039Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="fuzz">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-18-160723.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2020/03/18/unicorn_learn/"/>
+
+
+
+
+
+  <title>sakuraのall fuzz:afl-unicorn | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2020/03/18/unicorn_learn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sakuraのall fuzz:afl-unicorn</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-18T22:40:38+08:00">
+                2020-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Fuzz/" itemprop="url" rel="index">
+                    <span itemprop="name">Fuzz</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/03/18/unicorn_learn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/03/18/unicorn_learn/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="sakuraのall-fuzz-afl-unicorn"><a href="#sakuraのall-fuzz-afl-unicorn" class="headerlink" title="sakuraのall fuzz:afl-unicorn"></a>sakuraのall fuzz:afl-unicorn</h1><p>我一直以来都work在语法类fuzz上，产出了很多高质量的漏洞，但事实上我对其他fuzz所知甚少，这个系列权做对各类fuzz的思考和学习记录。</p>
+<h2 id="unicorn学习"><a href="#unicorn学习" class="headerlink" title="unicorn学习"></a>unicorn学习</h2><p>主要是<a href="http://eternal.red/2018/unicorn-engine-tutorial/" target="_blank" rel="noopener">unicorn-engine-tutorial</a>这篇文章的学习和一些思考。</p>
+<h3 id="task1"><a href="#task1" class="headerlink" title="task1"></a>task1</h3><p>hxp CTF 2017 Fibonacci<br>因为想折腾新玩意，所以顺便安装了一个ghrida，<a href="https://zhuanlan.zhihu.com/p/59637690" target="_blank" rel="noopener">教程</a>在这</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-18-160723.png" alt=""><br>这个程序整体来看就是输出打印flag，不过打印的非常非常慢。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sakura@sakuradeMacBook-Pro:~&#x2F;unicorn$ .&#x2F;fibonacci</span><br><span class="line">The flag is: hxp&#123;F</span><br></pre></td></tr></table></figure>
+<p>我们的目的是将这个程序用unicorn engine跑起来，那么就开始吧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.x86_const <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(name,<span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> f.read()</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">u32</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.unpack(<span class="string">"I"</span>, data)[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">p32</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">"I"</span>, num)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化unicorn class</span></span><br><span class="line"><span class="comment"># 第一个参数是指定架构，第二个参数代表64位</span></span><br><span class="line">mu = Uc(UC_ARCH_X86, UC_MODE_64)</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082326.png" alt=""><br>首先需要自己手动去初始化虚拟内存。<br>PS.说到这里我觉得很多对操作系统没什么概念或者学的很差的同学应该就不知道为什么了，这里给出两个资料，把相关部分都看完就理解了。<br><a href="https://www.bilibili.com/video/av69563153?p=77" target="_blank" rel="noopener">程序的表示、转换与链接</a> 关于可执行程序的装载和链接<br><a href="https://www.bilibili.com/video/av13398035?p=48" target="_blank" rel="noopener">程序的执行和存储访问</a> 关于虚拟内存<br><a href="https://www.bilibili.com/video/av74071598?p=6" target="_blank" rel="noopener">异常、中断和输入输出</a></p>
+<p>贴张图，感兴趣的自己去看csapp。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-120401.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-120658.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-121124.png" alt=""><br>找到程序载入到虚拟内存的基地址，0x00400000，然后我们在0x0地址处分配一个栈。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BASE &#x3D; 0x400000</span><br><span class="line">STACK_ADDR &#x3D; 0x0</span><br><span class="line">STACK_SIZE &#x3D; 1024*1024</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mu.mem_map(BASE, 1024*1024)</span><br><span class="line">mu.mem_map(STACK_ADDR, STACK_SIZE)</span><br></pre></td></tr></table></figure>
+<p>将程序load到基地址处，然后设置rsp指向stack。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mu.mem_write(BASE, read(&quot;.&#x2F;fibonacci&quot;))</span><br><span class="line">mu.reg_write(UC_X86_REG_RSP, STACK_ADDR + STACK_SIZE - 1)</span><br></pre></td></tr></table></figure>
+<p>现在我们已经像真正加载可执行程序一样，将其加载到了内存中，现在我们就可以开始运行我们的仿真了。<br>现在确定一下想要仿真执行的起始地址和终止地址。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082923.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-082942.png" alt=""><br>还是很好找的，0x004004e0-0x00400582</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mu.emu_start(0x00000000004004E0, 0x0000000000400582)</span><br></pre></td></tr></table></figure>
+<p>unicorn在模拟执行程序的时候提供hook功能。<br>下面这个函数让我们在模拟执行每条指令之前打印出该指令的地址，指令大小。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def hook_code(mu, address, size, user_data):  </span><br><span class="line">    print(&#39;&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size &#x3D; 0x%x&#39; %(address, size)) </span><br><span class="line"></span><br><span class="line">mu.hook_add(UC_HOOK_CODE, hook_code)</span><br></pre></td></tr></table></figure>
+<p>最终组合就是下面这个脚本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(name,<span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> f.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">u32</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.unpack(<span class="string">"I"</span>, data)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">p32</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">"I"</span>, num)</span><br><span class="line"></span><br><span class="line">mu = Uc(UC_ARCH_X86, UC_MODE_64)</span><br><span class="line">BASE = <span class="number">0x400000</span></span><br><span class="line">STACK_ADDR = <span class="number">0x0</span></span><br><span class="line">STACK_SIZE = <span class="number">1024</span>*<span class="number">1024</span></span><br><span class="line">mu.mem_map(BASE, <span class="number">1024</span>*<span class="number">1024</span>)</span><br><span class="line">mu.mem_map(STACK_ADDR, STACK_SIZE)</span><br><span class="line"></span><br><span class="line">mu.mem_write(BASE, read(<span class="string">"./fibonacci"</span>))</span><br><span class="line">mu.reg_write(UC_X86_REG_RSP, STACK_ADDR + STACK_SIZE - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hook_code</span><span class="params">(mu, address, size, user_data)</span>:</span></span><br><span class="line">    print(<span class="string">'&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x'</span> %(address, size))</span><br><span class="line"></span><br><span class="line">mu.hook_add(UC_HOOK_CODE, hook_code)</span><br><span class="line">mu.emu_start(<span class="number">0x00000000004004E0</span>, <span class="number">0x0000000000400582</span>)</span><br></pre></td></tr></table></figure>
+<p>运行遇到如下问题，看一下0x4004ef这条指令为什么会访问到不可访问的地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unicorn$ python3 fibonacci.py</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004e0, instruction size &#x3D; 0x1</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004e1, instruction size &#x3D; 0x1</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004e2, instruction size &#x3D; 0x2</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004e4, instruction size &#x3D; 0x5</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004e9, instruction size &#x3D; 0x2</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004eb, instruction size &#x3D; 0x4</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x4004ef, instruction size &#x3D; 0x7</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;fibonacci.py&quot;, line 31, in &lt;module&gt;</span><br><span class="line">    mu.emu_start(0x00000000004004E0, 0x0000000000400582)</span><br><span class="line">  File &quot;&#x2F;home&#x2F;sakura&#x2F;.local&#x2F;lib&#x2F;python3.6&#x2F;site-packages&#x2F;unicorn&#x2F;unicorn.py&quot;, line 288, in emu_start</span><br><span class="line">    raise UcError(status)</span><br><span class="line">unicorn.unicorn.UcError: Invalid memory read (UC_ERR_READ_UNMAPPED)</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-130050.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-130103.png" alt=""><br>BSS段属于静态内存分配。通常是指用来存放程序中未初始化的全局变量和未初始化的局部静态变量。未初始化的全局变量和未初始化的局部静态变量默认值是0，本来这些变量也可以放到data段的，但是因为它们都是0，所以它们在data段分配空间并且存放数据0是没有必要的。<br>在程序运行时，才会给BSS段里面的变量分配内存空间。<br>在目标文件(*.o)和可执行文件中，BSS段只是为未初始化的全局变量和未初始化的局部静态变量预留位置而已，它并没有内容，所以它不占据空间。</p>
+<p>虽然我并不熟知unicorn的运作原理，这只是我第一次使用它，但我们是通过read的方式直接把可执行文件读进基地址的，想也知道bss段的内存肯定是没有被分配的。</p>
+<p>所以这里的解决方案是直接在执行这些有问题的指令前，将其rip指向下一条指令，从而跳过这些地址。<br>此外因为我们没有把glibc加载到虚拟地址里，所以我们也不能调用glibc函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">instructions_skip_list = [<span class="number">0x00000000004004EF</span>, <span class="number">0x00000000004004F6</span>, <span class="number">0x0000000000400502</span>, <span class="number">0x000000000040054F</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hook_code</span><span class="params">(mu, address, size, user_data)</span>:</span>  </span><br><span class="line">    print(<span class="string">'&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x'</span> %(address, size))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> address <span class="keyword">in</span> instructions_skip_list:</span><br><span class="line">        mu.reg_write(UC_X86_REG_RIP, address+size)</span><br></pre></td></tr></table></figure>
+<p>改一下hook函数就可以了。<br>然后因为我们需要打印出flag，而原本flag是通过如下函数打印的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_IO_putc((<span class="keyword">int</span>)(<span class="keyword">char</span>)uVar3,(_IO_FILE *)<span class="built_in">stdout</span>)</span><br></pre></td></tr></table></figure>
+<p>而此时_IO_putc是没有加载到内存中的，所以我们并不能调用这个函数。<br>但是可以看到要打印的flag作为第一个参数传递给该函数，而第一个参数是保存在rdi中的，所以只需要在执行这条指令之前读取rdi的值，然后把这个值打印出来即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hook_code</span><span class="params">(mu, address, size, user_data)</span>:</span>  </span><br><span class="line">...</span><br><span class="line">    <span class="keyword">elif</span> address == <span class="number">0x400560</span>:</span><br><span class="line">        c = mu.reg_read(UC_X86_REG_RDI)</span><br><span class="line">        print(chr(c))</span><br><span class="line">        mu.reg_write(UC_X86_REG_RIP, address+size)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-132019.png" alt=""></p>
+<p>其实对我来说能把程序用unicorn跑起来就算是完成任务了。<br>算法优化我并不感兴趣，所以看一下下一个task。</p>
+<h3 id="task2"><a href="#task2" class="headerlink" title="task2"></a>task2</h3><p>分析如下shellcode</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shellcode &#x3D; &quot;\xe8\xff\xff\xff\xff\xc0\x5d\x6a\x05\x5b\x29\xdd\x83\xc5\x4e\x89\xe9\x6a\x02\x03\x0c\x24\x5b\x31\xd2\x66\xba\x12\x00\x8b\x39\xc1\xe7\x10\xc1\xef\x10\x81\xe9\xfe\xff\xff\xff\x8b\x45\x00\xc1\xe0\x10\xc1\xe8\x10\x89\xc3\x09\xfb\x21\xf8\xf7\xd0\x21\xd8\x66\x89\x45\x00\x83\xc5\x02\x4a\x85\xd2\x0f\x85\xcf\xff\xff\xff\xec\x37\x75\x5d\x7a\x05\x28\xed\x24\xed\x24\xed\x0b\x88\x7f\xeb\x50\x98\x38\xf9\x5c\x96\x2b\x96\x70\xfe\xc6\xff\xc6\xff\x9f\x32\x1f\x58\x1e\x00\xd3\x80&quot;</span><br></pre></td></tr></table></figure>
+<p>先直接反汇编看一眼，嗯，看不懂。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-134056.png" alt=""><br>作者提示了这个shellcode所用的架构是x86-32，且明确说明了是使用了系统调用。<br>那基本思路就是hook一下int 80，然后把使用的系统调用号从eax里取出来，然后参数依序从ebx,ecx,edx里取出来。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-143523.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.x86_const <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">mu = Uc(UC_ARCH_X86, UC_MODE_32)</span><br><span class="line">BASE = <span class="number">0x400000</span></span><br><span class="line">STACK_ADDR = <span class="number">0x0</span></span><br><span class="line">STACK_SIZE = <span class="number">1024</span>*<span class="number">1024</span></span><br><span class="line">mu.mem_map(BASE, <span class="number">1024</span>*<span class="number">1024</span>)</span><br><span class="line">mu.mem_map(STACK_ADDR, STACK_SIZE)</span><br><span class="line"></span><br><span class="line">shellcode = <span class="string">b"\xe8\xff\xff\xff\xff\xc0\x5d\x6a\x05\x5b\x29\xdd\x83\xc5\x4e\x89\xe9\x6a\x02\x03\x0c\x24\x5b\x31\xd2\x66\xba\x12\x00\x8b\x39\xc1\xe7\x10\xc1\xef\x10\x81\xe9\xfe\xff\xff\xff\x8b\x45\x00\xc1\xe0\x10\xc1\xe8\x10\x89\xc3\x09\xfb\x21\xf8\xf7\xd0\x21\xd8\x66\x89\x45\x00\x83\xc5\x02\x4a\x85\xd2\x0f\x85\xcf\xff\xff\xff\xec\x37\x75\x5d\x7a\x05\x28\xed\x24\xed\x24\xed\x0b\x88\x7f\xeb\x50\x98\x38\xf9\x5c\x96\x2b\x96\x70\xfe\xc6\xff\xc6\xff\x9f\x32\x1f\x58\x1e\x00\xd3\x80"</span></span><br><span class="line"></span><br><span class="line">mu.mem_write(BASE, shellcode)</span><br><span class="line">mu.reg_write(UC_X86_REG_ESP, STACK_ADDR + STACK_SIZE<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hook_code</span><span class="params">(mu, address, size, user_data)</span>:</span></span><br><span class="line">    <span class="comment"># print('&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x' %(address, size))</span></span><br><span class="line">    code = mu.mem_read(address,size)</span><br><span class="line">    <span class="comment"># print(code)</span></span><br><span class="line">    <span class="keyword">if</span> code == <span class="string">b"\xcd\x80"</span>:</span><br><span class="line">        print(<span class="string">'&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x'</span> %(address, size))</span><br><span class="line">        eax = mu.reg_read(UC_X86_REG_EAX)</span><br><span class="line">        ebx = mu.reg_read(UC_X86_REG_EBX)</span><br><span class="line">        ecx = mu.reg_read(UC_X86_REG_ECX)</span><br><span class="line">        edx = mu.reg_read(UC_X86_REG_EDX)</span><br><span class="line">        print(<span class="string">"&#123;&#125;: &#123;&#125; &#123;&#125; &#123;&#125;"</span>.format(eax,ebx,ecx,edx))</span><br><span class="line">        <span class="keyword">if</span>(eax == <span class="number">15</span>):</span><br><span class="line">            file_name = bytes(mu.mem_read(ebx,<span class="number">32</span>)).split(<span class="string">b'\x00'</span>)[<span class="number">0</span>]</span><br><span class="line">            print(<span class="string">"file_name is &#123;&#125;"</span>.format(file_name))</span><br><span class="line">        mu.reg_write(UC_X86_REG_EIP, address+size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mu.hook_add(UC_HOOK_CODE, hook_code)</span><br><span class="line">mu.emu_start(BASE,BASE+len(shellcode))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unicorn$ python3 sc.py</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x40006b, instruction size &#x3D; 0x2</span><br><span class="line">15: 4194392 438 0</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x400070, instruction size &#x3D; 0x2</span><br><span class="line">1: 4194392 438 0</span><br></pre></td></tr></table></figure>
+<p>打开系统调用的解释网站对照看一下。<br><a href="https://syscalls.kernelgrok.com/" target="_blank" rel="noopener">https://syscalls.kernelgrok.com/</a><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-03-22-152242.png" alt=""></p>
+<p>查了一下chmod命令可以使用八进制数来指定权限。所以438就是666，代表读写权限。</p>
+<p>hex(4194392)-&gt;’0x400058’,是一个指针，指向的是文件名的字符串，把这个字符串取出来就知道到底读的是什么文件了。<br>这里吐个槽python3的mu.mem_read(ebx,32)返回一个bytearray，需要先bytes(xx)转成bytes，浪费了我半小时，另外bytes split要用b’xxx’</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Tracing instruction at 0x40006b, instruction size &#x3D; 0x2</span><br><span class="line">15: 4194392 438 0</span><br><span class="line">file_name is b&#39;&#x2F;etc&#x2F;shadow&#39;</span><br><span class="line">&gt;&gt;&gt; Tracing instruction at 0x400070, instruction size &#x3D; 0x2</span><br><span class="line">1: 4194392 438 0</span><br></pre></td></tr></table></figure>
+<p>这样我们就知道这个shellcode其实是将/etc/shadow设置成可读可写。</p>
+<h3 id="task3"><a href="#task3" class="headerlink" title="task3"></a>task3</h3><p>gcc function.c -m32 -o function.<br>调用super_function，返回的方式1。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">strcmp</span><span class="params">(<span class="keyword">char</span> *a, <span class="keyword">char</span> *b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//get length</span></span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *ptr = a;</span><br><span class="line">    <span class="keyword">while</span>(*ptr)</span><br><span class="line">    &#123;</span><br><span class="line">        ptr++;</span><br><span class="line">        len++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//comparestrings</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;=len; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (a[i]!=b[i])</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((stdcall))</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">super_function</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">char</span> *b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a==<span class="number">5</span> &amp;&amp; !<span class="built_in">strcmp</span>(b, <span class="string">"batman"</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    super_function(<span class="number">1</span>, <span class="string">"spiderman"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从前面的学习，我们已经学会了如何把程序加载进内存用unicorn仿真跑起来，和怎么用hook的方式去改变代码的执行流。<br>感觉解法很多…<br>分析一下题意，应该是指只调用super_function函数，而不执行代码的其他部分。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-135948.png" alt=""><br>假设基地址是0x08048000,那么要执行的就是0x08048000+0x57b-0x08048000+0x5b1</p>
+<p>然后考虑32位传参，先看一下栈帧结构。<br>图来自CSAPP第二版。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-140207.png" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a==<span class="number">5</span> &amp;&amp; !<span class="built_in">strcmp</span>(b, <span class="string">"batman"</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从代码可以看出，传入的参数a和b的值应为5和”batman”<br>从汇编代码最后的Ret 8可以看出来被调用者平衡堆栈，显然是stdcall调用约定。<br>stdcall的调用约定意味着参数从右向左压入堆栈。<br>当我们开始执行super_function的时候,esp是指向返回地址的。<br>所以a的值在esp+4,b的值在esp+8。（不理解的看图）<br>然后返回值会保存在eax里。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(name,<span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> f.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">u32</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.unpack(<span class="string">"I"</span>, data)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">p32</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">"I"</span>, num)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.x86_const <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">mu = Uc(UC_ARCH_X86, UC_MODE_32)</span><br><span class="line">BASE = <span class="number">0x8048000</span></span><br><span class="line">STACK_ADDR = <span class="number">0x0</span></span><br><span class="line">STACK_SIZE = <span class="number">1024</span>*<span class="number">1024</span></span><br><span class="line">mu.mem_map(BASE, <span class="number">1024</span>*<span class="number">1024</span>)</span><br><span class="line">mu.mem_map(STACK_ADDR, STACK_SIZE)</span><br><span class="line">string_addr = <span class="number">0x0</span></span><br><span class="line">mu.mem_write(string_addr, <span class="string">b"batman\x00"</span>)</span><br><span class="line">str = mu.mem_read(string_addr,<span class="number">6</span>)</span><br><span class="line">print(str)</span><br><span class="line">mu.mem_write(BASE, read(<span class="string">"./function"</span>))</span><br><span class="line">mu.reg_write(UC_X86_REG_ESP, STACK_ADDR + <span class="number">1024</span>)</span><br><span class="line">mu.mem_write(STACK_ADDR + <span class="number">1024</span> + <span class="number">4</span>, p32(<span class="number">5</span>))</span><br><span class="line">mu.mem_write(STACK_ADDR + <span class="number">1024</span> + <span class="number">8</span>, p32(string_addr))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hook_code</span><span class="params">(mu, address, size, user_data)</span>:</span></span><br><span class="line">    <span class="keyword">print</span></span><br><span class="line">    (<span class="string">'&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x'</span> %(address, size))</span><br><span class="line">    print(mu.mem_read(address,size))</span><br><span class="line"></span><br><span class="line">mu.hook_add(UC_HOOK_CODE, hook_code)</span><br><span class="line">mu.emu_start(BASE+<span class="number">0x57b</span>,BASE+<span class="number">0x5b1</span>)</span><br><span class="line">reg = mu.reg_read(UC_X86_REG_EAX)</span><br><span class="line">print(reg)</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-151947.png" alt=""></p>
+<p>到这里我的unicorn学习就结束了，感觉大概熟悉了一下API和使用。<br>另外ghrida真的不好用。。我准备换回IDA了。</p>
+<h2 id="AFL-unicorn学习"><a href="#AFL-unicorn学习" class="headerlink" title="AFL-unicorn学习"></a>AFL-unicorn学习</h2><p>先在sec.today上找一下资料<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-04-152457.png" alt=""><br><a href="https://medium.com/hackernoon/afl-unicorn-fuzzing-arbitrary-binary-code-563ca28936bf" target="_blank" rel="noopener">https://medium.com/hackernoon/afl-unicorn-fuzzing-arbitrary-binary-code-563ca28936bf</a></p>
+<p>第一篇我就不赘述了，<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-023839.jpg" alt=""><br>稍微值得一提的就是这个图了，它使用AFL来mutate样本去生成数据，然后将数据读到一个固定的地址里，然后harness会从这个地址读取数据并运行要仿真的指令，如果出现crash，则模拟这个行为让harness崩溃，从而告知AFL crash发生，从而记录下crash样本。<br>harness基本上就是用了上面这些task里类似的方法去用unicorn把指令仿真执行起来，如下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">""" </span></span><br><span class="line"><span class="string">   Simple test harness for AFL's Unicorn Mode.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">   This loads the simple_target.bin binary (precompiled as MIPS code) into</span></span><br><span class="line"><span class="string">   Unicorn's memory map for emulation, places the specified input into</span></span><br><span class="line"><span class="string">   simple_target's buffer (hardcoded to be at 0x300000), and executes 'main()'.</span></span><br><span class="line"><span class="string">   If any crashes occur during emulation, this script throws a matching signal</span></span><br><span class="line"><span class="string">   to tell AFL that a crash occurred.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">   Run under AFL as follows:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">   $ cd &lt;afl_path&gt;/unicorn_mode/samples/simple/</span></span><br><span class="line"><span class="string">   $ ../../../afl-fuzz -U -m none -i ./sample_inputs -o ./output -- python simple_test_harness.py @@ </span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> signal</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.mips_const <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># Path to the file containing the binary to emulate</span></span><br><span class="line">BINARY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), <span class="string">'simple_target.bin'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Memory map for the code to be tested</span></span><br><span class="line">CODE_ADDRESS  = <span class="number">0x00100000</span>  <span class="comment"># Arbitrary address where code to test will be loaded</span></span><br><span class="line">CODE_SIZE_MAX = <span class="number">0x00010000</span>  <span class="comment"># Max size for the code (64kb)</span></span><br><span class="line">STACK_ADDRESS = <span class="number">0x00200000</span>  <span class="comment"># Address of the stack (arbitrarily chosen)</span></span><br><span class="line">STACK_SIZE    = <span class="number">0x00010000</span>  <span class="comment"># Size of the stack (arbitrarily chosen)</span></span><br><span class="line">DATA_ADDRESS  = <span class="number">0x00300000</span>  <span class="comment"># Address where mutated data will be placed</span></span><br><span class="line">DATA_SIZE_MAX = <span class="number">0x00010000</span>  <span class="comment"># Maximum allowable size of mutated data</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment"># If Capstone is installed then we'll dump disassembly, otherwise just dump the binary.</span></span><br><span class="line">    <span class="keyword">from</span> capstone <span class="keyword">import</span> *</span><br><span class="line">    cs = Cs(CS_ARCH_MIPS, CS_MODE_MIPS32 + CS_MODE_BIG_ENDIAN)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unicorn_debug_instruction</span><span class="params">(uc, address, size, user_data)</span>:</span></span><br><span class="line">        mem = uc.mem_read(address, size)</span><br><span class="line">        <span class="keyword">for</span> (cs_address, cs_size, cs_mnemonic, cs_opstr) <span class="keyword">in</span> cs.disasm_lite(bytes(mem), size):</span><br><span class="line">            print(<span class="string">"    Instr: &#123;:#016x&#125;:\t&#123;&#125;\t&#123;&#125;"</span>.format(address, cs_mnemonic, cs_opstr))</span><br><span class="line"><span class="keyword">except</span> ImportError:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unicorn_debug_instruction</span><span class="params">(uc, address, size, user_data)</span>:</span></span><br><span class="line">        print(<span class="string">"    Instr: addr=0x&#123;0:016x&#125;, size=0x&#123;1:016x&#125;"</span>.format(address, size))    </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unicorn_debug_block</span><span class="params">(uc, address, size, user_data)</span>:</span></span><br><span class="line">    print(<span class="string">"Basic Block: addr=0x&#123;0:016x&#125;, size=0x&#123;1:016x&#125;"</span>.format(address, size))</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unicorn_debug_mem_access</span><span class="params">(uc, access, address, size, value, user_data)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> access == UC_MEM_WRITE:</span><br><span class="line">        print(<span class="string">"        &gt;&gt;&gt; Write: addr=0x&#123;0:016x&#125; size=&#123;1&#125; data=0x&#123;2:016x&#125;"</span>.format(address, size, value))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"        &gt;&gt;&gt; Read: addr=0x&#123;0:016x&#125; size=&#123;1&#125;"</span>.format(address, size))    </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unicorn_debug_mem_invalid_access</span><span class="params">(uc, access, address, size, value, user_data)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> access == UC_MEM_WRITE_UNMAPPED:</span><br><span class="line">        print(<span class="string">"        &gt;&gt;&gt; INVALID Write: addr=0x&#123;0:016x&#125; size=&#123;1&#125; data=0x&#123;2:016x&#125;"</span>.format(address, size, value))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"        &gt;&gt;&gt; INVALID Read: addr=0x&#123;0:016x&#125; size=&#123;1&#125;"</span>.format(address, size))   </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">force_crash</span><span class="params">(uc_error)</span>:</span></span><br><span class="line">    <span class="comment"># This function should be called to indicate to AFL that a crash occurred during emulation.</span></span><br><span class="line">    <span class="comment"># Pass in the exception received from Uc.emu_start()</span></span><br><span class="line">    mem_errors = [</span><br><span class="line">        UC_ERR_READ_UNMAPPED, UC_ERR_READ_PROT, UC_ERR_READ_UNALIGNED,</span><br><span class="line">        UC_ERR_WRITE_UNMAPPED, UC_ERR_WRITE_PROT, UC_ERR_WRITE_UNALIGNED,</span><br><span class="line">        UC_ERR_FETCH_UNMAPPED, UC_ERR_FETCH_PROT, UC_ERR_FETCH_UNALIGNED,</span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">if</span> uc_error.errno <span class="keyword">in</span> mem_errors:</span><br><span class="line">        <span class="comment"># Memory error - throw SIGSEGV</span></span><br><span class="line">        os.kill(os.getpid(), signal.SIGSEGV)</span><br><span class="line">    <span class="keyword">elif</span> uc_error.errno == UC_ERR_INSN_INVALID:</span><br><span class="line">        <span class="comment"># Invalid instruction - throw SIGILL</span></span><br><span class="line">        os.kill(os.getpid(), signal.SIGILL)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># Not sure what happened - throw SIGABRT</span></span><br><span class="line">        os.kill(os.getpid(), signal.SIGABRT)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">"Test harness for simple_target.bin"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'input_file'</span>, type=str, help=<span class="string">"Path to the file containing the mutated input to load"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'-d'</span>, <span class="string">'--debug'</span>, default=<span class="literal">False</span>, action=<span class="string">"store_true"</span>, help=<span class="string">"Enables debug tracing"</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate a MIPS32 big endian Unicorn Engine instance</span></span><br><span class="line">    uc = Uc(UC_ARCH_MIPS, UC_MODE_MIPS32 + UC_MODE_BIG_ENDIAN)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> args.debug:</span><br><span class="line">        uc.hook_add(UC_HOOK_BLOCK, unicorn_debug_block)</span><br><span class="line">        uc.hook_add(UC_HOOK_CODE, unicorn_debug_instruction)</span><br><span class="line">        uc.hook_add(UC_HOOK_MEM_WRITE | UC_HOOK_MEM_READ, unicorn_debug_mem_access)</span><br><span class="line">        uc.hook_add(UC_HOOK_MEM_WRITE_UNMAPPED | UC_HOOK_MEM_READ_INVALID, unicorn_debug_mem_invalid_access)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#---------------------------------------------------</span></span><br><span class="line">    <span class="comment"># Load the binary to emulate and map it into memory</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Loading data input from &#123;&#125;"</span>.format(args.input_file))</span><br><span class="line">    binary_file = open(BINARY_FILE, <span class="string">'rb'</span>)</span><br><span class="line">    binary_code = binary_file.read()</span><br><span class="line">    binary_file.close()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Apply constraints to the mutated input</span></span><br><span class="line">    <span class="keyword">if</span> len(binary_code) &gt; CODE_SIZE_MAX:</span><br><span class="line">        print(<span class="string">"Binary code is too large (&gt; &#123;&#125; bytes)"</span>.format(CODE_SIZE_MAX))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Write the mutated command into the data buffer</span></span><br><span class="line">    uc.mem_map(CODE_ADDRESS, CODE_SIZE_MAX)</span><br><span class="line">    uc.mem_write(CODE_ADDRESS, binary_code)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Set the program counter to the start of the code</span></span><br><span class="line">    start_address = CODE_ADDRESS          <span class="comment"># Address of entry point of main()</span></span><br><span class="line">    end_address   = CODE_ADDRESS + <span class="number">0xf4</span>   <span class="comment"># Address of last instruction in main()</span></span><br><span class="line">    uc.reg_write(UC_MIPS_REG_PC, start_address)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#-----------------</span></span><br><span class="line">    <span class="comment"># Setup the stack</span></span><br><span class="line"></span><br><span class="line">    uc.mem_map(STACK_ADDRESS, STACK_SIZE)</span><br><span class="line">    uc.reg_write(UC_MIPS_REG_SP, STACK_ADDRESS + STACK_SIZE)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#-----------------------------------------------------</span></span><br><span class="line">    <span class="comment"># Emulate 1 instruction to kick off AFL's fork server</span></span><br><span class="line">    <span class="comment">#   THIS MUST BE DONE BEFORE LOADING USER DATA! </span></span><br><span class="line">    <span class="comment">#   If this isn't done every single run, the AFL fork server </span></span><br><span class="line">    <span class="comment">#   will not be started appropriately and you'll get erratic results!</span></span><br><span class="line">    <span class="comment">#   It doesn't matter what this returns with, it just has to execute at</span></span><br><span class="line">    <span class="comment">#   least one instruction in order to get the fork server started.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Execute 1 instruction just to startup the forkserver</span></span><br><span class="line">    print(<span class="string">"Starting the AFL forkserver by executing 1 instruction"</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        uc.emu_start(uc.reg_read(UC_MIPS_REG_PC), <span class="number">0</span>, <span class="number">0</span>, count=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"ERROR: Failed to execute a single instruction (error: &#123;&#125;)!"</span>.format(e))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#-----------------------------------------------</span></span><br><span class="line">    <span class="comment"># Load the mutated input and map it into memory</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Load the mutated input from disk</span></span><br><span class="line">    print(<span class="string">"Loading data input from &#123;&#125;"</span>.format(args.input_file))</span><br><span class="line">    input_file = open(args.input_file, <span class="string">'rb'</span>)</span><br><span class="line">    input = input_file.read()</span><br><span class="line">    input_file.close()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Apply constraints to the mutated input</span></span><br><span class="line">    <span class="keyword">if</span> len(input) &gt; DATA_SIZE_MAX:</span><br><span class="line">        print(<span class="string">"Test input is too long (&gt; &#123;&#125; bytes)"</span>.format(DATA_SIZE_MAX))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Write the mutated command into the data buffer</span></span><br><span class="line">    uc.mem_map(DATA_ADDRESS, DATA_SIZE_MAX)</span><br><span class="line">    uc.mem_write(DATA_ADDRESS, input)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#------------------------------------------------------------</span></span><br><span class="line">    <span class="comment"># Emulate the code, allowing it to process the mutated input</span></span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Executing until a crash or execution reaches 0x&#123;0:016x&#125;"</span>.format(end_address))</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = uc.emu_start(uc.reg_read(UC_MIPS_REG_PC), end_address, timeout=<span class="number">0</span>, count=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"Execution failed with error: &#123;&#125;"</span>.format(e))</span><br><span class="line">        force_crash(e)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Done."</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>看一下第二篇<br><a href="https://hackernoon.com/afl-unicorn-part-2-fuzzing-the-unfuzzable-bea8de3540a5" target="_blank" rel="noopener">https://hackernoon.com/afl-unicorn-part-2-fuzzing-the-unfuzzable-bea8de3540a5</a></p>
+<h3 id="task1-FSK-Messaging-Service"><a href="#task1-FSK-Messaging-Service" class="headerlink" title="task1 FSK_Messaging_Service"></a>task1 FSK_Messaging_Service</h3><p>第二篇以一个相对具体的例子，将afl-unicorn的使用场景从不到30行的case扩展到了一个CGC CTF题<br>FSK_Messaging_Service<br>题目描述是这样的：这是一项服务，该服务实现了具有分组FSK解调前端，分组解码，处理以及最终将其解析为简单Messenger服务的分组无线接收器。</p>
+<h4 id="step0"><a href="#step0" class="headerlink" title="step0"></a>step0</h4><p>安装afl-unicorn</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;path&#x2F;to&#x2F;afl-unicorn</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">cd unicorn_mode</span><br><span class="line">sudo .&#x2F;build_unicorn_support.sh</span><br></pre></td></tr></table></figure>
+<p>另外这里还有个坑，如果你在18.04系统上不能运行起来它，可以试试16.04，这卡了我几个小时。</p>
+<h4 id="step1"><a href="#step1" class="headerlink" title="step1"></a>step1</h4><p>首要的工作是对要fuzz的代码进行理解，也就是说理清楚要fuzz的起点和终点，需要构造的输入是什么？输入是如何传递进去的，输入上有哪些约束，比如最大最短长度，是否需要满足某个具体的算式，这个约束是不变的还是动态的。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-064150.jpg" alt=""></p>
+<p>虽然我其实不太看得懂这些东西，但是粗略的理解来说就是如果直接构造输入喂进去，那么会卡在Demodulation Logic部分，永远无法正确的突破。<br>可以粗略的理解成，如果你用AFL去fuzz js引擎，那它几乎不太可能去生成有效的js语法，会卡在语法parser那里，举个例子,for进行一轮字节变异成aor，能通过才见鬼了。</p>
+<p>而通过AFL-unicorn我们可以直接过掉前面这部分代码，直接将Message Packet Parsing Logic作为Harness，把Packets作为原始输入去fuzz。</p>
+<p>但其实看到这里，Packet的构造还是存在一定问题的，首先即使这个Packet喂进去了造成Crash，如何从更上层输入去构造出这个Packet，会不会有更上层的过滤导致永远不可能构造出来这个Packet，这都是很容易考虑到的问题，不过这里暂时略过这个问题往下看吧。</p>
+<p>从Packets做输入，那么关键代码就在packet.c里，<br><a href="https://github.com/trailofbits/cb-multios/blob/master/challenges/FSK_Messaging_Service/src/packet.c" target="_blank" rel="noopener">https://github.com/trailofbits/cb-multios/blob/master/challenges/FSK_Messaging_Service/src/packet.c</a><br>选择要fuzz的函数是cgc_receive_packet<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-095657.png" alt=""><br>函数的基本功能如下：</p>
+<ol>
+<li>校验packet buffer不为空且长度大于0</li>
+<li>计算16位CRC校验和以验证数据包的内容</li>
+<li>循环检查packet type，如果匹配，则调用cgc_add_new_packet实例化tSinglePacketData对象pNewPacket，并向其中memcpy来自原始数据包的信息。</li>
+</ol>
+<p>现在我们开始考虑参数和约束<br>void cgc_receive_packet( uint8_t *pData, uint8_t dataLen, uint16_t packetCRC )<br>pData是指向数据包的指针，dataLen是其长度，packetCRC是16位CRC校验和。<br>显而易见的约束是CRC要正确。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Perform Checksum check</span></span><br><span class="line">	<span class="keyword">uint16_t</span> check_checksum = cgc_simple_checksum16( pData, dataLen );</span><br><span class="line"><span class="comment">// Validate Checksum</span></span><br><span class="line">	<span class="keyword">if</span> ( packetCRC != check_checksum )</span><br><span class="line">		<span class="keyword">return</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="step2"><a href="#step2" class="headerlink" title="step2"></a>step2</h4><p>其实看到这里就感觉没必要继续看下去了，价值很有限了。<br>简单地说接下来的工作是要dump出有效的进程上下文，这个原因十分简单，在之前我们学习Unicorn的时候就遇到了很多问题，有很多运行时才会分配的内存区域，比如堆分配、栈指针、全局变量这些东西。<br>但是说到底……<strong>我要是能把固件跑起来，我还要你这个仿真干嘛</strong><br>问题就在这里了，所以我感觉除了极小量级的代码可能还能用一下，越是复杂，接口不规范的东西，越是不可能用这个东西跑起来了。<br>但权做学习吧。</p>
+<p>afl-unicorn的helper tools<br><a href="https://github.com/Battelle/afl-unicorn/blob/master/unicorn_mode/helper_scripts/unicorn_dumper_ida.py" target="_blank" rel="noopener">https://github.com/Battelle/afl-unicorn/blob/master/unicorn_mode/helper_scripts/unicorn_dumper_ida.py</a></p>
+<p>IDA的版本要求&lt;7，我试一下gdb版的能不能用。<br><a href="https://github.com/Battelle/afl-unicorn/blob/master/unicorn_mode/helper_scripts/unicorn_dumper_gdb.py" target="_blank" rel="noopener">https://github.com/Battelle/afl-unicorn/blob/master/unicorn_mode/helper_scripts/unicorn_dumper_gdb.py</a></p>
+<p>选择在此处断下，此时eax中存放pData，edx（dl)里存放dataLen<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-100802.png" alt=""><br>在此处dump进程上下文。</p>
+<p>我在这卡住了，因为我想了想我好像并不知道该怎么hit到cgc_receive_packet的代码，在进行了”繁琐”的逆向工程之后。<br>我找到了作者的issue。<br><a href="https://github.com/Battelle/afl-unicorn/issues/9" target="_blank" rel="noopener">https://github.com/Battelle/afl-unicorn/issues/9</a><br>它给了一个patch用来生成有效输入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;pov &gt; case</span><br><span class="line"></span><br><span class="line">sakura@ubuntu:~&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;challenges&#x2F;FSK_Messaging_Service$ .&#x2F;FSK_Messaging_Service &lt; case</span><br><span class="line">[[RECEIVER STARTED -- TIMESTAMP: 1453110580]]</span><br><span class="line">Total 12 bytes received and 0 invalid packets.</span><br><span class="line">Displaying 2 received packets:</span><br><span class="line">Displaying packet 0 type 3:</span><br><span class="line">[CONNECT MESSAGE]ASDF connected</span><br><span class="line">Displaying packet 1 type 3:</span><br><span class="line">[CONNECT MESSAGE]ASDF connected</span><br></pre></td></tr></table></figure>
+<p>差不多效果这样。<br>然后开始dump上下文了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unicorn$ gdb .&#x2F;FSK_Messaging_Service</span><br><span class="line">Reading symbols from .&#x2F;FSK_Messaging_Service...done.</span><br><span class="line">gef➤  b *0x804D106</span><br><span class="line">Breakpoint 1 at 0x804d106: file &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;challenges&#x2F;FSK_Messaging_Service&#x2F;src&#x2F;baseband.c, line 330.</span><br><span class="line">gef➤  x&#x2F;5i 0x804D106</span><br><span class="line">   0x804d106 &lt;cgc_do_sample+854&gt;:	mov    DWORD PTR [esp],eax</span><br><span class="line">   0x804d109 &lt;cgc_do_sample+857&gt;:	movzx  eax,dl</span><br><span class="line">   0x804d10c &lt;cgc_do_sample+860&gt;:	mov    DWORD PTR [esp+0x4],eax</span><br><span class="line">   0x804d110 &lt;cgc_do_sample+864&gt;:	movzx  eax,WORD PTR [ecx+0x126]</span><br><span class="line">   0x804d117 &lt;cgc_do_sample+871&gt;:	mov    DWORD PTR [esp+0x8],eax</span><br><span class="line">gef➤  r &lt; case</span><br><span class="line">Starting program: &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;FSK_Messaging_Service &lt; case</span><br><span class="line">[[RECEIVER STARTED -- TIMESTAMP: 1453110580]]</span><br><span class="line">[ Legend: Modified register | Code | Heap | Stack | String ]</span><br><span class="line">───────────────────────────────────────────────────────────── registers ────</span><br><span class="line">$eax   : 0xffffd3c6  →  0x53410403</span><br><span class="line">$ebx   : 0x0</span><br><span class="line">$ecx   : 0xffffd3a0  →  0xf7fd0002  →  0x306cf7fd</span><br><span class="line">$edx   : 0xffffd306  →  0x00000000</span><br><span class="line">$esp   : 0xffffd1e0  →  0xcccccccd</span><br><span class="line">$ebp   : 0xffffd208  →  0xffffd238  →  0xffffd258  →  0xffffd4d8  →  0x00000000</span><br><span class="line">$esi   : 0xc0d2</span><br><span class="line">$edi   : 0x0</span><br><span class="line">$eip   : 0x0804d106  →  &lt;cgc_do_sample+854&gt; mov DWORD PTR [esp], eax</span><br><span class="line">$eflags: [zero carry PARITY adjust SIGN trap INTERRUPT direction overflow resume virtualx86 identification]</span><br><span class="line">$cs: 0x0023 $ss: 0x002b $ds: 0x002b $es: 0x002b $fs: 0x0000 $gs: 0x0063</span><br><span class="line">───────────────────────────────────────────────────────────────── stack ────</span><br><span class="line">0xffffd1e0│+0x0000: 0xcccccccd	 ← $esp</span><br><span class="line">0xffffd1e4│+0x0004: 0x40308ccc</span><br><span class="line">0xffffd1e8│+0x0008: 0x00000000</span><br><span class="line">0xffffd1ec│+0x000c: 0x40310000</span><br><span class="line">0xffffd1f0│+0x0010: 0x00000000</span><br><span class="line">0xffffd1f4│+0x0014: 0x40080000</span><br><span class="line">0xffffd1f8│+0x0018: 0x04000000</span><br><span class="line">0xffffd1fc│+0x001c: 0x00000000</span><br><span class="line">─────────────────────────────────────────────────────────── code:x86:32 ────</span><br><span class="line">    0x804d0fd &lt;cgc_do_sample+845&gt; mov    ecx, DWORD PTR [ebp+0x8]</span><br><span class="line">    0x804d100 &lt;cgc_do_sample+848&gt; mov    dl, BYTE PTR [ecx+0x23]</span><br><span class="line">    0x804d103 &lt;cgc_do_sample+851&gt; mov    ecx, DWORD PTR [ebp+0x8]</span><br><span class="line"> →  0x804d106 &lt;cgc_do_sample+854&gt; mov    DWORD PTR [esp], eax</span><br><span class="line">    0x804d109 &lt;cgc_do_sample+857&gt; movzx  eax, dl</span><br><span class="line">    0x804d10c &lt;cgc_do_sample+860&gt; mov    DWORD PTR [esp+0x4], eax</span><br><span class="line">    0x804d110 &lt;cgc_do_sample+864&gt; movzx  eax, WORD PTR [ecx+0x126]</span><br><span class="line">    0x804d117 &lt;cgc_do_sample+871&gt; mov    DWORD PTR [esp+0x8], eax</span><br><span class="line">    0x804d11b &lt;cgc_do_sample+875&gt; call   0x804d9f0 &lt;cgc_receive_packet&gt;</span><br><span class="line">───────────────────────────────────── source:&#x2F;home&#x2F;sakura&#x2F;un[...].c+330 ────</span><br><span class="line">    325	 #if DEBUG_BASEBAND</span><br><span class="line">    326	 			cgc_printf( &quot;Packet RX[$d][$X]\n&quot;, pState-&gt;packetState.packetDataLen, pState-&gt;packetState.packetCRC );</span><br><span class="line">    327	 #endif</span><br><span class="line">    328</span><br><span class="line">    329	 			&#x2F;&#x2F; Packet received! -- send to packet processing</span><br><span class="line">            &#x2F;&#x2F; pState&#x3D;0xffffd210  →  [...]  →  0x306cf7fd</span><br><span class="line"> →  330	 			cgc_receive_packet( pState-&gt;packetState.packetData, pState-&gt;packetState.packetDataLen, pState-&gt;packetState.packetCRC );</span><br><span class="line">    331</span><br><span class="line">    332	 			&#x2F;&#x2F; Reset</span><br><span class="line">    333	 			cgc_reset_baseband_state( pState );</span><br><span class="line">    334	 		&#125;</span><br><span class="line">    335	 	&#125;</span><br><span class="line">─────────────────────────────────────────────────────────────── threads ────</span><br><span class="line">[#0] Id 1, Name: &quot;FSK_Messaging_S&quot;, stopped 0x804d106 in cgc_do_sample (), reason: BREAKPOINT</span><br><span class="line">───────────────────────────────────────────────────────────────── trace ────</span><br><span class="line">[#0] 0x804d106 → cgc_do_sample(pState&#x3D;0xffffd3a0, sample_in&#x3D;0x0)</span><br><span class="line">[#1] 0x804ccbb → cgc_run_cdr(pState&#x3D;0xffffd3a0, in_sample&#x3D;0x0)</span><br><span class="line">[#2] 0x804ca25 → cgc_process_sample(pState&#x3D;0xffffd3a0, in_sample&#x3D;0x0)</span><br><span class="line">[#3] 0x804e6cd → main(secret_page_i&#x3D;0x4347c000, unused&#x3D;0xffffd574)</span><br><span class="line">────────────────────────────────────────────────────────────────────────────</span><br><span class="line"></span><br><span class="line">Breakpoint 1, 0x0804d106 in cgc_do_sample (pState&#x3D;0xffffd3a0, sample_in&#x3D;0x0) at &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;challenges&#x2F;FSK_Messaging_Service&#x2F;src&#x2F;baseband.c:330</span><br><span class="line">330				cgc_receive_packet( pState-&gt;packetState.packetData, pState-&gt;packetState.packetDataLen, pState-&gt;packetState.packetCRC );</span><br><span class="line">gef➤</span><br><span class="line">gef➤  source unicorn_dumper_gdb.py</span><br><span class="line">----- Unicorn Context Dumper -----</span><br><span class="line">You must be actively debugging before running this!</span><br><span class="line">If it fails, double check that you are actively debugging before running.</span><br><span class="line">Process context will be output to UnicornContext_20200405_045024</span><br><span class="line">Dumping segment @0x0000000008048000 (size:0x7000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;FSK_Messaging_Service [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x000000000804f000 (size:0x1000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;FSK_Messaging_Service [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x0000000008050000 (size:0x22000): [heap] [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x000000004347c000 (size:0x1000):  [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7dbd000 (size:0x1d5000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;libc-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Skipping segment &#x2F;lib&#x2F;i386-linux-gnu&#x2F;libc-2.27.so@0x00000000f7f92000</span><br><span class="line">Dumping segment @0x00000000f7f93000 (size:0x2000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;libc-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7f95000 (size:0x1000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;libc-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7f96000 (size:0x3000):  [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fc5000 (size:0x1000):  [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fc6000 (size:0x3000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;tiny-AES128-C&#x2F;libtiny-AES128-C.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fc9000 (size:0x1000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;tiny-AES128-C&#x2F;libtiny-AES128-C.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fca000 (size:0x1000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;tiny-AES128-C&#x2F;libtiny-AES128-C.so [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fcb000 (size:0x3000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;libcgc.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fce000 (size:0x1000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;libcgc.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fcf000 (size:0x1000): &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;cb-multios&#x2F;build&#x2F;include&#x2F;libcgc.so [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fd0000 (size:0x2000):  [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Exception reading segment ([vvar]): &lt;class &#39;gdb.MemoryError&#39;&gt;</span><br><span class="line">Dumping segment @0x00000000f7fd5000 (size:0x1000): [vdso] [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7fd6000 (size:0x26000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;ld-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7ffc000 (size:0x1000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;ld-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: False, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000f7ffd000 (size:0x1000): &#x2F;lib&#x2F;i386-linux-gnu&#x2F;ld-2.27.so [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Dumping segment @0x00000000fffdd000 (size:0x21000): [stack] [&#123;&#39;r&#39;: True, &#39;w&#39;: True, &#39;x&#39;: True&#125;]</span><br><span class="line">Done.</span><br></pre></td></tr></table></figure>
+<p>大概这样。<br>粗略看了一下dump程序，基本上就是调用了gef的get_process_maps接口，然后依次把每个segment的内存保存下来和调用get_register接口保存寄存器信息。</p>
+<h4 id="step3"><a href="#step3" class="headerlink" title="step3"></a>step3</h4><p>接下来就开始编写harness了。<br>其实用c来写比python效率要快很多，但是为了快速学习，这里就用python搞一下。<br>整体的Harness的流程就是：</p>
+<ol>
+<li>创建和分配memory map</li>
+<li>加载target程序到memory map</li>
+<li>仿真执行至少一条指令(hack trick)</li>
+<li>从afl获取data和size用以fuzz</li>
+<li>设置初始状态，即进程上下文</li>
+<li>仿真代码，并正确处理crash</li>
+</ol>
+<p>基本上每个harness都是这样，对着往里面填模板就好了。<br>这里的<a href="https://github.com/Battelle/afl-unicorn/blob/master/unicorn_mode/helper_scripts/unicorn_loader.py" target="_blank" rel="noopener">unicorn_loader</a>在这。<br>用处就是把我们之前dump出来的context加载进去。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.x86_const <span class="keyword">import</span> *  <span class="comment"># <span class="doctag">TODO:</span> Set correct architecture here as necessary</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> unicorn_loader </span><br><span class="line"></span><br><span class="line"><span class="comment"># Simple stand-in heap to prevent OS/kernel issues</span></span><br><span class="line">unicorn_heap = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Start and end address of emulation</span></span><br><span class="line">START_ADDRESS = <span class="comment"># <span class="doctag">TODO:</span> Set start address here</span></span><br><span class="line">END_ADDRESS   = <span class="comment"># <span class="doctag">TODO:</span> Set end address here</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Implement target-specific hooks in here.</span></span><br><span class="line"><span class="string">    Stub out, skip past, and re-implement necessary functionality as appropriate</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unicorn_hook_instruction</span><span class="params">(uc, address, size, user_data)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># <span class="doctag">TODO:</span> Setup hooks and handle anything you need to here</span></span><br><span class="line">    <span class="comment">#    - For example, hook malloc/free/etc. and handle it internally</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#------------------------</span></span><br><span class="line"><span class="comment">#---- Main test function  </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line">    parser.add_argument(<span class="string">'context_dir'</span>, type=str, help=<span class="string">"Directory containing process context"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'input_file'</span>, type=str, help=<span class="string">"Path to the file containing the mutated input content"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'-d'</span>, <span class="string">'--debug'</span>, default=<span class="literal">False</span>, action=<span class="string">"store_true"</span>, help=<span class="string">"Dump trace info"</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Loading context from &#123;&#125;"</span>.format(args.context_dir))</span><br><span class="line">    uc = unicorn_loader.AflUnicornEngine(args.context_dir, enable_trace=args.debug, debug_print=<span class="literal">False</span>)       </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate the hook function to avoid emulation errors</span></span><br><span class="line">    <span class="keyword">global</span> unicorn_heap</span><br><span class="line">    unicorn_heap = unicorn_loader.UnicornSimpleHeap(uc, debug_print=<span class="literal">True</span>)</span><br><span class="line">    uc.hook_add(UC_HOOK_CODE, unicorn_hook_instruction)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Execute 1 instruction just to startup the forkserver</span></span><br><span class="line">    <span class="comment"># <span class="doctag">NOTE:</span> This instruction will be executed again later, so be sure that</span></span><br><span class="line">    <span class="comment">#       there are no negative consequences to the overall execution state.</span></span><br><span class="line">    <span class="comment">#       If there are, change the later call to emu_start to no re-execute </span></span><br><span class="line">    <span class="comment">#       the first instruction.</span></span><br><span class="line">    print(<span class="string">"Starting the forkserver by executing 1 instruction"</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        uc.emu_start(START_ADDRESS, <span class="number">0</span>, <span class="number">0</span>, count=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"ERROR: Failed to execute a single instruction (error: &#123;&#125;)!"</span>.format(e))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Allocate a buffer and load a mutated input and put it into the right spot</span></span><br><span class="line">    <span class="keyword">if</span> args.input_file:</span><br><span class="line">        print(<span class="string">"Loading input content from &#123;&#125;"</span>.format(args.input_file))</span><br><span class="line">        input_file = open(args.input_file, <span class="string">'rb'</span>)</span><br><span class="line">        input_content = input_file.read()</span><br><span class="line">        input_file.close()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># <span class="doctag">TODO:</span> Apply constraints to mutated input here</span></span><br><span class="line">        <span class="keyword">raise</span> exceptions.NotImplementedError(<span class="string">'No constraints on the mutated inputs have been set!'</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Allocate a new buffer and put the input into it</span></span><br><span class="line">        buf_addr = unicorn_heap.malloc(len(input_content))</span><br><span class="line">        uc.mem_write(buf_addr, input_content)</span><br><span class="line">        print(<span class="string">"Allocated mutated input buffer @ 0x&#123;0:016x&#125;"</span>.format(buf_addr))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># <span class="doctag">TODO:</span> Set the input into the state so it will be handled</span></span><br><span class="line">        <span class="keyword">raise</span> exceptions.NotImplementedError(<span class="string">'The mutated input was not loaded into the Unicorn state!'</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Run the test</span></span><br><span class="line">    print(<span class="string">"Executing from 0x&#123;0:016x&#125; to 0x&#123;1:016x&#125;"</span>.format(START_ADDRESS, END_ADDRESS))</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = uc.emu_start(START_ADDRESS, END_ADDRESS, timeout=<span class="number">0</span>, count=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="comment"># If something went wrong during emulation a signal is raised to force this </span></span><br><span class="line">        <span class="comment"># script to crash in a way that AFL can detect ('uc.force_crash()' should be</span></span><br><span class="line">        <span class="comment"># called for any condition that you want AFL to treat as a crash).</span></span><br><span class="line">        print(<span class="string">"Execution failed with error: &#123;&#125;"</span>.format(e))</span><br><span class="line">        uc.dump_regs() </span><br><span class="line">        uc.force_crash(e)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Final register state:"</span>)    </span><br><span class="line">    uc.dump_regs()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Done."</span>)    </span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>整体浏览一下，TODO的地方不多，加载context之类的工作，比如之前我们学习unicorn时候要做的很多分配栈地址之类的，都已经在unicorn_loader里给通过load我们之前dump出的context来自动完成了，简单快捷。</p>
+<p>那么把每处TODO大概看看</p>
+<ol>
+<li>TODO: Apply constraints to mutated input here<br>我感觉没必要额外加什么约束，直接注释掉raise。</li>
+<li>TODO: Set the input into the state so it will be handled<br>我们要fuzz的函数的参数此时都存在寄存器里，所以直接改掉寄存器的值就好。</li>
+<li>TODO: Set start/end address here<br>这个就是我们刚刚断下来的地址就是起始地址，要fuzz的函数结束的地方就是终止地址。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-124208.png" alt=""></li>
+<li>TODO: Setup hooks and handle anything you need to here<br>最麻烦的地方，和之前学习unicorn一样，有些指令还是要单独hook的。<br>另外就是之前说的，这个函数要先检查crc校验和，这个参数我们没做控制，直接把那个检查hook了然后跳过。</li>
+</ol>
+<p>hook crc校验和<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-125011.png" alt=""></p>
+<p>hook malloc，好处是我们可以自己实现自己的Guard Page，从而在越界读写的时候立刻crash。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130132.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-125907.jpg" alt=""></p>
+<p>hook free<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130219.png" alt=""></p>
+<p>hook printf<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-130256.png" alt=""></p>
+<p>hook cgc_transmit<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-05-132201.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(name,<span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">return</span> f.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">u32</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.unpack(<span class="string">"I"</span>, data)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">p32</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> struct.pack(<span class="string">"I"</span>, num)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> unicorn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> unicorn.x86_const <span class="keyword">import</span> *  <span class="comment"># <span class="doctag">TODO:</span> Set correct architecture here as necessary</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> unicorn_loader </span><br><span class="line"></span><br><span class="line"><span class="comment"># Simple stand-in heap to prevent OS/kernel issues</span></span><br><span class="line">unicorn_heap = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Start and end address of emulation</span></span><br><span class="line">START_ADDRESS = <span class="number">0x0804D106</span> <span class="comment"># <span class="doctag">TODO:</span> Set start address here</span></span><br><span class="line">END_ADDRESS   = <span class="number">0x0804D120</span> <span class="comment"># <span class="doctag">TODO:</span> Set end address here</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Address where checksum is checked and where it goes if it is valid</span></span><br><span class="line">CHKSUM_CMP_ADDR    = <span class="number">0x0804DA45</span></span><br><span class="line">CHKSUM_PASSED_ADDR = <span class="number">0x0804DA52</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Entry points of addresses of functions to hook</span></span><br><span class="line">MALLOC_ENTRY        = <span class="number">0x08049C40</span></span><br><span class="line">FREE_ENTRY          = <span class="number">0x08049980</span></span><br><span class="line">PRINTF_ENTRY        = <span class="number">0x0804AA60</span></span><br><span class="line">CGC_TRANSMIT_ENTRY  = <span class="number">0x0804A4C2</span></span><br><span class="line">CGC_TRANSMIT_PASSED = <span class="number">0x0804A4DC</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Implement target-specific hooks in here.</span></span><br><span class="line"><span class="string">    Stub out, skip past, and re-implement necessary functionality as appropriate</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unicorn_hook_instruction</span><span class="params">(uc, address, size, user_data)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> address == MALLOC_ENTRY:</span><br><span class="line">        print(<span class="string">"--- Rerouting call to malloc() @ 0x&#123;0:08x&#125; ---"</span>.format(address))</span><br><span class="line">        size = struct.unpack(<span class="string">"&lt;I"</span>, uc.mem_read(uc.reg_read(UC_X86_REG_ESP) + <span class="number">4</span>, <span class="number">4</span>))[<span class="number">0</span>]</span><br><span class="line">        retval = unicorn_heap.malloc(size)</span><br><span class="line">        uc.reg_write(UC_X86_REG_EAX, retval)</span><br><span class="line">        uc.reg_write(UC_X86_REG_EIP, struct.unpack(<span class="string">"&lt;I"</span>, uc.mem_read(uc.reg_read(UC_X86_REG_ESP), <span class="number">4</span>))[<span class="number">0</span>])</span><br><span class="line">        uc.reg_write(UC_X86_REG_ESP, uc.reg_read(UC_X86_REG_ESP) + <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Bypass these functions by jumping straight out of them - We can't (or don't want to) emulate them</span></span><br><span class="line">    <span class="keyword">elif</span> address == FREE_ENTRY <span class="keyword">or</span> address == PRINTF_ENTRY:</span><br><span class="line">        print(<span class="string">"--- Bypassing a function call that we don't want to emulate @ 0x&#123;0:08x&#125; ---"</span>.format(address))</span><br><span class="line">        uc.reg_write(UC_X86_REG_EIP, struct.unpack(<span class="string">"&lt;I"</span>, uc.mem_read(uc.reg_read(UC_X86_REG_ESP), <span class="number">4</span>))[<span class="number">0</span>])</span><br><span class="line">        uc.reg_write(UC_X86_REG_ESP, uc.reg_read(UC_X86_REG_ESP) + <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Bypass the checksum check</span></span><br><span class="line">    <span class="keyword">elif</span> address == CHKSUM_CMP_ADDR:</span><br><span class="line">        print(<span class="string">"--- Bypassing checksum validation @ 0x&#123;0:08x&#125; ---"</span>.format(address))</span><br><span class="line">        uc.reg_write(UC_X86_REG_EIP, CHKSUM_PASSED_ADDR)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Bypass the CGC_TRANSMIT_ENTRY check</span></span><br><span class="line">    <span class="keyword">elif</span> address == CGC_TRANSMIT_ENTRY:</span><br><span class="line">        print(<span class="string">"--- Bypassing CGC_TRANSMIT_ENTRY validation @ 0x&#123;0:08x&#125; ---"</span>.format(address))</span><br><span class="line">        uc.reg_write(UC_X86_REG_EIP, CGC_TRANSMIT_PASSED)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">elif</span> address == START_ADDRESS:</span><br><span class="line">        print(<span class="string">'&gt;&gt;&gt; Tracing instruction at 0x%x, instruction size = 0x%x'</span> %(address, size))</span><br><span class="line">        print(mu.mem_read(address,size))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># <span class="doctag">TODO:</span> Setup hooks and handle anything you need to here</span></span><br><span class="line">    <span class="comment">#    - For example, hook malloc/free/etc. and handle it internally</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#------------------------</span></span><br><span class="line"><span class="comment">#---- Main test function  </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line">    parser.add_argument(<span class="string">'context_dir'</span>, type=str, help=<span class="string">"Directory containing process context"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'input_file'</span>, type=str, help=<span class="string">"Path to the file containing the mutated input content"</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'-d'</span>, <span class="string">'--debug'</span>, default=<span class="literal">False</span>, action=<span class="string">"store_true"</span>, help=<span class="string">"Dump trace info"</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Loading context from &#123;&#125;"</span>.format(args.context_dir))</span><br><span class="line">    uc = unicorn_loader.AflUnicornEngine(args.context_dir, enable_trace=args.debug, debug_print=<span class="literal">False</span>)       </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Instantiate the hook function to avoid emulation errors</span></span><br><span class="line">    <span class="keyword">global</span> unicorn_heap</span><br><span class="line">    unicorn_heap = unicorn_loader.UnicornSimpleHeap(uc, debug_print=<span class="literal">True</span>)</span><br><span class="line">    uc.hook_add(UC_HOOK_CODE, unicorn_hook_instruction)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Execute 1 instruction just to startup the forkserver</span></span><br><span class="line">    <span class="comment"># <span class="doctag">NOTE:</span> This instruction will be executed again later, so be sure that</span></span><br><span class="line">    <span class="comment">#       there are no negative consequences to the overall execution state.</span></span><br><span class="line">    <span class="comment">#       If there are, change the later call to emu_start to no re-execute </span></span><br><span class="line">    <span class="comment">#       the first instruction.</span></span><br><span class="line">    print(<span class="string">"Starting the forkserver by executing 1 instruction"</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        uc.emu_start(START_ADDRESS, <span class="number">0</span>, <span class="number">0</span>, count=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"ERROR: Failed to execute a single instruction (error: &#123;&#125;)!"</span>.format(e))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Allocate a buffer and load a mutated input and put it into the right spot</span></span><br><span class="line">    <span class="keyword">if</span> args.input_file:</span><br><span class="line">        print(<span class="string">"Loading input content from &#123;&#125;"</span>.format(args.input_file))</span><br><span class="line">        input_file = open(args.input_file, <span class="string">'rb'</span>)</span><br><span class="line">        input_content = input_file.read()</span><br><span class="line">        input_file.close()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># <span class="doctag">TODO:</span> Apply constraints to mutated input here</span></span><br><span class="line">        <span class="keyword">if</span> len(input_content) &gt; <span class="number">0xFF</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="comment"># raise exceptions.NotImplementedError('No constraints on the mutated inputs have been set!')</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Allocate a new buffer and put the input into it</span></span><br><span class="line">        buf_addr = unicorn_heap.malloc(len(input_content))</span><br><span class="line">        uc.mem_write(buf_addr, input_content)</span><br><span class="line">        print(<span class="string">"Allocated mutated input buffer @ 0x&#123;0:016x&#125;"</span>.format(buf_addr))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># <span class="doctag">TODO:</span> Set the input into the state so it will be handled</span></span><br><span class="line">        <span class="comment">#raise exceptions.NotImplementedError('The mutated input was not loaded into the Unicorn state!')</span></span><br><span class="line">        uc.reg_write(UC_X86_REG_EAX, buf_addr)</span><br><span class="line">        uc.reg_write(UC_X86_REG_DL, len(input_content))</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># Run the test</span></span><br><span class="line">    print(<span class="string">"Executing from 0x&#123;0:016x&#125; to 0x&#123;1:016x&#125;"</span>.format(START_ADDRESS, END_ADDRESS))</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        result = uc.emu_start(START_ADDRESS, END_ADDRESS, timeout=<span class="number">0</span>, count=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">except</span> UcError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="comment"># If something went wrong during emulation a signal is raised to force this </span></span><br><span class="line">        <span class="comment"># script to crash in a way that AFL can detect ('uc.force_crash()' should be</span></span><br><span class="line">        <span class="comment"># called for any condition that you want AFL to treat as a crash).</span></span><br><span class="line">        print(<span class="string">"Execution failed with error: &#123;&#125;"</span>.format(e))</span><br><span class="line">        uc.dump_regs() </span><br><span class="line">        uc.force_crash(e)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Final register state:"</span>)    </span><br><span class="line">    uc.dump_regs()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Done."</span>)    </span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<h4 id="step4"><a href="#step4" class="headerlink" title="step4"></a>step4</h4><p>运行fuzz<br>需要唯一些输入进去。<br>那就random一些就好了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os, random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">50</span>):</span><br><span class="line">        size = random.randint(<span class="number">20</span>, <span class="number">50</span>)</span><br><span class="line">        os.system(<span class="string">f'dd if=/dev/urandom of=testcase/testcase_<span class="subst">&#123;i&#125;</span> count=2 bs=<span class="subst">&#123;size&#125;</span>'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;afl-unicorn&#x2F;afl-fuzz -U -m none -i &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;testcase&#x2F; -o &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;fuzz_out&#x2F; -- python harness.py &#x2F;home&#x2F;sakura&#x2F;unicorn&#x2F;UnicornContext_20200405_045024&#x2F; @@</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-012549.png" alt=""><br>crash很多，跑了大概几秒钟，大概打开看看，定位一下漏洞点。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-013757.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-013900.png" alt=""><br>但问题来了，没有栈回溯，我怎么定位到漏洞点。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-014953.png" alt=""></p>
+<p>我简单的排查了一下，因为这道题的代码量并不大，尤其是我hook的代码并不多，所以我可以trace每条指令，和执行时它的一些关键信息。<br>而这里比较简单的就是我review了一下memcpy的交叉引用，然后在new_packet里面找到了我要的。<br>因为我是打印了执行流的，我看了一下地址<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015510.png" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015151.png" alt=""><br>在我检索之后发现log里有call cgc_memcpy，并且里没有trace到它的下一条指令0x000000000804db8e<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015604.png" alt=""><br>到这里基本上就可以知道漏洞点了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015730.png" alt=""><br>简单的思考一下，pNewPacket的buf大小是0x40，也就是64字节。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-015909.png" alt=""><br>但是很显然，在cgc_receive_packet里是根本没有对其进行dataLen的校验的。换而言之，<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2020-04-06-020057.png" alt=""><br>这里cgc_g_packetHandlers是一个全局变量，用处大概是填充诸多类型的packetType用来进行check。<br>而只需要在pData第一个字节构造好type类型，就可以进入add_new_packet函数里，并造成一个oob write了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>afl-unicorn的局限性在于，它和unicorn一样，在你模拟执行的时候，必须hook一些函数来让它正常运行，为了尽可能简单的来模拟环境，你可能还需要去运行固件并dump内存上下文，这有时是困难的，起码我在刚开始研究afl-unicorn时候的初衷是因为我有一些东西不能直接跑起来。<br>此外在trace crash路径的时候，虽然我是逐指令hook的，但是事实上这样在遇到一些循环之类的时候会造成log爆炸的增长，我相信你不会想看到这种东西的。<br>所以还需要根据实际情况去hook需要hook的代码。<br>我已经很久没做任何逆向了，不过我有很多感兴趣的目标，我需要掌握的更多。</p>
+<p>后续我可能还会再更新一篇关于afl-unicorn源码的笔记，不过可能会比较简单，因为我不是那种非常注意细节的人，我只关心我应该怎么改才能让我的工作跑起来。</p>
+<p>这个系列不出意外我会长期更新，并会在适当的时候写一些我曾经使用过的，挖掘到了高质量浏览器漏洞的fuzz的内容，事实上都非常简单和有趣。</p>
+<p>所有的代码可以在<a href="https://github.com/eternalsakura/sakura_all_fuzz" target="_blank" rel="noopener">这里</a>找到。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="http://eternal.red/2018/unicorn-engine-tutorial/" target="_blank" rel="noopener">http://eternal.red/2018/unicorn-engine-tutorial/</a></p>
+<p><a href="https://hackernoon.com/afl-unicorn-part-2-fuzzing-the-unfuzzable-bea8de3540a5" target="_blank" rel="noopener">https://hackernoon.com/afl-unicorn-part-2-fuzzing-the-unfuzzable-bea8de3540a5</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/fuzz/" rel="tag"># fuzz</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/16/qwb%20growupjs%20&%20wctf%20independence_day%20writeup/" rel="next" title="qwb growupjs & wctf independence_day writeup">
+                <i class="fa fa-chevron-left"></i> qwb growupjs & wctf independence_day writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/27/flex/" rel="prev" title="Flex中文文档">
+                Flex中文文档 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sakuraのall-fuzz-afl-unicorn"><span class="nav-number">1.</span> <span class="nav-text">sakuraのall fuzz:afl-unicorn</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#unicorn学习"><span class="nav-number">1.1.</span> <span class="nav-text">unicorn学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#task1"><span class="nav-number">1.1.1.</span> <span class="nav-text">task1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#task2"><span class="nav-number">1.1.2.</span> <span class="nav-text">task2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#task3"><span class="nav-number">1.1.3.</span> <span class="nav-text">task3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AFL-unicorn学习"><span class="nav-number">1.2.</span> <span class="nav-text">AFL-unicorn学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#task1-FSK-Messaging-Service"><span class="nav-number">1.2.1.</span> <span class="nav-text">task1 FSK_Messaging_Service</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step0"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">step0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step1"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">step1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">step2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">step3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step4"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">step4</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">1.4.</span> <span class="nav-text">Reference</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2020/03/18/unicorn_learn/';
+          this.page.identifier = '2020/03/18/unicorn_learn/';
+          this.page.title = 'sakuraのall fuzz:afl-unicorn';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

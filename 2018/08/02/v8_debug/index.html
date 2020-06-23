@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="v8," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="v8 hidden class testmaptest112345678function Point(x, y) &amp;#123; this.x &#x3D; x; this.y &#x3D; y;&amp;#125;var p1 &#x3D; new Point(10, 11);%DebugPrint(p1)var p2 &#x3D; new Point(12, 13);%DebugPrint(p2) .&#x2F;d8 --allow_natives_s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="v8 debug writeup">
+<meta property="og:url" content="http://eternalsakura13.com/2018/08/02/v8_debug/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="v8 hidden class testmaptest112345678function Point(x, y) &amp;#123; this.x &#x3D; x; this.y &#x3D; y;&amp;#125;var p1 &#x3D; new Point(10, 11);%DebugPrint(p1)var p2 &#x3D; new Point(12, 13);%DebugPrint(p2) .&#x2F;d8 --allow_natives_s">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-14-131739.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-074842.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-144639.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-080119.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-080209.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-082449.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145330.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-084456.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-090501.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-144516.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145501.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145844.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145912.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-150922.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-151626.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-152050.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162521.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162603.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162824.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163131.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163439.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163642.png">
+<meta property="article:published_time" content="2018-08-02T14:05:42.000Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.729Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="v8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-14-131739.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/08/02/v8_debug/"/>
+
+
+
+
+
+  <title>v8 debug writeup | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/08/02/v8_debug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">v8 debug writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-02T22:05:42+08:00">
+                2018-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/02/v8_debug/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/02/v8_debug/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="v8-hidden-class-test"><a href="#v8-hidden-class-test" class="headerlink" title="v8 hidden class test"></a>v8 hidden class test</h2><h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><h4 id="test1"><a href="#test1" class="headerlink" title="test1"></a>test1</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line"> <span class="keyword">this</span>.x = x;</span><br><span class="line"> <span class="keyword">this</span>.y = y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> Point(<span class="number">10</span>, <span class="number">11</span>);</span><br><span class="line">%DebugPrint(p1)</span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Point(<span class="number">12</span>, <span class="number">13</span>);</span><br><span class="line">%DebugPrint(p2)</span><br></pre></td></tr></table></figure>
+<p><code>./d8 --allow_natives_syntax test_hidden_class.js</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-14-131739.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ .&#x2F;d8 --allow_natives_syntax test.js </span><br><span class="line">DebugPrint: 0x27984250c879: [JS_OBJECT_TYPE]</span><br><span class="line"> - map &#x3D; 0x1e016e18f8d9 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x27984250c749</span><br><span class="line"> - elements &#x3D; 0x23ac56e02241 &lt;FixedArray[0]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - properties &#x3D; 0x23ac56e02241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #x: 10 (data field 0)</span><br><span class="line">    #y: 11 (data field 1)</span><br><span class="line"> &#125;</span><br><span class="line">0x1e016e18f8d9: [Map]</span><br><span class="line"> - type: JS_OBJECT_TYPE</span><br><span class="line"> - instance size: 104</span><br><span class="line"> - inobject properties: 10</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 8</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x1e016e18f881 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #2: 0x27984250c919 &lt;FixedArray[8]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x27984250c749 &lt;Object map &#x3D; 0x1e016e18f829&gt;</span><br><span class="line"> - constructor: 0x2672a3c30041 &lt;JSFunction Point (sfi &#x3D; 0x2672a3c2fc91)&gt;</span><br><span class="line"> - code cache: 0x23ac56e02241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x23ac56e02241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 6</span><br><span class="line"></span><br><span class="line">DebugPrint: 0x27984250c969: [JS_OBJECT_TYPE]</span><br><span class="line"> - map &#x3D; 0x1e016e18f8d9 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x27984250c749</span><br><span class="line"> - elements &#x3D; 0x23ac56e02241 &lt;FixedArray[0]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - properties &#x3D; 0x23ac56e02241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #x: 12 (data field 0)</span><br><span class="line">    #y: 13 (data field 1)</span><br><span class="line"> &#125;</span><br><span class="line">0x1e016e18f8d9: [Map]</span><br><span class="line"> - type: JS_OBJECT_TYPE</span><br><span class="line"> - instance size: 104</span><br><span class="line"> - inobject properties: 10</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 8</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x1e016e18f881 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #2: 0x27984250c919 &lt;FixedArray[8]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x27984250c749 &lt;Object map &#x3D; 0x1e016e18f931&gt;</span><br><span class="line"> - constructor: 0x2672a3c30041 &lt;JSFunction Point (sfi &#x3D; 0x2672a3c2fc91)&gt;</span><br><span class="line"> - code cache: 0x23ac56e02241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x23ac56e02241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 6</span><br></pre></td></tr></table></figure>
+<p>结论：相同的map值</p>
+<h4 id="test2"><a href="#test2" class="headerlink" title="test2"></a>test2</h4><p>add p2.z = 14;<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-074842.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ .&#x2F;d8 --allow_natives_syntax test.js </span><br><span class="line">DebugPrint: 0x252f4f50c891: [JS_OBJECT_TYPE]</span><br><span class="line"> - map &#x3D; 0x2d1249b8f8d9 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x252f4f50c761</span><br><span class="line"> - elements &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - properties &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #x: 10 (data field 0)</span><br><span class="line">    #y: 11 (data field 1)</span><br><span class="line"> &#125;</span><br><span class="line">0x2d1249b8f8d9: [Map]</span><br><span class="line"> - type: JS_OBJECT_TYPE</span><br><span class="line"> - instance size: 104</span><br><span class="line"> - inobject properties: 10</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 8</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x2d1249b8f881 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #2: 0x252f4f50c931 &lt;FixedArray[8]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x252f4f50c761 &lt;Object map &#x3D; 0x2d1249b8f829&gt;</span><br><span class="line"> - constructor: 0x3be1e3530089 &lt;JSFunction Point (sfi &#x3D; 0x3be1e352fc91)&gt;</span><br><span class="line"> - code cache: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 6</span><br><span class="line"></span><br><span class="line">DebugPrint: 0x252f4f50c981: [JS_OBJECT_TYPE]</span><br><span class="line"> - map &#x3D; 0x2d1249b8f8d9 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x252f4f50c761</span><br><span class="line"> - elements &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - properties &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #x: 12 (data field 0)</span><br><span class="line">    #y: 13 (data field 1)</span><br><span class="line"> &#125;</span><br><span class="line">0x2d1249b8f8d9: [Map]</span><br><span class="line"> - type: JS_OBJECT_TYPE</span><br><span class="line"> - instance size: 104</span><br><span class="line"> - inobject properties: 10</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 8</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x2d1249b8f881 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #2: 0x252f4f50c931 &lt;FixedArray[8]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x252f4f50c761 &lt;Object map &#x3D; 0x2d1249b8f931&gt;</span><br><span class="line"> - constructor: 0x3be1e3530089 &lt;JSFunction Point (sfi &#x3D; 0x3be1e352fc91)&gt;</span><br><span class="line"> - code cache: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 6</span><br><span class="line"></span><br><span class="line">DebugPrint: 0x252f4f50c981: [JS_OBJECT_TYPE]</span><br><span class="line"> - map &#x3D; 0x2d1249b8f989 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x252f4f50c761</span><br><span class="line"> - elements &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - properties &#x3D; 0x538c1f82241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #x: 12 (data field 0)</span><br><span class="line">    #y: 13 (data field 1)</span><br><span class="line">    #z: 14 (data field 2)</span><br><span class="line"> &#125;</span><br><span class="line"> 0x2d1249b8f989: [Map]</span><br><span class="line"> - type: JS_OBJECT_TYPE</span><br><span class="line"> - instance size: 104</span><br><span class="line"> - inobject properties: 10</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 7</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x2d1249b8f8d9 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #3: 0x252f4f50ca51 &lt;FixedArray[11]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x252f4f50c761 &lt;Object map &#x3D; 0x2d1249b8f931&gt;</span><br><span class="line"> - constructor: 0x3be1e3530089 &lt;JSFunction Point (sfi &#x3D; 0x3be1e352fc91)&gt;</span><br><span class="line"> - code cache: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x538c1f82241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 6</span><br></pre></td></tr></table></figure>
+<p>结论：指向一个新的map</p>
+<h3 id="property的管理方法"><a href="#property的管理方法" class="headerlink" title="property的管理方法"></a>property的管理方法</h3><h4 id="In-Object-Properties"><a href="#In-Object-Properties" class="headerlink" title="In-Object Properties"></a>In-Object Properties</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line"> <span class="keyword">this</span>.x = x;</span><br><span class="line"> <span class="keyword">this</span>.y = y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> Point(<span class="number">10</span>, <span class="number">11</span>);</span><br><span class="line">%DebugPrint(p1)</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-144639.png" alt="">V8支持所谓的对象内属性，它们被直接保存在对象上，和对象在同一块内存区域。这种属性是V8中速度最快的属性，能够被直接访问。对象内属性的个数由对象初始化大小决定。如果要添加的属性超出对象的大小，这些属性就会被放入properties store中。properties store会增加一层属性访问的消耗，但是不受大小的限制。 </p>
+<h4 id="Fast-Properties"><a href="#Fast-Properties" class="headerlink" title="Fast Properties"></a>Fast Properties</h4><p>一般来说，我们会把属性保存在线性的properties store中，作为快速属性。快速属性可以通过简单的索引在properties store中访问。不过为了从属性名从properties store获取实际位置，我们要去HiddenClass上的 descriptor array中查询 。具体来讲，这一步骤是先根据属性名搜寻隐藏类的descriptor array，然后得到到数组的偏移地址，然后根据偏移地址到properties store上读取属性信息。实际上，第一次查找属性的时候难免会经历一次隐藏类的哈希查找，但下次一般会结合内联缓存，直接采用缓存的位移来存取属性。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-080119.jpg" alt=""></p>
+<h4 id="Slow-Properties"><a href="#Slow-Properties" class="headerlink" title="Slow Properties"></a>Slow Properties</h4><p>  然而，若是有很多属性从对象上添加或者删除，就需要花费很多时间和内存来维护descriptor array以及隐藏类。因此，V8也支持所谓的慢属性。拥有慢属性的对象会拥有一个自给的字典作为它的properties store（如上图所示）。这种情况下，所有属性的元信息不再储存在隐藏类的descriptor array中，而是直接保存在属性字典上。因此，此时属性的添加和移除不用再去更新指向的隐藏类。因为内联缓存不适用保存在字典中的属性，所以慢属性一般要比快属性慢。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-080209.jpg" alt=""></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>列表内容有三种不同类型的命名属性：对象内属性，快属性，以及慢/字典属性。<br>  1. 对象内属性直接储存在对象自身上，提供最快的属性访问。<br>  2. 快属性活跃在properties store上，所有相关的元信息都在隐藏类的descriptor array中。<br>  3. 慢属性保存在一个自给的属性字典上，属性的元信息不再与隐藏类有关。<br>慢属性提供高效的属性添加删除，但是访问速度要慢于快速属性和对象内对象。</p>
+<h2 id="Elements-or-array-indexed-Properties"><a href="#Elements-or-array-indexed-Properties" class="headerlink" title="Elements or array-indexed Properties"></a>Elements or array-indexed Properties</h2><p>  目前为止我们介绍了命名属性并且忽略了通常出现在数组中的整数索引属性。处理这种整数型属性要比命名属性简单很多。<br>所有的整数型属性都被单独保存在一个elements store中，并且有多达20种元素类型。</p>
+<h3 id="Packed-or-Holey-Elements"><a href="#Packed-or-Holey-Elements" class="headerlink" title="Packed or Holey Elements"></a>Packed or Holey Elements</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> o = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>];</span><br><span class="line">print(o[<span class="number">1</span>]);          <span class="comment">// Prints "b".</span></span><br><span class="line">%DebugPrint(o)</span><br><span class="line"><span class="keyword">delete</span> o[<span class="number">1</span>];                <span class="comment">// Introduces a hole in the elements store.</span></span><br><span class="line">%DebugPrint(o)</span><br><span class="line">print(o[<span class="number">1</span>]);          <span class="comment">// Prints "undefined"; property 1 does not exist.</span></span><br><span class="line">o.__proto__ = &#123;<span class="number">1</span>: <span class="string">"B"</span>&#125;;     <span class="comment">// Define property 1 on the prototype.</span></span><br><span class="line">%DebugPrint(o)</span><br><span class="line">print(o[<span class="number">0</span>]);          <span class="comment">// Prints "a".</span></span><br><span class="line">print(o[<span class="number">1</span>]);          <span class="comment">// Prints "B".</span></span><br><span class="line">print(o[<span class="number">2</span>]);          <span class="comment">// Prints "c".</span></span><br><span class="line">print(o[<span class="number">3</span>]);          <span class="comment">// Prints undefined</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">parallels@ubuntu:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ .&#x2F;d8 --allow_natives_syntax test.js </span><br><span class="line">b</span><br><span class="line">DebugPrint: 0xf279b90c8e9: [JSArray]</span><br><span class="line"> - map &#x3D; 0x236e9503b71 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x92dae107f51</span><br><span class="line"> - elements &#x3D; 0xf279b90c861 &lt;FixedArray[3]&gt; [FAST_ELEMENTS (COW)]</span><br><span class="line"> - length &#x3D; 3</span><br><span class="line"> - properties &#x3D; 0x31013b402241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #length: 0x37e7c51b6b51 &lt;AccessorInfo&gt; (const accessor descriptor)</span><br><span class="line"> &#125;</span><br><span class="line"> - elements &#x3D; 0xf279b90c861 &lt;FixedArray[3]&gt; &#123;</span><br><span class="line">           0: 0x31013b408171 &lt;String[1]: a&gt;</span><br><span class="line">           1: 0x31013b408191 &lt;String[1]: b&gt;</span><br><span class="line">           2: 0x31013b4081b1 &lt;String[1]: c&gt;</span><br><span class="line"> &#125;</span><br><span class="line">0x236e9503b71: [Map]</span><br><span class="line"> - type: JS_ARRAY_TYPE</span><br><span class="line"> - instance size: 32</span><br><span class="line"> - inobject properties: 0</span><br><span class="line"> - elements kind: FAST_ELEMENTS</span><br><span class="line"> - unused property fields: 0</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - back pointer: 0x236e9503d29 &lt;Map(FAST_HOLEY_DOUBLE_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors #1: 0x92dae108a11 &lt;FixedArray[5]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - transitions #1: 0x92dae108a81 &lt;TransitionArray[5]&gt;</span><br><span class="line">     0x31013b404069 &lt;Symbol: elements_transition_symbol&gt;: (transition to FAST_HOLEY_ELEMENTS) -&gt; 0x236e9503e31 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - prototype: 0x92dae107f51 &lt;JSArray[0]&gt;</span><br><span class="line"> - constructor: 0x92dae107f71 &lt;JSFunction Array (sfi &#x3D; 0x31013b43d6c1)&gt;</span><br><span class="line"> - code cache: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 0</span><br><span class="line"></span><br><span class="line">DebugPrint: 0xf279b90c8e9: [JSArray]</span><br><span class="line"> - map &#x3D; 0x236e9503e31 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x92dae107f51</span><br><span class="line"> - elements &#x3D; 0xf279b90c919 &lt;FixedArray[3]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - length &#x3D; 3</span><br><span class="line"> - properties &#x3D; 0x31013b402241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #length: 0x37e7c51b6b51 &lt;AccessorInfo&gt; (const accessor descriptor)</span><br><span class="line"> &#125;</span><br><span class="line"> - elements &#x3D; 0xf279b90c919 &lt;FixedArray[3]&gt; &#123;</span><br><span class="line">           0: 0x31013b408171 &lt;String[1]: a&gt;</span><br><span class="line">           1: 0x31013b402351 &lt;the_hole&gt;</span><br><span class="line">           2: 0x31013b4081b1 &lt;String[1]: c&gt;</span><br><span class="line"> &#125;</span><br><span class="line">0x236e9503e31: [Map]</span><br><span class="line"> - type: JS_ARRAY_TYPE</span><br><span class="line"> - instance size: 32</span><br><span class="line"> - inobject properties: 0</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 0</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x236e9503b71 &lt;Map(FAST_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #1: 0x92dae108a11 &lt;FixedArray[5]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x92dae107f51 &lt;JSArray[0]&gt;</span><br><span class="line"> - constructor: 0x92dae107f71 &lt;JSFunction Array (sfi &#x3D; 0x31013b43d6c1)&gt;</span><br><span class="line"> - code cache: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 0</span><br><span class="line"></span><br><span class="line">undefined</span><br><span class="line">DebugPrint: 0xf279b90c8e9: [JSArray]</span><br><span class="line"> - map &#x3D; 0x236e950f779 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0xf279b90c9e9</span><br><span class="line"> - elements &#x3D; 0xf279b90c919 &lt;FixedArray[3]&gt; [FAST_HOLEY_ELEMENTS]</span><br><span class="line"> - length &#x3D; 3</span><br><span class="line"> - properties &#x3D; 0x31013b402241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #length: 0x37e7c51b6b51 &lt;AccessorInfo&gt; (const accessor descriptor)</span><br><span class="line"> &#125;</span><br><span class="line"> - elements &#x3D; 0xf279b90c919 &lt;FixedArray[3]&gt; &#123;</span><br><span class="line">           0: 0x31013b408171 &lt;String[1]: a&gt;</span><br><span class="line">           1: 0x31013b402351 &lt;the_hole&gt;</span><br><span class="line">           2: 0x31013b4081b1 &lt;String[1]: c&gt;</span><br><span class="line"> &#125;</span><br><span class="line">0x236e950f779: [Map]</span><br><span class="line"> - type: JS_ARRAY_TYPE</span><br><span class="line"> - instance size: 32</span><br><span class="line"> - inobject properties: 0</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 0</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x31013b402311 &lt;undefined&gt;</span><br><span class="line"> - instance descriptors (own) #1: 0xf279b90cad9 &lt;FixedArray[5]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0xf279b90c9e9 &lt;Object map &#x3D; 0x236e950f7d1&gt;</span><br><span class="line"> - constructor: 0x92dae107f71 &lt;JSFunction Array (sfi &#x3D; 0x31013b43d6c1)&gt;</span><br><span class="line"> - code cache: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x31013b402241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 0</span><br><span class="line"></span><br><span class="line">a</span><br><span class="line">B</span><br><span class="line">c</span><br><span class="line">undefined</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-082449.jpg" alt=""><br>  简言之，如果属性在接收者上找不到（接受者可以理解为要访问的属性或者方法指向的那个对象），那么就会继续到原型链上找。<br>这些元素是自给自足的，换言之，我们不需要在隐藏类上储存这些索引属性。另外，我们需要一个特殊的值，称之为空洞，来标记那些不存在属性。这点对于数组方法的性能很关键。<br>若是我们知道elements store没有空洞，是被填满的，我们可以提高本地操作（指无需原型链参与）的性能，不需要再去花费昂贵的代价查找原型链。</p>
+<h3 id="Fast-or-Dictionary-Elements"><a href="#Fast-or-Dictionary-Elements" class="headerlink" title="Fast or Dictionary Elements"></a>Fast or Dictionary Elements</h3><p>  第二个关于元素的主要的区分为是否是快速或是字典模式。快速元素就是VM内部简单的将数组索引与elements store中的索引映射。<br>然而，这种简单表示，在那种有很大的空洞以及很少位置被占用的数组上是相当浪费的。在这种情况下，我们将转换成字典模式，这会减小内存但轻微的牺牲性能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sparseArray = [];</span><br><span class="line">sparseArray[<span class="number">9999</span>] = <span class="string">"foo"</span>; <span class="comment">// Creates an array with dictionary elements.</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ r --allow_natives_syntax test.js </span><br><span class="line">Starting program: &#x2F;home&#x2F;parallels&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug&#x2F;d8 --allow_natives_syntax test.js</span><br><span class="line">DebugPrint: 0x6ed6db8c769: [JSArray]</span><br><span class="line"> - map &#x3D; 0x16a58d0f779 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x37db83507f51</span><br><span class="line"> - elements &#x3D; 0x6ed6db8c799 &lt;FixedArray[17]&gt; [DICTIONARY_ELEMENTS]</span><br><span class="line"> - length &#x3D; 10000</span><br><span class="line"> - properties &#x3D; 0x38a1eb682241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #length: 0x3529df1b6b51 &lt;AccessorInfo&gt; (const accessor descriptor)</span><br><span class="line"> &#125;</span><br><span class="line"> - elements &#x3D; 0x6ed6db8c799 &lt;FixedArray[17]&gt; &#123;</span><br><span class="line">   9999: 0x37db8352faa9 &lt;String[3]: foo&gt; (data, dict_index: 0, attrs: [WEC])</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145330.png" alt=""><br>0x270F=9999</p>
+<p>  在这个例子中，如果给这个数组分配完整的10k个空间将会造成极大浪费。而实际上V8是创建了一个key-value-descriptor的triplets。这个例子中的key是“9999”，value是“foo”，而descriptor是使用的默认值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> array = [];</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(array, <span class="number">0</span>, &#123;<span class="attr">value</span>: <span class="string">"fixed"</span>, <span class="attr">configurable</span>: <span class="literal">false</span>&#125;);</span><br><span class="line">%DebugPrint(array)</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ r --allow_natives_syntax test.js </span><br><span class="line">Starting program: &#x2F;home&#x2F;parallels&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug&#x2F;d8 --allow_natives_syntax test.js</span><br><span class="line">[Thread debugging using libthread_db enabled]</span><br><span class="line">Using host libthread_db library &quot;&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libthread_db.so.1&quot;.</span><br><span class="line">[New Thread 0x7ffff43f1700 (LWP 18068)]</span><br><span class="line">DebugPrint: 0x28f5f190c759: [JSArray]</span><br><span class="line"> - map &#x3D; 0x1e39b868f881 [FastProperties]</span><br><span class="line"> - prototype &#x3D; 0x61172b07f51</span><br><span class="line"> - elements &#x3D; 0x28f5f190c849 &lt;FixedArray[17]&gt; [DICTIONARY_ELEMENTS]</span><br><span class="line"> - length &#x3D; 1</span><br><span class="line"> - properties &#x3D; 0x3c90a5102241 &lt;FixedArray[0]&gt; &#123;</span><br><span class="line">    #length: 0x2a07bddb6b51 &lt;AccessorInfo&gt; (const accessor descriptor)</span><br><span class="line"> &#125;</span><br><span class="line"> - elements &#x3D; 0x28f5f190c849 &lt;FixedArray[17]&gt; &#123;</span><br><span class="line">   0: 0x3c90a5111569 &lt;String[5]: fixed&gt; (data, dict_index: 0, attrs: [___])</span><br><span class="line"> &#125;</span><br><span class="line">0x1e39b868f881: [Map]</span><br><span class="line"> - type: JS_ARRAY_TYPE</span><br><span class="line"> - instance size: 32</span><br><span class="line"> - inobject properties: 0</span><br><span class="line"> - elements kind: DICTIONARY_ELEMENTS</span><br><span class="line"> - unused property fields: 0</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x1e39b8683e31 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - instance descriptors (own) #1: 0x61172b08a11 &lt;FixedArray[5]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x61172b07f51 &lt;JSArray[0]&gt;</span><br><span class="line"> - constructor: 0x61172b07f71 &lt;JSFunction Array (sfi &#x3D; 0x3c90a513d6c1)&gt;</span><br><span class="line"> - code cache: 0x3c90a5102241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x3c90a5102241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 0</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-084456.png" alt=""><br>  在上面例子中，我们给数组添加了一个non-configurable属性。这个信息就会被保存慢元素字典的triplet中的descriptor 部分。需要切记一点，数组方法在那些拥有慢元素的对象上的性能会相当慢。</p>
+<h3 id="The-ElementsAccessor"><a href="#The-ElementsAccessor" class="headerlink" title="The ElementsAccessor"></a>The ElementsAccessor</h3><p>你可以想到开发人员根本不愿意为这20种元素在C++中对应重复写20遍数组方法。这里就是体现C++神奇的地方了。为了不实现数组方法一遍又一遍，我们建立了一个属性存取器（ElementsAccessor），在它里面大部分都仅仅是简单的属性访问相关的方法。这个属性访问其依赖C++中的CRTP来实现不同种类需求的数组方法。所以，有时如果我们调用例如数组的slice，V8会调用C++中的代码，然后通过属性存取器来选择所需函数，如slice的专门版本。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-16-090501.jpg" alt=""></p>
+<h2 id="学习v8字节码"><a href="#学习v8字节码" class="headerlink" title="学习v8字节码"></a>学习v8字节码</h2><h3 id="阅读和打印（只是个例子）"><a href="#阅读和打印（只是个例子）" class="headerlink" title="阅读和打印（只是个例子）"></a>阅读和打印（只是个例子）</h3><p><code>./d8 --print-bytecode test.js</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function incrementX(obj) &#123;</span><br><span class="line">  return 1 + obj.x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">incrementX(&#123;x: 42&#125;);</span><br><span class="line">....</span><br><span class="line">....</span><br><span class="line">$ node --print-bytecode incrementX.js</span><br><span class="line">...</span><br><span class="line">[generating bytecode for function: incrementX]</span><br><span class="line">Parameter count 2</span><br><span class="line">Frame size 8</span><br><span class="line">  12 E&gt; 0x2ddf8802cf6e @    StackCheck</span><br><span class="line">  19 S&gt; 0x2ddf8802cf6f @    LdaSmi [1]</span><br><span class="line">        0x2ddf8802cf71 @    Star r0</span><br><span class="line">  34 E&gt; 0x2ddf8802cf73 @    LdaNamedProperty a0, [0], [4]</span><br><span class="line">  28 E&gt; 0x2ddf8802cf77 @    Add r0, [6]</span><br><span class="line">  36 S&gt; 0x2ddf8802cf7a @    Return</span><br><span class="line">Constant pool (size &#x3D; 1)</span><br><span class="line">0x2ddf8802cf21: [FixedArray] in OldSpace</span><br><span class="line"> - map &#x3D; 0x2ddfb2d02309 &lt;Map(HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - length: 1</span><br><span class="line">           0: 0x2ddf8db91611 &lt;String[1]: x&gt;</span><br><span class="line">Handler Table (size &#x3D; 16)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>LdaSmi [1]<br>LdaSmi [1]将常量 1 加载到累加器中。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-144516.jpg" alt=""></p>
+</li>
+<li><p>Star r0<br>接下来，Star r0 将当前在累加器中的值 1 存储在寄存器 r0 中。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145501.jpg" alt=""></p>
+</li>
+<li><p>LdaNamedProperty a0, [0], [4]<br>LdaNamedProperty 将 a0 的命名属性加载到累加器中。ai 指向 incrementX() 的第 i 个参数。在这个例子中，我们在 a0 上查找一个命名属性，这是 incrementX() 的第一个参数。该属性名由常量 0 确定。LdaNamedProperty 使用 0 在单独的表中查找名称：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- length: 1</span><br><span class="line">           0: 0x2ddf8db91611 &lt;String[1]: x&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到，0 映射到了 x。因此这行字节码的意思是加载 obj.x。<br>那么值为 4 的操作数是干什么的呢？ 它是函数 incrementX() 的反馈向量的索引。反馈向量包含用于性能优化的 runtime 信息。<br>现在寄存器看起来是这样的：<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145844.jpg" alt=""></p>
+</li>
+<li><p>Add r0, [6]<br>最后一条指令将 r0 加到累加器，结果是 43。 6 是反馈向量的另一个索引。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-145912.jpg" alt=""></p>
+</li>
+<li><p>Return<br>Return 返回累加器中的值。返回语句是函数 incrementX() 的结束。此时 incrementX() 的调用者可以在累加器中获得值 43，并可以进一步处理此值。</p>
+</li>
+</ul>
+<p>乍一看，V8 的字节码看起来非常奇怪，特别是当我们打印出所有的额外信息。但是一旦你知道 Ignition 是一个带有累加器寄存器的寄存器，你就可以分析出大多数字节码都干了什么。</p>
+<h3 id="bytecode如何产生"><a href="#bytecode如何产生" class="headerlink" title="bytecode如何产生"></a>bytecode如何产生</h3><ul>
+<li>加法<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-150922.png" alt=""></li>
+<li>访问对象<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-151626.png" alt=""><h3 id="编译bytecode"><a href="#编译bytecode" class="headerlink" title="编译bytecode"></a>编译bytecode</h3><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-06-18-152050.png" alt=""></li>
+</ul>
+<h2 id="v8自带的gdb命令"><a href="#v8自带的gdb命令" class="headerlink" title="v8自带的gdb命令"></a>v8自带的gdb命令</h2><p>在/tools中可以找到gdbinit和gdb-v8-support.py<br>我将其都复制到调试路径下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parallels@ubuntu:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ ls | grep gdb</span><br><span class="line">gdbinit</span><br><span class="line">gdb-v8-support.py</span><br></pre></td></tr></table></figure>
+<p>对如下代码进行测试</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a=[<span class="number">0xdeadbee</span>,<span class="number">0xdeadbeef</span>,<span class="string">"hoge"</span>];</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ source gdbinit</span><br><span class="line">gdb-peda$ source gdb-v8-support.py </span><br><span class="line">gdb-peda$ find 0xdeadbee</span><br><span class="line">Searching for &#39;0xdeadbee&#39; in: None ranges</span><br><span class="line">Found 1 results, display max 1 items:</span><br><span class="line">mapped : 0x5e88e28c6c4 --&gt; 0x7daafaa10deadbee </span><br><span class="line">   </span><br><span class="line">gdb-peda$ v8print 0x5e88e28c6c4-0x14+1</span><br><span class="line">0x5e88e28c6b1: [FixedArray]</span><br><span class="line"> - map &#x3D; 0x2702dbb82679 &lt;Map(FAST_HOLEY_ELEMENTS)&gt;</span><br><span class="line"> - length: 3</span><br><span class="line">           0: 233495534</span><br><span class="line">           1: 0x318d7daafaa1 &lt;Number 3.73593e+09&gt;</span><br><span class="line">           2: 0x318d7daafa81 &lt;String[4]: hoge&gt;</span><br><span class="line">gdb-peda$ v8print *(void **)(0x5e88e28c6c4-0x14)</span><br><span class="line">0x2702dbb82679: [Map]</span><br><span class="line"> - type: FIXED_ARRAY_TYPE</span><br><span class="line"> - instance size: 0</span><br><span class="line"> - elements kind: FAST_HOLEY_ELEMENTS</span><br><span class="line"> - unused property fields: 0</span><br><span class="line"> - enum length: invalid</span><br><span class="line"> - stable_map</span><br><span class="line"> - back pointer: 0x504a7702311 &lt;undefined&gt;</span><br><span class="line"> - instance descriptors (own) #0: 0x504a7702231 &lt;FixedArray[0]&gt;</span><br><span class="line"> - layout descriptor: 0</span><br><span class="line"> - prototype: 0x504a7702201 &lt;null&gt;</span><br><span class="line"> - constructor: 0x504a7702201 &lt;null&gt;</span><br><span class="line"> - code cache: 0x504a7702241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - dependent code: 0x504a7702241 &lt;FixedArray[0]&gt;</span><br><span class="line"> - construction counter: 0</span><br></pre></td></tr></table></figure>
+<h2 id="JIT"><a href="#JIT" class="headerlink" title="JIT"></a>JIT</h2><h3 id="print-flag"><a href="#print-flag" class="headerlink" title="print flag"></a>print flag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">parallels@ubuntu:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ .&#x2F;d8 --help |grep print</span><br><span class="line">  --print_bytecode (print bytecode generated by ignition interpreter)</span><br><span class="line">  --print_bytecode_filter (filter for selecting which functions to print bytecode)</span><br><span class="line">  --hydrogen_stats (print statistics for hydrogen)</span><br><span class="line">  --print_deopt_stress (print number of possible deopt points)</span><br><span class="line">  --turbo_stats (print TurboFan statistics)</span><br><span class="line">  --turbo_stats_nvp (print TurboFan statistics in machine-readable format)</span><br><span class="line">  --print_wasm_code (Print WebAssembly code)</span><br><span class="line">  --trace_gc (print one trace line following each garbage collection)</span><br><span class="line">  --trace_gc_nvp (print one detailed trace line in name&#x3D;value format after each garbage collection)</span><br><span class="line">  --trace_gc_ignore_scavenger (do not print trace line after scavenger collection)</span><br><span class="line">  --trace_idle_notification (print one trace line following each idle notification)</span><br><span class="line">  --trace_idle_notification_verbose (prints the heap state used by the idle notification)</span><br><span class="line">  --trace_gc_verbose (print more details following each garbage collection)</span><br><span class="line">  --trace_allocation_stack_interval (print stack trace after &lt;n&gt; free-list allocations)</span><br><span class="line">  --trace_mutator_utilization (print mutator utilization, allocation speed, gc speed)</span><br><span class="line">  --trace_codegen (print name of functions for which code is generated)</span><br><span class="line">  --trace_serializer (print code serializer trace)</span><br><span class="line">  --external_reference_stats (print statistics on external references used during serialization)</span><br><span class="line">  --trace_side_effect_free_debug_evaluate (print debug messages for side-effect-free debug-evaluate for testing)</span><br><span class="line">  --max_stack_trace_source_length (maximum length of function source code printed in a stack trace.)</span><br><span class="line">  --trace_object_groups (print object groups detected during each garbage collection)</span><br><span class="line">  --use_idle_notification (Use idle notification to reduce memory footprint.)</span><br><span class="line">  --use_verbose_printer (allows verbose printing)</span><br><span class="line">  --log_regs_modified (When logging register values, only print modified registers.)</span><br><span class="line">  --stack_trace_on_illegal (print stack trace when an illegal exception is thrown)</span><br><span class="line">  --print_all_exceptions (print exception object and stack trace on each thrown exception)</span><br><span class="line">  --print_ast (print source AST)</span><br><span class="line">  --print_builtin_ast (print source AST for builtins)</span><br><span class="line">  --print_builtin_scopes (print scopes for builtins)</span><br><span class="line">  --print_scopes (print scopes)</span><br><span class="line">  --gc_verbose (print stuff during garbage collection)</span><br><span class="line">  --print_handles (report handles after GC)</span><br><span class="line">  --print_global_handles (report global handles after GC)</span><br><span class="line">  --print_turbo_replay (print C++ code to recreate TurboFan graphs)</span><br><span class="line">  --trace_normalization (prints when objects are turned into dictionaries.)</span><br><span class="line">  --print_break_location (print source location on debug break)</span><br><span class="line">  --print_opt_source (print source code of optimized and inlined functions)</span><br><span class="line">  --print_code_stubs (print code stubs)</span><br><span class="line">  --print_code (print generated code)</span><br><span class="line">  --print_opt_code (print optimized code)</span><br><span class="line">  --print_opt_code_filter (filter for printing optimized code)</span><br><span class="line">  --print_unopt_code (print unoptimized code before printing optimized code based on it)</span><br><span class="line">  --print_code_verbose (print more information for code)</span><br><span class="line">  --print_builtin_code (print generated code for builtins)</span><br><span class="line">  --sodium (print generated code output suitable for use with the Sodium code viewer)</span><br><span class="line">  --print_all_code (enable all flags related to printing code)</span><br><span class="line">...</span><br><span class="line">sakura@sakuradeMacBook-Pro:~&#x2F;v8&#x2F;v8&#x2F;out.gn&#x2F;x64.debug$ .&#x2F;d8 --help | grep trace</span><br><span class="line">  --trace-pretenuring (trace pretenuring decisions of HAllocate instructions)</span><br><span class="line">  --trace-pretenuring-statistics (trace allocation site pretenuring statistics)</span><br><span class="line">  --trace-block-coverage (trace collected block coverage information)</span><br><span class="line">  --trace-ignition-codegen (trace the codegen of ignition interpreter bytecode handlers)</span><br><span class="line">  --trace-ignition-dispatches (traces the dispatches to bytecode handlers by the ignition interpreter)</span><br><span class="line">  --trace-ignition-dispatches-output-file (the file to which the bytecode handler dispatch table is written (by default, the table is not written to a file))</span><br><span class="line">  --trace-track-allocation-sites (trace the tracking of allocation sites)</span><br><span class="line">  --trace-migration (trace object migration)</span><br><span class="line">  --trace-generalization (trace map generalization)</span><br><span class="line">  --trace-concurrent-recompilation (track concurrent recompilation)</span><br><span class="line">  --trace-turbo (trace generated TurboFan IR)</span><br><span class="line">  --trace-turbo-path (directory to dump generated TurboFan IR to)</span><br><span class="line">  --trace-turbo-filter (filter for tracing turbofan compilation)</span><br><span class="line">  --trace-turbo-graph (trace generated TurboFan graphs)</span><br><span class="line">  --trace-turbo-scheduled (trace TurboFan IR with schedule)</span><br><span class="line">  --trace-turbo-cfg-file (trace turbo cfg graph (for C1 visualizer) to a given file name)</span><br><span class="line">  --trace-turbo-types (trace TurboFan&#39;s types)</span><br><span class="line">  --trace-turbo-scheduler (trace TurboFan&#39;s scheduler)</span><br><span class="line">  --trace-turbo-reduction (trace TurboFan&#39;s various reducers)</span><br><span class="line">  --trace-turbo-trimming (trace TurboFan&#39;s graph trimmer)</span><br><span class="line">  --trace-turbo-jt (trace TurboFan&#39;s jump threading)</span><br><span class="line">  --trace-turbo-ceq (trace TurboFan&#39;s control equivalence)</span><br><span class="line">  --trace-turbo-loop (trace TurboFan&#39;s loop optimizations)</span><br><span class="line">  --trace-alloc (trace register allocator)</span><br><span class="line">  --trace-all-uses (trace all use positions)</span><br><span class="line">  --trace-representation (trace representation types)</span><br><span class="line">  --trace-verify-csa (trace code stubs verification)</span><br><span class="line">  --trace-turbo-inlining (trace TurboFan inlining)</span><br><span class="line">  --trace-osr (trace on-stack replacement)</span><br><span class="line">  --trace-environment-liveness (trace liveness of local variable slots)</span><br><span class="line">  --trace-turbo-load-elimination (trace TurboFan load elimination)</span><br><span class="line">  --trace-store-elimination (trace store elimination)</span><br><span class="line">  --wasm-trace-native-heap (trace wasm native heap events)</span><br><span class="line">  --wasm-trace-serialization (trace serialization&#x2F;deserialization)</span><br><span class="line">  --trace-wasm-decoder (trace decoding of wasm code)</span><br><span class="line">  --trace-wasm-decode-time (trace decoding time of wasm code)</span><br><span class="line">  --trace-wasm-compiler (trace compiling of wasm code)</span><br><span class="line">  --trace-wasm-interpreter (trace interpretation of wasm code)</span><br><span class="line">  --trace-wasm-streaming (trace streaming compilation of wasm code)</span><br><span class="line">  --trace-wasm-ast-start (start function for wasm AST trace (inclusive))</span><br><span class="line">  --trace-wasm-ast-end (end function for wasm AST trace (exclusive))</span><br><span class="line">  --trace-liftoff (trace Liftoff, the baseline compiler for WebAssembly)</span><br><span class="line">  --wasm-trace-memory (print all memory updates performed in wasm code)</span><br><span class="line">  --trace-asm-time (log asm.js timing info to the console)</span><br><span class="line">  --trace-asm-scanner (log tokens encountered by asm.js scanner)</span><br><span class="line">  --trace-asm-parser (verbose logging of asm.js parse failures)</span><br><span class="line">  --trace-wasm-lazy-compilation (trace lazy compilation of wasm functions)</span><br><span class="line">  --trace-gc (print one trace line following each garbage collection)</span><br><span class="line">  --trace-gc-nvp (print one detailed trace line in name&#x3D;value format after each garbage collection)</span><br><span class="line">  --trace-gc-ignore-scavenger (do not print trace line after scavenger collection)</span><br><span class="line">  --trace-idle-notification (print one trace line following each idle notification)</span><br><span class="line">  --trace-idle-notification-verbose (prints the heap state used by the idle notification)</span><br><span class="line">  --trace-gc-verbose (print more details following each garbage collection)</span><br><span class="line">  --trace-allocation-stack-interval (print stack trace after &lt;n&gt; free-list allocations)</span><br><span class="line">  --trace-duplicate-threshold-kb (print duplicate objects in the heap if their size is more than given threshold)</span><br><span class="line">  --trace-fragmentation (report fragmentation for old space)</span><br><span class="line">  --trace-fragmentation-verbose (report fragmentation for old space (detailed))</span><br><span class="line">  --trace-evacuation (report evacuation statistics)</span><br><span class="line">  --trace-mutator-utilization (print mutator utilization, allocation speed, gc speed)</span><br><span class="line">  --trace-unmapper (Trace the unmapping)</span><br><span class="line">  --trace-parallel-scavenge (trace parallel scavenge)</span><br><span class="line">  --trace-concurrent-marking (trace concurrent marking)</span><br><span class="line">  --trace-incremental-marking (trace progress of the incremental marking)</span><br><span class="line">  --trace-stress-marking (trace stress marking progress)</span><br><span class="line">  --trace-stress-scavenge (trace stress scavenge progress)</span><br><span class="line">  --trace-gc-object-stats (trace object counts and memory usage)</span><br><span class="line">  --trace-zone-stats (trace zone memory usage)</span><br><span class="line">  --trace-detached-contexts (trace native contexts that are expected to be garbage collected)</span><br><span class="line">  --stack-trace-limit (number of stack frames to capture)</span><br><span class="line">  --builtins-in-stack-traces (show built-in functions in stack traces)</span><br><span class="line">  --trace (trace function calls)</span><br><span class="line">  --trace-opt (trace lazy optimization)</span><br><span class="line">  --trace-opt-verbose (extra verbose compilation tracing)</span><br><span class="line">  --trace-opt-stats (trace lazy optimization statistics)</span><br><span class="line">  --trace-deopt (trace optimize function deoptimization)</span><br><span class="line">  --trace-file-names (include file names in trace-opt&#x2F;trace-deopt output)</span><br><span class="line">  --trace-interrupts (trace interrupts when they are handled)</span><br><span class="line">  --trace-serializer (print code serializer trace)</span><br><span class="line">  --trace-compiler-dispatcher (trace compiler dispatcher activity)</span><br><span class="line">  --trace-compiler-dispatcher-jobs (trace progress of individual jobs managed by the compiler dispatcher)</span><br><span class="line">  --trace-js-array-abuse (trace out-of-bounds accesses to JS arrays)</span><br><span class="line">  --trace-external-array-abuse (trace out-of-bounds-accesses to external arrays)</span><br><span class="line">  --trace-array-abuse (trace out-of-bounds accesses to all arrays)</span><br><span class="line">  --trace-side-effect-free-debug-evaluate (print debug messages for side-effect-free debug-evaluate for testing)</span><br><span class="line">  --max-stack-trace-source-length (maximum length of function source code printed in a stack trace.)</span><br><span class="line">  --heap-profiler-trace-objects (Dump heap object allocations&#x2F;movements&#x2F;size_updates)</span><br><span class="line">  --trace-ic (trace inline cache state transitions for tools&#x2F;ic-processor)</span><br><span class="line">  --trace-prototype-users (Trace updates to prototype user tracking)</span><br><span class="line">  --trace-for-in-enumerate (Trace for-in enumerate slow-paths)</span><br><span class="line">  --trace-maps (trace map creation)</span><br><span class="line">  --trace-maps-details (also log map details)</span><br><span class="line">  --trace-sim (Trace simulator execution)</span><br><span class="line">  --trace-sim-messages (Trace simulator debug messages. Implied by --trace-sim.)</span><br><span class="line">  --stack-trace-on-illegal (print stack trace when an illegal exception is thrown)</span><br><span class="line">  --trace-rail (trace RAIL mode)</span><br><span class="line">  --print-all-exceptions (print exception object and stack trace on each thrown exception)</span><br><span class="line">  --trace-lazy-deserialization (Trace lazy deserialization.)</span><br><span class="line">  --trace-minor-mc-parallel-marking (trace parallel marking for the young generation)</span><br><span class="line">  --trace-contexts (trace contexts operations)</span><br><span class="line">  --trace-turbo-escape (enable tracing in escape analysis)</span><br><span class="line">  --trace-module-status (Trace status transitions of ECMAScript modules)</span><br><span class="line">  --trace-normalization (prints when objects are turned into dictionaries.)</span><br><span class="line">  --trace-lazy (trace lazy compilation)</span><br><span class="line">  --trace-isolates (trace isolate state changes)</span><br><span class="line">  --trace-regexp-bytecodes (trace regexp bytecode execution)</span><br><span class="line">  --trace-regexp-assembler (trace regexp macro assembler calls.)</span><br><span class="line">  --trace-regexp-parser (trace regexp parsing)</span><br><span class="line">  --trace-wasm-instances (trace creation and collection of wasm instances)</span><br><span class="line">  --redirect-code-traces (output deopt information and disassembly into file code-&lt;pid&gt;-&lt;isolate id&gt;.asm)</span><br><span class="line">  --redirect-code-traces-to (output deopt information and disassembly into the given file)</span><br><span class="line">  --trace-elements-transitions (trace elements transitions)</span><br><span class="line">  --trace-creation-allocation-sites (trace the creation of allocation sites)</span><br></pre></td></tr></table></figure>
+<h3 id="IR可视化工具-turbolizer"><a href="#IR可视化工具-turbolizer" class="headerlink" title="IR可视化工具:turbolizer"></a>IR可视化工具:turbolizer</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sakura@sakuradeMacBook-Pro:~&#x2F;Desktop&#x2F;v8&#x2F;tools&#x2F;turbolizer$ npm i</span><br><span class="line">up to date in 2.01s</span><br><span class="line">sakura@sakuradeMacBook-Pro:~&#x2F;Desktop&#x2F;v8&#x2F;tools&#x2F;turbolizer$ npm run-script build</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162521.png" alt=""></p>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>生成的在build目录下，如图<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162603.png" alt=""><br>然后在turbolizer目录下启动服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer 8000</span><br></pre></td></tr></table></figure>
+<p>打开Chrome浏览器，注意一件事情，那就是这东西十分不好用……他对浏览器兼容适配很不好，Chrome勉强能用，提示无效的json文件就刷新几下看看……<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-162824.png" alt=""><br>选择输入文件。<br>这里的输入文件是来源于–trace-turbo这个flag生成的json文件。<br>我举个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a,b</span>) </span>&#123; <span class="keyword">return</span> a + b; &#125;</span><br><span class="line">add(<span class="number">23</span>, <span class="number">44</span>);</span><br><span class="line">add(<span class="number">2</span>, <span class="number">88</span>);</span><br><span class="line">%OptimizeFunctionOnNextCall(add);</span><br><span class="line">add(<span class="number">2</span>, <span class="number">7</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163131.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;d8 --allow-natives-syntax --trace-turbo test.js --trace-turbo-path &#x2F;Users&#x2F;sakura&#x2F;Desktop&#x2F;tur</span><br></pre></td></tr></table></figure>
+<p>–allow-natives-syntax是用来开启%OptimizeFunctionOnNextCall(add)标志的<br>–trace-turbo是trace TurboFan优化阶段，生成json文件<br>–trace-turbo-path 指定输出json的目录</p>
+<p>然后上传上去就可以选择阶段和可视化的看IR了~<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163439.png" alt=""><br>因为这个工具的一些兼容关系，你可能需要自己改一下html，比如我就是height太小（原本25px，逗我……）<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-08-01-163642.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/v8/" rel="tag"># v8</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/25/cve-2017-0236/" rel="next" title="case study:cve-2017-0236">
+                <i class="fa fa-chevron-left"></i> case study:cve-2017-0236
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/08/optimize/" rel="prev" title="哈工大编译优化笔记">
+                哈工大编译优化笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#v8-hidden-class-test"><span class="nav-number">1.</span> <span class="nav-text">v8 hidden class test</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">1.1.</span> <span class="nav-text">map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#test1"><span class="nav-number">1.1.1.</span> <span class="nav-text">test1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#test2"><span class="nav-number">1.1.2.</span> <span class="nav-text">test2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property的管理方法"><span class="nav-number">1.2.</span> <span class="nav-text">property的管理方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#In-Object-Properties"><span class="nav-number">1.2.1.</span> <span class="nav-text">In-Object Properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fast-Properties"><span class="nav-number">1.2.2.</span> <span class="nav-text">Fast Properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Slow-Properties"><span class="nav-number">1.2.3.</span> <span class="nav-text">Slow Properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.2.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elements-or-array-indexed-Properties"><span class="nav-number">2.</span> <span class="nav-text">Elements or array-indexed Properties</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Packed-or-Holey-Elements"><span class="nav-number">2.1.</span> <span class="nav-text">Packed or Holey Elements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fast-or-Dictionary-Elements"><span class="nav-number">2.2.</span> <span class="nav-text">Fast or Dictionary Elements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-ElementsAccessor"><span class="nav-number">2.3.</span> <span class="nav-text">The ElementsAccessor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习v8字节码"><span class="nav-number">3.</span> <span class="nav-text">学习v8字节码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#阅读和打印（只是个例子）"><span class="nav-number">3.1.</span> <span class="nav-text">阅读和打印（只是个例子）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bytecode如何产生"><span class="nav-number">3.2.</span> <span class="nav-text">bytecode如何产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译bytecode"><span class="nav-number">3.3.</span> <span class="nav-text">编译bytecode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v8自带的gdb命令"><span class="nav-number">4.</span> <span class="nav-text">v8自带的gdb命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JIT"><span class="nav-number">5.</span> <span class="nav-text">JIT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#print-flag"><span class="nav-number">5.1.</span> <span class="nav-text">print flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IR可视化工具-turbolizer"><span class="nav-number">5.2.</span> <span class="nav-text">IR可视化工具:turbolizer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">5.2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">5.2.2.</span> <span class="nav-text">使用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/08/02/v8_debug/';
+          this.page.identifier = '2018/08/02/v8_debug/';
+          this.page.title = 'v8 debug writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

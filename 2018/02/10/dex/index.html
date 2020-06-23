@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="dex文件格式," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="快速简记：   结构 单位结构体占字节 共计字节    DexHeader - 0x70h   String Table 4 -   Type Table 4 -   Proto Table 12 -   Field Table 8 -   Method Table 8 -   Class Def Table 32 -   Data Section(含Map Section) - -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dex文件格式学习">
+<meta property="og:url" content="http://eternalsakura13.com/2018/02/10/dex/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="快速简记：   结构 单位结构体占字节 共计字节    DexHeader - 0x70h   String Table 4 -   Type Table 4 -   Proto Table 12 -   Field Table 8 -   Method Table 8 -   Class Def Table 32 -   Data Section(含Map Section) - -">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fob6z70k4mj30yq0rsh0w.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fob912et4zj30m80mq76i.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fob93y9wvcj31co0fedkx.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fob9ghjr85j31420zqdu4.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fob9kpcoarj311c0b0n10.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fob9piyvjoj310a0dgn1g.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1foba16m16aj30w40h0gq8.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1foba2csy42j30hi0ehabr.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tKfTcly1fobah7zyq3j310m0hon4l.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fobapdko3mj311e106ap7.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fobatus0iyj30rs07u411.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1fobau84mjuj30tm03wabf.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fobbc9yqqcj31gc0jak32.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcly1fobbk6i570j30uo09w42d.jpg">
+<meta property="article:published_time" content="2018-02-10T03:24:28.000Z">
+<meta property="article:modified_time" content="2018-04-03T11:52:53.948Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="dex文件格式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1fob6z70k4mj30yq0rsh0w.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/02/10/dex/"/>
+
+
+
+
+
+  <title>Dex文件格式学习 | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/02/10/dex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dex文件格式学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T11:24:28+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android%E9%80%86%E5%90%91/" itemprop="url" rel="index">
+                    <span itemprop="name">Android逆向</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/10/dex/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/02/10/dex/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="快速简记："><a href="#快速简记：" class="headerlink" title="快速简记："></a>快速简记：</h2><table>
+<thead>
+<tr>
+<th>结构</th>
+<th align="right">单位结构体占字节</th>
+<th align="center">共计字节</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DexHeader</td>
+<td align="right">-</td>
+<td align="center">0x70h</td>
+</tr>
+<tr>
+<td>String Table</td>
+<td align="right">4</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Type Table</td>
+<td align="right">4</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Proto Table</td>
+<td align="right">12</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Field Table</td>
+<td align="right">8</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Method Table</td>
+<td align="right">8</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Class Def Table</td>
+<td align="right">32</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Data Section(含Map Section)</td>
+<td align="right">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fob6z70k4mj30yq0rsh0w.jpg" alt=""></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>## 练习用的dex文件链接</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/Hello.dex" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/android%E9%80%86%E5%90%91/Hello.dex</a></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>## 文件布局</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>dex 文件可以分为3个模块，头文件(header)、索引区(xxxx_ids)、数据区(data)。</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>头文件概况的描述了整个 dex 文件的分布，包括每一个索引区的大小跟偏移。索引区的ids 是 identifiers 的缩写，表示每个数据的标识，索引区主要是指向数据区的偏移。</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob912et4zj30m80mq76i.jpg" alt=""></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fob93y9wvcj31co0fedkx.jpg" alt=""></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>010Editor 中除了数据区(data)没有显示出来，其他区段都有显示，另外 <code>link_data</code> 在模板中被定为<code>map_list</code></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>## header</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>header 描述了 dex 文件信息，和其他各个区的索引。010Editor中用结构体 struct header_item 来描述 header。</td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    dex_magic magic &lt;comment=<span class="string">"Magic value"</span>&gt;; </span><br><span class="line">    uint checksum &lt;format=hex, comment=<span class="string">"Alder32 checksum of rest of file"</span>&gt;;</span><br><span class="line">    SHA1 signature &lt;comment=<span class="string">"SHA-1 signature of rest of file"</span>&gt;;</span><br><span class="line">    uint file_size &lt;comment=<span class="string">"File size in bytes"</span>&gt;;</span><br><span class="line">    uint header_size &lt;comment=<span class="string">"Header size in bytes"</span>&gt;;</span><br><span class="line">    uint endian_tag &lt;format=hex, comment=<span class="string">"Endianness tag"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(endian_tag != ENDIAN_CONSTANT) &#123;</span><br><span class="line">        <span class="comment">// XXX we don't handle big endian files</span></span><br><span class="line">        Warning(<span class="string">"Invalid endian_tag %.8X, should be %.8X"</span>, endian_tag, ENDIAN_CONSTANT);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint link_size &lt;comment=<span class="string">"Size of link section"</span>&gt;;</span><br><span class="line">    uint link_off &lt;comment=<span class="string">"File offset of link section"</span>&gt;;</span><br><span class="line">    uint map_off &lt;comment=<span class="string">"File offset of map list"</span>&gt;;</span><br><span class="line">    uint string_ids_size &lt;comment=<span class="string">"Count of strings in the string ID list"</span>&gt;;</span><br><span class="line">    uint string_ids_off &lt;comment=<span class="string">"File offset of string ID list"</span>&gt;;</span><br><span class="line">    uint type_ids_size &lt;comment=<span class="string">"Count of types in the type ID list"</span>&gt;;</span><br><span class="line">    uint type_ids_off &lt;comment=<span class="string">"File offset of type ID list"</span>&gt;;</span><br><span class="line">    uint proto_ids_size &lt;comment=<span class="string">"Count of items in the method prototype ID list"</span>&gt;;</span><br><span class="line">    uint proto_ids_off &lt;comment=<span class="string">"File offset of method prototype ID list"</span>&gt;;</span><br><span class="line">    uint field_ids_size &lt;comment=<span class="string">"Count of items in the field ID list"</span>&gt;;</span><br><span class="line">    uint field_ids_off &lt;comment=<span class="string">"File offset of field ID list"</span>&gt;; </span><br><span class="line">    uint method_ids_size &lt;comment=<span class="string">"Count of items in the method ID list"</span>&gt;;</span><br><span class="line">    uint method_ids_off &lt;comment=<span class="string">"File offset of method ID list"</span>&gt;;</span><br><span class="line">    uint class_defs_size &lt;comment=<span class="string">"Count of items in the class definitions list"</span>&gt;;</span><br><span class="line">    uint class_defs_off &lt;comment=<span class="string">"File offset of class definitions list"</span>&gt;;</span><br><span class="line">    uint data_size &lt;comment=<span class="string">"Size of data section in bytes"</span>&gt;;</span><br><span class="line">    uint data_off &lt;comment=<span class="string">"File offset of data section"</span>&gt;;    </span><br><span class="line">&#125; header_item;</span><br></pre></td></tr></table></figure></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h3 id="magic"><a href="#magic" class="headerlink" title="magic"></a>magic</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// utility for reading/checking the magic value</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> dex[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">char</span> newline;</span><br><span class="line">    <span class="keyword">char</span> ver[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">char</span> zero;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// XXX not checking the version, but it should be 035</span></span><br><span class="line">    <span class="keyword">if</span>((Strcmp(dex, <span class="string">"dex"</span>) &amp;&amp; Strcmp(dex, <span class="string">"dey"</span>)) ||</span><br><span class="line">        newline != <span class="string">'\n'</span> ||</span><br><span class="line">        zero != <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        Warning(<span class="string">"Invalid DEX file"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; dex_magic &lt;<span class="built_in">read</span>=DexMagicRead&gt;;</span><br></pre></td></tr></table></figure>
+<p>‘\n’ 10(十进制) 换行（newline）<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob9ghjr85j31420zqdu4.jpg" alt=""></p>
+<h3 id="checksum"><a href="#checksum" class="headerlink" title="checksum:"></a>checksum:</h3><p>文件校验码，使用 alder32 算法校验文件除去 maigc、checksum 外余下的所有文件区域，用于检查文件错误。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fob9kpcoarj311c0b0n10.jpg" alt=""><br>uint类型，大小为4个字节。</p>
+<h3 id="signature"><a href="#signature" class="headerlink" title="signature"></a>signature</h3><p>使用 SHA-1 算法 hash 除去 magic、checksum 和 signature 外余下的所有文件区域， 用于唯一识别本文件,大小为20字节。</p>
+<figure class="highlight plain"><figcaption><span>utility type to show the SHA1 hash in the value column</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef ubyte SHA1[20] &lt;read&#x3D;SHA1Read, format&#x3D;hex&gt;;</span><br></pre></td></tr></table></figure>
+<h3 id="file-size"><a href="#file-size" class="headerlink" title="file_size"></a>file_size</h3><p>dex 文件大小，4个字节。</p>
+<h3 id="header-size"><a href="#header-size" class="headerlink" title="header_size"></a>header_size</h3><p>header 区域的大小，目前是固定为 0x70<br><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fob9piyvjoj310a0dgn1g.jpg" alt=""></p>
+<h3 id="endian-tag"><a href="#endian-tag" class="headerlink" title="endian_tag"></a>endian_tag</h3><p>大小端标签，dex 文件格式为小端，固定值为 0x12345678 常量</p>
+<h3 id="link-size"><a href="#link-size" class="headerlink" title="link_size"></a>link_size</h3><p>link section的大小</p>
+<h3 id="link-off"><a href="#link-off" class="headerlink" title="link_off"></a>link_off</h3><p>link section在文件中的偏移</p>
+<h3 id="map-off"><a href="#map-off" class="headerlink" title="map_off"></a>map_off</h3><p><code>map_item</code> 的偏移地址，该 item 属于 data 区里的内容，值要大于等于 <code>data_off</code> 的大小，处于 dex 文件的末端。</p>
+<h3 id="string-ids-size和string-ids-off"><a href="#string-ids-size和string-ids-off" class="headerlink" title="string_ids_size和string_ids_off"></a><code>string_ids_size</code>和<code>string_ids_off</code></h3><p>这两个字段表示dex中用到的所有的字符串内容的大小和偏移值，我们需要解析完这部分，然后用一个字符串池存起来，后面有其他的数据结构会用索引值来访问字符串，这个池子也是非常重要的。后面会详细介绍string_ids的数据结构</p>
+<h3 id="type-ids-size和type-ids-off"><a href="#type-ids-size和type-ids-off" class="headerlink" title="type_ids_size和type_ids_off"></a><code>type_ids_size</code>和<code>type_ids_off</code></h3><p>这两个字段表示dex中的类型数据结构的大小和偏移值，比如类类型，基本类型等信息，后面会详细介绍type_ids的数据结构</p>
+<h3 id="proto-ids-size和type-ids-off"><a href="#proto-ids-size和type-ids-off" class="headerlink" title="proto_ids_size和type_ids_off"></a><code>proto_ids_size</code>和<code>type_ids_off</code></h3><p>这两个字段表示dex中的元数据信息数据结构的大小和偏移值，描述方法的元数据信息，比如方法的返回类型，参数类型等信息，后面会详细介绍proto_ids的数据结构</p>
+<h3 id="field-ids-size和field-ids-off"><a href="#field-ids-size和field-ids-off" class="headerlink" title="field_ids_size和field_ids_off"></a><code>field_ids_size</code>和<code>field_ids_off</code></h3><p>这两个字段表示dex中的字段信息数据结构的大小和偏移值，后面会详细介绍field_ids的数据结构</p>
+<h3 id="method-ids-size和method-ids-off"><a href="#method-ids-size和method-ids-off" class="headerlink" title="method_ids_size和method_ids_off"></a><code>method_ids_size</code>和<code>method_ids_off</code></h3><p>这两个字段表示dex中的方法信息数据结构的大小和偏移值，后面会详细介绍method_ids的数据结构</p>
+<h3 id="class-defs-size和class-defs-off"><a href="#class-defs-size和class-defs-off" class="headerlink" title="class_defs_size和class_defs_off"></a><code>class_defs_size</code>和<code>class_defs_off</code></h3><p>这两个字段表示dex中的类信息数据结构的大小和偏移值，这个数据结构是整个dex中最复杂的数据结构.</p>
+<h3 id="data-size和data-off"><a href="#data-size和data-off" class="headerlink" title="data_size和data_off`"></a><code>data_size和</code>data_off`</h3><p>这两个字段表示dex中数据区域的结构信息的大小和偏移值，这个结构中存放的是数据区域，比如我们定义的常量值等信息。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1foba16m16aj30w40h0gq8.jpg" alt=""><br>上述这些其实就是对应在下图中圈起来的部分的每部分的开头和大小。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1foba2csy42j30hi0ehabr.jpg" alt=""></p>
+<h2 id="string-ids"><a href="#string-ids" class="headerlink" title="string_ids"></a>string_ids</h2><p><code>string_ids</code> 区段描述了 dex 文件中所有的字符串。格式很简单只有一个偏移量，偏移量指向了 <code>string_data</code> 区段的一个字符串：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// strings</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uleb128 utf16_size &lt;comment=<span class="string">"Size of string in UTF-16 code units"</span>&gt;;</span><br><span class="line">    <span class="built_in">string</span> data &lt;comment=<span class="string">"A string in MUTF-8 format"</span>&gt;;</span><br><span class="line">&#125; string_item;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint string_data_off &lt;comment=<span class="string">"File offset of string data"</span>&gt;;</span><br><span class="line">    string_item string_data &lt;comment=<span class="string">"String item"</span>&gt;;</span><br><span class="line">&#125; string_id_item &lt;<span class="built_in">read</span>=StringDataReader, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
+<p>一个<code>string_id_item</code>里有两个数据结构:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint string_data_off </span><br><span class="line">string_item string_data &lt;comment&#x3D;&quot;String item&quot;&gt;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1fobah7zyq3j310m0hon4l.jpg" alt=""><br>根据<code>string_data_off</code>可以找到字符串的数据位置。<br><code>string_data</code>里存放字符串的大小和具体数据。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobapdko3mj311e106ap7.jpg" alt=""></p>
+<h2 id="type-ids"><a href="#type-ids" class="headerlink" title="type_ids"></a>type_ids</h2><p>type_ids 区索引了 dex 文件里的所有数据类型，包括 class 类型，数组类型(array types)和基本类型<br>(primitive types)。区段里的元素格式为 <code>type_ids_item</code><br><code>type_ids_item</code> 里面 <code>descriptor_idx</code> 的值的意思，是 <code>string_ids</code> 里的 index 序号，是用来描述此 type 的字符串。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobatus0iyj30rs07u411.jpg" alt=""><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1fobau84mjuj30tm03wabf.jpg" alt=""></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// type IDs</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint descriptor_idx &lt;<span class="built_in">read</span>=StringIdRead, comment=<span class="string">"String ID for this type descriptor"</span>&gt;;</span><br><span class="line">&#125; type_id_item &lt;<span class="built_in">read</span>=TypeIDRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeIDRead</span><span class="params">(type_id_item &amp;i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> GetLongTypeDescriptor(GetStringById(i.descriptor_idx));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> <span class="built_in">size</span>)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> s = <span class="built_in">size</span>;</span><br><span class="line">    type_id_item type_id[<span class="built_in">size</span>] &lt;comment=<span class="string">"Type ID"</span>&gt;;</span><br><span class="line">&#125; type_id_list &lt;<span class="built_in">read</span>=TypeIDListRead&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeIDListRead</span><span class="params">(type_id_list &amp;l)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> s;</span><br><span class="line">    s = SPrintf(s, <span class="string">"%d types"</span>, l.s);</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// type list</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort type_idx &lt;comment=<span class="string">"Index into type_ids list"</span>&gt;;</span><br><span class="line">&#125; type_item;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint <span class="built_in">size</span> &lt;comment=<span class="string">"Number of entries in type list"</span>&gt;;</span><br><span class="line">    type_item <span class="built_in">list</span>[<span class="built_in">size</span>] &lt;<span class="built_in">read</span>=TypeItemRead, comment=<span class="string">"Type entry"</span>&gt;;</span><br><span class="line">&#125; type_item_list &lt;<span class="built_in">read</span>=TypeItemListRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeItemRead</span><span class="params">(type_item &amp;t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> GetTypeById(t.type_idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">TypeItemListRead</span><span class="params">(type_item_list &amp;l)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> s = <span class="string">""</span>;</span><br><span class="line">    <span class="built_in">string</span> tmp;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; l.<span class="built_in">size</span>; i++) &#123;</span><br><span class="line">        s += GetTypeById(l.<span class="built_in">list</span>[i].type_idx);</span><br><span class="line">        <span class="keyword">if</span>(i+<span class="number">1</span> &lt; l.<span class="built_in">size</span>) &#123;</span><br><span class="line">            s += <span class="string">", "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">GetLongTypeDescriptor</span><span class="params">(<span class="built_in">string</span> descriptor)</span> </span>&#123;</span><br><span class="line">    local <span class="built_in">string</span> desc = <span class="string">""</span>;</span><br><span class="line">    local <span class="built_in">string</span> post = <span class="string">""</span>;</span><br><span class="line">    local <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    local <span class="keyword">int</span> len = Strlen(descriptor);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// array descriptors</span></span><br><span class="line">    <span class="keyword">while</span>(descriptor[i] == <span class="string">'['</span>) &#123;</span><br><span class="line">        post += <span class="string">"[]"</span>;</span><br><span class="line">        i++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(i &gt;= len) <span class="keyword">return</span> <span class="string">"ERROR"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(descriptor[i] == <span class="string">'L'</span>) &#123;</span><br><span class="line">        <span class="comment">// fully qualified class descriptors</span></span><br><span class="line">        i++;</span><br><span class="line">        <span class="keyword">while</span>(i &lt; len) &#123;</span><br><span class="line">            <span class="keyword">if</span>(descriptor[i] == <span class="string">'/'</span>) desc += <span class="string">"."</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(descriptor[i] == <span class="string">';'</span>) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">else</span> desc += descriptor[i];</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// simple type descriptors</span></span><br><span class="line">        <span class="keyword">switch</span>(descriptor[i]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'V'</span>: desc = <span class="string">"void"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'Z'</span>: desc = <span class="string">"boolean"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'B'</span>: desc = <span class="string">"byte"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'S'</span>: desc = <span class="string">"short"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'C'</span>: desc = <span class="string">"char"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'I'</span>: desc = <span class="string">"int"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'J'</span>: desc = <span class="string">"long"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'F'</span>: desc = <span class="string">"float"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'D'</span>: desc = <span class="string">"double"</span>; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> desc + post;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="proto-ids"><a href="#proto-ids" class="headerlink" title="proto_ids"></a>proto_ids</h2><p>proto 的意思是 method prototype 代表 java 语言里的一个 method 的原型 。<code>proto_ids</code> 里的元素为 <code>proto_id_item</code>，结构如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// protoypes</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uint shorty_idx &lt;<span class="built_in">read</span>=StringIdRead, comment=<span class="string">"String ID of short-form descriptor"</span>&gt;;</span><br><span class="line">    uint return_type_idx &lt;<span class="built_in">read</span>=TypeIdRead, comment=<span class="string">"Type ID of the return type"</span>&gt;;</span><br><span class="line">    uint parameters_off &lt;comment=<span class="string">"File offset of parameter type list"</span>&gt;;</span><br><span class="line">   ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>shorty_idx</code>: 跟<code>type_ids</code> 一样，它的值是一个 <code>string_ids</code> 的 index 号 ，最终是一个简短的字符串描述，用来说明该 method 原型。</li>
+<li><code>return_type_idx</code>: 它的值是一个 <code>type_ids</code> 的 index 号 ，表示该 method 原型的返回值类型。</li>
+<li><code>parameters_off</code>: 指向 method 原型的参数列表 <code>type_list</code>，若 method 没有参数，值为0。<br>参数列表的格式是 <code>type_list</code>，下面会有描述。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcly1fobbc9yqqcj31gc0jak32.jpg" alt=""></li>
+</ul>
+<h2 id="field-ids"><a href="#field-ids" class="headerlink" title="field_ids"></a>field_ids</h2><p><code>filed_ids</code> 区里面有 dex 文件引用的所有的 field。区段的元素格式是 <code>field_id_item</code>，结构如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// fields</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort class_idx &lt;<span class="built_in">read</span>=LongTypeIdRead, comment=<span class="string">"Type ID of the class that defines this field"</span>&gt;;</span><br><span class="line">    ushort type_idx &lt;<span class="built_in">read</span>=LongTypeIdRead, comment=<span class="string">"Type ID for the type of this field"</span>&gt;;</span><br><span class="line">    uint name_idx &lt;<span class="built_in">read</span>=StringIdRead, comment=<span class="string">"String ID for the field's name"</span>&gt;;</span><br><span class="line">&#125; field_id_item &lt;<span class="built_in">read</span>=FieldIdItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>class_idx</code>: 表示 field 所属的 class 类型，class_idx 的值是 <code>type_ids</code> 的一个 index，并且必须指向一个 class 类型。</p>
+</li>
+<li><p><code>type_idx</code>: 表示本 field 的类型，它的值也是 <code>type_ids</code>的一个 index 。</p>
+</li>
+<li><p><code>name_idx</code>: 表示本 field 的名称，它的值是 <code>string_ids</code> 的一个 index 。</p>
+</li>
+</ul>
+<h2 id="method-ids"><a href="#method-ids" class="headerlink" title="method_ids"></a>method_ids</h2><p><code>method_ids</code> 描述了 dex 文件里的所有的 method。<code>method_ids</code> 的元素格式是<code>method_id_item</code>，结构跟 fields_ids 很相似:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// methods</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ushort class_idx &lt;<span class="built_in">read</span>=LongTypeIdRead, comment=<span class="string">"Type ID of the class that defines this method"</span>&gt;;</span><br><span class="line">    ushort proto_idx &lt;<span class="built_in">read</span>=ProtoIdxRead, comment=<span class="string">"Prototype ID for this method"</span>&gt;;</span><br><span class="line">    uint name_idx &lt;<span class="built_in">read</span>=StringIdRead, comment=<span class="string">"String ID for the method's name"</span>&gt;;</span><br><span class="line">&#125; method_id_item &lt;<span class="built_in">read</span>=MethodIdItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>class_idx</code>: 表示 method 所属的 class 类型，<code>class_idx</code> 的值是 <code>type_ids</code> 的一个 index，并且必须指向一个 class 类型。</li>
+<li><code>proto_idx</code>: 表示 method 的类型，它的值也是 type_ids 的一个 index。</li>
+<li><code>name_idx</code>: 表示 method 的名称，它的值是 string_ids 的一个 index。<br>都是索引，分别指向类型池，函数原型池，字符串池<br><img src="https://ws4.sinaimg.cn/large/006tKfTcly1fobbk6i570j30uo09w42d.jpg" alt=""></li>
+</ul>
+<h2 id="class-defs"><a href="#class-defs" class="headerlink" title="class_defs"></a>class_defs</h2><h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><ul>
+<li><p><code>class_idx</code>: 描述具体的 class 类型，值是 <code>type_ids</code> 的一个 index 。值必须是一个 class 类型，不能是数组类型或者基本类型。</p>
+</li>
+<li><p><code>access_flags</code>: 描述 class 的访问类型，诸如 public , final , static 等。在 dex-format.html 里 “<code>access_flags</code> Definitions” 有具体的描述 。</p>
+</li>
+<li><p><code>superclass_idx</code>: 描述 supperclass 的类型，值的形式跟 <code>class_idx</code> 一样 。</p>
+</li>
+<li><p><code>interfaces_off</code>: 值为偏移地址，指向 class 的 interfaces，被指向的数据结构为 <code>type_list</code> 。class 若没有 interfaces,则值为 0。</p>
+</li>
+<li><p><code>source_file_idx</code>: 表示源代码文件的信息，值是 <code>string_ids</code> 的一个 index。若此项信息缺失，此项值赋值为 <code>NO_INDEX</code>=0xffff ffff。</p>
+</li>
+<li><p><code>annotions_off</code>: 值是一个偏移地址，指向的内容是该 class 的注释，位置在 data 区，格式为 <code>annotations_direcotry_item</code>。若没有此项内容，值为 0 。</p>
+</li>
+<li><p><code>class_data_off</code>: 值是一个偏移地址，指向的内容是该 class 的使用到的数据，位置在 data 区，格式为 <code>class_data_item</code>。若没有此项内容值为 0。该结构里有很多内容，详细描述该 class 的 field、method, method 里的执行代码等信息，后面会介绍 <code>class_data_item</code>。</p>
+</li>
+<li><p><code>static_value_off</code>: 值是一个偏移地址 ，指向 data 区里的一个列表 (list)，格式为 <code>encoded_array_item</code>。若没有此项内容值为 0。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    local int64 pos;</span><br><span class="line"></span><br><span class="line">    uint class_idx &lt;<span class="built_in">read</span>=LongTypeIdRead, comment=<span class="string">"Type ID for this class"</span>&gt;;</span><br><span class="line">    ACCESS_FLAGS access_flags &lt;comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">    uint superclass_idx &lt;<span class="built_in">read</span>=LongTypeIdRead, comment=<span class="string">"Type ID for this class's superclass"</span>&gt;; </span><br><span class="line"></span><br><span class="line">    uint interfaces_off &lt;comment=<span class="string">"File offset to interface list"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(interfaces_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + interfaces_off);</span><br><span class="line">        type_item_list interfaces &lt;<span class="built_in">read</span>=InterfacesRead, comment=<span class="string">"Interface data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint source_file_idx &lt;<span class="built_in">read</span>=StringIdRead, comment=<span class="string">"String ID for the name of the file with this class defined"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    uint annotations_off &lt;comment=<span class="string">"File offset to the annotation structure for this class"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(annotations_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + annotations_off);</span><br><span class="line">        annotations_directory_item annotations &lt;comment=<span class="string">"Annotation data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint class_data_off &lt;comment=<span class="string">"File offset to the class data for this class"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(class_data_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + class_data_off);</span><br><span class="line">        class_data_item class_data &lt;comment=<span class="string">"Class data"</span>&gt;;</span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint static_values_off &lt;comment=<span class="string">"File offset to static field data"</span>&gt;;</span><br><span class="line">    <span class="keyword">if</span>(static_values_off != <span class="number">0</span>) &#123;</span><br><span class="line">        pos = FTell();</span><br><span class="line">        FSeek(odexpad + static_values_off);</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">encoded_array_item</span> <span class="title">static_values</span> &lt;comment="Static values"&gt;;</span></span><br><span class="line">        FSeek(pos);        </span><br><span class="line">    &#125;</span><br><span class="line">&#125; class_def_item &lt;<span class="built_in">read</span>=ClassDefItemRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
+<h3 id="type-list"><a href="#type-list" class="headerlink" title="type_list"></a><code>type_list</code></h3><p><code>type_list</code> 在 data 区段，<code>class_def_item-&gt;interface_off</code> 就是指的这里的数据。数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">type_list</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint       <span class="built_in">size</span>;</span><br><span class="line">    type_item  <span class="built_in">list</span> [<span class="built_in">size</span>] </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">type_item</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ushort type_idx   <span class="comment">//--&gt;type_ids</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>size: 表示类型个数</p>
+</li>
+<li><p><code>type_idx: 对应一个 type_ids 的 index</code></p>
+<h3 id="annotations-directory-item"><a href="#annotations-directory-item" class="headerlink" title="annotations_directory_item"></a><code>annotations_directory_item</code></h3><p><code>class_def_item-&gt;annotations_off</code> 指向的数据区段，定义了 annotation 相关的数据描述，数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">annotation_directory_item</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint class_annotations_off;        <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">    uint fields_size;</span><br><span class="line">    uint annotated_methods_size;</span><br><span class="line">    uint annotated_parameters_size;</span><br><span class="line">    </span><br><span class="line">    field_annotation field_annotations[fields_size];</span><br><span class="line">    method_annotation method_annotations[annotated_methods_size];</span><br><span class="line">    parameter_annotation parameter_annotations[annotated_parameters_size];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">field_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint field_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">method_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint method_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">parameter_annotation</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    uint method_idx;</span><br><span class="line">    uint annotations_off;    <span class="comment">//--&gt;annotation_set_ref_list</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>class_annotations_off</code>: 这个偏移指向了<code>annotation_set_item</code> </p>
+</li>
+<li><p><code>fields_size</code>: 表示属性的个数</p>
+</li>
+<li><p><code>annotated_methods_size</code>: 表示方法的个数</p>
+</li>
+<li><p><code>annotated_parameters_size</code>: 表示参数的个数</p>
+</li>
+</ul>
+<h3 id="class-data-item"><a href="#class-data-item" class="headerlink" title="class_data_item"></a><code>class_data_item</code></h3><p><code>class_data_off</code> 指向 data 区里的 <code>class_data_item</code> 结构，<code>class_data_item</code> 里存放着本 class 使用到的各种数据，下面是 <code>class_data_item</code> 的结构 :</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    uleb128 static_fields_size &lt;comment=<span class="string">"The number of static fields"</span>&gt;;</span><br><span class="line">    uleb128 instance_fields_size &lt;comment=<span class="string">"The number of instance fields"</span>&gt;;</span><br><span class="line">    uleb128 direct_methods_size &lt;comment=<span class="string">"The number of direct methods"</span>&gt;;</span><br><span class="line">    uleb128 virtual_methods_size &lt;comment=<span class="string">"The number of virtual methods"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(static_fields_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="function">encoded_field_list <span class="title">static_fields</span><span class="params">(uleb128_value(static_fields_size))</span> &lt;comment</span>=<span class="string">"Encoded sequence of static fields"</span>&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(instance_fields_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="function">encoded_field_list <span class="title">instance_fields</span><span class="params">(uleb128_value(instance_fields_size))</span> &lt;comment</span>=<span class="string">"Encoded sequence of instance fields"</span>&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(direct_methods_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="function">encoded_method_list <span class="title">direct_methods</span><span class="params">(uleb128_value(direct_methods_size))</span> &lt;comment</span>=<span class="string">"Encoded sequence of direct methods"</span>&gt;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(virtual_methods_size) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="function">encoded_method_list <span class="title">virtual_methods</span><span class="params">(uleb128_value(virtual_methods_size))</span> &lt;comment</span>=<span class="string">"Encoded sequence of virtual methods"</span>&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; class_data_item &lt;<span class="built_in">read</span>=ClassDataItemRead&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// encoded fields</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> previd)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> p = previd;</span><br><span class="line"></span><br><span class="line">    uleb128 field_idx_diff &lt;comment=<span class="string">"Field ID for this field, represented as the difference from the previous index"</span>&gt;;</span><br><span class="line">    uleb128 access_flags &lt;<span class="built_in">read</span>=AccessFlagsReadUleb, comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">&#125; encoded_field &lt;<span class="built_in">read</span>=EncodedFieldRead, optimize=<span class="literal">false</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// encoded methods</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">struct</span> <span class="params">(<span class="keyword">int</span> previd)</span> </span>&#123;</span><br><span class="line">    local <span class="keyword">int</span> p = previd;</span><br><span class="line"></span><br><span class="line">    uleb128 method_idx_diff &lt;comment=<span class="string">"Method ID for this method, represented as the difference from the previous index"</span>&gt;;</span><br><span class="line">    uleb128 access_flags &lt;<span class="built_in">read</span>=AccessFlagsReadUleb, comment=<span class="string">"Access flags"</span>&gt;;</span><br><span class="line">    uleb128 code_off &lt;comment=<span class="string">"File offset to the code for this method"</span>&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(uleb128_value(code_off) != <span class="number">0</span>) &#123;</span><br><span class="line">        local int64 pos = FTell();</span><br><span class="line">        FSeek(odexpad + uleb128_value(code_off));</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">code_item</span> <span class="title">code</span> &lt;comment="Code structure for this method"&gt;;</span></span><br><span class="line">        FSeek(pos);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; encoded_method &lt;<span class="built_in">read</span>=EncodedMethodRead, optimize=<span class="literal">false</span>&gt;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>static_fields_size</code>: 静态成员变量的个数</li>
+<li><code>instance_fields_size</code>: 实例成员变量个数</li>
+<li><code>direct_methods_size</code>: 直接函数个数</li>
+<li><code>virtual_methods_size</code>: 虚函数个数<h4 id="encoded-methods"><a href="#encoded-methods" class="headerlink" title="encoded_methods"></a><code>encoded_methods</code></h4></li>
+<li><code>access_flags</code>: 访问权限，比如 public、private、static、final 等。</li>
+<li><code>code_off</code>: 一个指向 data 区的偏移地址，目标是本 method 的代码实现。被指向的结构是<code>code_item</code>，有近 10 项元素。<h4 id="code-item"><a href="#code-item" class="headerlink" title="code_item"></a><code>code_item</code></h4><code>code_item</code> 结构里描述着某个 method 的具体实现.</li>
+</ul>
+<h2 id="map-list"><a href="#map-list" class="headerlink" title="map_list"></a><code>map_list</code></h2><p><code>map_list</code> 中大部分 item 跟 header 中的相应描述相同，都是介绍了各个区的偏移和大小，但是 <code>map_list</code> 中描述的更加全面，包括了 <code>HEADER_ITEM 、TYPE_LIST、STRING_DATA_ITEM、DEBUG_INFO_ITEM</code> 等信息。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/dex%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="tag"># dex文件格式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/09/gradle/" rel="next" title="Gradle学习（一）">
+                <i class="fa fa-chevron-left"></i> Gradle学习（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/10/dex2/" rel="prev" title="2015XCTF&RCTF-where writeup">
+                2015XCTF&RCTF-where writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#快速简记："><span class="nav-number">1.</span> <span class="nav-text">快速简记：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#magic"><span class="nav-number">1.1.</span> <span class="nav-text">magic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checksum"><span class="nav-number">1.2.</span> <span class="nav-text">checksum:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#signature"><span class="nav-number">1.3.</span> <span class="nav-text">signature</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file-size"><span class="nav-number">1.4.</span> <span class="nav-text">file_size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#header-size"><span class="nav-number">1.5.</span> <span class="nav-text">header_size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endian-tag"><span class="nav-number">1.6.</span> <span class="nav-text">endian_tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#link-size"><span class="nav-number">1.7.</span> <span class="nav-text">link_size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#link-off"><span class="nav-number">1.8.</span> <span class="nav-text">link_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map-off"><span class="nav-number">1.9.</span> <span class="nav-text">map_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string-ids-size和string-ids-off"><span class="nav-number">1.10.</span> <span class="nav-text">string_ids_size和string_ids_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-ids-size和type-ids-off"><span class="nav-number">1.11.</span> <span class="nav-text">type_ids_size和type_ids_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proto-ids-size和type-ids-off"><span class="nav-number">1.12.</span> <span class="nav-text">proto_ids_size和type_ids_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#field-ids-size和field-ids-off"><span class="nav-number">1.13.</span> <span class="nav-text">field_ids_size和field_ids_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#method-ids-size和method-ids-off"><span class="nav-number">1.14.</span> <span class="nav-text">method_ids_size和method_ids_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#class-defs-size和class-defs-off"><span class="nav-number">1.15.</span> <span class="nav-text">class_defs_size和class_defs_off</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-size和data-off"><span class="nav-number">1.16.</span> <span class="nav-text">data_size和data_off&#96;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string-ids"><span class="nav-number">2.</span> <span class="nav-text">string_ids</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type-ids"><span class="nav-number">3.</span> <span class="nav-text">type_ids</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proto-ids"><span class="nav-number">4.</span> <span class="nav-text">proto_ids</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#field-ids"><span class="nav-number">5.</span> <span class="nav-text">field_ids</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-ids"><span class="nav-number">6.</span> <span class="nav-text">method_ids</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-defs"><span class="nav-number">7.</span> <span class="nav-text">class_defs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概览"><span class="nav-number">7.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-list"><span class="nav-number">7.2.</span> <span class="nav-text">type_list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#annotations-directory-item"><span class="nav-number">7.3.</span> <span class="nav-text">annotations_directory_item</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#class-data-item"><span class="nav-number">7.4.</span> <span class="nav-text">class_data_item</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#encoded-methods"><span class="nav-number">7.4.1.</span> <span class="nav-text">encoded_methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#code-item"><span class="nav-number">7.4.2.</span> <span class="nav-text">code_item</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#map-list"><span class="nav-number">8.</span> <span class="nav-text">map_list</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/02/10/dex/';
+          this.page.identifier = '2018/02/10/dex/';
+          this.page.title = 'Dex文件格式学习';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

