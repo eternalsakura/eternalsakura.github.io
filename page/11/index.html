@@ -388,8 +388,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/01/18/arm1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/18/arm1/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/18/arm1/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -564,8 +563,7 @@ Thumb-32 可以访问所有的ARM
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/01/15/raspberry_quick_start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/15/raspberry_quick_start/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/15/raspberry_quick_start/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -739,8 +737,7 @@ http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-04-10/
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/05/18/crawler/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/05/18/crawler/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/05/18/crawler/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -913,8 +910,7 @@ https://zhuanlan.
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/04/24/Tiki_Wiki_Unauthenticated_File_Upload/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1318,14 +1314,6 @@ https://zhuanlan.
 
   
 
-    
-      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
-    
-
-    
-
-  
-
 
 
 
@@ -1351,6 +1339,28 @@ https://zhuanlan.
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'oSjxVuchxdK82iyIiuzHtfiV',
+        appKey: 'MK8tCWwU3RWlWQdEA0wOH8Dw',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'5' || 10,
+    });
+  </script>
 
 
 

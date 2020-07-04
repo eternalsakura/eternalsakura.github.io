@@ -410,8 +410,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/04/03/blackhole/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/03/blackhole/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/04/03/blackhole/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -603,8 +602,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/04/03/babyheap/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/03/babyheap/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/04/03/babyheap/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -800,8 +798,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/04/01/babystack/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/04/01/babystack/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/04/01/babystack/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -993,8 +990,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/31/return2csu/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/31/return2csu/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/31/return2csu/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1185,8 +1181,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/31/b_core/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/31/b_core/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/31/b_core/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1379,8 +1374,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/29/kernel/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/29/kernel/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/29/kernel/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1571,8 +1565,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/27/opm/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/27/opm/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/27/opm/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1763,8 +1756,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/26/silen2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/26/silen2/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/26/silen2/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1955,8 +1947,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/25/aslr/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/25/aslr/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/25/aslr/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2147,8 +2138,7 @@ overlap
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/03/21/lctf2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/03/21/lctf2/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/21/lctf2/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2552,14 +2542,6 @@ overlap
 
   
 
-    
-      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
-    
-
-    
-
-  
-
 
 
 
@@ -2585,6 +2567,28 @@ overlap
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'oSjxVuchxdK82iyIiuzHtfiV',
+        appKey: 'MK8tCWwU3RWlWQdEA0wOH8Dw',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'5' || 10,
+    });
+  </script>
 
 
 

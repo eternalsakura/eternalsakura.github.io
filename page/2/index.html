@@ -388,8 +388,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/09/05/pipeline/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/09/05/pipeline/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/05/pipeline/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -558,8 +557,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/09/02/ssa/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/09/02/ssa/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/02/ssa/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -730,8 +728,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/09/01/v8_GC/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/09/01/v8_GC/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/01/v8_GC/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -904,8 +901,7 @@ mutator
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/08/21/v8_graph/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/08/21/v8_graph/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/21/v8_graph/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1074,8 +1070,7 @@ mutator
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/08/08/optimize/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/08/08/optimize/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/08/optimize/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1256,8 +1251,7 @@ mutator
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/08/02/v8_debug/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/08/02/v8_debug/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/02/v8_debug/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1426,8 +1420,7 @@ mutator
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/07/25/cve-2017-0236/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/07/25/cve-2017-0236/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/25/cve-2017-0236/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1602,8 +1595,7 @@ EdgeDbg
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/07/23/Vulnerabilities/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/07/23/Vulnerabilities/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/23/Vulnerabilities/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1774,8 +1766,7 @@ patchhttps://
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/07/21/kanxue/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/07/21/kanxue/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/21/kanxue/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1948,8 +1939,7 @@ Summary
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/07/20/v8_xcode/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/07/20/v8_xcode/" itemprop="commentCount"></span>
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/20/v8_xcode/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2354,14 +2344,6 @@ Summary
 
   
 
-    
-      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
-    
-
-    
-
-  
-
 
 
 
@@ -2387,6 +2369,28 @@ Summary
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'oSjxVuchxdK82iyIiuzHtfiV',
+        appKey: 'MK8tCWwU3RWlWQdEA0wOH8Dw',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'5' || 10,
+    });
+  </script>
 
 
 
