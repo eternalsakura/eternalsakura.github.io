@@ -43,6 +43,32 @@
   </entry>
   
   <entry>
+    <title>sakuraのfuzzing lab培训</title>
+    <link href="http://eternalsakura13.com/2021/11/14/fuzzinglab/"/>
+    <id>http://eternalsakura13.com/2021/11/14/fuzzinglab/</id>
+    <published>2021-11-14T15:41:41.196Z</published>
+    <updated>2021-11-14T15:57:24.015Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="sakuraのfuzzing-lab培训"><a href="#sakuraのfuzzing-lab培训" class="headerlink" title="sakuraのfuzzing lab培训"></a>sakuraのfuzzing lab培训</h2><h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ul><li>第1月. fuzz基础<ul><li>底层基础</li><li>afl源码调试和分析</li><li>集中答疑</li></ul></li><li>第2月. 浏览器fuzz专题(上)<ul><li>分享一些好的开源浏览器fuzz，使用场景以及如何修改的一些建议</li><li>集中答疑</li></ul></li><li>第3月. 内核fuzz专题(上)<ul><li>分类讨论一些好的开源内核fuzz，使用场景以及如何修改的一些建议</li><li>集中答疑<br>…<br>剩下的还在考虑中<br>…</li></ul></li><li>长期支持<ul><li>支持群内fuzz技术讨论，答疑</li><li>每周看到的新出的有趣的Fuzz的分享</li></ul></li></ul><h3 id="培训形式"><a href="#培训形式" class="headerlink" title="培训形式"></a>培训形式</h3><p>具体培训形式如下：</p><h4 id="1-Fuzz基础学习"><a href="#1-Fuzz基础学习" class="headerlink" title="1. Fuzz基础学习"></a>1. Fuzz基础学习</h4><p>这部分我将做一期专门的视频，讲我的fuzz学习经历和方法，并提供一套完整的训练计划，并会整理大家的问题，放在一块进行答疑。</p><p>（<strong>注意我可能不会录视频讲特别具体的fuzz代码</strong>，这样的学习是低效的，欺骗性的，我想让大家一点点调试和理解代码，不能眼高手低）</p><h4 id="2-Fuzz进阶"><a href="#2-Fuzz进阶" class="headerlink" title="2. Fuzz进阶"></a>2. Fuzz进阶</h4><p>这部分我会每月分享我想到的或者我看到的有趣的fuzz技术，安排相对优秀的同学进行技术分享并免除订阅费用。</p><p>我经常有一些很不错的fuzz思路，但是因为没时间做，还是很遗憾的，所以我想做一期fuzzing lab，希望有对fuzz感兴趣的同学投入更多来挖掘自己的一些漏洞。</p><h4 id="3-关于费用"><a href="#3-关于费用" class="headerlink" title="3. 关于费用"></a>3. 关于费用</h4><p>我想了一下这毕竟不同于买断的视频，我也不想一次收取好几千上万的买断费用，如果我做的不好，我会觉得比较羞愧。</p><p>所以就按月来订阅好了，我会拉一个微信群和飞书群，微信群里直接分享每天我看到的有趣项目，大家也可以沟通聊天，飞书群里我整合每周的重点，把资料备份归档方便后来的同学学习。</p><p><strong>具体的费用是一个月500，按月续费</strong>。如果大家都能挖到自己的cve就好了。</p><p><strong>如果觉得没有意义就可以直接下月退出，退群即可。</strong></p><p>我没办法保证后面是不是能让每个人有收获，但我觉得我的fuzz学习经历和fuzz基础训练这块，绝对物超所值，这部分加入即可获得，所以如果对第二部分不感兴趣，500即可获得第一部分的全部了。</p><p>我想输出更多东西，想让更多人进入二进制安全这个大方向，能够和大家一起成长。</p><h4 id="4-付费方法"><a href="#4-付费方法" class="headerlink" title="4. 付费方法"></a>4. 付费方法</h4><p>目前应该人不会很多，所以直接加我的微信1014332658，备注上fuzzinglab然后转账即可。</p><p>如果是星球成员，从星球群里加我并备注fuzzinglab可享首月5折优惠。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;sakuraのfuzzing-lab培训&quot;&gt;&lt;a href=&quot;#sakuraのfuzzing-lab培训&quot; class=&quot;headerlink&quot; title=&quot;sakuraのfuzzing lab培训&quot;&gt;&lt;/a&gt;sakuraのfuzzing lab培训&lt;/h2&gt;&lt;
+      
+    
+    </summary>
+    
+    
+      <category term="学习日记" scheme="http://eternalsakura13.com/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/"/>
+    
+    
+      <category term="sakuraのsakura" scheme="http://eternalsakura13.com/tags/sakura%E3%81%AEsakura/"/>
+    
+  </entry>
+  
+  <entry>
     <title>chrome exploitation解读:CVE-2020-16040漏洞分析与利用</title>
     <link href="http://eternalsakura13.com/2021/06/22/cve-2020-16040/"/>
     <id>http://eternalsakura13.com/2021/06/22/cve-2020-16040/</id>
@@ -492,32 +518,6 @@
       
       
         &lt;h3 id=&quot;vs调试环境配置&quot;&gt;&lt;a href=&quot;#vs调试环境配置&quot; class=&quot;headerlink&quot; title=&quot;vs调试环境配置&quot;&gt;&lt;/a&gt;vs调试环境配置&lt;/h3&gt;&lt;h4 id=&quot;编译&quot;&gt;&lt;a href=&quot;#编译&quot; class=&quot;headerlink&quot; titl
-      
-    
-    </summary>
-    
-    
-      <category term="浏览器" scheme="http://eternalsakura13.com/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/"/>
-    
-    
-      <category term="edge" scheme="http://eternalsakura13.com/tags/edge/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>firefox调试环境搭建</title>
-    <link href="http://eternalsakura13.com/2018/07/03/firefox_env/"/>
-    <id>http://eternalsakura13.com/2018/07/03/firefox_env/</id>
-    <published>2018-07-03T13:30:32.951Z</published>
-    <updated>2018-10-22T14:25:51.722Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="firefox调试环境搭建"><a href="#firefox调试环境搭建" class="headerlink" title="firefox调试环境搭建"></a>firefox调试环境搭建</h2><h3 id="关闭firefox多进程"><a href="#关闭firefox多进程" class="headerlink" title="关闭firefox多进程"></a>关闭firefox多进程</h3><p> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133104.jpg" alt=""><br>打开firefox，访问aboutt:config，如图设置为false。</p><h3 id="windbg配置"><a href="#windbg配置" class="headerlink" title="windbg配置"></a>windbg配置</h3><p>我是从windows store下载的windbg preview<br> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133125.jpg" alt=""><br> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133137.jpg" alt=""><br>界面好看<br>然后配置一下符号服务器：<code>SRV*c:\mysymbol*http://symbols.mozilla.org</code><br> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133149.jpg" alt=""></p><h3 id="shadow配置"><a href="#shadow配置" class="headerlink" title="shadow配置"></a>shadow配置</h3><p><a href="https://github.com/CENSUS/shadow" target="_blank" rel="noopener">https://github.com/CENSUS/shadow</a></p><p> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133157.jpg" alt=""><br>然后下载<a href="https://githomelab.ru/pykd" target="_blank" rel="noopener">pykd</a>，其实就是一个dll<br>配置好python环境，下载<a href="https://www.python.org/ftp/python/2.7.11/python-2.7.11.amd64.msi" target="_blank" rel="noopener">python2.7.11</a>，用高版本会出bug。<br>然后<code>pip install pykd</code><br>注意pip需要配置一下终端代理</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set http_proxy&#x3D;http:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line">set https_proxy&#x3D;https:&#x2F;&#x2F;127.0.0.1:1080</span><br></pre></td></tr></table></figure><p>然后测试使用</p><h3 id="test"><a href="#test" class="headerlink" title="test"></a>test</h3><h4 id="attach"><a href="#attach" class="headerlink" title="attach"></a>attach</h4><p> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133207.jpg" alt=""></p><h4 id="载入pykd-dll，从而可以在windbg执行py"><a href="#载入pykd-dll，从而可以在windbg执行py" class="headerlink" title="载入pykd.dll，从而可以在windbg执行py"></a>载入pykd.dll，从而可以在windbg执行py</h4><p><code>!load 路径\pykd.dll</code><br> <img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133213.jpg" alt=""></p><h4 id="启动shadow"><a href="#启动shadow" class="headerlink" title="启动shadow"></a>启动shadow</h4><p><code>!py d:\useful\shadow\pykd_driver.py</code></p><p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-07-03-133220.jpg" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;firefox调试环境搭建&quot;&gt;&lt;a href=&quot;#firefox调试环境搭建&quot; class=&quot;headerlink&quot; title=&quot;firefox调试环境搭建&quot;&gt;&lt;/a&gt;firefox调试环境搭建&lt;/h2&gt;&lt;h3 id=&quot;关闭firefox多进程&quot;&gt;&lt;a href
       
     
     </summary>
