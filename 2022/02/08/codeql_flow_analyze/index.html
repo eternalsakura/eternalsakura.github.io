@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="codeql," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creating-path-queries https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;codeql-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）">
+<meta property="og:url" content="http://eternalsakura13.com/2022/02/08/codeql_flow_analyze/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creating-path-queries https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;codeql-">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-01-27-042252.png">
+<meta property="article:published_time" content="2022-02-08T02:15:02.558Z">
+<meta property="article:modified_time" content="2022-02-08T02:15:57.449Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="codeql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-01-27-042252.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2022/02/08/codeql_flow_analyze/"/>
+
+
+
+
+
+  <title>CodeQL 数据流分析/污点分析 笔记（上篇） | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2022/02/08/codeql_flow_analyze/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CodeQL 数据流分析/污点分析 笔记（上篇）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-02-08T10:15:02+08:00">
+                2022-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/02/08/codeql_flow_analyze/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/02/08/codeql_flow_analyze/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2022/02/08/codeql_flow_analyze/" class="leancloud_visitors" data-flag-title="CodeQL 数据流分析/污点分析 笔记（上篇）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="CodeQL-数据流分析-污点分析-笔记（上篇）"><a href="#CodeQL-数据流分析-污点分析-笔记（上篇）" class="headerlink" title="CodeQL 数据流分析/污点分析 笔记（上篇）"></a>CodeQL 数据流分析/污点分析 笔记（上篇）</h1><h2 id="前序"><a href="#前序" class="headerlink" title="前序"></a>前序</h2><p>codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。</p>
+<ul>
+<li><a href="https://codeql.github.com/docs/writing-codeql-queries/creating-path-queries/#creating-path-queries" target="_blank" rel="noopener">https://codeql.github.com/docs/writing-codeql-queries/creating-path-queries/#creating-path-queries</a></li>
+<li><a href="https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-cpp/#analyzing-data-flow-in-cpp" target="_blank" rel="noopener">https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-cpp/#analyzing-data-flow-in-cpp</a></li>
+</ul>
+<p>codeql文档里对于数据流和污点的区别描述是这样的。</p>
+<p>在标准库中，我们区分了正常数据流和污点跟追踪。</p>
+<p>例如，如果您正在跟踪一个不安全的对象 x（可能是一些不受信任的或潜在的恶意数据），程序中的一个步骤可能会改变它的值。因此，在 <code>y = x + 1</code> 这样的简单计算中，正常的数据流分析会突出使用 x，而不是 y。然而，由于 y 是从 x 派生的，它会受到不受信任或“污染”信息的影响，因此它也被污染了。分析从 x 到 y 的污点流称为污点跟踪。</p>
+<p>污点分析在数据流分析的基础之上，额外在控制流图上建立了许多边，以此实现。本文主要就笔者对该库的分析做了记录，如有错误还请指正。</p>
+<h2 id="使用case"><a href="#使用case" class="headerlink" title="使用case"></a>使用case</h2><h3 id="污点建模"><a href="#污点建模" class="headerlink" title="污点建模"></a>污点建模</h3><p>这里以rwctf中who move my block这道题涉及的<a href="https://github.com/NetworkBlockDevice/nbd" target="_blank" rel="noopener">nbd-server</a>的一个漏洞为例来简述如何使用污点分析。</p>
+<p>首先从 <code>accept</code> 函数开始找起，它是整个 socket 连接的起点，通过它我们可以根据交叉引用找到处理连接的函数 <code>handle_modern_connection</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">handle_modern_connection(GArray *<span class="keyword">const</span> servers, <span class="keyword">const</span> <span class="keyword">int</span> sock, struct generic_conf *genconf)</span><br><span class="line">&#123;</span><br><span class="line">    [...]</span><br><span class="line">    net = socket_accept(sock);</span><br><span class="line">    <span class="keyword">if</span> (net &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!dontfork) &#123;</span><br><span class="line">        <span class="comment">// 重要！：注意这里会 fork 出一个子进程来单独处理新连接</span></span><br><span class="line">        pid = spawn_child(&amp;commsocket);</span><br><span class="line">        <span class="keyword">if</span> (pid) &#123;</span><br><span class="line">            <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                msg(LOG_INFO, <span class="string">"Spawned a child process"</span>);</span><br><span class="line">                g_array_append_val(childsocks, commsocket);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">                msg(LOG_ERR, <span class="string">"Failed to spawn a child process"</span>);</span><br><span class="line">            close(net);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* Child just continues. */</span></span><br><span class="line">    &#125;</span><br><span class="line">    [...]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 连接协商</span></span><br><span class="line">    client = negotiate(net, servers, genconf);</span><br><span class="line">       </span><br><span class="line">    [...]</span><br><span class="line">       </span><br><span class="line">    msg(LOG_INFO, <span class="string">"Starting to serve"</span>);</span><br><span class="line">   	</span><br><span class="line">    <span class="comment">// 开始处理</span></span><br><span class="line">    mainloop_threaded(client);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">handler_err:</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，默认情况下对于每个连接，server 都会 fork 一个新的子进程来单独处理。这个特性相当重要，因为我们可以利用这个特性来<strong>爆破 canary 和 PIE</strong>。</p>
+<p>该函数会调用 <code>negotiate</code> 函数，并创建结构体 <code>CLIENT</code>，将新连接的 fd 赋给该 client，之后后续使用 <code>socket_read(client, addr, len)</code> 来从 client（即我们这边）读取数据。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Do the initial negotiation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param net The socket we're doing the negotiation over.</span></span><br><span class="line"><span class="comment"> * @param servers The array of known servers.</span></span><br><span class="line"><span class="comment"> * @param genconf the global options (needed for accessing TLS config data)</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="function">CLIENT* <span class="title">negotiate</span><span class="params">(<span class="keyword">int</span> net, GArray* servers, struct generic_conf *genconf)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">uint16_t</span> smallflags = NBD_FLAG_FIXED_NEWSTYLE | NBD_FLAG_NO_ZEROES;</span><br><span class="line">	<span class="keyword">uint64_t</span> magic;</span><br><span class="line">	<span class="keyword">uint32_t</span> cflags = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">uint32_t</span> opt;</span><br><span class="line">    <span class="comment">// 创建并初始化 client 结构体</span></span><br><span class="line">	CLIENT* client = g_new0(CLIENT, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 将 socket fd 赋给 cleint</span></span><br><span class="line">	client-&gt;net = net;</span><br><span class="line">	client-&gt;socket_read = socket_read_notls;</span><br><span class="line">	client-&gt;socket_write = socket_write_notls;</span><br><span class="line">	client-&gt;socket_closed = socket_closed_negotiate;</span><br><span class="line"></span><br><span class="line">	assert(servers != <span class="literal">NULL</span>);</span><br><span class="line">	socket_write(client, INIT_PASSWD, <span class="number">8</span>);</span><br><span class="line">	magic = htonll(opts_magic);</span><br><span class="line">	socket_write(client, &amp;magic, <span class="keyword">sizeof</span>(magic));</span><br><span class="line"></span><br><span class="line">	smallflags = htons(smallflags);</span><br><span class="line">	socket_write(client, &amp;smallflags, <span class="keyword">sizeof</span>(<span class="keyword">uint16_t</span>));</span><br><span class="line">    <span class="comment">// 从 client 读取数据</span></span><br><span class="line">	socket_read(client, &amp;cflags, <span class="keyword">sizeof</span>(cflags));</span><br><span class="line">	cflags = htonl(cflags);</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，我们可以<code>socket_read</code>的第二个参数（用户输入将读入到这里）作为source点，然后将看能否污点到后续调用的<code>source_read</code>的第三个参数（即控制读入的长度），当然也可以做其他污点。</p>
+<h3 id="QL-source-code"><a href="#QL-source-code" class="headerlink" title="QL source code"></a>QL source code</h3><p>使用的QL如下，由于污点分析不会对未建模的函数进行进一步污点传播，所以这里通过覆盖isAdditionalTaintStep来手动构建<strong>函数参数到函数调用</strong>的额外边，另外一个需要注意的是我使用的是<code>semmle.code.cpp.ir.dataflow.TaintTracking</code>而不是文档里的<code>semmle.code.cpp.dataflow.TaintTracking</code>，前者是基于IR的新API，被建议使用，也广泛应用在codeql自己的<a href="https://codeql.github.com/codeql-query-help/full-cwe/" target="_blank" rel="noopener">cwe case</a>里</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-01-27-042252.png" alt=""></p>
+<p>大概的结构是继承<code>TaintTracking::Configuration</code>之后覆盖里面的方法即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @kind path-problem</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> DataFlow::PathGraph</span><br><span class="line"><span class="keyword">import</span> cpp</span><br><span class="line"><span class="keyword">import</span> semmle.code.cpp.ir.dataflow.TaintTracking</span><br><span class="line"></span><br><span class="line"><span class="function">predicate <span class="title">htonlCallEdge</span><span class="params">(DataFlow::Node node1, DataFlow::Node node2)</span> </span>&#123;</span><br><span class="line">  exists(FunctionCall fc |</span><br><span class="line">    <span class="comment">// fc.getTarget().getName() = "htonl" and</span></span><br><span class="line">    node1.asExpr() = fc.getAnArgument() <span class="keyword">and</span></span><br><span class="line">    node2.asExpr() = fc</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyDataFlowConfiguration</span> <span class="title">extends</span> <span class="title">TaintTracking</span>:</span>:Configuration &#123;</span><br><span class="line">  MyDataFlowConfiguration() &#123; <span class="keyword">this</span> = <span class="string">"MyDataFlowConfiguration"</span> &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate isSource(DataFlow::Node source) &#123;</span><br><span class="line">    exists(FunctionCall fc | fc.getArgument(<span class="number">1</span>) = source.asExpr() |</span><br><span class="line">      fc.getTarget().hasGlobalName(<span class="string">"socket_read"</span>)</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate isSink(DataFlow::Node sink) &#123;</span><br><span class="line">    <span class="comment">// sink.asExpr().getLocation().toString().matches("%nbd-server%") and</span></span><br><span class="line">    <span class="comment">// sink.asExpr() instanceof BinaryArithmeticOperation</span></span><br><span class="line">    exists(FunctionCall fc | fc.getArgument(<span class="number">2</span>) = sink.asExpr() |</span><br><span class="line">      fc.getTarget().hasGlobalName(<span class="string">"socket_read"</span>)</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate isAdditionalTaintStep(DataFlow::Node node1, DataFlow::Node node2) &#123;</span><br><span class="line">    htonlCallEdge(node1, node2)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from MyDataFlowConfiguration config, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">where config.hasFlowPath(source, sink)</span><br><span class="line">select sink.getNode(), source, sink, <span class="string">""</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>最终发现的漏洞在<code>handle_info</code>里的一个栈溢出</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">handle_info</span><span class="params">(CLIENT* client, <span class="keyword">uint32_t</span> opt, GArray* servers, <span class="keyword">uint32_t</span> cflags)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">uint32_t</span> namelen, len;</span><br><span class="line">	<span class="keyword">char</span> *name;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	SERVER *server = <span class="literal">NULL</span>;</span><br><span class="line">	[...]</span><br><span class="line">	<span class="keyword">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">	[...]</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 从远程读入 len</span></span><br><span class="line">	socket_read(client, &amp;len, <span class="keyword">sizeof</span>(len));</span><br><span class="line">	len = htonl(len);</span><br><span class="line">    <span class="comment">// 2. 从远程读入 namelen</span></span><br><span class="line">	socket_read(client, &amp;namelen, <span class="keyword">sizeof</span>(namelen));</span><br><span class="line">	namelen = htonl(namelen);</span><br><span class="line">    <span class="comment">// 3. 进入 if 分支</span></span><br><span class="line">	<span class="keyword">if</span>(namelen &gt; (len - <span class="number">6</span>)) &#123;</span><br><span class="line">		send_reply(client, opt, NBD_REP_ERR_INVALID, <span class="number">-1</span>, <span class="string">"An OPT_INFO request cannot be smaller than the length of the name + 6"</span>);</span><br><span class="line">        <span class="comment">// 4. 从 client 读入数据，由于 len 可控，因此可以造成栈溢出</span></span><br><span class="line">		socket_read(client, buf, len - <span class="keyword">sizeof</span>(namelen));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(namelen &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		name = <span class="built_in">malloc</span>(namelen + <span class="number">1</span>);</span><br><span class="line">		name[namelen] = <span class="number">0</span>;</span><br><span class="line">		socket_read(client, name, namelen);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		name = strdup(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">    [...]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="codeql污点分析源码分析"><a href="#codeql污点分析源码分析" class="headerlink" title="codeql污点分析源码分析"></a>codeql污点分析源码分析</h2><p><code>TaintTracking::Configuration</code>定义在<code>cpp/ql/lib/semmle/code/cpp/ir/dataflow/internal/tainttracking1/TaintTrackingImpl.qll</code>里</p>
+<p>它其实继承自<code>DataFlow::Configuration</code>，然后扩展了<code>isAdditionalFlowStep</code>，注意到这里先调用了<code>this.isAdditionalTaintStep</code>，这就是我们可以继承后覆盖的代码，引入我们自己的额外边，同时它还有一个<code>defaultAdditionalTaintStep</code>，这是该污点自己对数据流进行的扩展。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Configuration</span> <span class="title">extends</span> <span class="title">DataFlow</span>:</span>:Configuration&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="function">predicate <span class="title">isAdditionalTaintStep</span><span class="params">(DataFlow::Node node1, DataFlow::Node node2)</span> </span>&#123; none() &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">final</span> <span class="keyword">override</span> predicate <span class="title">isAdditionalFlowStep</span><span class="params">(DataFlow::Node node1, DataFlow::Node node2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.isAdditionalTaintStep(node1, node2) <span class="keyword">or</span></span><br><span class="line">    defaultAdditionalTaintStep(node1, node2)</span><br><span class="line">  &#125;</span><br><span class="line">...</span><br><span class="line"><span class="function">predicate <span class="title">defaultAdditionalTaintStep</span><span class="params">(DataFlow::Node src, DataFlow::Node sink)</span> </span>&#123;</span><br><span class="line">  localAdditionalTaintStep(src, sink)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">cached</span><br><span class="line"><span class="function">predicate <span class="title">localAdditionalTaintStep</span><span class="params">(DataFlow::Node nodeFrom, DataFlow::Node nodeTo)</span> </span>&#123;</span><br><span class="line">  operandToInstructionTaintStep(nodeFrom.asOperand(), nodeTo.asInstruction())</span><br><span class="line">  <span class="keyword">or</span></span><br><span class="line">  instructionToOperandTaintStep(nodeFrom.asInstruction(), nodeTo.asOperand())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="operandToInstructionTaintStep"><a href="#operandToInstructionTaintStep" class="headerlink" title="operandToInstructionTaintStep"></a>operandToInstructionTaintStep</h3><p><code>operandToInstructionTaintStep</code> 用于把污点从<strong>参数</strong>流向<strong>指令返回值</strong>，这里做了许多连边处理：</p>
+<ul>
+<li>首先是<strong>运算指令</strong>的参数连边至整个运算指令：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Taint can flow through expressions that alter the value but preserve</span><br><span class="line">  &#x2F;&#x2F; more than one bit of it _or_ expressions that follow data through</span><br><span class="line">  &#x2F;&#x2F; pointer indirections.</span><br><span class="line">  instrTo.getAnOperand() &#x3D; opFrom and</span><br><span class="line">  (</span><br><span class="line">      instrTo instanceof ArithmeticInstruction</span><br><span class="line">      or</span><br><span class="line">      instrTo instanceof BitwiseInstruction</span><br><span class="line">      or</span><br><span class="line">      instrTo instanceof PointerArithmeticInstruction</span><br><span class="line">      or</span><br><span class="line">      &#x2F;&#x2F; The &#96;CopyInstruction&#96; case is also present in non-taint data flow, but</span><br><span class="line">      &#x2F;&#x2F; that uses &#96;getDef&#96; rather than &#96;getAnyDef&#96;. For taint, we want flow</span><br><span class="line">      &#x2F;&#x2F; from a definition of &#96;myStruct&#96; to a &#96;myStruct.myField&#96; expression.</span><br><span class="line">      instrTo instanceof CopyInstruction</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<p>这里的连边操作将<strong>算数运算</strong>、<strong>位运算</strong>、<strong>指针运算</strong> 和<strong>字段使用</strong>等指令的参数连向了整个指令。</p>
+<p>例如如果我们污点到了<code>len + 1</code>的<code>len</code>，那么它将把污点从len传播到<code>len + 1</code>这个AddExpr中。</p>
+<ul>
+<li>其次是<strong>一元运算指令</strong>，这里排除了<strong>字段取地址指令</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Unary instructions tend to preserve enough information in practice that we</span><br><span class="line">&#x2F;&#x2F; want taint to flow through.</span><br><span class="line">&#x2F;&#x2F; The exception is &#96;FieldAddressInstruction&#96;. Together with the rules below for</span><br><span class="line">&#x2F;&#x2F; &#96;LoadInstruction&#96;s and &#96;ChiInstruction&#96;s, flow through &#96;FieldAddressInstruction&#96;</span><br><span class="line">&#x2F;&#x2F; could cause flow into one field to come out an unrelated field.</span><br><span class="line">&#x2F;&#x2F; This would happen across function boundaries, where the IR would not be able to</span><br><span class="line">&#x2F;&#x2F; match loads to stores.</span><br><span class="line">instrTo.(UnaryInstruction).getUnaryOperand() &#x3D; opFrom and</span><br><span class="line">(</span><br><span class="line">  not instrTo instanceof FieldAddressInstruction</span><br><span class="line">  or</span><br><span class="line">  instrTo.(FieldAddressInstruction).getField().getDeclaringType() instanceof Union</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>排除<strong>字段取地址指令</strong>的原因正如注释所说，流过 <code>FieldAddressInstruction</code> 可能会导致污点流从某个字段流入，从另一个不相关的字段流出。</p>
+<ul>
+<li>此外是为其他已经建模好的函数进行污点传递，其中污点从 callInput 传播到 callOutput。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">modeledTaintStep(opFrom, instrTo)</span><br></pre></td></tr></table></figure>
+
+<p>污点分析库会额外对库函数建模，对很多非常常用的函数建立额外边。这种建模是通过派生 <code>TaintFunction</code> 类，重写 <code>hasTaintFlow</code> 函数来实现的。我们可以全局搜索 TaintFunction 字符串，找到所有建模好的函数。以下是其中某个函数的建模实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * A function that is pure, that is, its evaluation is guaranteed to be</span><br><span class="line"> * side-effect free. Excludes functions modeled by &#96;PureStrFunction&#96; and &#96;PureMemFunction&#96;.</span><br><span class="line"> *&#x2F;</span><br><span class="line">private class PureFunction extends TaintFunction, SideEffectFunction &#123;</span><br><span class="line">  PureFunction() &#123; this.hasGlobalOrStdOrBslName([&quot;abs&quot;, &quot;labs&quot;]) &#125;</span><br><span class="line"></span><br><span class="line">  override predicate hasTaintFlow(FunctionInput input, FunctionOutput output) &#123;</span><br><span class="line">    exists(ParameterIndex i |</span><br><span class="line">      input.isParameter(i) and</span><br><span class="line">      exists(this.getParameter(i))</span><br><span class="line">    ) and</span><br><span class="line">    output.isReturnValue()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override predicate hasOnlySpecificReadSideEffects() &#123; any() &#125;</span><br><span class="line"></span><br><span class="line">  override predicate hasOnlySpecificWriteSideEffects() &#123; any() &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>污点分析库对函数 <code>abs</code> 进行建模，重写 <code>hasTaintFlow</code>函数，将该函数的输入参数与函数的返回值相连。这样，如果该函数的参数被污染，那么该函数的返回值也将被视为污染。</p>
+<p>数据流分析库同样会对一些库函数进行建模，但不同的是，所建模函数的数量并没有污点分析那么多，同时连接额外边的侧重点也不一样，以 gets 函数为例，以下是它的建模实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The standard functions `gets` and `fgets`.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">GetsFunction</span> <span class="title">extends</span> <span class="title">DataFlowFunction</span>, <span class="title">TaintFunction</span>, <span class="title">ArrayFunction</span>, <span class="title">AliasFunction</span>,</span></span><br><span class="line"><span class="class">  <span class="title">SideEffectFunction</span>, <span class="title">RemoteFlowSourceFunction</span> &#123;</span></span><br><span class="line">  GetsFunction() &#123;</span><br><span class="line">    <span class="comment">// gets(str)</span></span><br><span class="line">    <span class="comment">// fgets(str, num, stream)</span></span><br><span class="line">    <span class="comment">// fgetws(wstr, num, stream)</span></span><br><span class="line">    <span class="keyword">this</span>.hasGlobalOrStdOrBslName([<span class="string">"gets"</span>, <span class="string">"fgets"</span>, <span class="string">"fgetws"</span>])</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">override</span> predicate <span class="title">hasDataFlow</span><span class="params">(FunctionInput input, FunctionOutput output)</span> </span>&#123;</span><br><span class="line">    input.isParameter(<span class="number">0</span>) <span class="keyword">and</span></span><br><span class="line">    output.isReturnValue()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">override</span> predicate <span class="title">hasTaintFlow</span><span class="params">(FunctionInput input, FunctionOutput output)</span> </span>&#123;</span><br><span class="line">    input.isParameter(<span class="number">2</span>) <span class="keyword">and</span></span><br><span class="line">    output.isParameterDeref(<span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">override</span> predicate <span class="title">parameterNeverEscapes</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123; index = <span class="number">2</span> &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate parameterEscapesOnlyViaReturn(<span class="keyword">int</span> index) &#123; index = <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate parameterIsAlwaysReturned(<span class="keyword">int</span> index) &#123; index = <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasOnlySpecificReadSideEffects() &#123; any() &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasOnlySpecificWriteSideEffects() &#123; any() &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasSpecificWriteSideEffect(ParameterIndex i, boolean buffer, boolean mustWrite) &#123;</span><br><span class="line">    i = <span class="number">0</span> <span class="keyword">and</span></span><br><span class="line">    buffer = <span class="literal">true</span> <span class="keyword">and</span></span><br><span class="line">    mustWrite = <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasRemoteFlowSource(FunctionOutput output, <span class="built_in">string</span> description) &#123;</span><br><span class="line">    output.isParameterDeref(<span class="number">0</span>) <span class="keyword">and</span></span><br><span class="line">    description = <span class="string">"String read by "</span> + <span class="keyword">this</span>.getName()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasArrayWithVariableSize(<span class="keyword">int</span> bufParam, <span class="keyword">int</span> countParam) &#123;</span><br><span class="line">    <span class="keyword">not</span> <span class="keyword">this</span>.hasName(<span class="string">"gets"</span>) <span class="keyword">and</span></span><br><span class="line">    bufParam = <span class="number">0</span> <span class="keyword">and</span></span><br><span class="line">    countParam = <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasArrayWithUnknownSize(<span class="keyword">int</span> bufParam) &#123;</span><br><span class="line">    <span class="keyword">this</span>.hasName(<span class="string">"gets"</span>) <span class="keyword">and</span></span><br><span class="line">    bufParam = <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> predicate hasArrayOutput(<span class="keyword">int</span> bufParam) &#123; bufParam = <span class="number">0</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意到 hasDataFlow 的实现是将传入的第一个 buf 参数与返回值连接（buf参数的值会影响到 gets 的返回值）。而  hasTaintFlow 是将 fgets 等的<strong>数据来源</strong>与 buf 连接（数据来源会污染 buf 中的数据）。</p>
+<ul>
+<li>除此之外还涉及到ReadSideEffectInstruction/InitializeIndirectionInstruction等IR进行了额外的连边，但是笔者暂未找到合适的codeql IR文档，留待后文，但我初步推测应该和内存初始化和指针解引用等都有关系。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>目前看codeql的c/c++污点分析还是有局限性的，首先它并没有对c++的语法特性做适配，目前看只是字段访问的时候有额外的处理。<br>此外受限于符号支持，它并不能完全实现跨函数追踪，例如对于大部分标准库函数它目前都只能自己去建模，无法自动化的分析和追踪，但这不是ql的问题，是插桩的问题，这部分我在想通过静态链接能否有改善。</p>
+<p>目前我们在自己做审计的时候，如果需要做跨函数的追踪，还是需要像我代码里一样去手动连边，这个连边可以是保守的也可以是粗放的，例如我的实现就是，如果污点传入的函数参数，就传播到函数调用。</p>
+<p>此外根据我在做chrome QL审计的经验，可以参考<a href="https://github.com/github/securitylab/blob/677baf7fdc2bdd9d35a35ea4641b5efdfa7bba78/CodeQL_Queries/cpp/Chrome/callback_tracking.qll#L107" target="_blank" rel="noopener">Chrome Library</a>来补一些拷贝构造函数，智能指针，虚函数调用，以及c++容器相关的边。</p>
+<p>这些也是留待后文。</p>
+<p>欢迎大家关注公众号”天问记事簿”，以及加入天问之路知识星球，一起做技术分享，一起学习，happy hack。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/codeql/" rel="tag"># codeql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/14/fuzzinglab/" rel="next" title="sakuraのfuzzing lab培训">
+                <i class="fa fa-chevron-left"></i> sakuraのfuzzing lab培训
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://kiprey.github.io/" title="Kiprey" target="_blank">Kiprey</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL-数据流分析-污点分析-笔记（上篇）"><span class="nav-number">1.</span> <span class="nav-text">CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前序"><span class="nav-number">1.1.</span> <span class="nav-text">前序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用case"><span class="nav-number">1.2.</span> <span class="nav-text">使用case</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#污点建模"><span class="nav-number">1.2.1.</span> <span class="nav-text">污点建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QL-source-code"><span class="nav-number">1.2.2.</span> <span class="nav-text">QL source code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞分析"><span class="nav-number">1.2.3.</span> <span class="nav-text">漏洞分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codeql污点分析源码分析"><span class="nav-number">1.3.</span> <span class="nav-text">codeql污点分析源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#operandToInstructionTaintStep"><span class="nav-number">1.3.1.</span> <span class="nav-text">operandToInstructionTaintStep</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'oSjxVuchxdK82iyIiuzHtfiV-gzGzoHsz',
+        appKey: 'MK8tCWwU3RWlWQdEA0wOH8Dw',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("oSjxVuchxdK82iyIiuzHtfiV-gzGzoHsz", "MK8tCWwU3RWlWQdEA0wOH8Dw");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
