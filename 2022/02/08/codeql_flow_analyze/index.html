@@ -83,15 +83,15 @@
 
 
 
-<meta name="description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creating-path-queries https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;codeql-">
+<meta name="description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）欢迎大家关注公众号”天问记事簿”，以及加入天问之路知识星球，一起做技术分享，一起学习，happy hack。 前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）">
 <meta property="og:url" content="http://eternalsakura13.com/2022/02/08/codeql_flow_analyze/index.html">
 <meta property="og:site_name" content="Sakuraのblog">
-<meta property="og:description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creating-path-queries https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;codeql-">
+<meta property="og:description" content="CodeQL 数据流分析&#x2F;污点分析 笔记（上篇）欢迎大家关注公众号”天问记事簿”，以及加入天问之路知识星球，一起做技术分享，一起学习，happy hack。 前序codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。  https:&#x2F;&#x2F;codeql.github.com&#x2F;docs&#x2F;writing-codeql-queries&#x2F;creating-path-queries&#x2F;#creat">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-01-27-042252.png">
 <meta property="article:published_time" content="2022-02-08T02:15:02.558Z">
-<meta property="article:modified_time" content="2022-02-08T02:15:57.449Z">
+<meta property="article:modified_time" content="2022-02-10T09:50:32.322Z">
 <meta property="article:author" content="sakura">
 <meta property="article:tag" content="codeql">
 <meta name="twitter:card" content="summary">
@@ -431,7 +431,8 @@
       
 
       
-        <h1 id="CodeQL-数据流分析-污点分析-笔记（上篇）"><a href="#CodeQL-数据流分析-污点分析-笔记（上篇）" class="headerlink" title="CodeQL 数据流分析/污点分析 笔记（上篇）"></a>CodeQL 数据流分析/污点分析 笔记（上篇）</h1><h2 id="前序"><a href="#前序" class="headerlink" title="前序"></a>前序</h2><p>codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。</p>
+        <h1 id="CodeQL-数据流分析-污点分析-笔记（上篇）"><a href="#CodeQL-数据流分析-污点分析-笔记（上篇）" class="headerlink" title="CodeQL 数据流分析/污点分析 笔记（上篇）"></a>CodeQL 数据流分析/污点分析 笔记（上篇）</h1><p>欢迎大家关注公众号”天问记事簿”，以及加入天问之路知识星球，一起做技术分享，一起学习，happy hack。</p>
+<h2 id="前序"><a href="#前序" class="headerlink" title="前序"></a>前序</h2><p>codeql关于数据流分析的基础文档可以在这里找到，本文中不多做叙述。</p>
 <ul>
 <li><a href="https://codeql.github.com/docs/writing-codeql-queries/creating-path-queries/#creating-path-queries" target="_blank" rel="noopener">https://codeql.github.com/docs/writing-codeql-queries/creating-path-queries/#creating-path-queries</a></li>
 <li><a href="https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-cpp/#analyzing-data-flow-in-cpp" target="_blank" rel="noopener">https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-cpp/#analyzing-data-flow-in-cpp</a></li>
@@ -495,7 +496,6 @@
 <p>目前我们在自己做审计的时候，如果需要做跨函数的追踪，还是需要像我代码里一样去手动连边，这个连边可以是保守的也可以是粗放的，例如我的实现就是，如果污点传入的函数参数，就传播到函数调用。</p>
 <p>此外根据我在做chrome QL审计的经验，可以参考<a href="https://github.com/github/securitylab/blob/677baf7fdc2bdd9d35a35ea4641b5efdfa7bba78/CodeQL_Queries/cpp/Chrome/callback_tracking.qll#L107" target="_blank" rel="noopener">Chrome Library</a>来补一些拷贝构造函数，智能指针，虚函数调用，以及c++容器相关的边。</p>
 <p>这些也是留待后文。</p>
-<p>欢迎大家关注公众号”天问记事簿”，以及加入天问之路知识星球，一起做技术分享，一起学习，happy hack。</p>
 
       
     </div>
@@ -536,8 +536,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
-                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              <a href="/2022/02/10/hso/" rel="prev" title="realworldctf 2022 hso writeup与nso iMessage 0click漏洞分析">
+                realworldctf 2022 hso writeup与nso iMessage 0click漏洞分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -622,7 +622,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-count">99</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
