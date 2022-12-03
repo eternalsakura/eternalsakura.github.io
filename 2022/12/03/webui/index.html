@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="webui," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Sakuraのblog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="find but no check endcase1: issue-1303614https:&#x2F;&#x2F;bugs.chromium.org&#x2F;p&#x2F;chromium&#x2F;issues&#x2F;detail?id&#x3D;1303614 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebUI:The easiest attack surface in Chromes">
+<meta property="og:url" content="http://eternalsakura13.com/2022/12/03/webui/index.html">
+<meta property="og:site_name" content="Sakuraのblog">
+<meta property="og:description" content="find but no check endcase1: issue-1303614https:&#x2F;&#x2F;bugs.chromium.org&#x2F;p&#x2F;chromium&#x2F;issues&#x2F;detail?id&#x3D;1303614 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-12-03-051238.jpg">
+<meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-12-03-051320.jpg">
+<meta property="article:published_time" content="2022-12-03T05:09:52.847Z">
+<meta property="article:modified_time" content="2022-12-03T05:14:17.511Z">
+<meta property="article:author" content="sakura">
+<meta property="article:tag" content="webui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-12-03-051238.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'QOPH9ID41Z',
+      apiKey: '',
+      indexName: 'sakura',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://eternalsakura13.com/2022/12/03/webui/"/>
+
+
+
+
+
+  <title>WebUI:The easiest attack surface in Chromes | Sakuraのblog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-113420358-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sakuraのblog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-buglist">
+          <a href="/buglist/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            BugList
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eternalsakura13.com/2022/12/03/webui/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sakura">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/sakura_heart.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sakuraのblog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WebUI:The easiest attack surface in Chromes</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-12-03T13:09:52+08:00">
+                2022-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/12/03/webui/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/12/03/webui/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2022/12/03/webui/" class="leancloud_visitors" data-flag-title="WebUI:The easiest attack surface in Chromes">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="find-but-no-check-end"><a href="#find-but-no-check-end" class="headerlink" title="find but no check end"></a>find but no check end</h1><h2 id="case1-issue-1303614"><a href="#case1-issue-1303614" class="headerlink" title="case1: issue-1303614"></a>case1: issue-<strong>1303614</strong></h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1303614" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1303614</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// content::WebUIMessageHandler:</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DiagnosticsMetricsMessageHandler::RegisterMessages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  DCHECK(web_ui());</span><br><span class="line"></span><br><span class="line">  web_ui()-&gt;RegisterMessageCallback(</span><br><span class="line">      kRecordNavigation, <span class="comment">//-----&gt;"recordNavigation"</span></span><br><span class="line">      base::BindRepeating(</span><br><span class="line">          &amp;DiagnosticsMetricsMessageHandler::HandleRecordNavigation,</span><br><span class="line">          base::Unretained(<span class="keyword">this</span>)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">NavigationView</span> &#123;</span></span><br><span class="line">  kSystem = <span class="number">0</span>,</span><br><span class="line">  kConnectivity = <span class="number">1</span>,</span><br><span class="line">  kInput = <span class="number">2</span>,</span><br><span class="line">  kMaxValue = kInput,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Converts base::Value&lt;int&gt; to NavigationView based on enum values.</span></span><br><span class="line"><span class="function">NavigationView <span class="title">ConvertToNavigationView</span><span class="params">(<span class="keyword">const</span> base::Value&amp; value)</span> </span>&#123;</span><br><span class="line">	DCHECK(value.is_int());</span><br><span class="line">  DCHECK_LE(value.GetInt(), <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(NavigationView::kMaxValue));</span><br><span class="line">  **<span class="keyword">return</span> <span class="keyword">static_cast</span>&lt;NavigationView&gt;(value.GetInt());**</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Message Handlers:</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DiagnosticsMetricsMessageHandler::HandleRecordNavigation</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> base::Value::List&amp; args)</span> </span>&#123;</span><br><span class="line">  DCHECK_EQ(<span class="number">2u</span>, args.size());</span><br><span class="line">  DCHECK_NE(args[<span class="number">0</span>], args[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">  **<span class="keyword">const</span> NavigationView from_view = ConvertToNavigationView(args[<span class="number">0</span>]);**</span><br><span class="line">  <span class="keyword">const</span> NavigationView to_view = ConvertToNavigationView(args[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">const</span> base::Time updated_start_time = base::Time::Now();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Recordable navigation event occurred.</span></span><br><span class="line">  **EmitScreenOpenDuration(from_view, updated_start_time - navigation_started_);**</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `current_view_` updated to recorded `to_view` and reset timer.</span></span><br><span class="line">  current_view_ = to_view;</span><br><span class="line">  navigation_started_ = updated_start_time;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EmitScreenOpenDuration</span><span class="params">(<span class="keyword">const</span> NavigationView screen,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">const</span> base::TimeDelta&amp; time_elapsed)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Map of screens within Diagnostics app to matching duration metric name.</span></span><br><span class="line">  <span class="keyword">constexpr</span> <span class="keyword">auto</span> kOpenDurationMetrics =</span><br><span class="line">      base::MakeFixedFlatMap&lt;NavigationView, base::StringPiece&gt;(&#123;</span><br><span class="line">          &#123;NavigationView::kConnectivity,</span><br><span class="line">           <span class="string">"ChromeOS.DiagnosticsUi.Connectivity.OpenDuration"</span>&#125;,</span><br><span class="line">          &#123;NavigationView::kInput, <span class="string">"ChromeOS.DiagnosticsUi.Input.OpenDuration"</span>&#125;,</span><br><span class="line">          &#123;NavigationView::kSystem,</span><br><span class="line">           <span class="string">"ChromeOS.DiagnosticsUi.System.OpenDuration"</span>&#125;,</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">  **<span class="keyword">auto</span>* iter = kOpenDurationMetrics.find(screen);**</span><br><span class="line">  DCHECK(iter != kOpenDurationMetrics.end());</span><br><span class="line"></span><br><span class="line">  base::UmaHistogramLongTimes100(<span class="built_in">std</span>::<span class="built_in">string</span>(iter-&gt;second), time_elapsed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>reproduce:</strong></p>
+<p>browsing <code>chrome://diagnostics</code> and open devtools</p>
+<p>execute <code>chrome.send(&quot;recordNavigation&quot;,[1337,0]);</code> in console.</p>
+<p><strong>patch:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span>* iter = kOpenDurationMetrics.find(screen);</span><br><span class="line">-  DCHECK(iter != kOpenDurationMetrics.end());</span><br><span class="line">+  <span class="keyword">if</span> (iter == kOpenDurationMetrics.end())</span><br><span class="line">+    <span class="keyword">return</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="other-case"><a href="#other-case" class="headerlink" title="other case"></a>other case</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1303613" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1303613</a></p>
+<h1 id="unique-ptr-double-init"><a href="#unique-ptr-double-init" class="headerlink" title="unique_ptr double init"></a>unique_ptr double init</h1><h2 id="case1-CVE-2022-2859"><a href="#case1-CVE-2022-2859" class="headerlink" title="case1: CVE-2022-2859"></a>case1: CVE-2022-2859</h2><p><a href="https://chromium.googlesource.com/chromium/src/+/08b5eaecf33165cda178517fa4ba070d1f598e16" target="_blank" rel="noopener">https://chromium.googlesource.com/chromium/src/+/08b5eaecf33165cda178517fa4ba070d1f598e16</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultidevicePhoneHubHandler::RegisterMessages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  web_ui()-&gt;RegisterDeprecatedMessageCallback(</span><br><span class="line">      <span class="string">"setFakePhoneHubManagerEnabled"</span>,</span><br><span class="line">      base::BindRepeating(</span><br><span class="line">          **&amp;MultidevicePhoneHubHandler::HandleEnableFakePhoneHubManager**,</span><br><span class="line">          base::Unretained(<span class="keyword">this</span>)));</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultidevicePhoneHubHandler::HandleEnableFakePhoneHubManager</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> base::ListValue* args)</span> </span>&#123;</span><br><span class="line">  AllowJavascript();</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <span class="built_in">list</span> = args-&gt;GetListDeprecated();</span><br><span class="line">  CHECK(!<span class="built_in">list</span>.empty());</span><br><span class="line">  **<span class="keyword">const</span> <span class="keyword">bool</span> enabled = <span class="built_in">list</span>[<span class="number">0</span>].GetBool();**</span><br><span class="line">  <span class="keyword">if</span> (enabled) &#123;</span><br><span class="line">    **EnableFakePhoneHubManager();**</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  EnableRealPhoneHubManager();</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultidevicePhoneHubHandler::EnableRealPhoneHubManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// If no FakePhoneHubManager is active, return early. This ensures that we</span></span><br><span class="line">  <span class="comment">// don't unnecessarily re-initialize the Phone Hub UI.</span></span><br><span class="line">  <span class="keyword">if</span> (!fake_phone_hub_manager_)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  PA_LOG(VERBOSE) &lt;&lt; <span class="string">"Setting real Phone Hub Manager"</span>;</span><br><span class="line">  Profile* profile = Profile::FromWebUI(web_ui());</span><br><span class="line">  <span class="keyword">auto</span>* phone_hub_manager =</span><br><span class="line">      phonehub::PhoneHubManagerFactory::GetForProfile(profile);</span><br><span class="line">  ash::SystemTray::Get()-&gt;SetPhoneHubManager(phone_hub_manager);</span><br><span class="line"></span><br><span class="line">  RemoveObservers();</span><br><span class="line">  fake_phone_hub_manager_.reset();</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultidevicePhoneHubHandler::EnableFakePhoneHubManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  DCHECK(!fake_phone_hub_manager_);</span><br><span class="line">  PA_LOG(VERBOSE) &lt;&lt; <span class="string">"Setting fake Phone Hub Manager"</span>;</span><br><span class="line">  **fake_phone_hub_manager_ = <span class="built_in">std</span>::make_unique&lt;phonehub::FakePhoneHubManager&gt;();** <span class="comment">//---&gt;[0]</span></span><br><span class="line">  ash::SystemTray::Get()-&gt;SetPhoneHubManager(**fake_phone_hub_manager_.get()**); <span class="comment">// ----&gt;[1]</span></span><br><span class="line">  AddObservers();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PhoneHubUiController::SetPhoneHubManager</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    phonehub::PhoneHubManager* phone_hub_manager)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (phone_hub_manager == phone_hub_manager_)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  **CleanUpPhoneHubManager();**  <span class="comment">//----&gt;[2]</span></span><br><span class="line"></span><br><span class="line">  **phone_hub_manager_ = phone_hub_manager;**  <span class="comment">// ----&gt;[1]</span></span><br><span class="line">  <span class="keyword">if</span> (phone_hub_manager_) &#123;</span><br><span class="line">    phone_hub_manager_-&gt;GetFeatureStatusProvider()-&gt;AddObserver(<span class="keyword">this</span>);</span><br><span class="line">    phone_hub_manager_-&gt;GetOnboardingUiTracker()-&gt;AddObserver(<span class="keyword">this</span>);</span><br><span class="line">    phone_hub_manager_-&gt;GetPhoneModel()-&gt;AddObserver(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  UpdateUiState(GetUiStateFromPhoneHubManager());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PhoneHubUiController::CleanUpPhoneHubManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!phone_hub_manager_)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  **phone_hub_manager_-&gt;GetFeatureStatusProvider**()-&gt;RemoveObserver(<span class="keyword">this</span>); <span class="comment">//----&gt;[2]</span></span><br><span class="line">  phone_hub_manager_-&gt;GetOnboardingUiTracker()-&gt;RemoveObserver(<span class="keyword">this</span>);</span><br><span class="line">  phone_hub_manager_-&gt;GetPhoneModel()-&gt;RemoveObserver(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>[0] 当我们调用两次EnableFakePhoneHubManager, fake_phone_hub_manager_字段将会被初始化两次, 又由于fake_phone_hub_manager_是一个unique_ptr，所以前一次创建的FakePhoneHubManager将会被后一次创建释放掉。</p>
+<p>[1] 但是第一次创建的fake_phone_hub_manager_的raw ptr还保存在PhoneHubUiController的phone_hub_manager_字段里</p>
+<p>[2] 这将导致第二次调用EnableFakePhoneHubManager的时候，沿着<code>EnableFakePhoneHubManager-&gt;SetPhoneHubManager-&gt;CleanUpPhoneHubManager</code> 路径，再次使用到前一次被保存到phone_hub_manager_里的被释放的FakePhoneHubManager，造成UAF。</p>
+<h1 id="cross-thread-calback-race"><a href="#cross-thread-calback-race" class="headerlink" title="cross-thread calback race"></a>cross-thread calback race</h1><h2 id="case1-CVE-2022-1311"><a href="#case1-CVE-2022-1311" class="headerlink" title="case1: CVE-2022-1311"></a>case1: CVE-2022-1311</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1310717" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1310717</a></p>
+<p><a href="https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/threading_and_tasks.md" target="_blank" rel="noopener">https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/threading_and_tasks.md</a></p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-12-03-051238.jpg" alt=""></p>
+<p>Chrome将运行UI并管理所有网页和插件进程的主进程称为“浏览器进程”或“浏览器”，而每个网页都运行在一个单独的进程里，这个进程称为渲染进程。</p>
+<p>鉴于渲染进程在单独的进程中运行，所以Chrome有机会通过沙箱限制其对系统资源的访问，所有渲染器对网络和文件资源的访问都通过IPC来通知浏览器进程来完成。</p>
+<p>在一个进程中，往往有如下几种线程：</p>
+<ul>
+<li>一个 main thread<ul>
+<li>在 Browser 进程中 (BrowserThread::UI)：用于更新 UI</li>
+<li>在 Render 进程中：运行Blink</li>
+</ul>
+</li>
+<li>一个 io thread<ul>
+<li>在 Browser 进程中(BrowserThread::IO): 用于处理 IPC 消息以及网络请求</li>
+<li>在 Render 进程中：用于处理IPC消息</li>
+</ul>
+</li>
+<li>一些使用 base::Tread 创建的，有特殊用途的线程（可能存在）</li>
+<li>一些在使用线程池时产生的线程（可能存在）</li>
+</ul>
+<ol>
+<li><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1310717" target="_blank" rel="noopener">CVE-2022-1311</a> </li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CrostiniUpgrader::Backup</span><span class="params">(<span class="keyword">const</span> ContainerId&amp; container_id,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">bool</span> show_file_chooser,</span></span></span><br><span class="line"><span class="function"><span class="params">                              content::WebContents* web_contents)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (show_file_chooser) &#123;</span><br><span class="line">    CrostiniExportImport::GetForProfile(profile_)-&gt;ExportContainer(</span><br><span class="line">        container_id, web_contents, MakeFactory());</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  base::FilePath default_path =</span><br><span class="line">      CrostiniExportImport::GetForProfile(profile_)-&gt;GetDefaultBackupPath();</span><br><span class="line">  **base::ThreadPool::PostTaskAndReplyWithResult**(</span><br><span class="line">      FROM_HERE, &#123;base::MayBlock()&#125;,</span><br><span class="line">      base::BindOnce(&amp;base::PathExists, default_path),</span><br><span class="line">      base::BindOnce(&amp;CrostiniUpgrader::OnBackupPathChecked,</span><br><span class="line">                     weak_ptr_factory_.GetWeakPtr(), container_id, **web_contents**,</span><br><span class="line">                     default_path));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我介绍一个我挖掘的漏洞，首先我们要知道Chrome线程内部是怎么实现任务的同步的，其实是通过派发一个回调给一个处理线程的MessageLoop，然后MessageLoop会调度该回调以执行其操作。</p>
+<p>这个漏洞就是这么产生的，ThreadPool::PostTaskAndReplyWithResult是UI线程向线程池里的线程发送一个PathExists函数的回调，然后线程池会检查backup路径是否存在，然后当线程池执行完任务PathExists，它会向UI线程发送一个OnRestorePathChecked函数的回调，一个回调其实和一个闭包是相似的，它会包括一个函数指针和它使用的函数参数。</p>
+<p>在这个过程中就可能产生条件竞争。因为OnRestorePathChecked的参数里包括了一个原始指针web_contents，这样的指针是没有被保护的，所以如果我们在线程池里正在执行PathExists的同时，我们在UI线程这边通过关闭网页把web_contents释放掉，从而当OnRestorePathChecked被发回到UI线程执行的时候，此时web_contents已经被释放掉了，解引用它的指针就会触发UAF。</p>
+<p><img src="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2022-12-03-051320.jpg" alt=""></p>
+<h2 id="other-case-1"><a href="#other-case-1" class="headerlink" title="other case"></a>other case</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1320624" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1320624</a></p>
+<p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1322744" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1322744</a></p>
+<p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1311701" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1311701</a></p>
+<p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1304145" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1304145</a></p>
+<h1 id="Listener-no-check-destroyed"><a href="#Listener-no-check-destroyed" class="headerlink" title="Listener no check destroyed"></a>Listener no check destroyed</h1><h2 id="case1-issue-1315102"><a href="#case1-issue-1315102" class="headerlink" title="case1: issue-1315102"></a>case1: issue-1315102</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1315102" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1315102</a></p>
+<p><code>SupportToolMessageHandler::HandleStartDataExport</code> 会创建一个 <code>select_file_dialog_</code> [1] 并显示一个 SelectFileDialog对话框。</p>
+<p>当 [1] 被调用时，<code>this</code> 原始指针被传递给<code>ui::SelectFileDialog::Create</code> ，并且传递的<code>this</code> 原始指针被保存在<code>listener_</code> [2] 中。</p>
+<p>当用户选择一个文件夹时，<code>listener_-&gt;FileSelected(paths[0], index, params);</code> [3]被调用来处理用户的文件夹选择。</p>
+<p>但是，<code>SupportToolMessageHandler::~SupportToolMessageHandler</code> [4] 是默认析构函数，不会调<br><code>select_file_dialog_-&gt;ListenerDestroyed();</code> 将<code>listener_</code> 置为nullptr。</p>
+<p>如果用户在 <code>SupportToolMessageHandler</code> 被释放后选择了一个文件夹（即 <code>listener_</code> 被释放），UAF 将在 [3] 中触发。</p>
+<p>因此，我们可以构建以下 UAF 链：</p>
+<ol>
+<li>通过chrome.send调用<code>SupportToolMessageHandler::HandleStartDataExport</code> </li>
+<li>通过关闭webui网页来释放<code>SupportToolMessageHandler</code></li>
+<li>在SelectFileDialog里选择一个文件，在[3]中触发UAF。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line">scoped_refptr&lt;ui::SelectFileDialog&gt; select_file_dialog_;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::HandleStartDataExport</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> base::Value::List&amp; args)</span> </span>&#123;</span><br><span class="line">  CHECK_EQ(<span class="number">1U</span>, args.size());</span><br><span class="line">  <span class="keyword">const</span> base::Value::List* pii_items = args[<span class="number">0</span>].GetIfList();</span><br><span class="line">  DCHECK(pii_items);</span><br><span class="line"></span><br><span class="line">  selected_pii_to_keep_ = GetSelectedPIIToKeep(pii_items);</span><br><span class="line"></span><br><span class="line">  AllowJavascript();</span><br><span class="line">  content::WebContents* web_contents = web_ui()-&gt;GetWebContents();</span><br><span class="line">  gfx::NativeWindow owning_window =</span><br><span class="line">      web_contents ? web_contents-&gt;GetTopLevelNativeWindow()</span><br><span class="line">                   : gfx::kNullNativeWindow;</span><br><span class="line">  select_file_dialog_ = ui::SelectFileDialog::Create(</span><br><span class="line">      <span class="keyword">this</span>,</span><br><span class="line">      <span class="built_in">std</span>::make_unique&lt;ChromeSelectFilePolicy&gt;(web_ui()-&gt;GetWebContents()));</span><br><span class="line"></span><br><span class="line">  select_file_dialog_-&gt;SelectFile(</span><br><span class="line">      ui::SelectFileDialog::SELECT_SAVEAS_FILE,</span><br><span class="line">      <span class="comment">/*title=*/</span><span class="built_in">std</span>::u16string(),</span><br><span class="line">      <span class="comment">/*default_path=*/</span></span><br><span class="line">      GetDefaultFileToExport(handler_-&gt;GetCaseID(), data_collection_time_),</span><br><span class="line">      <span class="comment">/*file_types=*/</span><span class="literal">nullptr</span>,</span><br><span class="line">      <span class="comment">/*file_type_index=*/</span><span class="number">0</span>,</span><br><span class="line">      <span class="comment">/*default_extension=*/</span>base::FilePath::StringType(), owning_window,</span><br><span class="line">      <span class="comment">/*params=*/</span><span class="literal">nullptr</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::FileSelected</span><span class="params">(<span class="keyword">const</span> base::FilePath&amp; path,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">int</span> index,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">void</span>* params)</span> </span>&#123;</span><br><span class="line">  FireWebUIListener(<span class="string">"support-data-export-started"</span>);</span><br><span class="line">  select_file_dialog_.reset();</span><br><span class="line">  <span class="keyword">this</span>-&gt;handler_-&gt;ExportCollectedData(</span><br><span class="line">      <span class="built_in">std</span>::move(selected_pii_to_keep_), path,</span><br><span class="line">      base::BindOnce(&amp;SupportToolMessageHandler::OnDataExportDone,</span><br><span class="line">                     weak_ptr_factory_.GetWeakPtr()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::FileSelectionCanceled</span><span class="params">(<span class="keyword">void</span>* params)</span> </span>&#123;</span><br><span class="line">  selected_pii_to_keep_.clear();</span><br><span class="line">  select_file_dialog_.reset();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Checks `errors` and fires WebUIListener with the error message or the</span></span><br><span class="line"><span class="comment">// exported path according to the returned errors.</span></span><br><span class="line"><span class="comment">// type DataExportResult = &#123;</span></span><br><span class="line"><span class="comment">//  success: boolean,</span></span><br><span class="line"><span class="comment">//  path: string,</span></span><br><span class="line"><span class="comment">//  error: string,</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::OnDataExportDone</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    base::FilePath path,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="built_in">std</span>::<span class="built_in">set</span>&lt;SupportToolError&gt; errors)</span> </span>&#123;</span><br><span class="line">  data_path_ = path;</span><br><span class="line">  base::Value::Dict data_export_result;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">auto</span>&amp; export_error = <span class="built_in">std</span>::find_if(</span><br><span class="line">      errors.begin(), errors.end(), [](<span class="keyword">const</span> SupportToolError&amp; error) &#123;</span><br><span class="line">        <span class="keyword">return</span> (error.error_code == SupportToolErrorCode::kDataExportError);</span><br><span class="line">      &#125;);</span><br><span class="line">  <span class="keyword">if</span> (export_error == errors.end()) &#123;</span><br><span class="line">    data_export_result.Set(<span class="string">"success"</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> displayed_path = data_path_.AsUTF8Unsafe();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> BUILDFLAG(IS_CHROMEOS_ASH)</span></span><br><span class="line">    displayed_path = file_manager::util::GetPathDisplayTextForSettings(</span><br><span class="line">        Profile::FromWebUI(web_ui()), displayed_path);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>  <span class="comment">// BUILDFLAG(IS_CHROMEOS_ASH)</span></span></span><br><span class="line">    data_export_result.Set(<span class="string">"path"</span>, displayed_path);</span><br><span class="line">    data_export_result.Set(<span class="string">"error"</span>, <span class="built_in">std</span>::<span class="built_in">string</span>());</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// If a data export error is found in the returned set of errors, send the</span></span><br><span class="line">    <span class="comment">// error message to UI with empty string as path since it means the export</span></span><br><span class="line">    <span class="comment">// operation has failed.</span></span><br><span class="line">    data_export_result.Set(<span class="string">"success"</span>, <span class="literal">false</span>);</span><br><span class="line">    data_export_result.Set(<span class="string">"path"</span>, <span class="built_in">std</span>::<span class="built_in">string</span>());</span><br><span class="line">    data_export_result.Set(<span class="string">"error"</span>, export_error-&gt;error_message);</span><br><span class="line">  &#125;</span><br><span class="line">  FireWebUIListener(<span class="string">"data-export-completed"</span>,</span><br><span class="line">                    base::Value(<span class="built_in">std</span>::move(data_export_result)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::HandleShowExportedDataInFolder</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> base::Value::List&amp; args)</span> </span>&#123;</span><br><span class="line">  platform_util::ShowItemInFolder(Profile::FromWebUI(web_ui()), data_path_);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// SupportToolUI</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">SupportToolUI::SupportToolUI(content::WebUI* web_ui) : WebUIController(web_ui) &#123;</span><br><span class="line">  web_ui-&gt;AddMessageHandler(<span class="built_in">std</span>::make_unique&lt;SupportToolMessageHandler&gt;());</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set up the chrome://support-tool/ source.</span></span><br><span class="line">  Profile* profile = Profile::FromWebUI(web_ui);</span><br><span class="line">  content::WebUIDataSource::Add(</span><br><span class="line">      profile, CreateSupportToolHTMLSource(web_ui-&gt;GetWebContents()-&gt;GetURL()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SupportToolUI::~SupportToolUI() = <span class="keyword">default</span>;</span><br><span class="line">  **select_file_dialog_ = ui::SelectFileDialog::Create(</span><br><span class="line">      <span class="keyword">this</span>,** <span class="comment">//----------&gt; [1]</span></span><br><span class="line">      **<span class="built_in">std</span>::make_unique&lt;ChromeSelectFilePolicy&gt;(web_ui()-&gt;GetWebContents()));**</span><br><span class="line"></span><br><span class="line">  select_file_dialog_-&gt;SelectFile(</span><br><span class="line">      ui::SelectFileDialog::SELECT_SAVEAS_FILE,</span><br><span class="line">      <span class="comment">/*title=*/</span><span class="built_in">std</span>::u16string(),</span><br><span class="line">      <span class="comment">/*default_path=*/</span></span><br><span class="line">      GetDefaultFileToExport(handler_-&gt;GetCaseID(), data_collection_time_),</span><br><span class="line">      <span class="comment">/*file_types=*/</span><span class="literal">nullptr</span>,</span><br><span class="line">      <span class="comment">/*file_type_index=*/</span><span class="number">0</span>,</span><br><span class="line">      <span class="comment">/*default_extension=*/</span>base::FilePath::StringType(), owning_window,</span><br><span class="line">      <span class="comment">/*params=*/</span><span class="literal">nullptr</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The listener to be notified of selection completion.</span></span><br><span class="line">raw_ptr&lt;Listener&gt; listener_;</span><br><span class="line">SelectFileDialog::SelectFileDialog(Listener* listener,</span><br><span class="line">                                   <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;ui::SelectFilePolicy&gt; policy)</span><br><span class="line">    : **listener_(listener)**, select_file_policy_(<span class="built_in">std</span>::move(policy)) &#123; <span class="comment">// [2]</span></span><br><span class="line">  DCHECK(listener_);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SelectFileDialogImpl::OnSelectFileExecuted</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    Type type,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;RunState&gt; run_state,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">void</span>* params,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;base::FilePath&gt;&amp; paths,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (listener_) &#123;</span><br><span class="line">    <span class="comment">// The paths vector is empty when the user cancels the dialog.</span></span><br><span class="line">    <span class="keyword">if</span> (paths.empty()) &#123;</span><br><span class="line">      listener_-&gt;FileSelectionCanceled(params);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">        <span class="keyword">case</span> SELECT_FOLDER:</span><br><span class="line">        <span class="keyword">case</span> SELECT_UPLOAD_FOLDER:</span><br><span class="line">        <span class="keyword">case</span> SELECT_EXISTING_FOLDER:</span><br><span class="line">        <span class="keyword">case</span> SELECT_SAVEAS_FILE:</span><br><span class="line">        <span class="keyword">case</span> SELECT_OPEN_FILE:</span><br><span class="line">          DCHECK_EQ(paths.size(), <span class="number">1u</span>);</span><br><span class="line">          listener_-&gt;FileSelected(paths[<span class="number">0</span>], index, params); <span class="comment">// [3]</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SELECT_OPEN_MULTI_FILE:</span><br><span class="line">          listener_-&gt;MultiFilesSelected(paths, params);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SELECT_NONE:</span><br><span class="line">          NOTREACHED();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  EndRun(<span class="built_in">std</span>::move(run_state));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">~SupportToolMessageHandler() <span class="keyword">override</span> = <span class="keyword">default</span>; <span class="comment">// [4]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>patch</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">SupportToolMessageHandler::~SupportToolMessageHandler() &#123;</span><br><span class="line">  <span class="keyword">if</span> (select_file_dialog_) &#123;</span><br><span class="line">    select_file_dialog_-&gt;ListenerDestroyed();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SupportToolMessageHandler::HandleStartDataExport</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> base::Value::List&amp; args)</span> </span>&#123;</span><br><span class="line">  CHECK_EQ(<span class="number">1U</span>, args.size());</span><br><span class="line">  <span class="keyword">const</span> base::Value::List* pii_items = args[<span class="number">0</span>].GetIfList();</span><br><span class="line">  DCHECK(pii_items);</span><br><span class="line">  <span class="comment">// Early return if the select file dialog is already active.</span></span><br><span class="line">  <span class="keyword">if</span> (select_file_dialog_)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  selected_pii_to_keep_ = GetSelectedPIIToKeep(pii_items);</span><br></pre></td></tr></table></figure>
+
+<h2 id="other-case-2"><a href="#other-case-2" class="headerlink" title="other case"></a>other case</h2><p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1305068" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1305068</a></p>
+<p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1306391" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1306391</a></p>
+<p><a href="https://bugs.chromium.org/p/chromium/issues/detail?id=1304884" target="_blank" rel="noopener">https://bugs.chromium.org/p/chromium/issues/detail?id=1304884</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webui/" rel="tag"># webui</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/02/10/hso/" rel="next" title="realworldctf 2022 hso writeup与nso iMessage 0click漏洞分析">
+                <i class="fa fa-chevron-left"></i> realworldctf 2022 hso writeup与nso iMessage 0click漏洞分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2099/09/18/study/" rel="prev" title="Sakuraのdiary">
+                Sakuraのdiary <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/sakura_heart.png"
+                alt="sakura" />
+            
+              <p class="site-author-name" itemprop="name">sakura</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">100</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/eternalsakura" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:eternalsakura13@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/sakura1328/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/eternalsakura13" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://kiprey.github.io/" title="Kiprey" target="_blank">Kiprey</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://exp101t.blogspot.com/" title="Murasaki" target="_blank">Murasaki</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://elphet.blogspot.com" title="bobb" target="_blank">bobb</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thunderjie.github.io/" title="Thunderj" target="_blank">Thunderj</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dwfault.github.io/" title="dwfalut" target="_blank">dwfalut</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://p1umer.github.io/" title="P1umer" target="_blank">P1umer</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://pcat.cc/" title="pcat" target="_blank">pcat</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#find-but-no-check-end"><span class="nav-number">1.</span> <span class="nav-text">find but no check end</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#case1-issue-1303614"><span class="nav-number">1.1.</span> <span class="nav-text">case1: issue-1303614</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#other-case"><span class="nav-number">1.2.</span> <span class="nav-text">other case</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unique-ptr-double-init"><span class="nav-number">2.</span> <span class="nav-text">unique_ptr double init</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#case1-CVE-2022-2859"><span class="nav-number">2.1.</span> <span class="nav-text">case1: CVE-2022-2859</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cross-thread-calback-race"><span class="nav-number">3.</span> <span class="nav-text">cross-thread calback race</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#case1-CVE-2022-1311"><span class="nav-number">3.1.</span> <span class="nav-text">case1: CVE-2022-1311</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#other-case-1"><span class="nav-number">3.2.</span> <span class="nav-text">other case</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Listener-no-check-destroyed"><span class="nav-number">4.</span> <span class="nav-text">Listener no check destroyed</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#case1-issue-1315102"><span class="nav-number">4.1.</span> <span class="nav-text">case1: issue-1315102</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#other-case-2"><span class="nav-number">4.2.</span> <span class="nav-text">other case</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sakura</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'oSjxVuchxdK82iyIiuzHtfiV-gzGzoHsz',
+        appKey: 'MK8tCWwU3RWlWQdEA0wOH8Dw',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("oSjxVuchxdK82iyIiuzHtfiV-gzGzoHsz", "MK8tCWwU3RWlWQdEA0wOH8Dw");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
