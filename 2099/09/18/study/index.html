@@ -101,7 +101,7 @@
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-17-115025.jpg">
 <meta property="og:image" content="https://sakura-1252236262.cos.ap-beijing.myqcloud.com/2018-11-17-120007.png">
 <meta property="article:published_time" content="2099-09-18T14:05:42.000Z">
-<meta property="article:modified_time" content="2022-12-06T03:43:30.080Z">
+<meta property="article:modified_time" content="2022-12-06T08:25:17.874Z">
 <meta property="article:author" content="sakura">
 <meta property="article:tag" content="sakuraのsakura">
 <meta name="twitter:card" content="summary">
@@ -1208,7 +1208,7 @@
 </ol>
 <h1 id="2022-12-6"><a href="#2022-12-6" class="headerlink" title="2022-12-6"></a>2022-12-6</h1><p>今年的年末总结趁着居家的最后一天写一下，又是一年过去了呢。</p>
 <ol>
-<li>今年通过CodeQL+Fuzz大概挖了30余个Chrome漏洞，考虑到我因为一些原因是今年四月份开始挖的，姑且也算是勉强达到了一周一个洞的指标吧。</li>
+<li>今年通过CodeQL+Fuzz大概挖了若干个Chrome漏洞，考虑到我因为一些原因是今年四月份开始挖的，姑且也算是勉强达到了一周一个洞的指标吧。</li>
 <li>我今年到9月之前的主要工作是通过codeql审计漏洞模式，然后审了不少需要交互的UI或者边缘组件漏洞，后来chrome调整了奖励策略，鼓励远程无交互漏洞之后，我又回归了我的老本行搞Chrome Fuzz，通过基于变异和生成的浏览器Fuzz，我在WebGL和RenderFrame*上都出了几个高价值的漏洞，可以期待公开 :)</li>
 <li>此外我今年第一次带实习生，我的实习生陈子灵和丁杰都很不错。<ul>
 <li>子灵同学在实习过程，基于我之前在SQLite的Fuzz工作进行继续的开发和审计，最终挖掘了多个高价值可利用的SQLite漏洞，SQLite是Chrome WebSQL的底层组件，所以可以用SQLite的漏洞来攻破Chrome，当然Chrome有它的白名单，所以并不是所有SQLite漏洞都能触发，我们目前提交了3个Chrome WebSQL的漏洞，分别可以造成任意地址读和越界写任意长度的效果，很接近RCE了，还有一些0day漏洞握在手上，具体的工作我们还在投稿blackhat，希望能中选。</li>
@@ -1216,7 +1216,7 @@
 <li><strong>由于今年公司的一些调整，他们未能拿到正式offer，但是他们的技术水平都相当好，如果有需要招聘校招生的话，请联系我，我正在为他们寻找工作 :）</strong></li>
 </ul>
 </li>
-<li>明年的愿景是继续深入探索浏览器的漏洞挖掘边界，挖掘100个Chrome/Edge/Safari/Firefox的漏洞，达到3天一个漏洞的水平吧，<strong>当然愿景只是愿景，我还只是一个技术微末的水平，希望有机会能和大佬们多多交流</strong>，请联系我 :)</li>
+<li>明年的愿景是继续深入探索浏览器的漏洞挖掘边界，挖掘更多个Chrome/Edge/Safari/Firefox的漏洞，<strong>当然愿景只是愿景，我还只是一个技术微末的水平，希望有机会能和大佬们多多交流</strong>，请联系我 :)</li>
 </ol>
 
       
