@@ -1,0 +1,142 @@
+---
+date: 2018-01-19 22:07:00 
+comments: false
+---
+## 个人荣誉
+- **Top 20 Chrome VRP Researcher for 2021**
+- **Top 20 Chrome VRP Researcher for 2022**
+- **Rank #64 Nan Wang, Facebook Researcher for 2021**
+- **Rank #29 Nan Wang, Facebook Researcher for 2022**
+
+## Chrome
+https://chromereleases.googleblog.com/2019/06/stable-channel-update-for-desktop.html
+[950328] High CVE-2019-5831: Incorrect map processing in V8. Reported by yngwei(JiaWei, Yin) of IIE Varas and **sakura of Tecent Xuanwu Lab** on 2019-04-07
+
+https://chromereleases.googleblog.com/2019/07/stable-channel-update-for-desktop_30.html
+[976627] High CVE-2019-5853: Memory corruption in regexp length check. Reported by yngwei(@yngweijw) of IIE Varas and **sakura(@eternalsakura13) of Tecent Xuanwu Lab** on 2019-06-19
+
+https://chromereleases.googleblog.com/2020/04/stable-channel-update-for-desktop_7.html
+[1059669] High CVE-2020-6455: Out of bounds read in WebSQL. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of Alpha Lab, Qihoo 360 on 2020-03-09
+
+https://chromereleases.googleblog.com/2021/01/stable-channel-update-for-desktop_19.html
+[1160602] High CVE-2021-21120: Use after free in WebSQL. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2020-12-21
+
+https://chromereleases.googleblog.com/2021/04/stable-channel-update-for-desktop_14.html
+[1185732] Medium CVE-2021-21207: Use after free in IndexedDB. Reported by koocola (@alo_cook) and **Nan Wang (@eternalsakura13)** of 360 Alpha Lab on 2021-03-08
+
+https://chromereleases.googleblog.com/2021/05/stable-channel-update-for-desktop.html
+[1200766] High CVE-2021-30514: Use after free in Autofill. Reported by koocola (@alo_cook) and **Nan Wang (@eternalsakura13)** of 360 Alpha Lab on 2021-04-20
+
+https://chromereleases.googleblog.com/2021/05/stable-channel-update-for-desktop_25.html
+[1195278] Medium CVE-2021-30529: Use after free in Bookmarks. Reported by koocola (@alo_cook) and **Nan Wang (@eternalsakura13)** of 360 Alpha Lab on 2021-04-02
+
+https://chromereleases.googleblog.com/2021/08/stable-channel-update-for-desktop.html
+[1234009] High CVE-2021-30601: Use after free in Extensions API. Reported by koocola(@alo_cook) and **Nan Wang(@eternalsakura13)** of 360 Alpha Lab on 2021-07-28
+
+https://chromereleases.googleblog.com/2021/08/stable-channel-update-for-desktop_31.html
+[1233975] High CVE-2021-30606: Use after free in Blink. Reported by **Nan Wang (@eternalsakura13)** and koocola (@alo_cook) of 360 Alpha Lab on 2021-07-28
+
+[1233942] Medium CVE-2021-30611: Use after free in WebRTC. Reported by **Nan Wang (@eternalsakura13)** and koocola (@alo_cook) of 360 Alpha Lab on 2021-07-28
+
+[1234284] Medium CVE-2021-30612: Use after free in WebRTC. Reported by **Nan Wang (@eternalsakura13)** and koocola (@alo_cook) of 360 Alpha Lab on 2021-07-29
+
+https://chromereleases.googleblog.com/2021/12/stable-channel-update-for-desktop.html
+[1268738] High CVE-2021-4078: Type confusion in V8. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2021-11-09
+
+https://chromereleases.googleblog.com/2022/04/stable-channel-update-for-desktop_11.html
+[1310717] High CVE-2022-1311: Use after free in Chrome OS shell. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2022-03-28
+
+https://chromereleases.googleblog.com/2022/05/stable-channel-update-for-desktop_24.html
+[1323239] High CVE-2022-1856: Use after free in User Education. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab  on 2022-05-06
+
+[1323236] Medium CVE-2022-1870: Use after free in App Service. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab  on 2022-05-06
+
+https://chromereleases.googleblog.com/2022/06/stable-channel-update-for-desktop_21.html
+[1327312] High CVE-2022-2157: Use after free in Interest groups. Reported by **Nan Wang**(@eternalsakura13) and Guang Gong of 360 Alpha Lab  on 2022-05-19
+
+https://chromereleases.googleblog.com/2022/08/stable-channel-update-for-desktop.html
+[1335316] High CVE-2022-2604: Use after free in Safe Browsing. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2022-06-10
+
+[1330489] High CVE-2022-2606: Use after free in Managed devices API. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2022-05-31
+
+[1337304] Medium CVE-2022-2620: Use after free in WebUI. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2022-06-17
+
+https://chromereleases.googleblog.com/2022/08/stable-channel-update-for-desktop_16.html
+[1338412] Medium CVE-2022-2859: Use after free in Chrome OS Shell. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Alpha Lab on 2022-06-22
+
+https://chromereleases.googleblog.com/2022/08/stable-channel-update-for-desktop_30.html
+[1343348] High CVE-2022-3039: Use after free in WebSQL. Reported by Ziling Chen and **Nan Wang(@eternalsakura13)** of 360 Vulnerability Research Institute on 2022-07-11
+
+[1345947] High CVE-2022-3041: Use after free in WebSQL. Reported by Ziling Chen and **Nan Wang(@eternalsakura13)** of 360 Vulnerability Research Institute on 2022-07-20
+
+https://chromereleases.googleblog.com/2022/09/stable-channel-update-for-desktop_27.html
+[1319229] High CVE-2022-3305: Use after free in Survey. Reported by Nan Wang(@eternalsakura13) and Guang Gong of 360 Vulnerability Research Institute on 2022-04-24
+
+[1320139] High CVE-2022-3306: Use after free in Survey. Reported by Nan Wang(@eternalsakura13) and Guang Gong of 360 Vulnerability Research Institute on 2022-04-27
+
+https://chromereleases.googleblog.com/2022/09/stable-channel-update-for-desktop_14.html
+[1358381] High CVE-2022-3195: Out of bounds write in Storage. Reported by Ziling Chen and **Nan Wang(@eternalsakura13)** of 360 Vulnerability Research Institute on 2022-08-31
+
+https://chromereleases.googleblog.com/2022/10/stable-channel-update-for-desktop_11.html
+[1364604] High CVE-2022-3445: Use after free in Skia. Reported by **Nan Wang (@eternalsakura13)** and Yong Liu of 360 Vulnerability Research Institute on 2022-09-16
+
+https://chromereleases.googleblog.com/2022/10/stable-channel-update-for-desktop_25.html
+[1352817] Medium CVE-2022-3658: Use after free in Feedback service on Chrome OS. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2022-08-14
+
+https://chromereleases.googleblog.com/2023/04/stable-channel-update-for-desktop_18.html
+[1430644] Medium CVE-2023-2137: Heap buffer overflow in sqlite. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2023-04-05
+
+[1156510] High issue-1156510: UAF in UserMediaRequest::OnMediaStreamInitialized. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2020-10-08
+
+[1314674] High issue-1314674: UAF in ArcBluetoothBridge::OnBluetoothConnectingSocketReady. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2022-04-08
+
+[1323564] High issue-1323564: UAF in SystemExtensionsInternalsPageHandler::InstallSystemExtensionFromDownloadsDir. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2022-05-08
+
+[1347015] High issue-1347015: UAF in HidService::GetDevices. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2022-07-05
+
+[1379201] High issue-1379201: Stack-buffer-overflow in WebGL vulkan backend. Reported by **Nan Wang(@eternalsakura13)** and Yong Liu of 360 Vulnerability Research Institute on 2022-10-28
+
+[1382993] High issue-1382993: UAF in content::RenderFrameDevToolsAgentHost::RenderProcessExited. Reported by **Nan Wang(@eternalsakura13)** and Guang Gong of 360 Vulnerability Research Institute on 2022-11-10
+
+## Safari
+https://support.apple.com/en-us/HT210123
+CVE-2019-8583: **sakura of Tencent Xuanwu Lab**, and dwfault working at ADLab of Venustech
+
+## Android
+https://source.android.com/security/bulletin/2021-08-01
+https://source.android.google.cn/security/overview/acknowledgements
+CVE-2021-0646: **Nan Wang (@eternalsakura13)** and Guang Gong of Alpha Lab, Qihoo 360
+
+## Facebook
+https://www.facebook.com/whitehat/thanks
+
+https://www.facebook.com/security/advisories/CVE-2021-24044
+CVE-2021-24044: Type Confusion in hermes::vm::Interpreter::interpretFunction
+
+https://www.facebook.com/security/advisories/CVE-2021-24045
+CVE-2021-24045: Type Confusion in "typeof" unary operator
+
+https://hhvm.com/blog/2022/03/29/security-update.html
+CVE-2022-27809, HHVM incorrect integer conversion in array_fill leads to uninitialized variable reference
+
+https://www.facebook.com/security/advisories/CVE-2022-27810
+CVE-2022-27810: stack-overflow in hermes::vm::JSProxy::getNamed
+
+https://www.facebook.com/security/advisories/CVE-2022-36762
+CVE-2022-36762: Type Confusion in hermes::vm::HadesGC
+
+https://www.facebook.com/security/advisories/CVE-2022-36935
+CVE-2022-36935: Type Confusion in hermes::vm::HermesValue::getDouble
+
+https://www.facebook.com/security/advisories/CVE-2023-23557
+CVE-2023-23557: Type Confusion in hermes::vm::JSObject::getNamedPropertyValue_RJS
+
+https://www.facebook.com/security/advisories/CVE-2023-24832
+CVE-2023-24832: OOB write in hermes::hbc::BCProviderFromSrc::createBCProviderFromSrcImpl
+
+https://www.facebook.com/security/advisories/CVE-2023-24833
+CVE-2023-24833: use-after-poison in hermes::vm::BigIntPrimitive::SafeBigIntRef, bypass ASLR cause information leak.
+
+## SQLite
+https://www.sqlite.org/src/info/f50af3e8a565776b
+OOB memory access on a table rename, reported by **sakura(@eternalsakura13) of Alpha Team, Qihoo 360**
